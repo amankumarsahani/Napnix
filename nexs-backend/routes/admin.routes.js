@@ -87,4 +87,23 @@ router.post('/mobile-app/upload', upload.single('file'), async (req, res) => {
     }
 });
 
+router.get('/telemetry/stats', async (req, res) => {
+    try {
+        if (!process.env.REGISTRY_API_KEY) {
+            return res.status(500).json({ success: false, error: 'REGISTRY_API_KEY is not configured' });
+        }
+
+        const response = await fetch(`${registryUrl}/telemetry/stats`, {
+            headers: {
+                'X-API-Key': process.env.REGISTRY_API_KEY
+            }
+        });
+        const data = await parseRegistryResponse(response);
+        res.status(response.status).json(data);
+    } catch (error) {
+        console.error('Failed to fetch telemetry stats:', error);
+        res.status(500).json({ success: false, error: 'Failed to fetch telemetry stats' });
+    }
+});
+
 module.exports = router;
