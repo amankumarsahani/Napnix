@@ -39,11 +39,6 @@ const navItems = [
   { label: 'NexMail', path: '/nexmail', children: [
     { label: 'Overview', path: '/nexmail' },
     { label: 'Pricing', path: '/nexmail#pricing' },
-    { type: 'divider', label: 'Highlights' },
-    { label: 'SMTP Rotation', path: '/nexmail#features' },
-    { label: 'Anti-Spam Engine', path: '/nexmail#features' },
-    { label: 'Automations', path: '/nexmail#features' },
-    { label: 'Domain Throttling', path: '/nexmail#features' },
   ]},
   { label: 'About', path: '/about' },
   { label: 'Portfolio', path: '/portfolio' },
