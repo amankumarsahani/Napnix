@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { randomUUID } = require('crypto');
 const axios = require('axios');
+const geoip = require('geoip-lite');
 const { query } = require('../config/database');
 const { decryptPayload } = require('../utils/telemetry-crypto');
 const { UAParser } = require('ua-parser-js');
@@ -9,9 +10,58 @@ const jwt = require('jsonwebtoken');
 
 const TELEMETRY_SECRET = process.env.PUBLIC_CRYPTO_SECRET || process.env.VITE_PUBLIC_CRYPTO_SECRET || '';
 
+// ISO 3166-2 codes → full names (for geoip-lite local fallback)
+const REGION_NAMES = {
+    IN: {
+        AN:'Andaman and Nicobar Islands', AP:'Andhra Pradesh', AR:'Arunachal Pradesh',
+        AS:'Assam', BR:'Bihar', CH:'Chandigarh', CT:'Chhattisgarh',
+        DH:'Dadra and Nagar Haveli and Daman and Diu', DL:'Delhi', GA:'Goa',
+        GJ:'Gujarat', HP:'Himachal Pradesh', HR:'Haryana', JH:'Jharkhand',
+        JK:'Jammu and Kashmir', KA:'Karnataka', KL:'Kerala', LA:'Ladakh',
+        LD:'Lakshadweep', MH:'Maharashtra', ML:'Meghalaya', MN:'Manipur',
+        MP:'Madhya Pradesh', MZ:'Mizoram', NL:'Nagaland', OR:'Odisha',
+        PB:'Punjab', PY:'Puducherry', RJ:'Rajasthan', SK:'Sikkim',
+        TG:'Telangana', TN:'Tamil Nadu', TR:'Tripura', UP:'Uttar Pradesh',
+        UT:'Uttarakhand', WB:'West Bengal',
+    },
+    US: {
+        AL:'Alabama', AK:'Alaska', AZ:'Arizona', AR:'Arkansas', CA:'California',
+        CO:'Colorado', CT:'Connecticut', DE:'Delaware', FL:'Florida', GA:'Georgia',
+        HI:'Hawaii', ID:'Idaho', IL:'Illinois', IN:'Indiana', IA:'Iowa',
+        KS:'Kansas', KY:'Kentucky', LA:'Louisiana', ME:'Maine', MD:'Maryland',
+        MA:'Massachusetts', MI:'Michigan', MN:'Minnesota', MS:'Mississippi',
+        MO:'Missouri', MT:'Montana', NE:'Nebraska', NV:'Nevada',
+        NH:'New Hampshire', NJ:'New Jersey', NM:'New Mexico', NY:'New York',
+        NC:'North Carolina', ND:'North Dakota', OH:'Ohio', OK:'Oklahoma',
+        OR:'Oregon', PA:'Pennsylvania', RI:'Rhode Island', SC:'South Carolina',
+        SD:'South Dakota', TN:'Tennessee', TX:'Texas', UT:'Utah', VT:'Vermont',
+        VA:'Virginia', WA:'Washington', WV:'West Virginia', WI:'Wisconsin',
+        WY:'Wyoming', DC:'Washington D.C.',
+    },
+    GB: {
+        ENG:'England', SCT:'Scotland', WLS:'Wales', NIR:'Northern Ireland',
+    },
+    CA: {
+        AB:'Alberta', BC:'British Columbia', MB:'Manitoba', NB:'New Brunswick',
+        NL:'Newfoundland and Labrador', NS:'Nova Scotia', NT:'Northwest Territories',
+        NU:'Nunavut', ON:'Ontario', PE:'Prince Edward Island', QC:'Quebec',
+        SK:'Saskatchewan', YT:'Yukon',
+    },
+    AU: {
+        ACT:'Australian Capital Territory', NSW:'New South Wales', NT:'Northern Territory',
+        QLD:'Queensland', SA:'South Australia', TAS:'Tasmania', VIC:'Victoria',
+        WA:'Western Australia',
+    },
+    DE: {
+        BB:'Brandenburg', BE:'Berlin', BW:'Baden-Württemberg', BY:'Bavaria',
+        HB:'Bremen', HE:'Hesse', HH:'Hamburg', MV:'Mecklenburg-Vorpommern',
+        NI:'Lower Saxony', NW:'North Rhine-Westphalia', RP:'Rhineland-Palatinate',
+        SH:'Schleswig-Holstein', SL:'Saarland', SN:'Saxony', ST:'Saxony-Anhalt',
+        TH:'Thuringia',
+    },
+};
+
 // ── Visitor IP extraction ──────────────────────────────────────────────────
-// With `app.set('trust proxy', 1)`, req.ip gives the first X-Forwarded-For value.
-// Behind Cloudflare, the real visitor IP is in cf-connecting-ip.
 function getVisitorIp(req) {
     return (
         req.headers['cf-connecting-ip'] ||
@@ -23,49 +73,75 @@ function getVisitorIp(req) {
     );
 }
 
-// ── Geo-IP cache ───────────────────────────────────────────────────────────
-// Simple in-process Map: key=ip, value={ data, expiresAt }
-// Cache entries live for 24 hours — geo rarely changes for the same IP.
-const _geoCache = new Map();
-const GEO_TTL = 24 * 60 * 60 * 1000; // 24 h
-
+// ── Local synchronous geo (geoip-lite) ────────────────────────────────────
 const PRIVATE_IP_RE = /^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|::1$|localhost)/;
 
-async function resolveGeo(ip) {
+function resolveGeoLocal(ip) {
     if (!ip || PRIVATE_IP_RE.test(ip)) return null;
+    const cleanIp = ip.replace(/^::ffff:/, '');
+    const geo = geoip.lookup(cleanIp);
+    if (!geo) return null;
+    const cc = geo.country || null;
+    const rc = geo.region  || null;
+    return {
+        country:  cc,
+        region:   (cc && rc) ? (REGION_NAMES[cc]?.[rc] || rc) : null,
+        city:     geo.city    || null,
+        lat:      geo.ll?.[0] ?? null,
+        lon:      geo.ll?.[1] ?? null,
+        timezone: geo.timezone || null,
+        isp:      null,
+    };
+}
 
-    const cached = _geoCache.get(ip);
-    if (cached && cached.expiresAt > Date.now()) return cached.data;
+// ── Remote geo chain: ip-api.com → ipinfo.io ─────────────────────────────
+async function resolveGeoRemote(ip) {
+    if (!ip || PRIVATE_IP_RE.test(ip)) return null;
+    const cleanIp = ip.replace(/^::ffff:/, '');
 
+    // 1. ip-api.com — best data (ISP, full region name, lat/lon)
     try {
-        // ip-api.com — free, no key, supports batch, returns full region/state names.
-        // Fields: countryCode (2-letter) | regionName (full name) | city | zip | lat | lon | timezone | isp
-        const { data } = await axios.get(`http://ip-api.com/json/${encodeURIComponent(ip)}`, {
-            params: {
-                fields: 'status,countryCode,regionName,city,zip,lat,lon,timezone,isp',
-            },
-            timeout: 4000,
-        });
+        const { data } = await axios.get(
+            `http://ip-api.com/json/${encodeURIComponent(cleanIp)}`,
+            {
+                params: { fields: 'status,countryCode,regionName,city,lat,lon,timezone,isp' },
+                timeout: 3500,
+            }
+        );
+        if (data?.status === 'success') {
+            return {
+                country:  data.countryCode || null,
+                region:   data.regionName  || null,
+                city:     data.city        || null,
+                lat:      data.lat         ?? null,
+                lon:      data.lon         ?? null,
+                timezone: data.timezone    || null,
+                isp:      data.isp         || null,
+            };
+        }
+    } catch (_) {}
 
-        if (data?.status !== 'success') return null;
+    // 2. ipinfo.io — free, no key, full region names
+    try {
+        const { data } = await axios.get(
+            `https://ipinfo.io/${encodeURIComponent(cleanIp)}/json`,
+            { timeout: 3500 }
+        );
+        if (data?.country) {
+            const [rawLat, rawLon] = (data.loc || '').split(',').map(Number);
+            return {
+                country:  data.country  || null,
+                region:   data.region   || null,
+                city:     data.city     || null,
+                lat:      isNaN(rawLat) ? null : rawLat,
+                lon:      isNaN(rawLon) ? null : rawLon,
+                timezone: data.timezone || null,
+                isp:      data.org      || null,
+            };
+        }
+    } catch (_) {}
 
-        const geo = {
-            country:  data.countryCode  || null,   // 2-letter ISO: "IN"
-            region:   data.regionName   || null,   // full name:    "Maharashtra"
-            city:     data.city         || null,   // full name:    "Mumbai"
-            zip:      data.zip          || null,
-            lat:      data.lat          ?? null,
-            lon:      data.lon          ?? null,
-            timezone: data.timezone     || null,   // "Asia/Kolkata"
-            isp:      data.isp          || null,
-        };
-
-        _geoCache.set(ip, { data: geo, expiresAt: Date.now() + GEO_TTL });
-        return geo;
-    } catch (_) {
-        // Non-fatal — telemetry continues without full geo
-        return null;
-    }
+    return null;
 }
 
 // ── POST / ─────────────────────────────────────────────────────────────────
@@ -85,19 +161,17 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ ok: false, error: 'missing_required_fields' });
         }
 
-        // ── Parse User-Agent ───────────────────────────────────────────────
         const userAgent = req.headers['user-agent'] || '';
         const ua = new UAParser(userAgent).getResult();
-
-        // ── Extract real visitor IP ────────────────────────────────────────
         const visitorIp = getVisitorIp(req);
 
-        // ── Geo: Cloudflare/Vercel headers first (fastest, no HTTP call) ──
-        // Cloudflare free provides cf-ipcountry. City/region require Workers
-        // or Business plan, so we still need ip-api.com for those.
+        // Cloudflare-supplied country is most accurate behind CDN
         const cfCountry = req.headers['cf-ipcountry'] || req.headers['x-vercel-ip-country'] || null;
 
-        // ── Resolve User ID (optional JWT) ─────────────────────────────────
+        // Synchronous local lookup for immediate INSERT
+        const local = resolveGeoLocal(visitorIp);
+
+        // Resolve User ID (optional JWT)
         let userId = null;
         const authHeader = req.headers['authorization'] || '';
         const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
@@ -108,12 +182,9 @@ router.post('/', async (req, res) => {
             } catch (_) {}
         }
 
-        // ── Generate record ID so we can update it after geo enrichment ───
         const id = randomUUID();
 
-        // ── INSERT immediately with whatever we have ───────────────────────
-        // ip_address, latitude, longitude, timezone, isp start NULL
-        // and are filled in by the background geo lookup below.
+        // INSERT immediately using local geo as baseline
         await query(`
             INSERT INTO telemetry (
                 id, user_id, ip_address,
@@ -121,7 +192,7 @@ router.post('/', async (req, res) => {
                 browser, browser_version, engine, engine_version,
                 os, os_version, device_type, device_vendor, device_model,
                 cpu, ua_string,
-                country, city, region,
+                country, city, region, latitude, longitude, timezone, isp,
                 language, screen_size, metadata
             ) VALUES (
                 ?, ?, ?,
@@ -129,7 +200,7 @@ router.post('/', async (req, res) => {
                 ?, ?, ?, ?,
                 ?, ?, ?, ?, ?,
                 ?, ?,
-                ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?,
                 ?, ?, ?
             )
         `, [
@@ -140,37 +211,46 @@ router.post('/', async (req, res) => {
             ua.os.name      || null, ua.os.version      || null,
             ua.device.type  || 'desktop', ua.device.vendor || null, ua.device.model || null,
             ua.cpu.architecture || null, userAgent,
-            cfCountry || null, null, null,    // country, city, region — enriched below
-            body.language || null,
+            cfCountry || local?.country || null,
+            local?.city     || null,
+            local?.region   || null,
+            local?.lat      ?? null,
+            local?.lon      ?? null,
+            local?.timezone || null,
+            null, // isp — enriched in background
+            body.language    || null,
             body.screen_size || null,
             JSON.stringify(body.metadata || {}),
         ]);
 
-        // ── Respond immediately — don't make the visitor wait for geo ─────
+        // Respond immediately — don't block on remote lookup
         res.status(200).json({ ok: true });
 
-        // ── Background: enrich with full geo data ─────────────────────────
-        // setImmediate runs after the current I/O event completes, so the
-        // HTTP response has already been flushed before we make the API call.
+        // Background: enrich with better geo from ip-api.com / ipinfo.io
         setImmediate(async () => {
             try {
-                const geo = await resolveGeo(visitorIp);
-                if (!geo) return;
+                const remote = await resolveGeoRemote(visitorIp);
+                if (!remote) return;
 
                 await query(`
                     UPDATE telemetry
                     SET
                         country   = COALESCE(country, ?),
-                        city      = ?,
                         region    = ?,
+                        city      = ?,
                         latitude  = ?,
                         longitude = ?,
                         timezone  = ?,
                         isp       = ?
                     WHERE id = ?
                 `, [
-                    geo.country, geo.city, geo.region,
-                    geo.lat, geo.lon, geo.timezone, geo.isp,
+                    remote.country,
+                    remote.region,
+                    remote.city,
+                    remote.lat,
+                    remote.lon,
+                    remote.timezone,
+                    remote.isp,
                     id,
                 ]);
             } catch (err) {
@@ -180,7 +260,6 @@ router.post('/', async (req, res) => {
 
     } catch (err) {
         console.error('[telemetry] unexpected error:', err);
-        // Only send error if response hasn't been sent yet
         if (!res.headersSent) {
             res.status(500).json({ ok: false, error: 'server_error' });
         }
