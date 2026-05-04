@@ -61,6 +61,26 @@ const REGION_NAMES = {
     },
 };
 
+// ── Geo cache (in-process, 24 h TTL) ─────────────────────────────────────
+// Keyed by cleaned IP. Avoids hitting ip-api.com / ipinfo.io on repeat visits.
+const _geoCache  = new Map();
+const GEO_TTL_MS = 24 * 60 * 60 * 1000; // 24 h
+
+function geoCacheGet(ip) {
+    const entry = _geoCache.get(ip);
+    if (entry && entry.expiresAt > Date.now()) return entry.data;
+    if (entry) _geoCache.delete(ip); // evict expired
+    return null;
+}
+function geoCacheSet(ip, data) {
+    // Prevent unbounded growth — cap at 50 k entries (~15 MB worst-case)
+    if (_geoCache.size >= 50_000) {
+        const firstKey = _geoCache.keys().next().value;
+        _geoCache.delete(firstKey);
+    }
+    _geoCache.set(ip, { data, expiresAt: Date.now() + GEO_TTL_MS });
+}
+
 // ── Visitor IP extraction ──────────────────────────────────────────────────
 function getVisitorIp(req) {
     return (
@@ -79,11 +99,15 @@ const PRIVATE_IP_RE = /^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|::1$|lo
 function resolveGeoLocal(ip) {
     if (!ip || PRIVATE_IP_RE.test(ip)) return null;
     const cleanIp = ip.replace(/^::ffff:/, '');
+
+    const cached = geoCacheGet(`local:${cleanIp}`);
+    if (cached) return cached;
+
     const geo = geoip.lookup(cleanIp);
     if (!geo) return null;
     const cc = geo.country || null;
     const rc = geo.region  || null;
-    return {
+    const result = {
         country:  cc,
         region:   (cc && rc) ? (REGION_NAMES[cc]?.[rc] || rc) : null,
         city:     geo.city    || null,
@@ -92,12 +116,19 @@ function resolveGeoLocal(ip) {
         timezone: geo.timezone || null,
         isp:      null,
     };
+
+    geoCacheSet(`local:${cleanIp}`, result);
+    return result;
 }
 
 // ── Remote geo chain: ip-api.com → ipinfo.io ─────────────────────────────
 async function resolveGeoRemote(ip) {
     if (!ip || PRIVATE_IP_RE.test(ip)) return null;
     const cleanIp = ip.replace(/^::ffff:/, '');
+
+    // Return cached result immediately — avoids redundant HTTP calls
+    const cached = geoCacheGet(`remote:${cleanIp}`);
+    if (cached) return cached;
 
     // 1. ip-api.com — best data (ISP, full region name, lat/lon)
     try {
@@ -109,7 +140,7 @@ async function resolveGeoRemote(ip) {
             }
         );
         if (data?.status === 'success') {
-            return {
+            const result = {
                 country:  data.countryCode || null,
                 region:   data.regionName  || null,
                 city:     data.city        || null,
@@ -118,6 +149,8 @@ async function resolveGeoRemote(ip) {
                 timezone: data.timezone    || null,
                 isp:      data.isp         || null,
             };
+            geoCacheSet(`remote:${cleanIp}`, result);
+            return result;
         }
     } catch (_) {}
 
@@ -129,7 +162,7 @@ async function resolveGeoRemote(ip) {
         );
         if (data?.country) {
             const [rawLat, rawLon] = (data.loc || '').split(',').map(Number);
-            return {
+            const result = {
                 country:  data.country  || null,
                 region:   data.region   || null,
                 city:     data.city     || null,
@@ -138,6 +171,8 @@ async function resolveGeoRemote(ip) {
                 timezone: data.timezone || null,
                 isp:      data.org      || null,
             };
+            geoCacheSet(`remote:${cleanIp}`, result);
+            return result;
         }
     } catch (_) {}
 
