@@ -6,6 +6,7 @@ import { SITE_URL } from './constants/siteConfig';
 import { useAuth } from './context/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
 import ErrorBoundary from './components/ErrorBoundary';
+import TelemetryTracker from './components/TelemetryTracker';
 
 // Critical components - load immediately (including all landing page sections)
 import Header from './components/Header';
@@ -145,6 +146,7 @@ function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <TelemetryTracker />
       <ErrorBoundary>
       <Routes>
         <Route element={<PublicLayout />}>

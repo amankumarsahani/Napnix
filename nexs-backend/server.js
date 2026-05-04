@@ -230,6 +230,7 @@ app.use('/api/tools', require('./routes/tool.routes'));
 app.use('/api/campaigns', require('./routes/campaign.routes'));
 app.use('/api/smtp-accounts', require('./routes/smtp.routes'));
 app.use('/api/track', require('./routes/tracking.routes'));
+app.use('/api/telemetry', require('./routes/telemetry.routes'));
 
 // Automation Workflows
 app.use('/api/workflows', require('./routes/workflow.routes'));
