@@ -63,53 +63,132 @@ class AIService {
     }
 
     /**
-     * Generate content from a prompt
+     * Detect which provider owns a given model string.
+     * Returns null when the model is unknown (try all providers).
+     */
+    _detectProvider(model) {
+        if (!model) return null;
+        if (model.startsWith('gpt-') || model.startsWith('o1-')) return 'openai';
+        if (model.startsWith('gemini-'))                          return 'gemini';
+        if (model.includes('llama') || model.includes('mixtral')) return 'groq';
+        if (model.startsWith('grok-'))                            return 'grok';
+        return null;
+    }
+
+    /**
+     * Build an ordered list of provider attempts.
+     * Primary provider (matching the requested model) goes first.
+     * Fallback order: groq → openai → grok → gemini
+     * (Groq leads fallbacks — most generous free tier, no rate limit issues)
+     */
+    _buildQueue(config, requestedModel) {
+        const primary = this._detectProvider(requestedModel);
+
+        // Fallback preference when a provider is rate-limited or unavailable
+        const fallbackOrder = ['groq', 'openai', 'grok', 'gemini'];
+
+        const queue = [];
+
+        // 1. Primary (the provider that owns requestedModel, if configured)
+        if (primary && config[primary]) {
+            queue.push({
+                provider: primary,
+                model:    requestedModel || this.models[primary],
+                key:      config[primary],
+            });
+        }
+
+        // 2. Remaining configured providers in fallback order
+        for (const p of fallbackOrder) {
+            if (p !== primary && config[p]) {
+                queue.push({ provider: p, model: this.models[p], key: config[p] });
+            }
+        }
+
+        // 3. If no model was specified and no primary found, treat the first
+        //    available provider as primary (happens when no model is requested)
+        if (!primary && queue.length === 0) {
+            for (const p of fallbackOrder) {
+                if (config[p]) {
+                    queue.push({ provider: p, model: this.models[p], key: config[p] });
+                }
+            }
+        }
+
+        return queue;
+    }
+
+    /** Dispatch a single attempt to the correct provider call. */
+    async _dispatch({ provider, model, key }, prompt, systemMessage) {
+        switch (provider) {
+            case 'openai': return this.callOpenAI(prompt, systemMessage, model, key);
+            case 'gemini': return this.callGemini(prompt, systemMessage, model, key);
+            case 'groq':   return this.callGroq(prompt, systemMessage, model, key);
+            case 'grok':   return this.callGrok(prompt, systemMessage, model, key);
+            default:       throw new Error(`Unknown provider: ${provider}`);
+        }
+    }
+
+    /**
+     * Generate content from a prompt.
+     * Automatically falls back to the next configured provider on:
+     *   - 429 Too Many Requests (rate limit / quota)
+     *   - 500 / 502 / 503 / 529 (server-side errors)
+     *   - Network / timeout errors
+     * Non-retryable errors (401 Unauthorized, 400 Bad Request, 404 Not Found)
+     * are surfaced immediately without trying other providers.
      */
     async generateContent(prompt, systemMessage = 'You are a helpful CRM assistant.', model = null) {
         const config = await this.getApiConfig();
-        const selectedModel = model || (config.openai ? this.models.openai : (config.gemini ? this.models.gemini : 'gemini-1.5-flash'));
 
-        console.log(`[AIService] Generating content with model: ${selectedModel}`);
-        console.log(`[AIService] Available providers: ${Object.keys(config).join(', ') || 'NONE'}`);
-
-        // Check if any provider is configured
         if (Object.keys(config).length === 0) {
             throw new Error('No AI provider configured. Please add an API key in Settings > AI Integration.');
         }
 
-        try {
-            // Route based on model prefix
-            if (selectedModel.startsWith('gpt-') || selectedModel.startsWith('o1-')) {
-                if (!config.openai) throw new Error('OpenAI API key not configured. Add it in Settings > AI Integration.');
-                return await this.callOpenAI(prompt, systemMessage, selectedModel, config.openai);
-            }
+        const queue = this._buildQueue(config, model);
 
-            if (selectedModel.startsWith('gemini-')) {
-                if (!config.gemini) throw new Error('Gemini API key not configured. Add it in Settings > AI Integration.');
-                return await this.callGemini(prompt, systemMessage, selectedModel, config.gemini);
-            }
-
-            if (selectedModel.includes('llama') || selectedModel.includes('mixtral')) {
-                if (!config.groq) throw new Error('Groq API key not configured. Add it in Settings > AI Integration.');
-                return await this.callGroq(prompt, systemMessage, selectedModel, config.groq);
-            }
-
-            if (selectedModel.startsWith('grok-')) {
-                if (!config.grok) throw new Error('xAI Grok API key not configured. Add it in Settings > AI Integration.');
-                return await this.callGrok(prompt, systemMessage, selectedModel, config.grok);
-            }
-
-            // Default fallback based on what's configured
-            if (config.openai) return await this.callOpenAI(prompt, systemMessage, this.models.openai, config.openai);
-            if (config.gemini) return await this.callGemini(prompt, systemMessage, this.models.gemini, config.gemini);
-            if (config.groq) return await this.callGroq(prompt, systemMessage, this.models.groq, config.groq);
-
-            throw new Error(`No compatible AI provider configured for model: ${selectedModel}`);
-        } catch (error) {
-            console.error('[AIService] Generation error:', error.message);
-            throw new Error(`AI generation failed: ${error.message}`);
-
+        if (queue.length === 0) {
+            throw new Error('No compatible AI provider configured for the requested model.');
         }
+
+        console.log(`[AIService] Provider queue: ${queue.map(q => q.provider).join(' → ')}`);
+
+        const failures = [];
+
+        for (const attempt of queue) {
+            try {
+                console.log(`[AIService] Trying ${attempt.provider} (${attempt.model})${failures.length ? ' [fallback]' : ''}`);
+                const result = await this._dispatch(attempt, prompt, systemMessage);
+
+                if (failures.length > 0) {
+                    console.log(`[AIService] ✓ Succeeded with fallback provider: ${attempt.provider}`);
+                }
+                return result;
+
+            } catch (err) {
+                const status = err.response?.status;
+
+                // Non-retryable: auth failure or bad request — surface immediately
+                if (status === 400 || status === 401 || status === 403) {
+                    console.error(`[AIService] ${attempt.provider} non-retryable error ${status}: ${err.message}`);
+                    throw new Error(`AI generation failed (${attempt.provider} ${status}): ${err.message}`);
+                }
+
+                // Retryable: rate limit, server errors, or network failures
+                failures.push({ provider: attempt.provider, status: status || 'network', msg: err.message.slice(0, 120) });
+
+                const isLast = failures.length >= queue.length;
+                console.warn(
+                    `[AIService] ${attempt.provider} failed (${status || 'network'})${isLast ? ' — all providers exhausted' : ' — trying next provider'}`
+                );
+            }
+        }
+
+        // All providers failed
+        const summary = failures.map(f => `${f.provider}(${f.status})`).join(' → ');
+        const detail  = failures.map(f => `${f.provider}: ${f.msg}`).join(' | ');
+        console.error(`[AIService] All providers failed: ${detail}`);
+        throw new Error(`All AI providers exhausted [${summary}]. Check your API keys and rate limits.`);
     }
 
     /**

@@ -348,6 +348,89 @@ router.get('/events', async (req, res) => {
     }
 });
 
+// ── GET /heatmap ───────────────────────────────────────────────────────────
+router.get('/heatmap', async (req, res) => {
+    try {
+        const { page, range } = req.query;
+        const df = dateClause(range);
+
+        // All pages that have click data (for the selector dropdown)
+        const [availablePages] = await query(`
+            SELECT path, COUNT(*) AS clicks
+            FROM telemetry
+            WHERE event_type='click' ${df}
+            GROUP BY path
+            ORDER BY clicks DESC
+        `);
+
+        if (!page) {
+            return res.json({ availablePages, points: [], totalClicks: 0 });
+        }
+
+        // Raw clicks for this page with x/y in metadata
+        const [rows] = await query(`
+            SELECT metadata, screen_size, COUNT(*) AS cnt
+            FROM telemetry
+            WHERE event_type='click'
+              AND path = ?
+              AND metadata IS NOT NULL
+              AND metadata != '{}'
+              ${df}
+            GROUP BY metadata, screen_size
+        `, [page]);
+
+        // Most common screen size for this page (use as reference viewport)
+        const [screenRows] = await query(`
+            SELECT screen_size, COUNT(*) AS n
+            FROM telemetry
+            WHERE event_type='click' AND path = ? ${df}
+            GROUP BY screen_size ORDER BY n DESC LIMIT 1
+        `, [page]);
+
+        const refSize = (screenRows[0]?.screen_size || '1280x800').split('x');
+        const refW = Number(refSize[0]) || 1280;
+        const refH = Number(refSize[1]) || 800;
+
+        // Aggregate by normalised coordinate
+        const pointMap = new Map();
+        let totalClicks = 0;
+
+        for (const row of rows) {
+            try {
+                const meta = typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata;
+                if (typeof meta.x !== 'number' || typeof meta.y !== 'number') continue;
+
+                const [sw, sh] = (row.screen_size || `${refW}x${refH}`).split('x').map(Number);
+                const nx = Math.round((meta.x / (sw || refW)) * refW);
+                const ny = Math.round((meta.y / (sh || refH)) * refH);
+
+                const key = `${nx},${ny}`;
+                const prev = pointMap.get(key) || {
+                    x: nx, y: ny, count: 0,
+                    element: meta.element || 'unknown',
+                    text:    (meta.text || '').slice(0, 60),
+                    href:    meta.href || null,
+                };
+                prev.count += Number(row.cnt);
+                totalClicks += Number(row.cnt);
+                pointMap.set(key, prev);
+            } catch (_) {}
+        }
+
+        res.json({
+            page,
+            totalClicks,
+            viewportWidth:  refW,
+            viewportHeight: refH,
+            points:         [...pointMap.values()].sort((a, b) => b.count - a.count),
+            availablePages,
+        });
+    } catch (err) {
+        console.error('[site-analytics] heatmap error:', err);
+        res.status(500).json({ error: 'Failed to fetch heatmap data' });
+    }
+});
+
 // ── POST /ai-insights ──────────────────────────────────────────────────────
 router.post('/ai-insights', async (req, res) => {
     try {
