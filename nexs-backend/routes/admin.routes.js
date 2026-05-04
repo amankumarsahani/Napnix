@@ -23,6 +23,8 @@ const parseRegistryResponse = async (response) => {
 router.use(auth);
 router.use(isAdmin);
 
+router.use('/site-analytics', require('./site-analytics.routes'));
+
 // Server routes
 router.get('/servers', ServerController.getAllServers);
 router.get('/servers/:id', ServerController.getServerById);
