@@ -10,11 +10,9 @@ export default function TelemetryTracker() {
     const location = useLocation();
 
     useEffect(() => {
-        // Build full path including query params
-        const fullPath = location.pathname + location.search;
-
-        // Async fire-and-forget ping
-        trackTelemetry(fullPath, "view");
+        trackTelemetry(location.pathname, "view", {
+            search: location.search || undefined,
+        });
     }, [location]);
 
     // Track Global Clicks (Heatmap data)

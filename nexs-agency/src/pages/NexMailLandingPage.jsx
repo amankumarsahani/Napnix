@@ -66,6 +66,27 @@ const trustStats = [
     { value: '9', suffix: '', label: 'Auto Triggers', icon: RiFlowChart },
 ];
 
+const analyticsHighlights = [
+    {
+        title: 'Landing page tracking',
+        desc: 'Every visit to /nexmail is captured in Site Analytics with clean route-level page tracking.',
+        icon: RiBarChartBoxLine,
+        tone: 'bg-blue-50 text-blue-600 border-blue-100',
+    },
+    {
+        title: 'Click heatmaps',
+        desc: 'CTA clicks, scroll intent, and page hotspots feed directly into heatmap and journey reports.',
+        icon: RiMailCheckLine,
+        tone: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+    },
+    {
+        title: 'AI insight ready',
+        desc: 'Traffic from NexMail campaigns and landing sessions can be analysed in the Site Analytics AI panel.',
+        icon: RiLinksLine,
+        tone: 'bg-amber-50 text-amber-600 border-amber-100',
+    },
+];
+
 const comparisonItems = [
     { feature: 'SMTP Account Rotation', nexmail: true, mailchimp: false, brevo: false },
     { feature: 'Bring Your Own SMTP', nexmail: true, mailchimp: false, brevo: true },
@@ -273,6 +294,40 @@ export default function NexMailLandingPage() {
                                     <span className="text-sm text-slate-500 font-medium">{stat.label}</span>
                                 </div>
                             ))}
+                        </div>
+                    </FadeIn>
+                </div>
+            </section>
+
+            <section className="py-16 bg-white">
+                <div className="max-w-6xl mx-auto px-6">
+                    <FadeIn y={20}>
+                        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-8">
+                            <div className="max-w-2xl">
+                                <span className="text-[#2563EB] font-bold tracking-wider uppercase text-sm mb-3 block">Site Analytics</span>
+                                <h2 className="text-3xl md:text-4xl font-bold text-slate-900">NexMail landing traffic is already measurable.</h2>
+                                <p className="text-lg text-slate-600 mt-4">
+                                    The public NexMail landing page lives at <span className="font-semibold text-slate-900">/nexmail</span> and is wired into the shared telemetry pipeline for page views, click maps, and AI analysis.
+                                </p>
+                            </div>
+                            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm text-slate-600 max-w-md">
+                                Use the <span className="font-semibold text-slate-900">Site Analytics</span> dashboard to review the selected date range, CTA click hotspots, and journey drop-offs for the NexMail landing path.
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                            {analyticsHighlights.map((item) => {
+                                const Icon = item.icon;
+                                return (
+                                    <div key={item.title} className="rounded-2xl border border-slate-100 bg-slate-50/70 p-6">
+                                        <div className={`w-11 h-11 rounded-2xl border flex items-center justify-center text-lg ${item.tone}`}>
+                                            <Icon />
+                                        </div>
+                                        <h3 className="mt-4 text-base font-bold text-slate-900">{item.title}</h3>
+                                        <p className="mt-2 text-sm leading-relaxed text-slate-500">{item.desc}</p>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </FadeIn>
                 </div>

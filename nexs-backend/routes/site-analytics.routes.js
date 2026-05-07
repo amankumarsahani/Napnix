@@ -99,12 +99,12 @@ router.get('/pages', async (req, res) => {
 
         const [rows] = await query(`
             SELECT
-                path,
+                SUBSTRING_INDEX(path, '?', 1) AS path,
                 COUNT(*) AS views,
                 COUNT(DISTINCT session_id) AS unique_sessions
             FROM telemetry
             WHERE event_type='view' ${df}
-            GROUP BY path
+            GROUP BY SUBSTRING_INDEX(path, '?', 1)
             ORDER BY views DESC
             LIMIT 20
         `);
@@ -235,7 +235,7 @@ router.get('/journey', async (req, res) => {
             SELECT
                 session_id,
                 GROUP_CONCAT(
-                    CASE WHEN event_type='view' THEN path END
+                    CASE WHEN event_type='view' THEN SUBSTRING_INDEX(path, '?', 1) END
                     ORDER BY created_at
                     SEPARATOR ' → '
                 ) AS journey,
@@ -256,22 +256,22 @@ router.get('/journey', async (req, res) => {
 
         // Top entry pages
         const [entryRows] = await query(`
-            SELECT path, COUNT(*) AS count
+            SELECT SUBSTRING_INDEX(path, '?', 1) AS path, COUNT(*) AS count
             FROM (
                 SELECT session_id, MIN(created_at) AS first_event FROM telemetry WHERE event_type='view' ${df} GROUP BY session_id
             ) sess
             JOIN telemetry t ON t.session_id = sess.session_id AND t.created_at = sess.first_event AND t.event_type='view'
-            GROUP BY path ORDER BY count DESC LIMIT 10
+            GROUP BY SUBSTRING_INDEX(path, '?', 1) ORDER BY count DESC LIMIT 10
         `);
 
         // Top exit pages
         const [exitRows] = await query(`
-            SELECT path, COUNT(*) AS count
+            SELECT SUBSTRING_INDEX(path, '?', 1) AS path, COUNT(*) AS count
             FROM (
                 SELECT session_id, MAX(created_at) AS last_event FROM telemetry WHERE event_type='view' ${df} GROUP BY session_id
             ) sess
             JOIN telemetry t ON t.session_id = sess.session_id AND t.created_at = sess.last_event AND t.event_type='view'
-            GROUP BY path ORDER BY count DESC LIMIT 10
+            GROUP BY SUBSTRING_INDEX(path, '?', 1) ORDER BY count DESC LIMIT 10
         `);
 
         res.json({
@@ -292,7 +292,7 @@ router.get('/events', async (req, res) => {
 
         // Recent click events
         const [recent] = await query(`
-            SELECT path, event_type, metadata, created_at, browser, device_type, country
+            SELECT SUBSTRING_INDEX(path, '?', 1) AS path, event_type, metadata, created_at, browser, device_type, country
             FROM telemetry
             WHERE event_type='click' ${df}
             ORDER BY created_at DESC
@@ -301,10 +301,10 @@ router.get('/events', async (req, res) => {
 
         // Top clicked elements (parse metadata on Node side)
         const [rawClicks] = await query(`
-            SELECT path, metadata, COUNT(*) AS click_count
+            SELECT SUBSTRING_INDEX(path, '?', 1) AS path, metadata, COUNT(*) AS click_count
             FROM telemetry
             WHERE event_type='click' AND metadata IS NOT NULL AND metadata != '{}' ${df}
-            GROUP BY path, metadata
+            GROUP BY SUBSTRING_INDEX(path, '?', 1), metadata
             ORDER BY click_count DESC
             LIMIT 200
         `);
@@ -356,10 +356,10 @@ router.get('/heatmap', async (req, res) => {
 
         // All pages that have click data (for the selector dropdown)
         const [availablePages] = await query(`
-            SELECT path, COUNT(*) AS clicks
+            SELECT SUBSTRING_INDEX(path, '?', 1) AS path, COUNT(*) AS clicks
             FROM telemetry
             WHERE event_type='click' ${df}
-            GROUP BY path
+            GROUP BY SUBSTRING_INDEX(path, '?', 1)
             ORDER BY clicks DESC
         `);
 
@@ -372,7 +372,7 @@ router.get('/heatmap', async (req, res) => {
             SELECT metadata, screen_size, COUNT(*) AS cnt
             FROM telemetry
             WHERE event_type='click'
-              AND path = ?
+              AND SUBSTRING_INDEX(path, '?', 1) = ?
               AND metadata IS NOT NULL
               AND metadata != '{}'
               ${df}
@@ -383,7 +383,7 @@ router.get('/heatmap', async (req, res) => {
         const [screenRows] = await query(`
             SELECT screen_size, COUNT(*) AS n
             FROM telemetry
-            WHERE event_type='click' AND path = ? ${df}
+            WHERE event_type='click' AND SUBSTRING_INDEX(path, '?', 1) = ? ${df}
             GROUP BY screen_size ORDER BY n DESC LIMIT 1
         `, [page]);
 
