@@ -13,5 +13,6 @@ router.use(isAdmin);
 router.get('/', settingsController.getSettings);
 router.post('/', settingsController.updateSettings);
 router.post('/test-ai', settingsController.testAIConnection);
+router.post('/test-smtp', settingsController.testSmtpConnection);
 
 module.exports = router;

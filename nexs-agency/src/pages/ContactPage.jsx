@@ -102,7 +102,7 @@ const ContactPage = () => {
                     "@type": "LocalBusiness",
                     "name": "Nexspire Solutions",
                     "url": SITE_URL,
-                    "email": "nexspiretechsolutions@gmail.com",
+                    "email": siteConfig.email.info,
                     "telephone": "+917696309551, +917009614671",
                     "image": `${SITE_URL}/og-image.jpg`,
                     "address": {
@@ -168,7 +168,7 @@ const ContactPage = () => {
                             <span className="text-[#D97706]">Something Great.</span>
                         </h1>
                         <p className="text-xl text-blue-100/80 max-w-2xl mx-auto">
-                            From Mohali to the World. We build software that empowers businesses everywhere.
+                            From Mohali to global markets. Reach the right Nexspire inbox for sales, support, delivery, and project planning.
                         </p>
                     </motion.div>
                 </div>
@@ -203,7 +203,9 @@ const ContactPage = () => {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-xl mb-1">Email Us</h3>
-                                        <p className="text-blue-100 opacity-80">nexspiretechsolutions@gmail.com</p>
+                                        <p className="text-blue-100 opacity-80">{siteConfig.email.info}</p>
+                                        <p className="text-blue-100 opacity-80">{siteConfig.email.sales}</p>
+                                        <p className="text-blue-100 opacity-80">{siteConfig.email.support}</p>
                                     </div>
                                 </div>
 

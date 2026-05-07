@@ -78,9 +78,21 @@ const Contact = memo(function Contact() {
   const contactInfo = [
     {
       icon: "ri-mail-line",
-      title: "Email Us",
-      details: "nexspiretechsolutions@gmail.com",
-      description: "Send us an email anytime!"
+      title: "General Enquiries",
+      details: siteConfig.email.info,
+      description: "Use this for first contact and general questions."
+    },
+    {
+      icon: "ri-contacts-book-line",
+      title: "Sales",
+      details: siteConfig.email.sales,
+      description: "Project estimates, proposals, and new business."
+    },
+    {
+      icon: "ri-customer-service-2-line",
+      title: "Support",
+      details: siteConfig.email.support,
+      description: "Active client support and delivery follow-ups."
     },
     {
       icon: "ri-phone-line",
@@ -105,13 +117,13 @@ const Contact = memo(function Contact() {
         <div className="text-left mb-16">
           <span className="text-sm font-semibold text-[#2563EB] uppercase tracking-wider">Let's Connect</span>
           <h2 className="text-3xl md:text-5xl font-bold mb-6 mt-4 leading-tight">
-            Ready to Start
+            Ready to Build
             <span className="block text-[#2563EB] mt-1">
-              Your Project?
+              Something That Performs?
             </span>
           </h2>
           <p className="text-lg text-slate-600 max-w-3xl leading-relaxed">
-            Let's discuss your vision and turn it into reality. We're here to help you build something amazing.
+            Tell us what you need to launch, fix, rank, automate, or scale. We will route your message to the right team and respond with a clear next step.
           </p>
         </div>
 
@@ -166,7 +178,7 @@ const Contact = memo(function Contact() {
                           onChange={handleChange}
                           required
                           className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all bg-white text-sm"
-                          placeholder="xyz@gmail.com"
+                          placeholder="you@company.com"
                         />
                         <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                           <RiMailLine className="text-slate-400 text-sm" />
@@ -230,7 +242,7 @@ const Contact = memo(function Contact() {
                         minLength={10}
                         maxLength={2000}
                         className="w-full h-32 px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all resize-none bg-white text-sm"
-                        placeholder="Tell us about your project..."
+                        placeholder="What are you trying to build, improve, rank, automate, or fix?"
                       ></textarea>
                       <div className="absolute top-3 right-3 pointer-events-none">
                         <RiMessage3Line className="text-slate-400 text-sm" />
@@ -301,7 +313,7 @@ const Contact = memo(function Contact() {
                 </h3>
               </div>
               <p className="text-slate-600 mb-6 text-sm">
-                We're here to help bring your ideas to life. Reach out through any of these channels.
+                Reach the right inbox from the start so your request does not get delayed or misrouted.
               </p>
 
               <div className="space-y-4 flex-1">
@@ -335,10 +347,10 @@ const Contact = memo(function Contact() {
                     </div>
                     <div className="flex-1">
                       <h4 className="text-sm font-semibold text-slate-800 mb-1">
-                        Follow Us
+                        Admin & System Mail
                       </h4>
                       <p className="text-slate-500 text-xs">
-                        Stay updated with our latest projects
+                        Admin: {siteConfig.email.admin} · Automated updates: {siteConfig.email.noreply}
                       </p>
                     </div>
                   </div>
@@ -368,8 +380,8 @@ const Contact = memo(function Contact() {
               </div>
               <div>
                 <h4 className="font-semibold text-slate-800">Quick Response</h4>
-                <p className="text-emerald-600 text-sm font-medium">We respond within 24 hours</p>
-                <p className="text-slate-500 text-xs">Fast and reliable communication</p>
+                <p className="text-emerald-600 text-sm font-medium">Clear routing and reply within 24 hours</p>
+                <p className="text-slate-500 text-xs">Sales, support, and admin inboxes are handled separately</p>
               </div>
             </div>
           </div>
@@ -381,8 +393,8 @@ const Contact = memo(function Contact() {
               </div>
               <div>
                 <h4 className="font-semibold text-slate-800">24/7 Support</h4>
-                <p className="text-[#D97706] text-sm font-medium">Always available to help</p>
-                <p className="text-slate-500 text-xs">Dedicated support team</p>
+                <p className="text-[#D97706] text-sm font-medium">Ongoing delivery support for active engagements</p>
+                <p className="text-slate-500 text-xs">Use {siteConfig.email.support} for client-side issues</p>
               </div>
             </div>
           </div>

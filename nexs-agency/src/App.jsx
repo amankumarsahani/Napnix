@@ -75,21 +75,21 @@ const LandingPage = memo(function LandingPage() {
   return (
     <div className="min-h-screen bg-white w-full overflow-x-hidden">
       <Helmet>
-        <title>Nexspire Solutions - AI Software Agency & Freelance Experts in Mohali, Chandigarh</title>
-        <meta name="description" content="Nexspire Solutions is a top-rated AI & custom software development agency. We are a team of expert freelancers in Mohali & Chandigarh specializing in React, Next.js, Mobile Apps, and Digital Transformation." />
+        <title>Nexspire Solutions - Custom Software, CRM, AI and SEO Delivery</title>
+        <meta name="description" content="Nexspire Solutions builds custom web apps, mobile apps, CRM systems, AI workflows, cloud platforms, and technical SEO experiences for startups and growing businesses." />
         <meta name="keywords" content="AI software development, custom software agency, web development company mohali, freelance developers chandigarh, mobile app developers, digital transformation services, React developers, Next.js experts, best software agency in mohali, freelance software engineer" />
         <link rel="canonical" href={`${SITE_URL}/`} />
 
         {/* Open Graph */}
-        <meta property="og:title" content="Nexspire Solutions - Global Tech Quality, Local Mohali Experts" />
-        <meta property="og:description" content="Transform your business with AI-powered software. Top-rated freelance team in Tricity building scalable web & mobile apps." />
+        <meta property="og:title" content="Nexspire Solutions - Custom Software, CRM, AI and SEO Delivery" />
+        <meta property="og:description" content="Custom web development, mobile apps, CRM systems, AI workflows, cloud engineering, and technical SEO for growing businesses." />
         <meta property="og:url" content={`${SITE_URL}/`} />
         <meta property="og:type" content="website" />
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Nexspire Solutions - AI Tech & Freelance Experts" />
-        <meta name="twitter:description" content="Expert software engineering. AI, Cloud, Web & Mobile. Based in Mohali, serving the world." />
+        <meta name="twitter:title" content="Nexspire Solutions - Software, CRM, AI and SEO Delivery" />
+        <meta name="twitter:description" content="Custom software engineering, CRM systems, AI workflows, and technical SEO from Mohali for global clients." />
       </Helmet>
 
       {/* Hero loads immediately for faster FCP */}

@@ -13,10 +13,10 @@ exports.getSettings = async (req, res) => {
         // Transform array into an object for easier frontend consumption
         const settingsMap = {};
         settings.forEach(s => {
-            // Mask sensitive data like API keys
-            if (s.setting_key.includes('_api_key') && s.setting_value) {
+            // Mask sensitive data like API keys and SMTP passwords
+            if ((s.setting_key.includes('_api_key') || s.setting_key === 'smtp_password') && s.setting_value) {
                 const val = s.setting_value;
-                if (val.length > 8) {
+                if (val.length > 8 && s.setting_key.includes('_api_key')) {
                     settingsMap[s.setting_key] = `${val.substring(0, 4)}...${val.substring(val.length - 4)}`;
                 } else {
                     settingsMap[s.setting_key] = '****';
@@ -88,10 +88,9 @@ exports.updateSettings = async (req, res) => {
             for (const key of keys) {
                 const value = updates[key];
 
-                // If it's an API key and it's masked (ends with ...), don't update it
-                if (key.includes('_api_key') && value && value.includes('...')) {
-                    continue;
-                }
+                // Skip masked values — don't overwrite with placeholder
+                if (key.includes('_api_key') && value && value.includes('...')) continue;
+                if (key === 'smtp_password' && value === '****') continue;
 
                 await connection.query(
                     `INSERT INTO settings (setting_key, setting_value) 
@@ -102,6 +101,11 @@ exports.updateSettings = async (req, res) => {
             }
 
             await connection.commit();
+
+            if (keys.some(k => k.startsWith('smtp_'))) {
+                try { require('../services/email.service').reload(); } catch (_) {}
+            }
+
             res.json({ success: true, message: 'Settings updated successfully' });
         } catch (err) {
             await connection.rollback();
@@ -112,6 +116,38 @@ exports.updateSettings = async (req, res) => {
     } catch (error) {
         console.error('Update settings error:', error);
         res.status(500).json({ success: false, error: 'Failed to update settings' });
+    }
+};
+
+// Test SMTP Connection
+exports.testSmtpConnection = async (req, res) => {
+    const nodemailer = require('nodemailer');
+    const { host, port, secure, username, password } = req.body;
+
+    if (!host || !username || !password) {
+        return res.status(400).json({ success: false, error: 'Host, username, and password are required' });
+    }
+
+    let finalPassword = password;
+    if (password === '****') {
+        const [[setting]] = await db.query(
+            'SELECT setting_value FROM settings WHERE setting_key = ?', ['smtp_password']
+        );
+        if (!setting) return res.status(400).json({ success: false, error: 'No SMTP password saved' });
+        finalPassword = setting.setting_value;
+    }
+
+    try {
+        const transporter = nodemailer.createTransport({
+            host,
+            port: parseInt(port) || 587,
+            secure: !!secure,
+            auth: { user: username, pass: finalPassword }
+        });
+        await transporter.verify();
+        res.json({ success: true, message: 'SMTP connection successful!' });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
     }
 };
 

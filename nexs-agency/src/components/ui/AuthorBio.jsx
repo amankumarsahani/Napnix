@@ -64,7 +64,7 @@ export default function AuthorBio({
                             </a>
                         )}
                         <a
-                            href={`mailto:hello@nexspiresolutions.co.in`}
+                            href={`mailto:info@nexspire.co.in`}
                             className="w-9 h-9 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-[#2563EB] hover:border-blue-600 transition-all"
                         >
                             <RiMailLine className="text-lg" />

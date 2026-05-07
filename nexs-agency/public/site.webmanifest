@@ -1,5 +1,5 @@
 {
-  "name": "Nexspire Solution - AI-Powered Software Development",
+  "name": "Nexspire Solutions - AI-Powered Software Development",
   "short_name": "Nexspire",
   "description": "Leading AI-powered software development agency specializing in React, Next.js, mobile apps, and cloud solutions.",
   "start_url": "/",
@@ -17,14 +17,14 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Nexspire Solution - Desktop View"
+      "label": "Nexspire Solutions - Desktop View"
     },
     {
       "src": "/screenshot-narrow.png", 
       "sizes": "750x1334",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Nexspire Solution - Mobile View"
+      "label": "Nexspire Solutions - Mobile View"
     }
   ],
   "icons": [
@@ -61,7 +61,7 @@
     {
       "name": "Contact Us",
       "short_name": "Contact",
-      "description": "Get in touch with Nexspire Solution",
+      "description": "Get in touch with Nexspire Solutions",
       "url": "/#contact",
       "icons": [
         {

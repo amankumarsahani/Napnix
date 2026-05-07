@@ -115,7 +115,7 @@ const Header = memo(function Header() {
                 </div>
               </div>
               <span className="text-xl font-bold text-slate-800 tracking-wide">
-                Nexspire Solution
+                Nexspire Solutions
               </span>
             </Link>
           </div>

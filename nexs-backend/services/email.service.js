@@ -9,16 +9,15 @@ class EmailService {
     constructor() {
         this.transporter = null;
         this.isConfigured = false;
+        this._dbLoaded = false;
+        this._fromName = null;
+        this._fromEmail = null;
         this.initializeTransporter();
     }
 
-    /**
-     * Initialize nodemailer transporter with SMTP settings
-     */
     initializeTransporter() {
         const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_SECURE } = process.env;
 
-        // Check if SMTP is configured
         if (!SMTP_HOST || !SMTP_USER || !SMTP_PASSWORD) {
             console.warn('⚠ Email service: SMTP not configured. Emails will not be sent.');
             return;
@@ -29,12 +28,8 @@ class EmailService {
                 host: SMTP_HOST,
                 port: parseInt(SMTP_PORT) || 587,
                 secure: SMTP_SECURE === 'true',
-                auth: {
-                    user: SMTP_USER,
-                    pass: SMTP_PASSWORD
-                }
+                auth: { user: SMTP_USER, pass: SMTP_PASSWORD }
             });
-
             this.isConfigured = true;
             console.log('✓ Email service initialized');
         } catch (error) {
@@ -42,13 +37,40 @@ class EmailService {
         }
     }
 
-    /**
-     * Get default sender information
-     * @returns {Object} From address object
-     */
+    async _loadFromDB() {
+        if (this._dbLoaded) return;
+        this._dbLoaded = true;
+        try {
+            const db = require('../config/database');
+            const [rows] = await db.query(
+                "SELECT setting_key, setting_value FROM settings WHERE setting_key LIKE 'smtp_%'"
+            );
+            const s = {};
+            rows.forEach(r => { s[r.setting_key] = r.setting_value; });
+            if (s.smtp_host && s.smtp_user && s.smtp_password) {
+                this.transporter = nodemailer.createTransport({
+                    host: s.smtp_host,
+                    port: parseInt(s.smtp_port) || 587,
+                    secure: s.smtp_secure === 'true',
+                    auth: { user: s.smtp_user, pass: s.smtp_password }
+                });
+                this._fromEmail = s.smtp_from_email || null;
+                this._fromName = s.smtp_from_name || null;
+                this.isConfigured = true;
+                console.log('✓ Email service loaded SMTP from DB settings');
+            }
+        } catch (e) {
+            // DB not ready or no smtp settings yet — env var config stays active
+        }
+    }
+
+    reload() {
+        this._dbLoaded = false;
+    }
+
     getDefaultFrom() {
-        const fromName = process.env.SMTP_FROM_NAME || 'NexSpire Solutions';
-        const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
+        const fromName = this._fromName || process.env.SMTP_FROM_NAME || 'NexSpire Solutions';
+        const fromEmail = this._fromEmail || process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
         return `"${fromName}" <${fromEmail}>`;
     }
 
@@ -63,6 +85,7 @@ class EmailService {
      * @returns {Promise<Object>} Send result
      */
     async sendEmail({ to, subject, html, text, from, attachments }) {
+        await this._loadFromDB();
         if (!this.isConfigured) {
             console.warn('Email not sent: SMTP not configured');
             return { success: false, error: 'SMTP not configured' };

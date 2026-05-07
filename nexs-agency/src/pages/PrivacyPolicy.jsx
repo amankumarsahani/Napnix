@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { SITE_URL } from '../constants/siteConfig';
+import { SITE_URL, siteConfig } from '../constants/siteConfig';
 
 const PrivacyPolicy = () => {
 
@@ -31,7 +31,7 @@ const PrivacyPolicy = () => {
                     <section className="mb-12">
                         <h2 className="text-2xl font-bold text-slate-800 mb-4">1. Introduction</h2>
                         <p className="mb-4">
-                            Welcome to Nexspire Solution. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website and tell you about your privacy rights and how the law protects you.
+                            Welcome to Nexspire Solutions. We respect your privacy and are committed to protecting your personal data. This privacy policy explains how we handle your data when you visit our website and what rights you have under applicable law.
                         </p>
                     </section>
 
@@ -65,8 +65,9 @@ const PrivacyPolicy = () => {
                             If you have any questions about this privacy policy or our privacy practices, please contact us at:
                         </p>
                         <div className="bg-[#F8FAFC] p-6 rounded-xl border border-slate-200">
-                            <p className="font-semibold text-slate-800">Nexspire Solution</p>
-                            <p>Email: nexspiretechsolutions@gmail.com</p>
+                            <p className="font-semibold text-slate-800">Nexspire Solutions</p>
+                            <p>Email: {siteConfig.email.info}</p>
+                            <p>Support: {siteConfig.email.support}</p>
                             <p>Address: Mohali, SAS Nagar, Punjab, IN</p>
                         </div>
                     </section>

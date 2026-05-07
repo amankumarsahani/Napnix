@@ -2,8 +2,12 @@ export const SITE_URL = 'https://nexspiresolutions.co.in';
 
 export const siteConfig = {
     email: {
-        primary: 'nexspiretechsolutions@gmail.com',
-        sales: 'sales@nexspire.com',
+        primary: 'info@nexspire.co.in',
+        info: 'info@nexspire.co.in',
+        sales: 'sales@nexspire.co.in',
+        support: 'support@nexspiresolutions.co.in',
+        admin: 'admin@nexspire.co.in',
+        noreply: 'noreply@nexspire.co.in',
     },
     phone: {
         primary: '+91 7696309551',

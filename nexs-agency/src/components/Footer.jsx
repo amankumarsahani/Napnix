@@ -8,48 +8,49 @@ const Footer = memo(function Footer() {
 
   const footerLinks = {
     Services: [
-      { name: "Custom Web Development", href: "/services/custom-web-development" },
-      { name: "Mobile App Development", href: "/services/mobile-app-development" },
-      { name: "AI & Machine Learning", href: "/services/ai-machine-learning" },
-      { name: "Cloud Solutions", href: "/services/cloud-solutions" },
-      { name: "E-commerce Solutions", href: "/services/ecommerce-development" }
+      { name: 'Custom Web Development', href: '/services/custom-web-development' },
+      { name: 'Mobile App Development', href: '/services/mobile-app-development' },
+      { name: 'AI & Machine Learning', href: '/services/ai-machine-learning' },
+      { name: 'Cloud Solutions', href: '/services/cloud-solutions' },
+      { name: 'E-commerce Solutions', href: '/services/ecommerce-development' }
     ],
     Locations: [
-      { name: "Web Dev in London", href: "/software-development-company/london" },
-      { name: "Web Dev in New York", href: "/software-development-company/new-york" },
-      { name: "Web Dev in Dubai", href: "/software-development-company/dubai" },
-      { name: "Web Dev in Sydney", href: "/software-development-company/sydney" },
-      { name: "Web Dev in Toronto", href: "/software-development-company/toronto" },
-      { name: "Web Dev in Bangalore", href: "/software-development-company/bangalore" }
+      { name: 'Web Dev in London', href: '/software-development-company/london' },
+      { name: 'Web Dev in New York', href: '/software-development-company/new-york' },
+      { name: 'Web Dev in Dubai', href: '/software-development-company/dubai' },
+      { name: 'Web Dev in Sydney', href: '/software-development-company/sydney' },
+      { name: 'Web Dev in Toronto', href: '/software-development-company/toronto' },
+      { name: 'Web Dev in Bangalore', href: '/software-development-company/bangalore' }
     ],
     Company: [
-      { name: "About Us", href: "/about" },
-      { name: "Portfolio", href: "/portfolio" },
-      { name: "Contact", href: "/contact" },
-      { name: "Blog", href: "/blog" },
-      { name: "NexCRM", href: "/nexcrm" },
-      { name: "NexMail", href: "/nexmail" }
+      { name: 'About Us', href: '/about' },
+      { name: 'Portfolio', href: '/portfolio' },
+      { name: 'Contact', href: '/contact' },
+      { name: 'Blog', href: '/blog' },
+      { name: 'NexCRM', href: '/nexcrm' },
+      { name: 'NexMail', href: '/nexmail' }
     ]
   };
 
   const socialLinks = siteConfig.social;
 
   return (
-    <footer className="bg-slate-900 text-white" >
+    <footer className="bg-slate-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-16">
           <div className="grid lg:grid-cols-4 gap-8">
             <div className="lg:col-span-1">
-              <Link
-                to="/"
-                className="text-2xl font-bold text-white mb-4 inline-block"
-              >
-                Nexspire Solution
+              <Link to="/" className="text-2xl font-bold text-white mb-4 inline-block">
+                Nexspire Solutions
               </Link>
               <p className="text-slate-400 mb-6 leading-relaxed">
-                We're a passionate team dedicated to creating exceptional software
-                solutions that help businesses thrive in the digital world.
+                We build custom software, CRM systems, AI workflows, and growth-ready websites for businesses that need qualified leads and reliable delivery.
               </p>
+              <div className="space-y-2 text-sm text-slate-400 mb-6">
+                <p><span className="text-white font-medium">Info:</span> {siteConfig.email.info}</p>
+                <p><span className="text-white font-medium">Sales:</span> {siteConfig.email.sales}</p>
+                <p><span className="text-white font-medium">Support:</span> {siteConfig.email.support}</p>
+              </div>
               <div className="flex space-x-4">
                 {socialLinks.map((social) => (
                   <a
@@ -73,10 +74,7 @@ const Footer = memo(function Footer() {
                 <ul className="space-y-3">
                   {links.map((link) => (
                     <li key={link.href}>
-                      <Link
-                        to={link.href}
-                        className="text-slate-400 hover:text-white transition-colors duration-300"
-                      >
+                      <Link to={link.href} className="text-slate-400 hover:text-white transition-colors duration-300">
                         {link.name}
                       </Link>
                     </li>
@@ -92,7 +90,7 @@ const Footer = memo(function Footer() {
             <div>
               <h3 className="text-xl font-semibold mb-2">Stay Connected</h3>
               <p className="text-slate-400">
-                Follow us on social media for the latest updates, insights, and behind-the-scenes content.
+                Follow us for product updates, engineering insights, and new delivery work from the Nexspire team.
               </p>
             </div>
             <div className="flex space-x-4">
@@ -116,7 +114,7 @@ const Footer = memo(function Footer() {
         <div className="border-t border-slate-800 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-slate-400 text-sm">
-              © {currentYear} Nexspire Solution. All rights reserved.
+              Copyright {currentYear} Nexspire Solutions. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link to="/privacy-policy" className="text-slate-400 hover:text-white text-sm transition-colors">
@@ -129,8 +127,8 @@ const Footer = memo(function Footer() {
           </div>
         </div>
       </div>
-    </footer >
+    </footer>
   );
-})
+});
 
 export default Footer;

@@ -66,7 +66,7 @@ const Hero = memo(function Hero() {
             <div className="inline-flex items-center bg-white/90 backdrop-blur-sm border border-white/30 rounded-full px-3 sm:px-4 py-2 text-[#2563EB] font-semibold text-sm sm:text-base">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2"></div>
               <RiCodeSSlashLine className="mr-1 text-sm" />
-              Leading Software Development Agency
+              Custom Web, CRM, AI and Mobile Delivery
             </div>
 
             <div className="space-y-4">
@@ -83,9 +83,9 @@ const Hero = memo(function Hero() {
               </h1>
 
               <p className="text-base sm:text-lg lg:text-xl text-white/90 leading-relaxed max-w-3xl mx-auto font-medium">
-                We don't just write code; we build <span className="font-bold text-[#D97706]">high-performance engines</span> for your business growth.
-                From disruptive startups in London to enterprises in New York,
-                Nexspire Solutions delivers the technical edge you need to dominate your market.
+                Nexspire Solutions helps startups and growing businesses launch faster, rank better, and convert more with
+                <span className="font-bold text-[#D97706]"> custom web apps, mobile apps, AI workflows, CRM systems, and technical SEO</span>.
+                Visitors should understand what you offer in seconds, and that is the same standard we build for clients.
               </p>
             </div>
 

@@ -91,7 +91,7 @@ const AboutPage = () => {
             "url": SITE_URL,
             "logo": `${SITE_URL}/og-image.jpg`,
             "description": "Top software development agency delivering web, mobile, AI, cloud, and enterprise solutions to clients globally.",
-            "email": "nexspiretechsolutions@gmail.com",
+            "email": siteConfig.email.info,
             "telephone": "+917696309551, +917009614671",
             "foundingDate": "2023",
             "address": {

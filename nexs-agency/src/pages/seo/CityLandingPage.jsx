@@ -228,7 +228,7 @@ const CityLandingPage = () => {
         "description": data.description,
         "url": `${SITE_URL}/software-development-company/${city}`,
         "telephone": "+91-7696309551",
-        "email": "nexspiretechsolutions@gmail.com",
+        "email": siteConfig.email.info,
         "areaServed": data.city,
         "address": {
             "@type": "PostalAddress",
