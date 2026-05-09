@@ -4,15 +4,22 @@ const bcrypt = require('bcryptjs');
 const UserModel = {
     // Create new user
     async create(userData) {
-        const { email, password, first_name, last_name, phone, role = 'user' } = userData;
+        const {
+            email, password, phone, role = 'user',
+            first_name, last_name,
+            firstName, lastName
+        } = userData;
+
+        const dbFirstName = first_name || firstName || null;
+        const dbLastName = last_name || lastName || null;
 
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const [result] = await pool.query(
-            `INSERT INTO users (email, password, first_name, last_name, phone, role) 
+            `INSERT INTO users (email, password, first_name, last_name, phone, role)
        VALUES (?, ?, ?, ?, ?, ?)`,
-            [email, hashedPassword, first_name, last_name, phone, role]
+            [email, hashedPassword, dbFirstName, dbLastName, phone, role]
         );
 
         return result.insertId;
@@ -21,7 +28,8 @@ const UserModel = {
     // Find user by email
     async findByEmail(email) {
         const [rows] = await pool.query(
-            'SELECT * FROM users WHERE email = ?',
+            `SELECT id, email, password, first_name AS firstName, last_name AS lastName,
+                    phone, role, status, created_at AS createdAt FROM users WHERE email = ?`,
             [email]
         );
         return rows[0];
@@ -30,7 +38,8 @@ const UserModel = {
     // Find user by ID
     async findById(id) {
         const [rows] = await pool.query(
-            'SELECT id, email, first_name, last_name, phone, role, status, created_at FROM users WHERE id = ?',
+            `SELECT id, email, first_name AS firstName, last_name AS lastName,
+                    phone, role, status, created_at AS createdAt FROM users WHERE id = ?`,
             [id]
         );
         return rows[0];
@@ -38,7 +47,8 @@ const UserModel = {
 
     // Get all users
     async findAll(filters = {}) {
-        let query = 'SELECT id, email, first_name, last_name, phone, role, status, created_at FROM users WHERE 1=1';
+        let query = `SELECT id, email, first_name AS firstName, last_name AS lastName,
+                            phone, role, status, created_at AS createdAt FROM users WHERE 1=1`;
         const params = [];
 
         if (filters.role) {
@@ -64,11 +74,17 @@ const UserModel = {
 
     // Update user
     async update(id, userData) {
-        const { first_name, last_name, phone, status } = userData;
+        const {
+            first_name, last_name, phone, status,
+            firstName, lastName
+        } = userData;
+
+        const dbFirstName = first_name || firstName;
+        const dbLastName = last_name || lastName;
 
         await pool.query(
             `UPDATE users SET first_name = ?, last_name = ?, phone = ?, status = ? WHERE id = ?`,
-            [first_name, last_name, phone, status, id]
+            [dbFirstName, dbLastName, phone, status, id]
         );
 
         return this.findById(id);
@@ -78,6 +94,12 @@ const UserModel = {
     async delete(id) {
         await pool.query('DELETE FROM users WHERE id = ?', [id]);
         return true;
+    },
+
+    // Update password
+    async updatePassword(id, newPassword) {
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await pool.query('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, id]);
     },
 
     // Verify password
