@@ -8,6 +8,8 @@ import { SITE_URL, siteConfig } from '../constants/siteConfig';
 import FadeIn from '../components/ui/FadeIn';
 import Icon from '../components/ui/Icon';
 import useCRMPricing from '../hooks/useCRMPricing';
+import useCurrency from '../hooks/useCurrency';
+import CurrencySwitcher from '../components/CurrencySwitcher';
 import { CheckIcon, XIcon } from '../components/ui/Icons';
 import {
     RiMailSendLine, RiCheckLine, RiLoader4Line, RiDoubleQuotesL,
@@ -49,6 +51,7 @@ export default function IndustryLandingPage() {
         submitContactForm,
     } = useCRMPricing();
 
+    const { currency, setCurrency, symbol, formatPrice, currencies } = useCurrency();
     if (!data) return <Navigate to="/nexcrm" replace />;
 
     const colors = colorMap[data.color] || colorMap.blue;
@@ -86,8 +89,8 @@ export default function IndustryLandingPage() {
         offers: {
             '@type': 'AggregateOffer',
             priceCurrency: 'INR',
-            lowPrice: '999',
-            highPrice: '5999',
+            lowPrice: '4165',
+            highPrice: '8415',
             offerCount: '4',
         },
         provider: {
@@ -383,7 +386,6 @@ export default function IndustryLandingPage() {
                             <h2 className="text-4xl font-bold text-slate-900 mb-6">Simple, Transparent Pricing</h2>
                             <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-12">Choose the plan that fits your {data.name.toLowerCase()} business.</p>
 
-                            {/* Yearly / Monthly Toggle */}
                             <div className="inline-flex bg-white p-1 rounded-full border border-slate-200 shadow-sm relative">
                                 <div
                                     className={`absolute top-1 bottom-1 w-[120px] bg-white rounded-full transition-all duration-300 shadow-md border border-slate-100 ${isYearly ? 'left-[124px]' : 'left-1'}`}
@@ -394,6 +396,9 @@ export default function IndustryLandingPage() {
                                 <button onClick={() => setIsYearly(true)} className={`relative z-10 w-[120px] py-2.5 text-sm font-semibold rounded-full transition-colors ${isYearly ? 'text-slate-900' : 'text-slate-500 hover:text-slate-900'}`}>
                                     Yearly <span className="text-xs opacity-80 ml-1 text-emerald-600 font-bold">(-15%)</span>
                                 </button>
+                            </div>
+                            <div className="mt-4">
+                                <CurrencySwitcher currency={currency} setCurrency={setCurrency} currencies={currencies} />
                             </div>
                         </div>
                     </FadeIn>
@@ -421,12 +426,12 @@ export default function IndustryLandingPage() {
                                             ) : (
                                                 <div className="h-16">
                                                     <div className="flex items-baseline">
-                                                        <span className="text-4xl font-bold text-slate-900 tracking-tight">
-                                                            {tier.currency}{isYearly ? tier.price.yearly : tier.price.monthly}
-                                                        </span>
-                                                        <span className="text-slate-500 font-medium ml-1">/mo</span>
-                                                    </div>
-                                                    {isYearly && <p className="text-xs text-emerald-600 font-bold mt-1">Billed ₹{(tier.price.yearly * 12).toLocaleString()} yearly</p>}
+                                                    <span className="text-4xl font-bold text-slate-900 tracking-tight">
+                                                        {symbol}{formatPrice(isYearly ? tier.price.yearly[currency] : tier.price.monthly[currency])}
+                                                    </span>
+                                                    <span className="text-slate-500 font-medium ml-1">/mo</span>
+                                                </div>
+                                                {isYearly && <p className="text-xs text-emerald-600 font-bold mt-1">Billed {symbol}{formatPrice(tier.price.yearly[currency] * 12)} yearly</p>}
                                                 </div>
                                             )}
                                         </div>

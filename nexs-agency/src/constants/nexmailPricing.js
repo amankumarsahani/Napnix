@@ -1,8 +1,7 @@
 export const nexmailTiers = [
     {
         name: 'Free',
-        price: { monthly: 0, yearly: 0 },
-        currency: '₹',
+        price: { monthly: { INR: 0, USD: 0, EUR: 0 }, yearly: { INR: 0, USD: 0, EUR: 0 } },
         description: 'For solo creators and startups testing email marketing',
         popular: false,
         cta: 'Start Free',
@@ -18,8 +17,7 @@ export const nexmailTiers = [
     },
     {
         name: 'Growth',
-        price: { monthly: 699, yearly: 594 },
-        currency: '₹',
+        price: { monthly: { INR: 699, USD: 8, EUR: 8 }, yearly: { INR: 594, USD: 7, EUR: 6 } },
         description: 'For small businesses getting serious about email',
         popular: false,
         cta: 'Get Started',
@@ -34,8 +32,7 @@ export const nexmailTiers = [
     },
     {
         name: 'Pro',
-        price: { monthly: 1999, yearly: 1699 },
-        currency: '₹',
+        price: { monthly: { INR: 1999, USD: 24, EUR: 22 }, yearly: { INR: 1699, USD: 20, EUR: 18 } },
         description: 'For growing businesses with advanced email needs',
         popular: true,
         cta: 'Get Started',
@@ -50,8 +47,7 @@ export const nexmailTiers = [
     },
     {
         name: 'Business',
-        price: { monthly: 4999, yearly: 4249 },
-        currency: '₹',
+        price: { monthly: { INR: 4999, USD: 59, EUR: 54 }, yearly: { INR: 4249, USD: 50, EUR: 46 } },
         description: 'High-volume sending with full deliverability controls',
         popular: false,
         cta: 'Get Started',
@@ -66,8 +62,7 @@ export const nexmailTiers = [
     },
     {
         name: 'Enterprise',
-        price: { monthly: null, yearly: null },
-        currency: '',
+        price: { monthly: { INR: null, USD: null, EUR: null }, yearly: { INR: null, USD: null, EUR: null } },
         description: 'Unlimited everything with dedicated support',
         popular: false,
         cta: 'Contact Sales',

@@ -1,8 +1,7 @@
 export const crmTiers = [
     {
         name: 'Starter',
-        price: { monthly: 999, yearly: 849 },
-        currency: '₹',
+        price: { monthly: { INR: 4165, USD: 49, EUR: 45 }, yearly: { INR: 3570, USD: 42, EUR: 38 } },
         description: 'Perfect for small businesses & startups',
         popular: false,
         cta: 'Contact Sales',
@@ -16,8 +15,7 @@ export const crmTiers = [
     },
     {
         name: 'Growth',
-        price: { monthly: 2499, yearly: 2124 },
-        currency: '₹',
+        price: { monthly: { INR: 6715, USD: 79, EUR: 73 }, yearly: { INR: 5695, USD: 67, EUR: 62 } },
         description: 'Ideal for growing businesses',
         popular: true,
         cta: 'Contact Sales',
@@ -31,8 +29,7 @@ export const crmTiers = [
     },
     {
         name: 'Business',
-        price: { monthly: 5999, yearly: 5099 },
-        currency: '₹',
+        price: { monthly: { INR: 8415, USD: 99, EUR: 91 }, yearly: { INR: 7140, USD: 84, EUR: 77 } },
         description: 'For established businesses',
         popular: false,
         cta: 'Contact Sales',
@@ -46,8 +43,7 @@ export const crmTiers = [
     },
     {
         name: 'Enterprise',
-        price: { monthly: null, yearly: null },
-        currency: '',
+        price: { monthly: { INR: null, USD: null, EUR: null }, yearly: { INR: null, USD: null, EUR: null } },
         description: 'For large organizations',
         popular: false,
         cta: 'Contact Sales',
@@ -75,30 +71,20 @@ export const crmFeatures = {
         { name: 'Order Management', starter: true, growth: true, business: true, enterprise: true },
         { name: 'Storefront Website', starter: true, growth: true, business: true, enterprise: true },
         { name: 'Inventory Tracking', starter: false, growth: true, business: true, enterprise: true },
-        { name: 'Vendor Management', starter: false, growth: '5', business: '25', enterprise: 'Unlimited' },
-        { name: 'CMS Pages', starter: '3', growth: '10', business: '50', enterprise: 'Unlimited' },
-        { name: 'Coupons & Discounts', starter: '5', growth: '25', business: 'Unlimited', enterprise: 'Unlimited' },
+        { name: 'Payment Gateway', starter: true, growth: true, business: true, enterprise: true },
     ],
-    communication: [
-        { name: 'Email Templates', starter: '5', growth: '25', business: 'Unlimited', enterprise: 'Unlimited' },
-        { name: 'Emails/Month', starter: '500', growth: '5,000', business: '25,000', enterprise: 'Unlimited' },
-        { name: 'Bulk Mailing', starter: false, growth: '500/mo', business: '5,000/mo', enterprise: 'Unlimited' },
-        { name: 'Team Chat', starter: false, growth: 'Basic', business: 'Full', enterprise: 'Full' },
-        { name: 'Chat History', starter: false, growth: '7 days', business: '90 days', enterprise: 'Unlimited' },
-        { name: 'Push Notifications', starter: false, growth: true, business: true, enterprise: true, soon: true },
-        { name: 'SMS Notifications', starter: false, growth: false, business: '1,000/mo', enterprise: 'Unlimited', soon: true },
-        { name: 'WhatsApp Business', starter: false, growth: false, business: true, enterprise: true, soon: true },
-    ],
-    automation: [
-        { name: 'AI Chatbot', starter: false, growth: false, business: 'Basic', enterprise: 'Advanced', soon: true },
-        { name: 'Auto Responders', starter: false, growth: true, business: true, enterprise: true, soon: true },
-        { name: 'Workflow Triggers', starter: false, growth: false, business: '10', enterprise: 'Unlimited', soon: true },
+    marketing: [
+        { name: 'Email Campaigns', starter: '500/mo', growth: '5,000/mo', business: '25,000/mo', enterprise: 'Unlimited' },
+        { name: 'WhatsApp Integration', starter: false, growth: true, business: true, enterprise: true },
+        { name: 'Automation Workflows', starter: '3', growth: '10', business: '50', enterprise: 'Unlimited' },
+        { name: 'Landing Pages', starter: false, growth: '5', business: '25', enterprise: 'Unlimited' },
+        { name: 'Analytics & Reports', starter: 'Basic', growth: 'Advanced', business: 'Advanced', enterprise: 'Custom' },
     ],
     support: [
-        { name: 'Email Support', starter: true, growth: true, business: true, enterprise: true },
-        { name: 'Priority Support', starter: false, growth: false, business: true, enterprise: true },
-        { name: 'Dedicated Manager', starter: false, growth: false, business: false, enterprise: true },
-        { name: 'Custom Development', starter: false, growth: false, business: false, enterprise: true },
-        { name: 'API Access', starter: false, growth: false, business: true, enterprise: true },
+        { name: 'Priority Support', starter: 'Email', growth: 'Email + Chat', business: 'Priority', enterprise: 'Dedicated' },
+        { name: 'API Access', starter: false, growth: true, business: true, enterprise: true },
+        { name: 'Custom Integrations', starter: false, growth: false, business: true, enterprise: true },
+        { name: 'White-label', starter: false, growth: false, business: false, enterprise: true },
+        { name: 'SLA Guarantee', starter: false, growth: false, business: '99.5%', enterprise: '99.9%' },
     ]
 };
