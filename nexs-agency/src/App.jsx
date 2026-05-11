@@ -1,27 +1,26 @@
-import { lazy, memo, Suspense } from 'react';
+import { lazy, memo, Suspense, useEffect, useRef } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { motion } from 'framer-motion';
 import { SITE_URL } from './constants/siteConfig';
 import { useAuth } from './context/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
 import ErrorBoundary from './components/ErrorBoundary';
 import TelemetryTracker from './components/TelemetryTracker';
 
-// Critical components - load immediately (including all landing page sections)
-import Header from './components/Header';
+// Critical components - load immediately (above-fold only)
 import Hero from './components/Hero';
-import Services from './components/Services';
-import About from './components/About';
-import Portfolio from './components/Portfolio';
-import Technologies from './components/Technologies';
-import Testimonials from './components/Testimonials';
-import Blog from './components/Blog';
-import FAQ from './components/FAQ';
-import Partners from './components/Partners';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
 import PublicLayout from './components/PublicLayout';
+
+// Below-fold landing page sections - lazy loaded
+const Services = lazy(() => import('./components/Services'));
+const About = lazy(() => import('./components/About'));
+const Portfolio = lazy(() => import('./components/Portfolio'));
+const Technologies = lazy(() => import('./components/Technologies'));
+const Testimonials = lazy(() => import('./components/Testimonials'));
+const Blog = lazy(() => import('./components/Blog'));
+const FAQ = lazy(() => import('./components/FAQ'));
+const Partners = lazy(() => import('./components/Partners'));
+const Contact = lazy(() => import('./components/Contact'));
 
 // Lazy load pages (route-based splitting - these actually benefit from it)
 const ServicesPage = lazy(() => import('./pages/ServicesPage'));
@@ -51,6 +50,35 @@ const BlogArticle = lazy(() => import('./pages/BlogArticle'));
 const ProjectDetail = lazy(() => import('./pages/ProjectDetail'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const AdminBackupsPage = lazy(() => import('./pages/AdminBackupsPage'));
+
+// CSS-based scroll reveal - replaces framer-motion whileInView wrappers
+function ScrollReveal({ children, className = '' }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add('revealed');
+          observer.unobserve(el);
+        }
+      },
+      { rootMargin: '-50px' }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className={`scroll-reveal ${className}`}>
+      {children}
+    </div>
+  );
+}
 
 // Loading spinner component
 const LoadingSpinner = () => (
@@ -95,49 +123,59 @@ const LandingPage = memo(function LandingPage() {
       {/* Hero loads immediately for faster FCP */}
       <Hero />
 
-      <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-        <Services />
-      </motion.div>
+      <ScrollReveal>
+        <Suspense fallback={null}>
+          <Services />
+        </Suspense>
+      </ScrollReveal>
 
-      <motion.div initial={{ opacity: 0, x: -60 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}>
-        <About />
-      </motion.div>
+      <ScrollReveal>
+        <Suspense fallback={null}>
+          <About />
+        </Suspense>
+      </ScrollReveal>
 
-      <motion.div initial={{ opacity: 0, scale: 0.95, rotate: -1 }} whileInView={{ opacity: 1, scale: 1, rotate: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}>
-        <Portfolio />
-      </motion.div>
+      <ScrollReveal>
+        <Suspense fallback={null}>
+          <Portfolio />
+        </Suspense>
+      </ScrollReveal>
 
-      <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-        <Technologies />
-      </motion.div>
+      <ScrollReveal>
+        <Suspense fallback={null}>
+          <Technologies />
+        </Suspense>
+      </ScrollReveal>
 
-      <motion.div initial={{ opacity: 0, x: 60 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}>
-        <Testimonials />
-      </motion.div>
+      <ScrollReveal>
+        <Suspense fallback={null}>
+          <Testimonials />
+        </Suspense>
+      </ScrollReveal>
 
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={{
-          hidden: { opacity: 0 },
-          visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.1 } }
-        }}
-      >
-        <Blog />
-      </motion.div>
+      <ScrollReveal>
+        <Suspense fallback={null}>
+          <Blog />
+        </Suspense>
+      </ScrollReveal>
 
-      <motion.div initial={{ opacity: 0, y: 40, filter: 'blur(4px)' }} whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }} viewport={{ once: true }} transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}>
-        <FAQ />
-      </motion.div>
+      <ScrollReveal>
+        <Suspense fallback={null}>
+          <FAQ />
+        </Suspense>
+      </ScrollReveal>
 
-      <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-        <Partners />
-      </motion.div>
+      <ScrollReveal>
+        <Suspense fallback={null}>
+          <Partners />
+        </Suspense>
+      </ScrollReveal>
 
-      <motion.div initial={{ opacity: 0, scale: 0.92 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}>
-        <Contact />
-      </motion.div>
+      <ScrollReveal>
+        <Suspense fallback={null}>
+          <Contact />
+        </Suspense>
+      </ScrollReveal>
     </div>
   );
 });

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 
 const FadeIn = ({
     children,
@@ -6,18 +6,38 @@ const FadeIn = ({
     delay = 0,
     y = 20,
     duration = 0.6,
-    ease = 'easeOut',
     margin = '-50px',
-}) => (
-    <motion.div
-        initial={{ opacity: 0, y }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin }}
-        transition={{ duration, delay, ease }}
-        className={className}
-    >
-        {children}
-    </motion.div>
-);
+}) => {
+    const ref = useRef(null);
+
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    el.style.transitionDelay = `${delay}s`;
+                    el.classList.add('revealed');
+                    observer.unobserve(el);
+                }
+            },
+            { rootMargin: margin }
+        );
+
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [delay, margin]);
+
+    return (
+        <div
+            ref={ref}
+            className={`scroll-reveal ${className || ''}`}
+            style={{ '--reveal-y': `${y}px`, '--reveal-duration': `${duration}s` }}
+        >
+            {children}
+        </div>
+    );
+};
 
 export default FadeIn;
