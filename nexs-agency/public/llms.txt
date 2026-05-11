@@ -2,7 +2,7 @@
 
 > Nexspire Solutions is an India-based software development company building custom web applications, mobile apps, cloud infrastructure, AI/ML solutions, NexCRM — an industry-specific CRM platform starting at ₹999/month, and NexMail — an email marketing engine with SMTP rotation and anti-spam scoring.
 
-Nexspire Solutions (nexspiresolutions.co.in) specializes in end-to-end digital product development for startups and enterprises. Founded in 2023, headquartered in IT Park Sector 67, Mohali, Punjab, India. Core expertise: React, Node.js, Flutter, AWS, AI/ML. Contact: info@nexspire.co.in | +91 7696309551.
+Nexspire Solutions (nexspiresolutions.co.in) specializes in end-to-end digital product development for startups and enterprises. Founded in 2023, headquartered in IT Park Sector 67, Mohali, Punjab, India. Core expertise: React, Node.js, Flutter, AWS, AI/ML. Contact: info@nexspire.co.in | +91 7009614671.
 
 ## Products
 

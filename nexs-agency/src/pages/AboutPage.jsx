@@ -92,7 +92,7 @@ const AboutPage = () => {
             "logo": `${SITE_URL}/og-image.jpg`,
             "description": "Top software development agency delivering web, mobile, AI, cloud, and enterprise solutions to clients globally.",
             "email": siteConfig.email.info,
-            "telephone": "+917696309551, +917009614671",
+            "telephone": "+917009614671, +917009108646",
             "foundingDate": "2023",
             "address": {
                 "@type": "PostalAddress",

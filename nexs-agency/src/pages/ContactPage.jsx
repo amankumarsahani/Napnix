@@ -103,7 +103,7 @@ const ContactPage = () => {
                     "name": "Nexspire Solutions",
                     "url": SITE_URL,
                     "email": siteConfig.email.info,
-                    "telephone": "+917696309551, +917009614671",
+                    "telephone": "+917009614671, +917009108646",
                     "image": `${SITE_URL}/og-image.jpg`,
                     "address": {
                         "@type": "PostalAddress",
@@ -215,7 +215,7 @@ const ContactPage = () => {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-xl mb-1">Call Us</h3>
-                                        <p className="text-blue-100 opacity-80">+91 7696309551</p>
+                                        <p className="text-blue-100 opacity-80">+91 7009614671</p>
                                         <p className="text-blue-100 opacity-80">Mon-Fri, 9am - 6pm IST</p>
                                     </div>
                                 </div>
