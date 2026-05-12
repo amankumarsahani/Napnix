@@ -8,14 +8,11 @@ const templateLoader = require('./template.loader');
 class EmailService {
     constructor() {
         this.transporter = null;
-        this.zohoTransporter = null;
         this.isConfigured = false;
-        this.isZohoConfigured = false;
         this._dbLoaded = false;
         this._fromName = null;
         this._fromEmail = null;
         this.initializeTransporter();
-        this.initializeZohoTransporter();
     }
 
     initializeTransporter() {
@@ -57,28 +54,6 @@ class EmailService {
             console.log(`✓ Email service initialized via ${provider} SMTP`);
         } catch (error) {
             console.error('✗ Email service initialization failed:', error.message);
-        }
-    }
-
-    initializeZohoTransporter() {
-        const { ZOHO_SMTP_HOST, ZOHO_SMTP_PORT, ZOHO_SMTP_USER, ZOHO_SMTP_PASSWORD } = process.env;
-
-        if (!ZOHO_SMTP_HOST || !ZOHO_SMTP_USER || !ZOHO_SMTP_PASSWORD) {
-            console.warn('⚠ Zoho SMTP not configured. Auto-reply emails will not be sent.');
-            return;
-        }
-
-        try {
-            this.zohoTransporter = nodemailer.createTransport({
-                host: ZOHO_SMTP_HOST,
-                port: parseInt(ZOHO_SMTP_PORT) || 587,
-                secure: false,
-                auth: { user: ZOHO_SMTP_USER, pass: ZOHO_SMTP_PASSWORD }
-            });
-            this.isZohoConfigured = true;
-            console.log('✓ Zoho email transporter initialized');
-        } catch (error) {
-            console.error('✗ Zoho transporter initialization failed:', error.message);
         }
     }
 
@@ -223,23 +198,7 @@ class EmailService {
         });
     }
 
-    /**
-     * Send auto-reply confirmation to inquiry submitter via Zoho SMTP
-     * @param {Object} inquiry - Inquiry data
-     * @param {string} inquiry.name - Submitter name
-     * @param {string} inquiry.email - Submitter email
-     * @param {string} [inquiry.phone] - Submitter phone
-     * @param {string} [inquiry.company] - Submitter company
-     * @param {string} [inquiry.message] - Inquiry message
-     * @param {number} inquiry.inquiryId - Inquiry ID
-     * @returns {Promise<Object>} Send result
-     */
     async sendAutoReply(inquiry) {
-        if (!this.isZohoConfigured) {
-            console.warn('Auto-reply not sent: Zoho SMTP not configured');
-            return { success: false, error: 'Zoho SMTP not configured' };
-        }
-
         try {
             const optionalRows = [];
             if (inquiry.phone) {
@@ -256,20 +215,11 @@ class EmailService {
                 optionalDetails: optionalRows.join('')
             });
 
-            const fromName = process.env.ZOHO_FROM_NAME || 'NexSpire Solutions';
-            const fromEmail = process.env.ZOHO_FROM_EMAIL || process.env.ZOHO_SMTP_USER;
-
-            const mailOptions = {
-                from: `"${fromName}" <${fromEmail}>`,
+            return await this.sendEmail({
                 to: inquiry.email,
                 subject: 'We received your inquiry - NexSpire Solutions',
-                html,
-                text: this.stripHtml(html)
-            };
-
-            const result = await this.zohoTransporter.sendMail(mailOptions);
-            console.log(`✓ Auto-reply sent to ${inquiry.email}`);
-            return { success: true, messageId: result.messageId };
+                html
+            });
         } catch (error) {
             console.error('✗ Auto-reply send failed:', error.message);
             return { success: false, error: error.message };
