@@ -95,6 +95,11 @@ class InquiryController {
                 name, email, phone, company, message, inquiryId
             }).catch(err => console.error('Email notification failed:', err));
 
+            // Send auto-reply confirmation to the submitter
+            emailService.sendAutoReply({
+                name, email, phone, company, message, inquiryId
+            }).catch(err => console.error('Auto-reply failed:', err));
+
             // Trigger workflow
             WorkflowEngine.trigger('inquiry_created', 'inquiry', inquiryId, {
                 id: inquiryId,

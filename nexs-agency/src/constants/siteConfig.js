@@ -5,13 +5,14 @@ export const siteConfig = {
         primary: 'info@nexspire.co.in',
         info: 'info@nexspire.co.in',
         sales: 'sales@nexspire.co.in',
-        support: 'support@nexspiresolutions.co.in',
+        support: 'info@nexspire.co.in',
         admin: 'admin@nexspire.co.in',
         noreply: 'noreply@nexspire.co.in',
     },
     phone: {
-        primary: '+91 7696309551',
-        tel: '+917696309551',
+        primary: '+91 7009614671',
+        secondary: '+91 7009108646',
+        tel: '+917009614671',
     },
     domain: SITE_URL,
     social: [

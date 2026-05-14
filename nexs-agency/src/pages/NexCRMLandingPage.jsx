@@ -8,6 +8,8 @@ import { SITE_URL, siteConfig } from '../constants/siteConfig';
 import { CheckIcon, XIcon } from '../components/ui/Icons';
 import FeatureValue from '../components/crm/FeatureValue';
 import useCRMPricing from '../hooks/useCRMPricing';
+import useCurrency from '../hooks/useCurrency';
+import CurrencySwitcher from '../components/CurrencySwitcher';
 import Icon from '../components/ui/Icon';
 import FadeIn from '../components/ui/FadeIn';
 import {
@@ -123,11 +125,13 @@ export default function NexCRMLandingPage() {
         submitContactForm,
     } = useCRMPricing();
 
+    const { currency, setCurrency, symbol, formatPrice, currencies } = useCurrency();
+
     return (
         <div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-hidden selection:bg-[#2563EB]/10">
             <Helmet>
                 <title>NexCRM - All-in-One CRM for Agencies &amp; Businesses | Nexspire Solutions</title>
-                <meta name="description" content="NexCRM is the complete operating system for modern agencies. Integrated lead management, e-commerce, invoicing, team chat, and client portals — starting at ₹999/month." />
+                <meta name="description" content="NexCRM is the complete operating system for modern agencies. Integrated lead management, e-commerce, invoicing, team chat, and client portals — starting at $49/month." />
                 <meta name="keywords" content="CRM for agencies India, NexCRM, all-in-one CRM software, agency management platform, lead management CRM, business CRM India, client portal CRM, project management CRM, affordable CRM software" />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/nexcrm`} />
@@ -144,7 +148,7 @@ export default function NexCRMLandingPage() {
                 <meta name="twitter:site" content="@nexspiresolutions" />
                 <meta name="twitter:creator" content="@nexspiresolutions" />
                 <meta name="twitter:title" content="NexCRM - All-in-One CRM for Agencies &amp; Businesses" />
-                <meta name="twitter:description" content="Integrated lead management, e-commerce, invoicing, team chat, and client portals — starting at ₹999/month." />
+                <meta name="twitter:description" content="Integrated lead management, e-commerce, invoicing, team chat, and client portals — starting at $49/month." />
             </Helmet>
 
             {/* Structured Data */}
@@ -159,16 +163,16 @@ export default function NexCRMLandingPage() {
                 "offers": {
                     "@type": "AggregateOffer",
                     "priceCurrency": "INR",
-                    "lowPrice": "999",
-                    "highPrice": "5999",
+                    "lowPrice": "4165",
+                    "highPrice": "8415",
                     "offerCount": "4",
-                    "offers": crmTiers.filter(t => t.price !== 'Custom').map(tier => ({
+                    "offers": crmTiers.filter(t => !t.isCustom).map(tier => ({
                         "@type": "Offer",
                         "name": tier.name,
-                        "price": String(tier.price),
+                        "price": String(tier.price.monthly.INR),
                         "priceCurrency": "INR",
                         "billingIncrement": "P1M",
-                        "description": tier.tagline
+                        "description": tier.description
                     }))
                 },
                 "provider": {
@@ -445,6 +449,9 @@ export default function NexCRMLandingPage() {
                                     Yearly <span className="text-xs opacity-80 ml-1 text-emerald-600 font-bold">(-15%)</span>
                                 </button>
                             </div>
+                            <div className="mt-4">
+                                <CurrencySwitcher currency={currency} setCurrency={setCurrency} currencies={currencies} />
+                            </div>
                         </div>
                     </FadeIn>
 
@@ -468,11 +475,11 @@ export default function NexCRMLandingPage() {
                                             <div className="h-16">
                                                 <div className="flex items-baseline">
                                                     <span className="text-4xl font-bold text-slate-900 tracking-tight">
-                                                        {tier.currency}{isYearly ? tier.price.yearly : tier.price.monthly}
+                                                        {symbol}{formatPrice(isYearly ? tier.price.yearly[currency] : tier.price.monthly[currency])}
                                                     </span>
                                                     <span className="text-slate-500 font-medium ml-1">/mo</span>
                                                 </div>
-                                                {isYearly && <p className="text-xs text-emerald-600 font-bold mt-1">Billed ₹{(tier.price.yearly * 12).toLocaleString()} yearly</p>}
+                                                {isYearly && <p className="text-xs text-emerald-600 font-bold mt-1">Billed {symbol}{formatPrice(tier.price.yearly[currency] * 12)} yearly</p>}
                                             </div>
                                         )}
                                     </div>

@@ -227,7 +227,7 @@ const CityLandingPage = () => {
         "name": `Nexspire Solutions - ${data.city}`,
         "description": data.description,
         "url": `${SITE_URL}/software-development-company/${city}`,
-        "telephone": "+91-7696309551",
+        "telephone": "+91-7009614671",
         "email": siteConfig.email.info,
         "areaServed": data.city,
         "address": {

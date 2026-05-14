@@ -4,6 +4,8 @@ import { crmTiers, crmFeatures } from '../constants/crmPricing';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
 import FeatureValue from '../components/crm/FeatureValue';
 import useCRMPricing from '../hooks/useCRMPricing';
+import useCurrency from '../hooks/useCurrency';
+import CurrencySwitcher from '../components/CurrencySwitcher';
 
 const tiers = crmTiers;
 const features = crmFeatures;
@@ -21,17 +23,19 @@ export default function CRMPricingPage() {
         submitContactForm,
     } = useCRMPricing();
 
+    const { currency, setCurrency, symbol, formatPrice, currencies } = useCurrency();
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
             <Helmet>
-                <title>NexCRM Pricing - Plans from ₹999/mo | Starter, Growth, Business, Enterprise</title>
-                <meta name="description" content="Compare NexCRM pricing plans. Starter ₹999/mo, Growth ₹2,499/mo, Business ₹5,999/mo, Enterprise custom. Save 15% with yearly billing. 14-day free trial on all plans." />
+                <title>NexCRM Pricing - Plans from $49/mo | Starter, Growth, Business, Enterprise</title>
+                <meta name="description" content="Compare NexCRM pricing plans. Starter $49/mo, Growth $79/mo, Business $99/mo, Enterprise custom. Save 15% with yearly billing. 14-day free trial on all plans." />
                 <meta name="keywords" content="NexCRM pricing, CRM pricing India, affordable CRM plans, CRM software cost, business CRM pricing, agency CRM plans, CRM monthly pricing, CRM enterprise pricing" />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/nexcrm/pricing`} />
                 <meta property="og:site_name" content="Nexspire Solutions" />
                 <meta property="og:locale" content="en_IN" />
-                <meta property="og:title" content="NexCRM Pricing - Plans from ₹999/mo" />
+                <meta property="og:title" content="NexCRM Pricing - Plans from $49/mo" />
                 <meta property="og:description" content="Compare NexCRM pricing plans. Starter, Growth, Business, Enterprise. Save 15% yearly. 14-day free trial." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/nexcrm/pricing`} />
@@ -41,8 +45,8 @@ export default function CRMPricingPage() {
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:site" content="@nexspiresolutions" />
                 <meta name="twitter:creator" content="@nexspiresolutions" />
-                <meta name="twitter:title" content="NexCRM Pricing - Plans from ₹999/mo" />
-                <meta name="twitter:description" content="Starter ₹999/mo, Growth ₹2,499/mo, Business ₹5,999/mo. Save 15% yearly. 14-day free trial." />
+                <meta name="twitter:title" content="NexCRM Pricing - Plans from $49/mo" />
+                <meta name="twitter:description" content="Starter $49/mo, Growth $79/mo, Business $99/mo. Save 15% yearly. 14-day free trial." />
             </Helmet>
             <script type="application/ld+json">{JSON.stringify({
                 "@context": "https://schema.org",
@@ -66,10 +70,10 @@ export default function CRMPricingPage() {
                         "@type": "Product",
                         "name": `NexCRM ${tier.name}`,
                         "description": tier.tagline,
-                        ...(tier.price !== 'Custom' ? {
+                        ...(!tier.isCustom ? {
                             "offers": {
                                 "@type": "Offer",
-                                "price": String(tier.price),
+                                "price": String(tier.price.monthly.INR),
                                 "priceCurrency": "INR",
                                 "availability": "https://schema.org/InStock"
                             }
@@ -111,7 +115,7 @@ export default function CRMPricingPage() {
                         Choose a plan that scales with your business. Contact our sales team to get started.
                     </p>
 
-                    <div className="flex items-center justify-center gap-4 mb-12">
+                    <div className="flex items-center justify-center gap-4 mb-8">
                         <span className={`text-sm font-medium ${!isYearly ? 'text-slate-900' : 'text-slate-500'}`}>Monthly</span>
                         <button
                             onClick={() => setIsYearly(!isYearly)}
@@ -122,6 +126,9 @@ export default function CRMPricingPage() {
                         <span className={`text-sm font-medium ${isYearly ? 'text-slate-900' : 'text-slate-500'}`}>
                             Yearly <span className="text-emerald-600">(Save 15%)</span>
                         </span>
+                    </div>
+                    <div className="flex justify-center mb-12">
+                        <CurrencySwitcher currency={currency} setCurrency={setCurrency} currencies={currencies} />
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
@@ -151,7 +158,7 @@ export default function CRMPricingPage() {
                                     ) : (
                                         <>
                                             <span className="text-4xl font-bold text-slate-900">
-                                                {tier.currency}{isYearly ? tier.price.yearly : tier.price.monthly}
+                                                {symbol}{formatPrice(isYearly ? tier.price.yearly[currency] : tier.price.monthly[currency])}
                                             </span>
                                             <span className="text-slate-500">/month</span>
                                             {isYearly && (
@@ -419,10 +426,10 @@ export default function CRMPricingPage() {
                                         className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] outline-none transition-colors"
                                     >
                                         <option value="">Select a plan</option>
-                                        <option value="Starter">Starter - ₹999/mo</option>
-                                        <option value="Growth">Growth - ₹2,499/mo</option>
-                                        <option value="Business">Business - ₹5,999/mo</option>
-                                        <option value="Enterprise">Enterprise - ₹14,999/mo</option>
+                                        <option value="Starter">Starter - $49/mo</option>
+<option value="Growth">Growth - $79/mo</option>
+                                <option value="Business">Business - $99/mo</option>
+                                <option value="Enterprise">Enterprise - Custom</option>
                                     </select>
                                 </div>
 

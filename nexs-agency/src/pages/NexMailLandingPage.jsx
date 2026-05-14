@@ -7,6 +7,8 @@ import { SITE_URL, siteConfig } from '../constants/siteConfig';
 import { CheckIcon, XIcon } from '../components/ui/Icons';
 import FeatureValue from '../components/crm/FeatureValue';
 import FadeIn from '../components/ui/FadeIn';
+import useCurrency from '../hooks/useCurrency';
+import CurrencySwitcher from '../components/CurrencySwitcher';
 import {
     RiMailSendLine, RiBarChartBoxLine, RiShieldCheckLine,
     RiDragDropLine, RiTimeLine, RiUserFollowLine,
@@ -128,6 +130,7 @@ export default function NexMailLandingPage() {
     const [toast, setToast] = useState({ show: false, message: '', type: 'error' });
     const [activeTestimonial, setActiveTestimonial] = useState(0);
     const toastTimerRef = useRef(null);
+    const { currency, setCurrency, symbol, formatPrice, currencies } = useCurrency();
 
     useEffect(() => {
         const timer = setInterval(() => setActiveTestimonial(prev => (prev + 1) % 3), 6000);
@@ -643,6 +646,9 @@ export default function NexMailLandingPage() {
                                     Yearly <span className="text-xs opacity-80 ml-1 text-emerald-400 font-bold">-15%</span>
                                 </button>
                             </div>
+                            <div className="mt-4">
+                                <CurrencySwitcher currency={currency} setCurrency={setCurrency} currencies={currencies} />
+                            </div>
                         </div>
                     </FadeIn>
 
@@ -660,14 +666,14 @@ export default function NexMailLandingPage() {
                                     <p className="text-slate-500 text-sm mb-5 min-h-[36px] leading-relaxed">{tier.description}</p>
 
                                     <div className="mb-6">
-                                        {tier.price.monthly !== null ? (
+                                        {tier.price.monthly[currency] !== null ? (
                                             <div>
                                                 <div className="flex items-baseline">
-                                                    <span className="text-3xl font-bold text-slate-900 tracking-tight">{tier.currency}{isYearly ? tier.price.yearly : tier.price.monthly}</span>
+                                                    <span className="text-3xl font-bold text-slate-900 tracking-tight">{symbol}{formatPrice(isYearly ? tier.price.yearly[currency] : tier.price.monthly[currency])}</span>
                                                     <span className="text-slate-400 font-medium ml-1 text-sm">/mo</span>
                                                 </div>
                                                 {tier.isFree && <p className="text-xs text-emerald-600 font-semibold mt-1">Free forever</p>}
-                                                {isYearly && !tier.isFree && <p className="text-xs text-emerald-600 font-bold mt-1">Billed ₹{(tier.price.yearly * 12).toLocaleString()} yearly</p>}
+                                                {isYearly && !tier.isFree && <p className="text-xs text-emerald-600 font-bold mt-1">Billed {symbol}{formatPrice(tier.price.yearly[currency] * 12)} yearly</p>}
                                             </div>
                                         ) : (
                                             <div className="h-12 flex items-center"><span className="text-3xl font-bold text-slate-900">Custom</span></div>

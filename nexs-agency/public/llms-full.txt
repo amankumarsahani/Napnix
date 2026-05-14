@@ -9,8 +9,8 @@ Nexspire Solutions is a technology company headquartered in IT Park, Sector 67, 
 **Contact Information:**
 - Email: info@nexspire.co.in
 - Sales: sales@nexspire.co.in
-- Support: support@nexspiresolutions.co.in
-- Phone: +91 7696309551
+- Support: info@nexspire.co.in
+- Phone: +91 7009614671
 - Website: https://nexspiresolutions.co.in
 - LinkedIn: https://www.linkedin.com/company/nexspire-solution
 - GitHub: https://github.com/orgs/Nexspire-Solutions/repositories

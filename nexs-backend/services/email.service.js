@@ -16,22 +16,42 @@ class EmailService {
     }
 
     initializeTransporter() {
-        const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_SECURE } = process.env;
+        const {
+            ZOHO_SMTP_HOST, ZOHO_SMTP_PORT, ZOHO_SMTP_USER, ZOHO_SMTP_PASSWORD,
+            SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_SECURE
+        } = process.env;
 
-        if (!SMTP_HOST || !SMTP_USER || !SMTP_PASSWORD) {
-            console.warn('⚠ Email service: SMTP not configured. Emails will not be sent.');
+        // Priority: Zoho env vars first, then Gmail/generic SMTP env vars
+        let host, port, user, password, secure, provider;
+
+        if (ZOHO_SMTP_HOST && ZOHO_SMTP_USER && ZOHO_SMTP_PASSWORD) {
+            host = ZOHO_SMTP_HOST;
+            port = parseInt(ZOHO_SMTP_PORT) || 587;
+            user = ZOHO_SMTP_USER;
+            password = ZOHO_SMTP_PASSWORD;
+            secure = false;
+            provider = 'Zoho';
+        } else if (SMTP_HOST && SMTP_USER && SMTP_PASSWORD) {
+            host = SMTP_HOST;
+            port = parseInt(SMTP_PORT) || 587;
+            user = SMTP_USER;
+            password = SMTP_PASSWORD;
+            secure = SMTP_SECURE === 'true';
+            provider = 'Gmail';
+        } else {
+            console.warn('⚠ Email service: No SMTP configured (checked Zoho, then Gmail). Emails will not be sent.');
             return;
         }
 
         try {
             this.transporter = nodemailer.createTransport({
-                host: SMTP_HOST,
-                port: parseInt(SMTP_PORT) || 587,
-                secure: SMTP_SECURE === 'true',
-                auth: { user: SMTP_USER, pass: SMTP_PASSWORD }
+                host,
+                port,
+                secure,
+                auth: { user, pass: password }
             });
             this.isConfigured = true;
-            console.log('✓ Email service initialized');
+            console.log(`✓ Email service initialized via ${provider} SMTP`);
         } catch (error) {
             console.error('✗ Email service initialization failed:', error.message);
         }
@@ -69,8 +89,8 @@ class EmailService {
     }
 
     getDefaultFrom() {
-        const fromName = this._fromName || process.env.SMTP_FROM_NAME || 'NexSpire Solutions';
-        const fromEmail = this._fromEmail || process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
+        const fromName = this._fromName || process.env.ZOHO_FROM_NAME || process.env.SMTP_FROM_NAME || 'NexSpire Solutions';
+        const fromEmail = this._fromEmail || process.env.ZOHO_FROM_EMAIL || process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
         return `"${fromName}" <${fromEmail}>`;
     }
 
@@ -176,6 +196,34 @@ class EmailService {
             template: 'inquiry-notification',
             data: templateData
         });
+    }
+
+    async sendAutoReply(inquiry) {
+        try {
+            const optionalRows = [];
+            if (inquiry.phone) {
+                optionalRows.push(`<tr><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;"><table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;"><tr><td style="width: 100px; font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; vertical-align: top; padding-top: 2px;">Phone</td><td style="font-size: 14px; color: #334155;">${inquiry.phone}</td></tr></table></td></tr>`);
+            }
+            if (inquiry.company) {
+                optionalRows.push(`<tr><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;"><table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;"><tr><td style="width: 100px; font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; vertical-align: top; padding-top: 2px;">Company</td><td style="font-size: 14px; color: #334155;">${inquiry.company}</td></tr></table></td></tr>`);
+            }
+
+            const html = await templateLoader.renderAsync('inquiry-autoreply', {
+                name: inquiry.name || 'there',
+                inquiryId: inquiry.inquiryId || '',
+                message: inquiry.message || '',
+                optionalDetails: optionalRows.join('')
+            });
+
+            return await this.sendEmail({
+                to: inquiry.email,
+                subject: 'We received your inquiry - NexSpire Solutions',
+                html
+            });
+        } catch (error) {
+            console.error('✗ Auto-reply send failed:', error.message);
+            return { success: false, error: error.message };
+        }
     }
 
     /**
