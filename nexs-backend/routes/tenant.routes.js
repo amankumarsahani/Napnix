@@ -40,6 +40,7 @@ router.post('/:id/end-trial', tenantController.endTrialAndRequestPayment);
 
 // Payment Management
 router.post('/:id/send-payment-link', tenantController.sendPaymentLink);
+router.post('/:id/mark-paid', tenantController.markPaid);
 
 // Agreement
 router.post('/:id/send-agreement', tenantController.sendAgreement);

@@ -96,7 +96,20 @@ class TenantController {
      */
     async createTenant(req, res) {
         try {
-            const { name, slug, email, phone, industry_type, plan_id, server_id, tools: selectedTools } = req.body;
+            const {
+                name,
+                slug,
+                email,
+                phone,
+                industry_type,
+                plan_id,
+                server_id,
+                custom_domain,
+                status,
+                trial_days,
+                trial_ends_at,
+                tools: selectedTools
+            } = req.body;
 
             if (!name || !slug || !email) {
                 return res.status(400).json({
@@ -112,7 +125,17 @@ class TenantController {
             }
 
             const tenantId = await TenantModel.create({
-                name, slug, email, phone, industry_type, plan_id, server_id
+                name,
+                slug,
+                email,
+                phone,
+                industry_type,
+                plan_id: plan_id ? Number(plan_id) : undefined,
+                server_id: server_id ? Number(server_id) : undefined,
+                custom_domain: custom_domain || null,
+                status: status || 'trial',
+                trial_days,
+                trial_ends_at
             });
 
             let plan_slug = 'starter';
@@ -220,6 +243,36 @@ class TenantController {
         }
     }
 
+    async _startTenantIfProvisioned(tenant) {
+        if (!tenant || tenant.process_status === 'running' || !tenant.assigned_port || !tenant.db_name) {
+            return false;
+        }
+
+        const server = tenant.server_id
+            ? await ServerModel.findById(tenant.server_id)
+            : await ServerModel.getBestServer();
+
+        if (!server) {
+            return false;
+        }
+
+        const provisioner = new Provisioner();
+        await provisioner.startProcess(tenant, tenant.assigned_port, server);
+        await TenantModel.updateProcessStatus(tenant.id, 'running');
+        return true;
+    }
+
+    async _stopTenantIfRunning(tenant) {
+        if (!tenant || tenant.process_status !== 'running') {
+            return false;
+        }
+
+        const provisioner = new Provisioner();
+        await provisioner.stopProcess(tenant);
+        await TenantModel.updateProcessStatus(tenant.id, 'stopped');
+        return true;
+    }
+
     async _recordToolEnabled(tenantId, toolSlug, planId) {
         try {
             const [tools] = await pool.query("SELECT id FROM tools WHERE slug = ?", [toolSlug]);
@@ -322,10 +375,34 @@ class TenantController {
                 return res.status(404).json({ error: 'Tenant not found' });
             }
 
-            const updated = await TenantModel.update(id, req.body);
+            const payload = { ...req.body };
+
+            if (payload.plan_id === '') payload.plan_id = null;
+            if (payload.plan_id !== undefined && payload.plan_id !== null) {
+                payload.plan_id = Number(payload.plan_id);
+            }
+            if (payload.server_id === '') payload.server_id = null;
+            if (payload.server_id !== undefined && payload.server_id !== null) {
+                payload.server_id = Number(payload.server_id);
+            }
+            if (payload.trial_ends_at === '') {
+                payload.trial_ends_at = null;
+            }
+
+            const updated = await TenantModel.update(id, payload);
+
+            if (payload.status && payload.status !== tenant.status) {
+                const refreshedTenant = await TenantModel.findById(id);
+
+                if (payload.status === 'active' || payload.status === 'trial') {
+                    await this._startTenantIfProvisioned(refreshedTenant);
+                } else if (payload.status === 'suspended' || payload.status === 'cancelled') {
+                    await this._stopTenantIfRunning(refreshedTenant);
+                }
+            }
 
             // Fix: Sync settings to tenant DB if critical fields changed
-            if (req.body.name || req.body.email || req.body.industry_type) {
+            if (payload.name || payload.email || payload.industry_type) {
                 const freshTenant = await TenantModel.findById(id);
                 if (freshTenant) {
                     const provisioner = new Provisioner();
@@ -761,6 +838,7 @@ class TenantController {
             const { id } = req.params;
             const EmailService = require('../services/email.service');
             const { pool } = require('../config/database');
+            const requestedBillingCycle = req.body?.billing_cycle || 'monthly';
 
             const tenant = await TenantModel.findById(id);
             if (!tenant) return res.status(404).json({ error: 'Tenant not found' });
@@ -792,7 +870,7 @@ class TenantController {
                 const cancelUrl = `${tenantUrl}/payment/cancelled`;
                 const paymentLink = await RazorpayService.createHostedPaymentLink({
                     planId: planId.toString(),
-                    billingCycle: 'monthly',
+                    billingCycle: requestedBillingCycle,
                     successUrl,
                     cancelUrl,
                     customer: {
@@ -804,6 +882,7 @@ class TenantController {
                         tenant_id: tenant.id.toString(),
                         plan_id: planId.toString(),
                         plan_slug: planSlug,
+                        billing_cycle: requestedBillingCycle,
                         source: 'tenant_payment_request'
                     }
                 });
@@ -849,6 +928,96 @@ class TenantController {
     }
 
     /**
+     * Manually mark a tenant as paid and activate access
+     */
+    async markPaid(req, res) {
+        try {
+            const { id } = req.params;
+            const {
+                amount,
+                billing_cycle = 'monthly',
+                payment_method = 'manual',
+                notes = null
+            } = req.body || {};
+
+            const tenant = await TenantModel.findById(id);
+            if (!tenant) {
+                return res.status(404).json({ error: 'Tenant not found' });
+            }
+
+            if (!tenant.plan_id) {
+                return res.status(400).json({ error: 'Tenant does not have a plan assigned' });
+            }
+
+            const resolved = await RazorpayService.resolvePlan(tenant.plan_id, billing_cycle);
+            const paymentAmount = Number(amount || resolved.amount);
+
+            if (!paymentAmount || paymentAmount <= 0) {
+                return res.status(400).json({ error: 'A valid payment amount is required' });
+            }
+
+            const subscriptionId = await RazorpayService.ensureSubscriptionRecord({
+                tenantId: tenant.id,
+                planId: resolved.plan.id,
+                billingCycle: resolved.billingCycle
+            });
+
+            const paymentId = await RazorpayService.recordPayment({
+                tenant_id: tenant.id,
+                subscription_id: subscriptionId,
+                amount: paymentAmount,
+                currency: 'INR',
+                status: 'success',
+                payment_method,
+                notes: {
+                    ...(notes && typeof notes === 'object' ? notes : {}),
+                    source: 'admin_manual_payment',
+                    plan_id: resolved.plan.id,
+                    plan_slug: resolved.plan.slug,
+                    billing_cycle: resolved.billingCycle,
+                    recorded_by_user_id: req.user?.id || null
+                }
+            });
+
+            await TenantModel.update(tenant.id, {
+                status: 'active',
+                plan_id: resolved.plan.id
+            });
+
+            const refreshedTenant = await TenantModel.findById(tenant.id);
+            await this._startTenantIfProvisioned(refreshedTenant);
+
+            const [subscriptions] = await pool.query(`
+                SELECT s.*, p.name as plan_name
+                FROM subscriptions s
+                LEFT JOIN plans p ON p.id = s.plan_id
+                WHERE s.id = ?
+                LIMIT 1
+            `, [subscriptionId]);
+
+            const [payments] = await pool.query(`
+                SELECT *
+                FROM payments
+                WHERE id = ?
+                LIMIT 1
+            `, [paymentId]);
+
+            res.json({
+                success: true,
+                message: 'Tenant marked as paid and activated successfully.',
+                data: {
+                    tenant: await TenantModel.findById(tenant.id),
+                    subscription: subscriptions[0] || null,
+                    payment: payments[0] || null
+                }
+            });
+        } catch (error) {
+            console.error('Mark paid error:', error);
+            res.status(500).json({ error: error.message || 'Failed to mark tenant as paid' });
+        }
+    }
+
+    /**
      * Send Service Agreement PDF to tenant via email
      */
     async sendAgreement(req, res) {
@@ -876,7 +1045,11 @@ class TenantController {
                 const [plans] = await pool.query('SELECT name, slug, price_monthly, price_yearly FROM plans WHERE id = ?', [tenant.plan_id]);
                 if (plans.length) {
                     planName = plans[0].name || planName;
-                    const billingCycle = tenant.billing_cycle || 'monthly';
+                    const [subscriptions] = await pool.query(
+                        'SELECT billing_cycle FROM subscriptions WHERE tenant_id = ? ORDER BY created_at DESC LIMIT 1',
+                        [tenant.id]
+                    );
+                    const billingCycle = subscriptions[0]?.billing_cycle || 'monthly';
                     const price = billingCycle === 'yearly' ? plans[0].price_yearly : plans[0].price_monthly;
                     planPrice = price ? `INR ${price}` : planPrice;
                     planBillingCycle = billingCycle === 'yearly' ? 'Yearly' : 'Monthly';

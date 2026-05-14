@@ -112,17 +112,27 @@ class TenantModel {
             logo_url,
             industry_type = 'general',
             plan_id = 1,
-            server_id = 1
+            server_id = 1,
+            status = 'trial',
+            trial_days = 14,
+            trial_ends_at = null,
+            custom_domain = null
         } = tenantData;
 
-        // Calculate trial end date (14 days from now)
-        const trialEndsAt = new Date();
-        trialEndsAt.setDate(trialEndsAt.getDate() + 14);
+        let trialEndsAt = null;
+        if (status === 'trial') {
+            if (trial_ends_at) {
+                trialEndsAt = new Date(trial_ends_at);
+            } else {
+                trialEndsAt = new Date();
+                trialEndsAt.setDate(trialEndsAt.getDate() + Number(trial_days || 14));
+            }
+        }
 
         const [result] = await pool.query(`
-            INSERT INTO tenants (name, slug, subdomain, email, phone, logo_url, industry_type, plan_id, status, trial_ends_at, server_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'trial', ?, ?)
-        `, [name, slug, subdomain || slug, email, phone, logo_url, industry_type, plan_id, trialEndsAt, server_id]);
+            INSERT INTO tenants (name, slug, subdomain, email, phone, logo_url, industry_type, plan_id, status, trial_ends_at, server_id, custom_domain)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [name, slug, subdomain || slug, email, phone, logo_url, industry_type, plan_id, status, trialEndsAt, server_id, custom_domain]);
 
         return result.insertId;
     }
@@ -136,7 +146,8 @@ class TenantModel {
             'plan_id', 'status', 'custom_features', 'server_id',
             'custom_domain', 'custom_domain_crm', 'custom_domain_storefront',
             'custom_domain_api', 'custom_domain_verified', 'custom_domain_dns_record_id',
-            'process_name', 'process_status', 'assigned_port', 'db_name'
+            'process_name', 'process_status', 'assigned_port', 'db_name',
+            'trial_ends_at'
         ];
         const updates = [];
         const values = [];

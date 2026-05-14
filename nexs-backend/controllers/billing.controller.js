@@ -5,10 +5,42 @@
 
 const RazorpayService = require('../services/razorpay.service');
 const TenantModel = require('../models/tenant.model');
+const ServerModel = require('../models/server.model');
+const Provisioner = require('../services/provisioner');
 
 const { pool } = require('../config/database');
 
 class BillingController {
+    async _startTenantIfProvisioned(tenant) {
+        if (!tenant || tenant.process_status === 'running' || !tenant.assigned_port || !tenant.db_name) {
+            return false;
+        }
+
+        const server = tenant.server_id
+            ? await ServerModel.findById(tenant.server_id)
+            : await ServerModel.getBestServer();
+
+        if (!server) {
+            return false;
+        }
+
+        const provisioner = new Provisioner();
+        await provisioner.startProcess(tenant, tenant.assigned_port, server);
+        await TenantModel.updateProcessStatus(tenant.id, 'running');
+        return true;
+    }
+
+    async _stopTenantIfRunning(tenant) {
+        if (!tenant || tenant.process_status !== 'running') {
+            return false;
+        }
+
+        const provisioner = new Provisioner();
+        await provisioner.stopProcess(tenant);
+        await TenantModel.updateProcessStatus(tenant.id, 'stopped');
+        return true;
+    }
+
     /**
      * Create subscription for tenant
      */
@@ -63,14 +95,14 @@ class BillingController {
             const { tenantId } = req.params;
             const { immediate = false } = req.body;
 
-            // Get active subscription
+            // Get latest billable subscription
             const [subs] = await pool.query(
-                'SELECT * FROM subscriptions WHERE tenant_id = ? AND status = "active"',
+                'SELECT * FROM subscriptions WHERE tenant_id = ? AND status IN ("active", "paused", "past_due") ORDER BY created_at DESC LIMIT 1',
                 [tenantId]
             );
 
             if (!subs.length) {
-                return res.status(404).json({ error: 'No active subscription found' });
+                return res.status(404).json({ error: 'No billable subscription found' });
             }
 
             const result = await RazorpayService.cancelSubscription(
@@ -81,6 +113,8 @@ class BillingController {
             // Update tenant status if immediate
             if (immediate) {
                 await TenantModel.update(tenantId, { status: 'cancelled' });
+                const tenant = await TenantModel.findById(tenantId);
+                await this._stopTenantIfRunning(tenant);
             }
 
             res.json({
@@ -102,7 +136,7 @@ class BillingController {
             const { tenantId } = req.params;
 
             const [subs] = await pool.query(
-                'SELECT * FROM subscriptions WHERE tenant_id = ? AND status = "active"',
+                'SELECT * FROM subscriptions WHERE tenant_id = ? AND status = "active" ORDER BY created_at DESC LIMIT 1',
                 [tenantId]
             );
 
@@ -111,6 +145,9 @@ class BillingController {
             }
 
             const result = await RazorpayService.pauseSubscription(subs[0].razorpay_subscription_id);
+            await TenantModel.update(tenantId, { status: 'suspended' });
+            const tenant = await TenantModel.findById(tenantId);
+            await this._stopTenantIfRunning(tenant);
 
             res.json({
                 success: true,
@@ -131,7 +168,7 @@ class BillingController {
             const { tenantId } = req.params;
 
             const [subs] = await pool.query(
-                'SELECT * FROM subscriptions WHERE tenant_id = ? AND status = "paused"',
+                'SELECT * FROM subscriptions WHERE tenant_id = ? AND status = "paused" ORDER BY created_at DESC LIMIT 1',
                 [tenantId]
             );
 
@@ -140,6 +177,9 @@ class BillingController {
             }
 
             const result = await RazorpayService.resumeSubscription(subs[0].razorpay_subscription_id);
+            await TenantModel.update(tenantId, { status: 'active' });
+            const tenant = await TenantModel.findById(tenantId);
+            await this._startTenantIfProvisioned(tenant);
 
             res.json({
                 success: true,
