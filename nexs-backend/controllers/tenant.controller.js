@@ -928,6 +928,249 @@ class TenantController {
     }
 
     /**
+     * Send a month-specific invoice PDF and payment link
+     */
+    async sendBillingInvoice(req, res) {
+        try {
+            const { id } = req.params;
+            const {
+                amount,
+                billing_cycle = 'monthly',
+                billing_month,
+                due_date
+            } = req.body || {};
+
+            const tenant = await TenantModel.findById(id);
+            if (!tenant) {
+                return res.status(404).json({ error: 'Tenant not found' });
+            }
+
+            if (!tenant.plan_id) {
+                return res.status(400).json({ error: 'Tenant does not have a plan assigned' });
+            }
+
+            const resolved = await RazorpayService.resolvePlan(tenant.plan_id, billing_cycle);
+            const paymentAmount = Number(amount || resolved.amount);
+            if (!paymentAmount || paymentAmount <= 0) {
+                return res.status(400).json({ error: 'A valid billing amount is required' });
+            }
+
+            const parsedMonth = billing_month && /^\d{4}-\d{2}$/.test(billing_month)
+                ? new Date(`${billing_month}-01T00:00:00`)
+                : new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+
+            if (Number.isNaN(parsedMonth.getTime())) {
+                return res.status(400).json({ error: 'billing_month must be in YYYY-MM format' });
+            }
+
+            const billingMonthValue = `${parsedMonth.getFullYear()}-${String(parsedMonth.getMonth() + 1).padStart(2, '0')}`;
+            const billingMonthLabel = parsedMonth.toLocaleDateString('en-IN', {
+                month: 'long',
+                year: 'numeric'
+            });
+
+            const issueDate = new Date();
+            const parsedDueDate = due_date
+                ? new Date(`${due_date}T00:00:00`)
+                : new Date(issueDate.getFullYear(), issueDate.getMonth(), issueDate.getDate() + 7);
+
+            if (Number.isNaN(parsedDueDate.getTime())) {
+                return res.status(400).json({ error: 'due_date must be a valid date' });
+            }
+
+            const invoiceNumber = `INV-T${tenant.id}-${billingMonthValue.replace('-', '')}-${Date.now().toString().slice(-6)}`;
+
+            const baseDomain = process.env.VITE_APP_BASE_DOMAIN || 'nexspiresolutions.co.in';
+            const tenantDomain = tenant.custom_domain || `${tenant.slug}-crm.${baseDomain}`;
+            const tenantUrl = tenantDomain.startsWith('http') ? tenantDomain : `https://${tenantDomain}`;
+
+            const paymentLink = await RazorpayService.createHostedPaymentLink({
+                planId: tenant.plan_id.toString(),
+                billingCycle: billing_cycle,
+                successUrl: `${tenantUrl}/payment/success`,
+                cancelUrl: `${tenantUrl}/payment/cancelled`,
+                customer: {
+                    name: tenant.name,
+                    email: tenant.email,
+                    contact: tenant.phone
+                },
+                metadata: {
+                    tenant_id: tenant.id.toString(),
+                    plan_id: tenant.plan_id.toString(),
+                    plan_slug: resolved.plan.slug,
+                    billing_cycle,
+                    billing_month: billingMonthValue,
+                    invoice_number: invoiceNumber,
+                    source: 'tenant_billing_invoice'
+                }
+            });
+
+            const [subs] = await pool.query(
+                'SELECT id FROM subscriptions WHERE tenant_id = ? ORDER BY created_at DESC LIMIT 1',
+                [tenant.id]
+            );
+            const latestSubscriptionId = subs[0]?.id || null;
+
+            await pool.query(`
+                INSERT INTO payments (
+                    tenant_id, subscription_id, amount, status, invoice_number,
+                    currency, payment_method, notes
+                )
+                VALUES (?, ?, ?, 'pending', ?, 'INR', ?, ?)
+            `, [
+                tenant.id,
+                latestSubscriptionId,
+                paymentAmount,
+                invoiceNumber,
+                'payment_link',
+                JSON.stringify({
+                    source: 'tenant_billing_invoice',
+                    billing_month: billingMonthValue,
+                    billing_month_label: billingMonthLabel,
+                    payment_link_url: paymentLink.short_url,
+                    payment_link_id: paymentLink.id
+                })
+            ]);
+
+            const template = await DocumentTemplateModel.findBySlug('invoice');
+            if (!template) {
+                return res.status(404).json({ error: 'Invoice template not found. Please run seed-templates first.' });
+            }
+
+            const invoiceDateLabel = issueDate.toLocaleDateString('en-IN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            const dueDateLabel = parsedDueDate.toLocaleDateString('en-IN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            const amountLabel = paymentAmount.toFixed(2);
+            const taxRate = '0';
+            const taxAmount = '0.00';
+
+            const variables = {
+                invoice_number: invoiceNumber,
+                invoice_date: invoiceDateLabel,
+                due_date: dueDateLabel,
+                our_address: 'NexSpire Solutions, India',
+                our_email: process.env.SMTP_FROM_EMAIL || process.env.ZOHO_FROM_EMAIL || process.env.SMTP_USER || 'support@nexspiresolutions.co.in',
+                contact_name: tenant.owner_name || tenant.name,
+                company_name: tenant.business_name || tenant.name,
+                client_email: tenant.owner_email || tenant.email,
+                item_description: `${resolved.plan.name} subscription for ${billingMonthLabel}`,
+                quantity: '1',
+                rate: amountLabel,
+                amount: amountLabel,
+                subtotal: amountLabel,
+                tax_rate: taxRate,
+                tax_amount: taxAmount,
+                total_amount: amountLabel,
+                payment_instructions: `Pay securely using the payment link included in this email: ${paymentLink.short_url}`
+            };
+
+            const renderedHtml = DocumentTemplateModel.renderTemplate(template.content, variables);
+            const pdfBuffer = await pdfService.generateFromHtml(renderedHtml);
+
+            const emailHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - NexSpire Solutions</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;padding:32px 16px;">
+        <tr>
+            <td align="center">
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+                    <tr>
+                        <td style="background-color:#4f46e5;padding:32px 40px;text-align:center;">
+                            <h1 style="color:#ffffff;margin:0;font-size:22px;font-weight:600;">Billing Invoice</h1>
+                            <p style="color:rgba(255,255,255,0.85);margin:8px 0 0;font-size:14px;">${billingMonthLabel} subscription payment request</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:40px;">
+                            <p style="color:#1e293b;font-size:16px;line-height:1.6;margin:0 0 20px;">
+                                Dear <strong>${tenant.owner_name || tenant.name}</strong>,
+                            </p>
+                            <p style="color:#475569;font-size:15px;line-height:1.7;margin:0 0 20px;">
+                                Please find attached your invoice for <strong>${billingMonthLabel}</strong>. You can complete the payment securely using the link below.
+                            </p>
+                            <p style="margin:28px 0;">
+                                <a href="${paymentLink.short_url}" style="display:inline-block;padding:12px 24px;background:#4f46e5;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:600;">Open Payment Link</a>
+                            </p>
+                            <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;">
+                                <tr>
+                                    <td style="padding:20px;">
+                                        <table width="100%" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td style="padding:6px 0;color:#64748b;font-size:13px;">Invoice Number</td>
+                                                <td style="padding:6px 0;font-weight:600;color:#1e293b;text-align:right;font-size:13px;">${invoiceNumber}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:6px 0;color:#64748b;font-size:13px;">Billing Month</td>
+                                                <td style="padding:6px 0;font-weight:600;color:#1e293b;text-align:right;font-size:13px;">${billingMonthLabel}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:6px 0;color:#64748b;font-size:13px;">Plan</td>
+                                                <td style="padding:6px 0;font-weight:600;color:#1e293b;text-align:right;font-size:13px;">${resolved.plan.name}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:6px 0;color:#64748b;font-size:13px;">Amount Due</td>
+                                                <td style="padding:6px 0;font-weight:600;color:#1e293b;text-align:right;font-size:13px;">INR ${amountLabel}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:6px 0;color:#64748b;font-size:13px;">Due Date</td>
+                                                <td style="padding:6px 0;font-weight:600;color:#1e293b;text-align:right;font-size:13px;">${dueDateLabel}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>`;
+
+            const emailResult = await emailService.sendEmail({
+                to: tenant.email,
+                subject: `Invoice for ${billingMonthLabel} - NexSpire Solutions`,
+                html: emailHtml,
+                attachments: [{
+                    filename: `Nexspire-Invoice-${tenant.slug}-${billingMonthValue}.pdf`,
+                    content: pdfBuffer,
+                    contentType: 'application/pdf'
+                }]
+            });
+
+            if (!emailResult.success) {
+                return res.status(500).json({ error: emailResult.error || 'Failed to send billing invoice email' });
+            }
+
+            res.json({
+                success: true,
+                message: `Invoice and payment link sent successfully for ${billingMonthLabel}.`,
+                data: {
+                    invoice_number: invoiceNumber,
+                    billing_month: billingMonthValue,
+                    payment_link: paymentLink.short_url
+                }
+            });
+        } catch (error) {
+            console.error('Send billing invoice error:', error);
+            res.status(500).json({ error: 'Failed to send billing invoice' });
+        }
+    }
+
+    /**
      * Manually mark a tenant as paid and activate access
      */
     async markPaid(req, res) {

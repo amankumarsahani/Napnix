@@ -539,7 +539,44 @@ class RazorpayService {
             }
         }
 
-        const invoiceNumber = `INV-${Date.now()}`;
+        const noteData = notes && typeof notes === 'object' ? notes : null;
+        const invoiceNumberFromNotes = noteData?.invoice_number || null;
+
+        if (invoiceNumberFromNotes) {
+            const [pendingRows] = await pool.query(
+                'SELECT id FROM payments WHERE tenant_id = ? AND invoice_number = ? AND status = "pending" LIMIT 1',
+                [tenant_id, invoiceNumberFromNotes]
+            );
+
+            if (pendingRows.length) {
+                await pool.query(`
+                    UPDATE payments
+                    SET subscription_id = COALESCE(?, subscription_id),
+                        amount = ?, status = ?, currency = ?,
+                        razorpay_payment_id = COALESCE(?, razorpay_payment_id),
+                        razorpay_order_id = COALESCE(?, razorpay_order_id),
+                        razorpay_signature = COALESCE(?, razorpay_signature),
+                        payment_method = COALESCE(?, payment_method),
+                        notes = COALESCE(?, notes)
+                    WHERE id = ?
+                `, [
+                    subscription_id,
+                    amount,
+                    status,
+                    currency,
+                    razorpay_payment_id,
+                    razorpay_order_id,
+                    razorpay_signature,
+                    payment_method,
+                    noteData ? JSON.stringify(noteData) : null,
+                    pendingRows[0].id
+                ]);
+
+                return pendingRows[0].id;
+            }
+        }
+
+        const invoiceNumber = invoiceNumberFromNotes || `INV-${Date.now()}`;
 
         const [result] = await pool.query(`
             INSERT INTO payments (tenant_id, subscription_id, amount, status, 

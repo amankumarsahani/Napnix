@@ -34,6 +34,29 @@ router.get('/:toolId/plans', async (req, res) => {
 
 router.get('/tenant/:tenantId', async (req, res) => {
     try {
+        const tenantId = req.params.tenantId;
+        const tenant = await TenantModel.findById(tenantId);
+
+        if (tenant) {
+            const [crmTools] = await pool.query("SELECT id FROM tools WHERE slug = 'nexcrm' LIMIT 1");
+            if (crmTools.length) {
+                const crmToolId = crmTools[0].id;
+                const [existingCRM] = await pool.query(
+                    'SELECT id FROM tenant_tools WHERE tenant_id = ? AND tool_id = ? LIMIT 1',
+                    [tenantId, crmToolId]
+                );
+
+                const hasProvisionedCRM = Boolean(tenant.db_name || tenant.assigned_port || tenant.process_status === 'running');
+
+                if (!existingCRM.length && hasProvisionedCRM) {
+                    await pool.query(`
+                        INSERT INTO tenant_tools (tenant_id, tool_id, tool_plan_id, status, provisioned_at)
+                        VALUES (?, ?, NULL, 'active', NOW())
+                    `, [tenantId, crmToolId]);
+                }
+            }
+        }
+
         const [tenantTools] = await pool.query(`
             SELECT tt.*, t.slug as tool_slug, t.name as tool_name, t.icon as tool_icon,
                    t.description as tool_description, t.version as tool_version, t.status as tool_status,
@@ -43,7 +66,7 @@ router.get('/tenant/:tenantId', async (req, res) => {
             LEFT JOIN tool_plans tp ON tp.id = tt.tool_plan_id
             WHERE tt.tenant_id = ?
             ORDER BY t.name
-        `, [req.params.tenantId]);
+        `, [tenantId]);
         res.json({ success: true, data: tenantTools });
     } catch (error) {
         if (error.code === 'ER_NO_SUCH_TABLE') return res.json({ success: true, data: [] });
