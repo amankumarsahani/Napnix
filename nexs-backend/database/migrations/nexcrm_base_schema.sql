@@ -1134,3 +1134,116 @@ CREATE TABLE IF NOT EXISTS crm_invoice_items (
     INDEX idx_invoice_id (invoice_id),
     FOREIGN KEY (invoice_id) REFERENCES crm_invoices(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================
+-- CHATBOT SETTINGS (all industries)
+-- ============================================
+CREATE TABLE IF NOT EXISTS chatbot_settings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    enabled BOOLEAN DEFAULT TRUE,
+    welcome_message TEXT DEFAULT 'Hello! How can I help you today?',
+    fallback_message TEXT DEFAULT 'I''m sorry, I didn''t understand that. Please try again or contact support.',
+    business_hours_only BOOLEAN DEFAULT FALSE,
+    collect_lead_info BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT IGNORE INTO chatbot_settings (id, enabled, welcome_message, collect_lead_info)
+VALUES (1, TRUE, 'Hello! How can I help you today?', TRUE);
+
+-- ============================================
+-- CMS MENUS (all industries)
+-- ============================================
+CREATE TABLE IF NOT EXISTS cms_menus (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    items JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_name (name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT IGNORE INTO cms_menus (name, items) VALUES
+('header', '[{"label":"Home","url":"/"},{"label":"Products","url":"/products"},{"label":"About","url":"/about"},{"label":"Contact","url":"/contact"}]'),
+('footer', '[{"label":"Privacy Policy","url":"/privacy-policy"},{"label":"Terms","url":"/terms"},{"label":"Contact","url":"/contact"}]');
+
+-- ============================================
+-- ECOMMERCE: RETURNS ITEMS
+-- ============================================
+CREATE TABLE IF NOT EXISTS return_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    return_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    return_reason VARCHAR(255),
+    item_condition VARCHAR(50) DEFAULT 'new',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (return_id) REFERENCES returns(id) ON DELETE CASCADE,
+    INDEX idx_return (return_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================
+-- ECOMMERCE: INVENTORY ADJUSTMENTS
+-- ============================================
+CREATE TABLE IF NOT EXISTS inventory_adjustments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    adjustment_type ENUM('add', 'remove', 'set') NOT NULL,
+    quantity INT NOT NULL,
+    previous_stock INT DEFAULT 0,
+    new_stock INT DEFAULT 0,
+    reason TEXT,
+    user_id INT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_product (product_id),
+    INDEX idx_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================
+-- ECOMMERCE: CUSTOMER WALLET
+-- ============================================
+CREATE TABLE IF NOT EXISTS customer_wallet (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    client_id INT NOT NULL,
+    balance DECIMAL(12,2) DEFAULT 0.00,
+    currency VARCHAR(3) DEFAULT 'INR',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_client_wallet (client_id),
+    INDEX idx_client (client_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS wallet_transactions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    wallet_id INT NOT NULL,
+    type ENUM('credit', 'debit', 'refund', 'cashback') NOT NULL,
+    amount DECIMAL(12,2) NOT NULL,
+    balance_after DECIMAL(12,2),
+    reference_type VARCHAR(50),
+    reference_id INT,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (wallet_id) REFERENCES customer_wallet(id) ON DELETE CASCADE,
+    INDEX idx_wallet (wallet_id),
+    INDEX idx_type (type),
+    INDEX idx_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================
+-- ECOMMERCE: CUSTOMER ACTIVITY LOGS
+-- ============================================
+CREATE TABLE IF NOT EXISTS customer_activity_logs (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    client_id INT NOT NULL,
+    action VARCHAR(100) NOT NULL,
+    details TEXT,
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE,
+    INDEX idx_client (client_id),
+    INDEX idx_action (action),
+    INDEX idx_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
