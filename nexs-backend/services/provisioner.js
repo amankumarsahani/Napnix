@@ -900,15 +900,53 @@ class Provisioner {
 
             const dbName = `nexcrm_${slug.replace(/-/g, '_')}`;
 
-            // Start process using PM2 on target server
-            // Critical config passed as CLI args (PM2 forwards everything after --)
-            // DB credentials also passed via ecosystem.config.js env block
-            // First try to delete any existing errored/stopped process with the same name
+            // Build env block — passed via PM2 JSON config so credentials are reliable
+            // regardless of what .env file exists in nexcrm-backend directory
+            const envBlock = {
+                PORT: port,
+                DB_HOST: dbHost,
+                DB_PORT: dbPort,
+                DB_NAME: dbName,
+                DB_USER: dbUser,
+                DB_PASSWORD: dbPass,
+                JWT_SECRET: process.env.JWT_SECRET || '',
+                TENANT_SLUG: slug,
+                INDUSTRY_TYPE: tenant.industry_type || 'general',
+                PLAN_SLUG: tenant.plan_slug || 'starter',
+                NODE_ENV: process.env.NODE_ENV || 'production',
+                SMTP_HOST: process.env.SMTP_HOST || '',
+                SMTP_PORT: process.env.SMTP_PORT || '',
+                SMTP_USER: process.env.SMTP_USER || '',
+                SMTP_PASS: process.env.SMTP_PASS || '',
+                SMTP_FROM: process.env.SMTP_FROM || '',
+                FRONTEND_URL: process.env.NEXCRM_FRONTEND_URL || ''
+            };
+
+            // Write a temporary PM2 JSON config to inject env block reliably
+            // Plain `pm2 start script` does not pass env vars — use config file instead
+            const tmpConfig = `/tmp/pm2-tenant-${slug}.json`;
+            const pm2AppConfig = JSON.stringify({
+                apps: [{
+                    name: processName,
+                    cwd: backendPath,
+                    script: 'server.js',
+                    args: `--port ${port} --db ${dbName} --slug ${slug} --industry ${tenant.industry_type || 'general'} --plan ${tenant.plan_slug || 'starter'}`,
+                    env: envBlock,
+                    max_memory_restart: '300M',
+                    restart_delay: 3000,
+                    max_restarts: 5
+                }]
+            });
+
+            // Delete any existing errored/stopped process first
             try {
                 await this.executeOnServer(server, `pm2 delete ${processName} 2>/dev/null || true`);
             } catch (_e) { /* ignore if doesn't exist */ }
 
-            await this.executeOnServer(server, `cd ${backendPath} && pm2 start server.js --name "${processName}" -- --port ${port} --db ${dbName} --slug ${slug} --industry ${tenant.industry_type || 'general'} --plan ${tenant.plan_slug || 'starter'}`);
+            // Write config and start
+            await this.executeOnServer(server, `cat > ${tmpConfig} << 'EOFCONFIG'\n${pm2AppConfig}\nEOFCONFIG`);
+            await this.executeOnServer(server, `pm2 start ${tmpConfig}`);
+            await this.executeOnServer(server, `rm -f ${tmpConfig}`);
 
             // Persist PM2 list and update ecosystem.config.js on target server
             await this.executeOnServer(server, 'pm2 save');
