@@ -172,7 +172,7 @@ class DocumentTemplateController {
             // Send email
             const emailResult = await emailService.sendEmail({
                 to,
-                subject: subject || `${template.name} from Nexspire Solutions`,
+                subject: subject || `${template.name} from Napnix`,
                 html: renderedContent
             });
 

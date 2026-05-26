@@ -1,6 +1,6 @@
 /**
- * Setup NexSpire Admin for Existing Tenant
- * Run this on the server to add NexSpire admin to an existing tenant
+ * Setup Napnix Admin for Existing Tenant
+ * Run this on the server to add Napnix admin to an existing tenant
  * 
  * Usage: node scripts/setup-tenant-admin.js <tenant_slug> [reset_password]
  * Example: node scripts/setup-tenant-admin.js test-ecom
@@ -31,7 +31,7 @@ async function setupTenantAdmin(tenantSlug, resetPassword = false) {
     // Connect to main database
     const mainDb = await mysql.createConnection({
         ...DB_CONFIG,
-        database: process.env.DB_NAME || 'nexspire_solutions'
+        database: process.env.DB_NAME || 'napnix'
     });
 
     try {
@@ -58,18 +58,18 @@ async function setupTenantAdmin(tenantSlug, resetPassword = false) {
             database: tenant.db_name
         });
 
-        // Add NexSpire super admin
-        const superAdminEmail = process.env.NEXSPIRE_ADMIN_EMAIL || 'admin@nexspiresolutions.co.in';
-        const superAdminPassword = process.env.NEXSPIRE_ADMIN_PASSWORD || 'NexSpire@2024!';
+        // Add Napnix super admin
+        const superAdminEmail = process.env.NAPNIX_ADMIN_EMAIL || 'admin@napnix.in';
+        const superAdminPassword = process.env.NAPNIX_ADMIN_PASSWORD || 'Napnix@2024!';
         const superAdminHash = await bcrypt.hash(superAdminPassword, 10);
 
         await tenantDb.query(
             `INSERT INTO users (email, password, first_name, last_name, role, status) 
-             VALUES (?, ?, 'NexSpire', 'Admin', 'admin', 'active')
+             VALUES (?, ?, 'Napnix', 'Admin', 'admin', 'active')
              ON DUPLICATE KEY UPDATE password = ?, role = 'admin'`,
             [superAdminEmail, superAdminHash, superAdminHash]
         );
-        console.log(`\n✅ NexSpire Super Admin added/updated:`);
+        console.log(`\n✅ Napnix Super Admin added/updated:`);
         console.log(`   Email: ${superAdminEmail}`);
         console.log(`   Password: ${superAdminPassword}`);
 

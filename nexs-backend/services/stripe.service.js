@@ -1,5 +1,5 @@
 // services/stripe.service.js
-// Handles Stripe API interactions for the Nexspire admin backend
+// Handles Stripe API interactions for the Napnix admin backend
 // Includes webhook signature verification and basic customer/subscription utilities
 
 const stripePackage = require('stripe');

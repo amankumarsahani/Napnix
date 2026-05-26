@@ -11,12 +11,12 @@ echo "Detected user: $CURRENT_USER"
 CONFIG="$CURRENT_USER ALL=(ALL) NOPASSWD: /usr/bin/systemctl, /usr/bin/mv, /usr/bin/rm, /usr/bin/cp, /usr/bin/echo, /usr/bin/cat, /usr/bin/tee, /usr/local/bin/pm2, /usr/bin/pm2, /usr/bin/cloudflared"
 
 # Write to a separate file in /etc/sudoers.d/ (cleaner than editing /etc/sudoers)
-echo "$CONFIG" | sudo tee /etc/sudoers.d/nexspire-admin > /dev/null
+echo "$CONFIG" | sudo tee /etc/sudoers.d/napnix-admin > /dev/null
 
 # Set correct permissions (sudoers files must be 0440)
-sudo chmod 0440 /etc/sudoers.d/nexspire-admin
+sudo chmod 0440 /etc/sudoers.d/napnix-admin
 
-echo "Configuration applied to /etc/sudoers.d/nexspire-admin"
+echo "Configuration applied to /etc/sudoers.d/napnix-admin"
 echo ""
 echo "Verifying..."
 if sudo -l -U $CURRENT_USER | grep -q "NOPASSWD"; then

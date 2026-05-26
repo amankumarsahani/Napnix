@@ -1,5 +1,5 @@
 -- Tool Registry System
--- Enables Nexspire platform to manage multiple tools (NexCRM, NexMail, etc.) per tenant
+-- Enables Napnix platform to manage multiple tools (NexCRM, NexMail, etc.) per tenant
 
 CREATE TABLE IF NOT EXISTS tools (
     id              INT AUTO_INCREMENT PRIMARY KEY,
@@ -71,7 +71,7 @@ VALUES (
     'briefcase',
     '2.0.0',
     'active',
-    '{slug}-crm.nexspiresolutions.co.in',
+    '{slug}-crm.napnix.in',
     '{"industry_type": "string", "plan_id": "number"}'
 );
 
@@ -84,7 +84,7 @@ VALUES (
     'mail',
     '1.0.0',
     'active',
-    '{slug}-mail.nexspiresolutions.co.in',
+    '{slug}-mail.napnix.in',
     'http://localhost:5050/health',
     'http://localhost:5050/api',
     '{"max_contacts": "number", "max_emails_per_month": "number", "ab_testing": "boolean", "automations": "boolean", "custom_domain": "boolean"}'

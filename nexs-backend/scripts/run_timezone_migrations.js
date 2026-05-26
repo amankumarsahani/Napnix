@@ -1,28 +1,28 @@
 /**
  * Run Timezone Migrations for All Tenants
  * 
- * This script fetches all active tenants from the Nexspire admin database,
+ * This script fetches all active tenants from the Napnix admin database,
  * gets their server credentials, and runs timezone migrations on each tenant DB.
  * 
- * Usage (from NexSpireSolutions/nexs-backend folder):
+ * Usage (from Napnix/nexs-backend folder):
  *   node scripts/run_timezone_migrations.js
  * 
  * Prerequisites:
  *   - Must run from the nexs-backend folder (uses its .env for admin DB connection)
- *   - Requires active connection to the nexspire_solutions database
+ *   - Requires active connection to the napnix database
  */
 
 require('dotenv').config();
 const mysql = require('mysql2/promise');
 
 async function runTimezoneForAllTenants() {
-    // Connect to the admin database (nexspire_solutions)
+    // Connect to the admin database (napnix)
     const adminConfig = {
         host: process.env.DB_HOST || 'localhost',
         port: process.env.DB_PORT || 3306,
         user: process.env.DB_USER || 'root',
         password: process.env.DB_PASSWORD || '',
-        database: process.env.DB_NAME || 'nexspire_solutions',
+        database: process.env.DB_NAME || 'napnix',
         multipleStatements: true
     };
 

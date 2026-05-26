@@ -65,29 +65,29 @@ const AboutPage = () => {
   return (
     <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white overflow-hidden">
       <Helmet>
-        <title>About Nexspire Solutions – Global Software Agency</title>
-        <meta name="description" content="Discover Nexspire Solutions, a top software development agency delivering web, mobile, AI, cloud, and enterprise solutions to clients globally. Founded in 2020, serving startups, SMEs, and enterprises across North America, Europe, Middle East, and Asia-Pacific." />
-        <meta name="keywords" content="global software agency, top software company worldwide, international software solutions, AI software development, about nexspire solutions, software company india, tech experts usa uk, digital transformation partners" />
+        <title>About Napnix – Global Software Agency</title>
+        <meta name="description" content="Discover Napnix, a top software development agency delivering web, mobile, AI, cloud, and enterprise solutions to clients globally. Founded in 2020, serving startups, SMEs, and enterprises across North America, Europe, Middle East, and Asia-Pacific." />
+        <meta name="keywords" content="global software agency, top software company worldwide, international software solutions, AI software development, about napnix solutions, software company india, tech experts usa uk, digital transformation partners" />
         <link rel="canonical" href={`${SITE_URL}/about`} />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-        <meta property="og:title" content="About Nexspire Solutions – Global Software Agency" />
+        <meta property="og:title" content="About Napnix – Global Software Agency" />
         <meta property="og:description" content="Top software development agency delivering web, mobile, AI, cloud, and enterprise solutions to clients globally." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`${SITE_URL}/about`} />
         <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:site_name" content="Nexspire Solutions" />
+        <meta property="og:site_name" content="Napnix" />
         <meta property="og:locale" content="en_IN" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="About Nexspire Solutions – Global Software Agency" />
+        <meta name="twitter:title" content="About Napnix – Global Software Agency" />
         <meta name="twitter:description" content="Top software development agency delivering web, mobile, AI, cloud, and enterprise solutions to clients globally." />
-        <meta name="twitter:site" content="@nexspiresolutions" />
-        <meta name="twitter:creator" content="@nexspiresolutions" />
+        <meta name="twitter:site" content="@napnix" />
+        <meta name="twitter:creator" content="@napnix" />
         <script type="application/ld+json">{JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Organization",
-            "name": "Nexspire Solutions",
+            "name": "Napnix",
             "url": SITE_URL,
             "logo": `${SITE_URL}/og-image.jpg`,
             "description": "Top software development agency delivering web, mobile, AI, cloud, and enterprise solutions to clients globally.",
@@ -144,7 +144,7 @@ const AboutPage = () => {
               <span className="text-[#D97706]">Digital Future.</span>
             </h1>
             <p className="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
-              Nexspire is more than an agency. We are a collective of dreamers, doers, and creators dedicated to building software that matters.
+              Napnix is more than an agency. We are a collective of dreamers, doers, and creators dedicated to building software that matters.
             </p>
           </motion.div>
         </div>
@@ -183,7 +183,7 @@ const AboutPage = () => {
               <FadeIn {...FADE_IN_SMOOTH}>
                 <h2 className="text-4xl md:text-5xl font-bold mb-6">The Origin Story</h2>
                 <p className="text-xl text-slate-600 leading-relaxed">
-                  Founded in 2020, Nexspire began as a collective of passionate engineers and designers tired of the status quo. We saw a gap in the market for a development partner that truly understood both the <strong>technical</strong> and <strong>business</strong> aspects of building digital products.
+                  Founded in 2020, Napnix began as a collective of passionate engineers and designers tired of the status quo. We saw a gap in the market for a development partner that truly understood both the <strong>technical</strong> and <strong>business</strong> aspects of building digital products.
                 </p>
               </FadeIn>
 

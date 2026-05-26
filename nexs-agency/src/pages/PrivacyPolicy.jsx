@@ -6,20 +6,20 @@ const PrivacyPolicy = () => {
     return (
         <div className="pt-24 pb-16 bg-white min-h-screen">
             <Helmet>
-                <title>Privacy Policy | Nexspire Solutions</title>
-                <meta name="description" content="Read the Nexspire Solutions privacy policy. Learn how we collect, use, and protect your personal data." />
+                <title>Privacy Policy | Napnix</title>
+                <meta name="description" content="Read the Napnix privacy policy. Learn how we collect, use, and protect your personal data." />
                 <link rel="canonical" href={`${SITE_URL}/privacy-policy`} />
                 <meta name="robots" content="noindex, follow" />
-                <meta property="og:title" content="Privacy Policy | Nexspire Solutions" />
-                <meta property="og:description" content="Read the Nexspire Solutions privacy policy. Learn how we collect, use, and protect your personal data." />
+                <meta property="og:title" content="Privacy Policy | Napnix" />
+                <meta property="og:description" content="Read the Napnix privacy policy. Learn how we collect, use, and protect your personal data." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/privacy-policy`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Privacy Policy | Nexspire Solutions" />
-                <meta name="twitter:description" content="Read the Nexspire Solutions privacy policy. Learn how we collect, use, and protect your personal data." />
-                <meta property="og:site_name" content="Nexspire Solutions" />
-                <meta name="twitter:site" content="@nexspiresolutions" />
+                <meta name="twitter:title" content="Privacy Policy | Napnix" />
+                <meta name="twitter:description" content="Read the Napnix privacy policy. Learn how we collect, use, and protect your personal data." />
+                <meta property="og:site_name" content="Napnix" />
+                <meta name="twitter:site" content="@napnix" />
             </Helmet>
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h1 className="text-4xl font-bold text-slate-800 mb-8">Privacy Policy</h1>
@@ -31,7 +31,7 @@ const PrivacyPolicy = () => {
                     <section className="mb-12">
                         <h2 className="text-2xl font-bold text-slate-800 mb-4">1. Introduction</h2>
                         <p className="mb-4">
-                            Welcome to Nexspire Solutions. We respect your privacy and are committed to protecting your personal data. This privacy policy explains how we handle your data when you visit our website and what rights you have under applicable law.
+                            Welcome to Napnix. We respect your privacy and are committed to protecting your personal data. This privacy policy explains how we handle your data when you visit our website and what rights you have under applicable law.
                         </p>
                     </section>
 
@@ -65,7 +65,7 @@ const PrivacyPolicy = () => {
                             If you have any questions about this privacy policy or our privacy practices, please contact us at:
                         </p>
                         <div className="bg-[#F8FAFC] p-6 rounded-xl border border-slate-200">
-                            <p className="font-semibold text-slate-800">Nexspire Solutions</p>
+                            <p className="font-semibold text-slate-800">Napnix</p>
                             <p>Email: {siteConfig.email.info}</p>
                             <p>Support: {siteConfig.email.support}</p>
                             <p>Address: Mohali, SAS Nagar, Punjab, IN</p>

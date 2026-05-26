@@ -139,7 +139,7 @@ export default function ServicePageTemplate({ data }) {
         "@context": "https://schema.org",
         "@type": "Service",
         "name": schema.name,
-        "provider": { "@type": "Organization", "name": "Nexspire Solutions", "url": SITE_URL },
+        "provider": { "@type": "Organization", "name": "Napnix", "url": SITE_URL },
         "description": schema.description,
         "areaServed": "Global"
     };
@@ -159,11 +159,11 @@ export default function ServicePageTemplate({ data }) {
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
-                <meta property="og:site_name" content="Nexspire Solutions" />
+                <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:site" content="@nexspiresolutions" />
-                <meta name="twitter:creator" content="@nexspiresolutions" />
+                <meta name="twitter:site" content="@napnix" />
+                <meta name="twitter:creator" content="@napnix" />
                 <meta name="twitter:title" content={seo.twitterTitle || seo.title} />
                 <meta name="twitter:description" content={seo.twitterDescription || seo.description} />
                 <script type="application/ld+json">{JSON.stringify(serviceSchema)}</script>

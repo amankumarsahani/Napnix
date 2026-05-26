@@ -77,7 +77,7 @@ const Blog = memo(function Blog() {
             image: blog.imageUrl || `https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=400&h=250&fit=crop&fm=webp`,
             description: blog.excerpt || blog.title,
             tags: blog.category ? [blog.category] : ["Technology"],
-            author: blog.author || "Nexspire Team",
+            author: blog.author || "Napnix Team",
             date: new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
             readTime: blog.readTime || "5 min read",
             color: colors[index % colors.length],

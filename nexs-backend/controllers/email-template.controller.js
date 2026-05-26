@@ -291,7 +291,7 @@ class EmailTemplateController {
             const emailService = require('../services/email.service');
             const result = await emailService.sendEmail({
                 to,
-                subject: emailSubject || 'Message from Nexspire Solutions',
+                subject: emailSubject || 'Message from Napnix',
                 html: emailHtml,
                 attachments: processedAttachments
             });

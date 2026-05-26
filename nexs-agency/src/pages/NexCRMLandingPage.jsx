@@ -130,12 +130,12 @@ export default function NexCRMLandingPage() {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-hidden selection:bg-[#2563EB]/10">
             <Helmet>
-                <title>NexCRM - All-in-One CRM for Agencies &amp; Businesses | Nexspire Solutions</title>
+                <title>NexCRM - All-in-One CRM for Agencies &amp; Businesses | Napnix</title>
                 <meta name="description" content="NexCRM is the complete operating system for modern agencies. Integrated lead management, e-commerce, invoicing, team chat, and client portals — starting at $49/month." />
                 <meta name="keywords" content="CRM for agencies India, NexCRM, all-in-one CRM software, agency management platform, lead management CRM, business CRM India, client portal CRM, project management CRM, affordable CRM software" />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/nexcrm`} />
-                <meta property="og:site_name" content="Nexspire Solutions" />
+                <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta property="og:title" content="NexCRM - All-in-One CRM for Agencies &amp; Businesses" />
                 <meta property="og:description" content="NexCRM is the complete operating system for modern agencies. Integrated lead management, e-commerce, invoicing, team chat, and client portals." />
@@ -145,8 +145,8 @@ export default function NexCRMLandingPage() {
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:site" content="@nexspiresolutions" />
-                <meta name="twitter:creator" content="@nexspiresolutions" />
+                <meta name="twitter:site" content="@napnix" />
+                <meta name="twitter:creator" content="@napnix" />
                 <meta name="twitter:title" content="NexCRM - All-in-One CRM for Agencies &amp; Businesses" />
                 <meta name="twitter:description" content="Integrated lead management, e-commerce, invoicing, team chat, and client portals — starting at $49/month." />
             </Helmet>
@@ -177,7 +177,7 @@ export default function NexCRMLandingPage() {
                 },
                 "provider": {
                     "@type": "Organization",
-                    "name": "Nexspire Solutions",
+                    "name": "Napnix",
                     "url": SITE_URL,
                     "telephone": siteConfig.phone.primary,
                     "email": siteConfig.email.primary

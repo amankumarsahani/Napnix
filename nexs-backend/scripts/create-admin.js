@@ -3,7 +3,7 @@ const { pool } = require('../config/database');
 
 async function createAdmin() {
     try {
-        const email = 'admin@nexspiresolutions.co.in';
+        const email = 'admin@napnix.in';
         const password = 'admin123';
         const first_name = 'Admin';
         const last_name = 'User';

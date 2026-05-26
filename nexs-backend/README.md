@@ -1,4 +1,4 @@
-# Nexspire Solutions Backend - Setup Guide
+# Napnix Backend - Setup Guide
 
 ## Prerequisites
 
@@ -18,7 +18,7 @@ Download and install MySQL from: https://dev.mysql.com/downloads/mysql/
 mysql -u root -p
 
 # Create database
-CREATE DATABASE nexspire_solutions;
+CREATE DATABASE napnix;
 
 # Exit MySQL
 exit
@@ -28,7 +28,7 @@ exit
 
 ```bash
 cd "e:\Smart Code\Freelance Project\Nexs\nexs-backend"
-mysql -u root -p nexspire_solutions < database/schema.sql
+mysql -u root -p napnix < database/schema.sql
 ```
 
 ### 4. Configure Environment
@@ -116,7 +116,7 @@ Server will run on: http://localhost:5000
 ## Default Admin Account
 
 After running the schema.sql:
-- Email: admin@nexspiresolutions.co.in
+- Email: admin@napnix.in
 - Password: admin123
 
 **⚠️ Change this password immediately in production!**
@@ -130,7 +130,7 @@ See `DEPLOYMENT.md` for production deployment guide.
 **Error: "MySQL Database connection failed"**
 - Check if MySQL is running
 - Verify database credentials in `.env`
-- Ensure `nexspire_solutions` database exists
+- Ensure `napnix` database exists
 
 **Error: "Table doesn't exist"**
 - Run the schema.sql file to create tables

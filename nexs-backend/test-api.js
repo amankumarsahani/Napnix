@@ -40,7 +40,7 @@ async function testSignUp() {
         method: 'POST',
         skipAuth: true,
         body: JSON.stringify({
-            email: 'testuser@nexspire.com',
+            email: 'testuser@napnix.com',
             password: 'password123',
             firstName: 'Test',
             lastName: 'User'
@@ -59,7 +59,7 @@ async function testSignIn() {
         method: 'POST',
         skipAuth: true,
         body: JSON.stringify({
-            email: 'testuser@nexspire.com',
+            email: 'testuser@napnix.com',
             password: 'password123'
         })
     });
@@ -81,7 +81,7 @@ async function testCreateTeamMember() {
         method: 'POST',
         body: JSON.stringify({
             name: 'Alice Johnson',
-            email: 'alice@nexspire.com',
+            email: 'alice@napnix.com',
             phone: '+1234567890',
             position: 'Senior Developer',
             department: 'Engineering',
@@ -145,7 +145,7 @@ async function testSendMessage() {
         method: 'POST',
         body: JSON.stringify({
             recipientId: userId,
-            subject: 'Welcome to NexSpire!',
+            subject: 'Welcome to Napnix!',
             message: 'This is a test message from the messaging system.'
         })
     });
@@ -170,7 +170,7 @@ async function testGetUnreadCount() {
 
 // Run all tests
 async function runAllTests() {
-    console.log('🧪 Starting API Tests for NexSpire Solutions Backend\n');
+    console.log('🧪 Starting API Tests for Napnix Backend\n');
     console.log('Server:', baseUrl);
     console.log('='.repeat(60));
 

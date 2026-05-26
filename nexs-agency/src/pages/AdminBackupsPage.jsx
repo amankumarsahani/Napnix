@@ -55,7 +55,7 @@ function SignInPanel() {
 
                 <div className="rounded-[2rem] bg-white p-8 text-slate-900 shadow-2xl shadow-slate-950/20">
                     <h2 className="font-display text-2xl font-bold">Admin Sign In</h2>
-                    <p className="mt-2 text-sm text-slate-600">Uses the existing Nexspire admin API auth.</p>
+                    <p className="mt-2 text-sm text-slate-600">Uses the existing Napnix admin API auth.</p>
 
                     <form onSubmit={handleSubmit} className="mt-8 space-y-5">
                         <div>
@@ -473,7 +473,7 @@ export default function AdminBackupsPage() {
         return (
             <>
                 <Helmet>
-                    <title>Backup Management | Nexspire Solutions</title>
+                    <title>Backup Management | Napnix</title>
                     <meta name="robots" content="noindex, nofollow" />
                 </Helmet>
                 <SignInPanel />
@@ -489,7 +489,7 @@ export default function AdminBackupsPage() {
         return (
             <>
                 <Helmet>
-                    <title>Backup Management | Nexspire Solutions</title>
+                    <title>Backup Management | Napnix</title>
                     <meta name="robots" content="noindex, nofollow" />
                 </Helmet>
                 <AccessDenied email={user?.email} onLogout={logout} />
@@ -500,7 +500,7 @@ export default function AdminBackupsPage() {
     return (
         <>
             <Helmet>
-                <title>Backup Management | Nexspire Solutions</title>
+                <title>Backup Management | Napnix</title>
                 <meta name="robots" content="noindex, nofollow" />
             </Helmet>
 

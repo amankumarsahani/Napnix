@@ -133,15 +133,15 @@ const TeamController = {
             if (isNewUser) {
                 try {
                     const EmailService = require('../services/email.service');
-                    const loginUrl = process.env.ADMIN_URL || 'https://admin.nexspiresolutions.co.in';
+                    const loginUrl = process.env.ADMIN_URL || 'https://admin.napnix.in';
 
                     await EmailService.sendEmail({
                         to: email,
-                        subject: '🎉 Welcome to Nexspire Solutions - Your Account Details',
+                        subject: '🎉 Welcome to Napnix - Your Account Details',
                         html: `
                             <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
                                 <div style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); padding: 40px 30px; text-align: center; border-radius: 8px 8px 0 0;">
-                                    <h1 style="color: white; margin: 0; font-size: 28px;">Welcome to Nexspire Solutions!</h1>
+                                    <h1 style="color: white; margin: 0; font-size: 28px;">Welcome to Napnix!</h1>
                                     <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0;">Your team account has been created</p>
                                 </div>
                                 
@@ -149,7 +149,7 @@ const TeamController = {
                                     <p style="font-size: 16px; color: #374151;">Hi <strong>${name}</strong>,</p>
                                     
                                     <p style="font-size: 15px; color: #6b7280; line-height: 1.6;">
-                                        You've been invited to join the Nexspire Solutions team as <strong>${position || 'Team Member'}</strong>
+                                        You've been invited to join the Napnix team as <strong>${position || 'Team Member'}</strong>
                                         ${department ? ` in the <strong>${department}</strong> department` : ''}.
                                     </p>
                                     
@@ -185,13 +185,13 @@ const TeamController = {
                                     
                                     <p style="font-size: 14px; color: #374151; margin-top: 20px;">
                                         Welcome aboard! 🚀<br>
-                                        <strong>The Nexspire Solutions Team</strong>
+                                        <strong>The Napnix Team</strong>
                                     </p>
                                 </div>
                                 
                                 <div style="background: #f1f5f9; padding: 20px; text-align: center; border-radius: 0 0 8px 8px;">
                                     <p style="margin: 0; font-size: 12px; color: #64748b;">
-                                        © ${new Date().getFullYear()} Nexspire Solutions. All rights reserved.
+                                        © ${new Date().getFullYear()} Napnix. All rights reserved.
                                     </p>
                                 </div>
                             </div>

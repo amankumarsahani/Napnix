@@ -3,8 +3,8 @@ const baseUrl = 'http://localhost:5000';
 
 async function testLogin() {
     const credentials = [
-        { email: 'admin@nexspire.com', password: 'admin123' },
-        { email: 'testuser@nexspire.com', password: 'password123' }
+        { email: 'admin@napnix.com', password: 'admin123' },
+        { email: 'testuser@napnix.com', password: 'password123' }
     ];
 
     for (const cred of credentials) {

@@ -7,7 +7,7 @@ const db = require('../config/database');
 
 router.get('/sitemap.xml', async (req, res) => {
     try {
-        const siteUrl = process.env.WEBSITE_URL || process.env.FRONTEND_URL || 'https://nexspiresolutions.co.in';
+        const siteUrl = process.env.WEBSITE_URL || process.env.FRONTEND_URL || 'https://napnix.in';
 
         const [blogs] = await db.query(
             `SELECT slug, updated_at FROM blogs WHERE status = 'published' ORDER BY updated_at DESC`

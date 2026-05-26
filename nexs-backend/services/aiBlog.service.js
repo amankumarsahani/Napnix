@@ -1,7 +1,7 @@
 /**
  * AI Blog Service
  * Handles AI-powered blog content generation with Unsplash images
- * For NexSpire Solutions Admin Panel
+ * For Napnix Admin Panel
  */
 
 const axios = require('axios');
@@ -442,7 +442,7 @@ Return ONLY JSON:
     }
 
     /**
-     * Post blog to NexSpire Solutions database
+     * Post blog to Napnix database
      * @param {object} blogData - Complete blog data
      * @returns {Promise<object>} Created blog
      */

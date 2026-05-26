@@ -5,12 +5,12 @@ This repository contains two projects that are deployed together to GitHub Pages
 ## Projects
 
 ### 1. Nexs-Agency (Public Website)
-- **URL**: https://nexspiresolutions.co.in
+- **URL**: https://napnix.in
 - **Path**: Root (`/`)
 - **Source**: `nexs-agency/`
 
 ### 2. Nexs-Admin (Admin Dashboard)
--**URL**: https://admin.nexspiresolutions.co.in
+-**URL**: https://admin.napnix.in
 - **Path**: `/nexs-admin/`
 - **Source**: `nexs-admin/`
 
@@ -38,7 +38,7 @@ Both projects will be built and deployed automatically.
 
 ### Monitoring
 
-- GitHub Actions: https://github.com/amankumarsahani/NexSpireSolutions/actions
+- GitHub Actions: https://github.com/amankumarsahani/Napnix/actions
 - Build typically takes 3-7 minutes for both projects
 
 ## DNS Configuration
@@ -47,7 +47,7 @@ Both projects will be built and deployed automatically.
 Already configured ✅
 ```
 Type: CNAME
-Name: @ or nexspiresolutions.co.in
+Name: @ or napnix.in
 Target: amankumarsahani.github.io
 ```
 
@@ -66,7 +66,7 @@ TTL: Auto
 **Do NOT change the GitHub Pages source** - it's already correctly configured for nexs-agency and will now serve both projects.
 
 Custom domains:
-- Primary: `nexspiresolutions.co.in` (already set)
+- Primary: `napnix.in` (already set)
 - The admin subdomain will automatically work via DNS CNAME
 
 ## Important Notes

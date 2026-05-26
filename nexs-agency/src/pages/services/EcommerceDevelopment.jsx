@@ -73,13 +73,13 @@ const data = {
     },
     seo: {
         title: 'E-commerce Development Services | Shopify & Custom Stores',
-        description: 'Build high-conversion online stores with Nexspire. Experts in Shopify, WooCommerce, and Headless Commerce solutions.',
+        description: 'Build high-conversion online stores with Napnix. Experts in Shopify, WooCommerce, and Headless Commerce solutions.',
         keywords: 'ecommerce development India, online store development, Shopify development, custom ecommerce platform, ecommerce website Mohali, WooCommerce development, headless commerce India',
         canonicalPath: '/services/ecommerce-development',
         ogTitle: 'E-commerce Development Services | Shopify & Custom Stores',
-        ogDescription: 'Build high-conversion online stores with Nexspire. Experts in Shopify, WooCommerce, and Headless Commerce solutions.',
+        ogDescription: 'Build high-conversion online stores with Napnix. Experts in Shopify, WooCommerce, and Headless Commerce solutions.',
         twitterTitle: 'E-commerce Development Services | Shopify & Custom Stores',
-        twitterDescription: 'Build high-conversion online stores with Nexspire. Experts in Shopify, WooCommerce, and Headless Commerce solutions.',
+        twitterDescription: 'Build high-conversion online stores with Napnix. Experts in Shopify, WooCommerce, and Headless Commerce solutions.',
     },
     schema: {
         name: 'E-commerce Development',

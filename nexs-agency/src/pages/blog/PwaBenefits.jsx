@@ -16,7 +16,7 @@ const PwaBenefits = () => {
         },
         "publisher": {
             "@type": "Organization",
-            "name": "Nexspire Solutions",
+            "name": "Napnix",
             "url": SITE_URL,
             "logo": { "@type": "ImageObject", "url": `${SITE_URL}/logo.png` }
         },
@@ -27,27 +27,27 @@ const PwaBenefits = () => {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white pt-20">
             <Helmet>
-                <title>Benefits of Progressive Web Apps (PWA) | Nexspire Web Dev</title>
+                <title>Benefits of Progressive Web Apps (PWA) | Napnix Web Dev</title>
                 <meta name="description" content="Progressive Web Apps (PWAs) offer the best of web and mobile. Learn how they boost conversion rates, improve SEO, and cut development costs." />
                 <link rel="canonical" href={`${SITE_URL}/blog/why-business-needs-pwa`} />
-                <meta property="og:title" content="Benefits of Progressive Web Apps (PWA) | Nexspire Web Dev" />
+                <meta property="og:title" content="Benefits of Progressive Web Apps (PWA) | Napnix Web Dev" />
                 <meta property="og:description" content="Progressive Web Apps (PWAs) offer the best of web and mobile. Learn how they boost conversion rates and cut development costs." />
                 <meta property="og:type" content="article" />
                 <meta property="og:url" content={`${SITE_URL}/blog/why-business-needs-pwa`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Benefits of Progressive Web Apps (PWA) | Nexspire Web Dev" />
+                <meta name="twitter:title" content="Benefits of Progressive Web Apps (PWA) | Napnix Web Dev" />
                 <meta name="twitter:description" content="Progressive Web Apps (PWAs) offer the best of web and mobile. Learn how they boost conversion rates and cut development costs." />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <meta name="keywords" content="progressive web app benefits, PWA vs native app, PWA development India, progressive web application advantages, offline web app, mobile web app, PWA for business" />
-                <meta property="og:site_name" content="Nexspire Solutions" />
+                <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
-                <meta name="twitter:site" content="@nexspiresolutions" />
-                <meta name="twitter:creator" content="@nexspiresolutions" />
+                <meta name="twitter:site" content="@napnix" />
+                <meta name="twitter:creator" content="@napnix" />
                 <meta property="article:published_time" content="2024-03-30" />
-                <meta property="article:author" content="Nexspire Solutions" />
+                <meta property="article:author" content="Napnix" />
                 <script type="application/ld+json">
                     {JSON.stringify(articleSchema)}
                 </script>

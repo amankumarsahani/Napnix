@@ -73,13 +73,13 @@ const data = {
     },
     seo: {
         title: 'Mobile App Development Services | iOS & Android',
-        description: 'Create engaging native and cross-platform mobile apps with Nexspire. Expert Flutter, React Native, and Swift developers.',
+        description: 'Create engaging native and cross-platform mobile apps with Napnix. Expert Flutter, React Native, and Swift developers.',
         keywords: 'mobile app development India, React Native development, iOS Android app development, cross-platform mobile app, mobile app company Mohali, Flutter development India, custom mobile solutions',
         canonicalPath: '/services/mobile-app-development',
         ogTitle: 'Mobile App Development Services | iOS & Android',
-        ogDescription: 'Create engaging native and cross-platform mobile apps with Nexspire. Expert Flutter, React Native, and Swift developers.',
+        ogDescription: 'Create engaging native and cross-platform mobile apps with Napnix. Expert Flutter, React Native, and Swift developers.',
         twitterTitle: 'Mobile App Development Services | iOS & Android',
-        twitterDescription: 'Create engaging native and cross-platform mobile apps with Nexspire. Expert Flutter, React Native, and Swift developers.',
+        twitterDescription: 'Create engaging native and cross-platform mobile apps with Napnix. Expert Flutter, React Native, and Swift developers.',
     },
     schema: {
         name: 'Mobile App Development',

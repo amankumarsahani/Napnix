@@ -7,9 +7,9 @@ const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 // ⚠️ IMPORTANT: Change this secret and keep it safe!
-const SECRET = 'nexspire-webhook-secret-2024';
+const SECRET = 'napnix-webhook-secret-2024';
 const PORT = 9000;
-const REPO_PATH = '/var/www/html/NexSpireSolutions';
+const REPO_PATH = '/var/www/html/Napnix';
 
 // Email configuration
 const DEPLOY_NOTIFY_EMAILS = process.env.DEPLOY_NOTIFY_EMAILS || process.env.NOTIFICATION_EMAILS || '';
@@ -98,7 +98,7 @@ async function sendDeploymentNotification({ status, pusher, commit, duration, er
             </div>
             
             <div style="background: #1e293b; color: #94a3b8; padding: 16px 24px; border-radius: 0 0 12px 12px; text-align: center; font-size: 12px;">
-                NexSpire Solutions Auto-Deploy System
+                Napnix Auto-Deploy System
             </div>
         </div>
     `;
@@ -107,7 +107,7 @@ async function sendDeploymentNotification({ status, pusher, commit, duration, er
         await transporter.sendMail({
             from: `"Deploy Bot" <${process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER}>`,
             to: recipients.join(', '),
-            subject: `${emoji} Deployment ${statusText}: NexSpire Solutions`,
+            subject: `${emoji} Deployment ${statusText}: Napnix`,
             html
         });
         console.log(`📧 Deployment notification sent to: ${recipients.join(', ')}`);
@@ -320,7 +320,7 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
     console.log(`\n${'='.repeat(60)}`);
-    console.log(`🎯 NEXSPIRE AUTO-DEPLOY WEBHOOK SERVER`);
+    console.log(`🎯 NAPNIX AUTO-DEPLOY WEBHOOK SERVER`);
     console.log(`${'='.repeat(60)}`);
     console.log(`   Port:     ${PORT}`);
     console.log(`   Health:   http://localhost:${PORT}/health`);

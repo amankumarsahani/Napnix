@@ -41,7 +41,7 @@ const runSetup = async () => {
                 await connection.query(statement);
             } catch (err) {
                 // If error is "No database selected" and we are running other queries, 
-                // the schema.sql acts to select it: "USE nexspire_solutions;"
+                // the schema.sql acts to select it: "USE napnix;"
                 // But generally schema.sql should contain CREATE DB and USE DB.
                 console.error(`Error executing statement: ${statement.substring(0, 50)}...`);
                 console.error(err.message);
@@ -55,7 +55,7 @@ const runSetup = async () => {
         console.log('🔄 Initializing migrations table...');
 
         // Ensure we are using the correct DB now
-        await connection.query(`USE ${process.env.DB_NAME || 'nexspire_solutions'}`);
+        await connection.query(`USE ${process.env.DB_NAME || 'napnix'}`);
 
         await connection.query(`
             CREATE TABLE IF NOT EXISTS migrations (

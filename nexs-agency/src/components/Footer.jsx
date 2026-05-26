@@ -41,7 +41,7 @@ const Footer = memo(function Footer() {
           <div className="grid lg:grid-cols-4 gap-8">
             <div className="lg:col-span-1">
               <Link to="/" className="text-2xl font-bold text-white mb-4 inline-block">
-                Nexspire Solutions
+                Napnix
               </Link>
               <p className="text-slate-400 mb-6 leading-relaxed">
                 We build custom software, CRM systems, AI workflows, and growth-ready websites for businesses that need qualified leads and reliable delivery.
@@ -90,7 +90,7 @@ const Footer = memo(function Footer() {
             <div>
               <h3 className="text-xl font-semibold mb-2">Stay Connected</h3>
               <p className="text-slate-400">
-                Follow us for product updates, engineering insights, and new delivery work from the Nexspire team.
+                Follow us for product updates, engineering insights, and new delivery work from the Napnix team.
               </p>
             </div>
             <div className="flex space-x-4">
@@ -114,7 +114,7 @@ const Footer = memo(function Footer() {
         <div className="border-t border-slate-800 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-slate-400 text-sm">
-              Copyright {currentYear} Nexspire Solutions. All rights reserved.
+              Copyright {currentYear} Napnix. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link to="/privacy-policy" className="text-slate-400 hover:text-white text-sm transition-colors">

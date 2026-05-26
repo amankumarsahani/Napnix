@@ -46,7 +46,7 @@ const templates = [
     
     <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
     <p style="color: #64748b; font-size: 12px; text-align: center;">
-        Prepared by Nexspire Solutions | {{date}}
+        Prepared by Napnix | {{date}}
     </p>
 </div>`,
         variables: ["contact_name", "email", "phone", "company_name", "date", "discussion_points", "pain_points", "requirements", "budget", "timeline", "next_steps"]
@@ -100,7 +100,7 @@ const templates = [
     
     <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 40px 0 20px;">
     <p style="color: #94a3b8; font-size: 12px; text-align: center;">
-        Nexspire Solutions | Proposal Valid Until: {{valid_until}}
+        Napnix | Proposal Valid Until: {{valid_until}}
     </p>
 </div>`,
         variables: ["contact_name", "company_name", "executive_summary", "project_scope", "deliverables", "total_cost", "payment_terms", "project_timeline", "why_us", "our_email", "valid_until"]
@@ -118,7 +118,7 @@ const templates = [
     
     <div style="margin-bottom: 30px;">
         <h2 style="color: #1e293b;">Getting Started</h2>
-        <p style="color: #475569; line-height: 1.8;">Welcome to Nexspire Solutions! We're excited to begin our partnership with {{company_name}}. This document will guide you through our onboarding process.</p>
+        <p style="color: #475569; line-height: 1.8;">Welcome to Napnix! We're excited to begin our partnership with {{company_name}}. This document will guide you through our onboarding process.</p>
     </div>
     
     <div style="background: #f8fafc; padding: 25px; border-radius: 12px; margin-bottom: 30px;">
@@ -153,7 +153,7 @@ const templates = [
     
     <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 40px 0 20px;">
     <p style="color: #94a3b8; font-size: 12px; text-align: center;">
-        Nexspire Solutions | Let's build something amazing together!
+        Napnix | Let's build something amazing together!
     </p>
 </div>`,
         variables: ["contact_name", "company_name", "project_name", "start_date", "account_manager", "manager_email", "requirements_from_client", "next_steps", "communication_channels", "support_email"]
@@ -174,7 +174,7 @@ const templates = [
     </p>
     
     <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-        <p style="margin: 0;"><strong>Disclosing Party:</strong> Nexspire Solutions</p>
+        <p style="margin: 0;"><strong>Disclosing Party:</strong> Napnix</p>
         <p style="margin: 10px 0 0;"><strong>Receiving Party:</strong> {{company_name}} ("{{contact_name}}")</p>
     </div>
     
@@ -204,7 +204,7 @@ const templates = [
     <div style="margin-top: 50px;">
         <div style="display: inline-block; width: 45%;">
             <p style="border-top: 1px solid #1e293b; padding-top: 10px; margin-top: 60px;">
-                <strong>Nexspire Solutions</strong><br>
+                <strong>Napnix</strong><br>
                 <span style="color: #64748b;">Date: {{effective_date}}</span>
             </p>
         </div>
@@ -232,7 +232,7 @@ const templates = [
             <p style="color: #64748b; margin: 5px 0;">Due Date: {{due_date}}</p>
         </div>
         <div style="float: right; text-align: right;">
-            <h2 style="color: #1e293b; margin: 0;">Nexspire Solutions</h2>
+            <h2 style="color: #1e293b; margin: 0;">Napnix</h2>
             <p style="color: #64748b; margin: 5px 0;">{{our_address}}</p>
             <p style="color: #64748b; margin: 5px 0;">{{our_email}}</p>
         </div>
@@ -289,7 +289,7 @@ const templates = [
     
     <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 40px 0 20px;">
     <p style="color: #94a3b8; font-size: 12px; text-align: center;">
-        Thank you for your business! | Nexspire Solutions
+        Thank you for your business! | Napnix
     </p>
 </div>`,
         variables: ["invoice_number", "invoice_date", "due_date", "our_address", "our_email", "contact_name", "company_name", "client_email", "item_description", "quantity", "rate", "amount", "subtotal", "tax_rate", "tax_amount", "total_amount", "payment_instructions"]
@@ -307,7 +307,7 @@ const templates = [
     
     <div style="margin-bottom: 30px;">
         <h2 style="color: #1e293b;">Project Summary</h2>
-        <p style="color: #475569; line-height: 1.8;">We are pleased to inform you that your project with Nexspire Solutions has been successfully completed.</p>
+        <p style="color: #475569; line-height: 1.8;">We are pleased to inform you that your project with Napnix has been successfully completed.</p>
     </div>
     
     <div style="background: #f8fafc; padding: 25px; border-radius: 12px; margin-bottom: 30px;">
@@ -346,7 +346,7 @@ const templates = [
     </div>
     
     <div style="background: #ecfdf5; padding: 25px; border-radius: 12px; text-align: center;">
-        <h3 style="color: #059669; margin-top: 0;">Thank You for Choosing Nexspire Solutions!</h3>
+        <h3 style="color: #059669; margin-top: 0;">Thank You for Choosing Napnix!</h3>
         <p style="color: #047857; margin-bottom: 0;">We hope to work with you again in the future. Contact us anytime at {{support_email}}</p>
     </div>
 </div>`,
@@ -367,12 +367,12 @@ const templates = [
                     <div style="width: 48px; height: 48px; background: #4f46e5; border-radius: 10px; display: inline-block; text-align: center; line-height: 48px;">
                         <span style="color: #ffffff; font-size: 22px; font-weight: bold;">N</span>
                     </div>
-                    <span style="font-size: 22px; font-weight: 700; color: #1e293b; margin-left: 12px; vertical-align: middle;">Nexspire Solutions</span>
+                    <span style="font-size: 22px; font-weight: 700; color: #1e293b; margin-left: 12px; vertical-align: middle;">Napnix</span>
                 </td>
                 <td style="text-align: right; vertical-align: top; color: #64748b; font-size: 13px;">
-                    Nexspire Solutions Pvt. Ltd.<br>
+                    Napnix Pvt. Ltd.<br>
                     {{business_address}}<br>
-                    support@nexspiresolutions.co.in
+                    support@napnix.in
                 </td>
             </tr>
         </table>
@@ -390,7 +390,7 @@ const templates = [
         <h2 style="color: #4f46e5; font-size: 18px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">1. PARTIES</h2>
         <p style="margin: 15px 0;">This Service Agreement ("Agreement") is entered into between:</p>
         <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #4f46e5;">
-            <p style="margin: 0 0 10px;"><strong>Provider:</strong> Nexspire Solutions Pvt. Ltd. ("NexSpire", "Provider")</p>
+            <p style="margin: 0 0 10px;"><strong>Provider:</strong> Napnix Pvt. Ltd. ("Napnix", "Provider")</p>
             <p style="margin: 0;">Address: {{business_address}}</p>
         </div>
         <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #10b981;">
@@ -529,7 +529,7 @@ const templates = [
             <tr>
                 <td style="width: 45%; vertical-align: top;">
                     <div style="border-bottom: 1px solid #1e293b; padding-bottom: 8px; margin-bottom: 10px; min-height: 60px;"></div>
-                    <p style="margin: 0; font-weight: 700; color: #1e293b;">Nexspire Solutions Pvt. Ltd.</p>
+                    <p style="margin: 0; font-weight: 700; color: #1e293b;">Napnix Pvt. Ltd.</p>
                     <p style="margin: 4px 0; color: #64748b; font-size: 13px;">Authorized Signatory (Provider)</p>
                     <p style="margin: 4px 0; color: #64748b; font-size: 13px;">Date: {{agreement_date}}</p>
                 </td>
@@ -546,7 +546,7 @@ const templates = [
 
     <!-- Footer -->
     <div style="border-top: 2px solid #e2e8f0; padding-top: 20px; margin-top: 50px; text-align: center;">
-        <p style="color: #64748b; font-size: 12px; margin: 0;">Nexspire Solutions Pvt. Ltd. | support@nexspiresolutions.co.in | nexspiresolutions.co.in</p>
+        <p style="color: #64748b; font-size: 12px; margin: 0;">Napnix Pvt. Ltd. | support@napnix.in | napnix.in</p>
         <p style="color: #94a3b8; font-size: 11px; margin: 8px 0 0;">This document is a legally binding agreement. Please retain a copy for your records.</p>
     </div>
 </div>`,

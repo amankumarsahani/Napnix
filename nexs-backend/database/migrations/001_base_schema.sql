@@ -1,4 +1,4 @@
--- Base Schema for NexSpire Solutions
+-- Base Schema for Napnix
 -- This must run FIRST before any other migrations
 
 -- ============================================

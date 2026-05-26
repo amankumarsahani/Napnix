@@ -1,8 +1,8 @@
 /* TEAM */
-  Company: Nexspire Solutions
+  Company: Napnix
   Location: Worldwide
-  Website: https://nexspiresolutions.co.in/
-  Contact: info@nexspire.co.in
+  Website: https://napnix.in/
+  Contact: info@napnix.in
 
 /* SITE */
   Last update: 2024/01/01
@@ -44,7 +44,7 @@
                                ,'/ o \`.
                              ,'  \___/  `.
                            ,'             `.
-                         ,'     NEXSPIRE   `.
+                         ,'      NAPNIX    `.
                        ,'        SOLUTION     `.
                      ,'                         `.
                    ,'             ^               `.

@@ -1,7 +1,7 @@
 {
-    "name": "nexspire-solutions-backend",
+    "name": "napnix-solutions-backend",
     "version": "1.0.0",
-    "description": "Backend API for Nexspire Solutions business management platform",
+    "description": "Backend API for Napnix business management platform",
     "main": "server.js",
     "scripts": {
         "start": "node server.js",
@@ -16,7 +16,7 @@
         "business-management",
         "crm"
     ],
-    "author": "Nexspire Solutions",
+    "author": "Napnix",
     "license": "ISC",
     "dependencies": {
         "axios": "^1.13.2",

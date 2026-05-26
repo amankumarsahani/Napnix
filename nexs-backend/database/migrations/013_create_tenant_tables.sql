@@ -1,5 +1,5 @@
 -- NexCRM Multi-Tenant Schema
--- Run on nexspire_solutions database
+-- Run on napnix database
 
 -- ============================================
 -- PLANS TABLE

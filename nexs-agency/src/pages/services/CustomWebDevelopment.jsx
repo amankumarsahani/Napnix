@@ -73,13 +73,13 @@ const data = {
     },
     seo: {
         title: 'Custom Web Development Services | Enterprise Solutions',
-        description: 'Build scalable, high-performance web applications with Nexspire. Expert React, Next.js, and Node.js developers delivering custom solutions for global brands.',
+        description: 'Build scalable, high-performance web applications with Napnix. Expert React, Next.js, and Node.js developers delivering custom solutions for global brands.',
         keywords: 'custom web development India, bespoke web application, React development company, Next.js development, full stack web development Mohali, enterprise web solutions, scalable web applications',
         canonicalPath: '/services/custom-web-development',
         ogTitle: 'Custom Web Development Services | Enterprise Solutions',
-        ogDescription: 'Build scalable, high-performance web applications with Nexspire. Expert React, Next.js, and Node.js developers.',
+        ogDescription: 'Build scalable, high-performance web applications with Napnix. Expert React, Next.js, and Node.js developers.',
         twitterTitle: 'Custom Web Development Services | Enterprise Solutions',
-        twitterDescription: 'Build scalable, high-performance web applications with Nexspire. Expert React, Next.js, and Node.js developers.',
+        twitterDescription: 'Build scalable, high-performance web applications with Napnix. Expert React, Next.js, and Node.js developers.',
     },
     schema: {
         name: 'Custom Web Development',

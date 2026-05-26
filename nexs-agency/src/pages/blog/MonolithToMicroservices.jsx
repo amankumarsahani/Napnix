@@ -16,7 +16,7 @@ const MonolithToMicroservices = () => {
         },
         "publisher": {
             "@type": "Organization",
-            "name": "Nexspire Solutions",
+            "name": "Napnix",
             "url": SITE_URL,
             "logo": { "@type": "ImageObject", "url": `${SITE_URL}/logo.png` }
         },
@@ -27,27 +27,27 @@ const MonolithToMicroservices = () => {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-cyan-600 selection:text-white pt-20">
             <Helmet>
-                <title>Monolith to Microservices Migration Guide | Nexspire Cloud</title>
+                <title>Monolith to Microservices Migration Guide | Napnix Cloud</title>
                 <meta name="description" content="Is your legacy monolith slowing you down? Learn the risks and rewards of migrating to a microservices architecture in 2026." />
                 <link rel="canonical" href={`${SITE_URL}/blog/monolith-to-microservices`} />
-                <meta property="og:title" content="Monolith to Microservices Migration Guide | Nexspire Cloud" />
+                <meta property="og:title" content="Monolith to Microservices Migration Guide | Napnix Cloud" />
                 <meta property="og:description" content="Is your legacy monolith slowing you down? Learn the risks and rewards of migrating to a microservices architecture." />
                 <meta property="og:type" content="article" />
                 <meta property="og:url" content={`${SITE_URL}/blog/monolith-to-microservices`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Monolith to Microservices Migration Guide | Nexspire Cloud" />
+                <meta name="twitter:title" content="Monolith to Microservices Migration Guide | Napnix Cloud" />
                 <meta name="twitter:description" content="Is your legacy monolith slowing you down? Learn the risks and rewards of migrating to a microservices architecture." />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <meta name="keywords" content="monolith to microservices, microservices migration, software architecture modernization, microservices India, legacy system migration, distributed systems, containerization Docker Kubernetes" />
-                <meta property="og:site_name" content="Nexspire Solutions" />
+                <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
-                <meta name="twitter:site" content="@nexspiresolutions" />
-                <meta name="twitter:creator" content="@nexspiresolutions" />
+                <meta name="twitter:site" content="@napnix" />
+                <meta name="twitter:creator" content="@napnix" />
                 <meta property="article:published_time" content="2024-03-25" />
-                <meta property="article:author" content="Nexspire Solutions" />
+                <meta property="article:author" content="Napnix" />
                 <script type="application/ld+json">
                     {JSON.stringify(articleSchema)}
                 </script>
@@ -115,7 +115,7 @@ const MonolithToMicroservices = () => {
                     <div className="bg-cyan-50 border-l-4 border-cyan-600 p-8 my-8 rounded-r-xl">
                         <h4 className="text-xl font-bold text-cyan-900 mb-2">Architectural Review</h4>
                         <p className="text-cyan-800 mb-0">
-                            Planning a migration? Nexspire's certified cloud architects can review your roadmap. <Link to="/services/cloud-solutions" className="underline font-bold">Learn about our Cloud Services</Link>.
+                            Planning a migration? Napnix's certified cloud architects can review your roadmap. <Link to="/services/cloud-solutions" className="underline font-bold">Learn about our Cloud Services</Link>.
                         </p>
                     </div>
 

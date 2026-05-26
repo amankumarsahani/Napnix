@@ -16,7 +16,7 @@ const AiTrends2026 = () => {
         },
         "publisher": {
             "@type": "Organization",
-            "name": "Nexspire Solutions",
+            "name": "Napnix",
             "url": SITE_URL,
             "logo": { "@type": "ImageObject", "url": `${SITE_URL}/logo.png` }
         },
@@ -27,27 +27,27 @@ const AiTrends2026 = () => {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white pt-20">
             <Helmet>
-                <title>Top 10 AI Trends Shaping Business in 2026 | Nexspire Insights</title>
+                <title>Top 10 AI Trends Shaping Business in 2026 | Napnix Insights</title>
                 <meta name="description" content="Discover the top AI trends for 2026 including Generative AI, Predictive Analytics, and Autonomous Agents. Learn how enterprises are leveraging these technologies." />
                 <link rel="canonical" href={`${SITE_URL}/blog/ai-trends-2026`} />
-                <meta property="og:title" content="Top 10 AI Trends Shaping Business in 2026 | Nexspire Insights" />
+                <meta property="og:title" content="Top 10 AI Trends Shaping Business in 2026 | Napnix Insights" />
                 <meta property="og:description" content="Discover the top AI trends for 2026 including Generative AI, Predictive Analytics, and Autonomous Agents." />
                 <meta property="og:type" content="article" />
                 <meta property="og:url" content={`${SITE_URL}/blog/ai-trends-2026`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Top 10 AI Trends Shaping Business in 2026 | Nexspire Insights" />
+                <meta name="twitter:title" content="Top 10 AI Trends Shaping Business in 2026 | Napnix Insights" />
                 <meta name="twitter:description" content="Discover the top AI trends for 2026 including Generative AI, Predictive Analytics, and Autonomous Agents." />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <meta name="keywords" content="AI trends 2026, artificial intelligence business, AI adoption India, machine learning trends, AI automation, generative AI business, enterprise AI solutions" />
-                <meta property="og:site_name" content="Nexspire Solutions" />
+                <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
-                <meta name="twitter:site" content="@nexspiresolutions" />
-                <meta name="twitter:creator" content="@nexspiresolutions" />
+                <meta name="twitter:site" content="@napnix" />
+                <meta name="twitter:creator" content="@napnix" />
                 <meta property="article:published_time" content="2024-03-15" />
-                <meta property="article:author" content="Nexspire Solutions" />
+                <meta property="article:author" content="Napnix" />
                 <script type="application/ld+json">
                     {JSON.stringify(articleSchema)}
                 </script>
@@ -116,7 +116,7 @@ const AiTrends2026 = () => {
                     <div className="bg-[#F8FAFC] border-l-4 border-blue-600 p-8 my-8 rounded-r-xl">
                         <h4 className="text-xl font-bold text-blue-900 mb-2">Need an AI Strategy?</h4>
                         <p className="text-blue-800 mb-0">
-                            Nexspire specializes in building custom AI solutions for enterprises. <Link to="/services/ai-machine-learning" className="underline font-bold">Explore our AI Services</Link>.
+                            Napnix specializes in building custom AI solutions for enterprises. <Link to="/services/ai-machine-learning" className="underline font-bold">Explore our AI Services</Link>.
                         </p>
                     </div>
 

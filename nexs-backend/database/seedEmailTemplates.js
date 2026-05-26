@@ -8,7 +8,7 @@ const templates = [
     {
         name: 'welcome-email',
         type: 'email',
-        subject: 'Welcome to Nexspire Solutions!',
+        subject: 'Welcome to Napnix!',
         html_content: `<!DOCTYPE html>
 <html>
 <head>
@@ -25,12 +25,12 @@ const templates = [
 <body>
     <div class="container">
         <div class="header">
-            <h1>Welcome to NexSpire!</h1>
+            <h1>Welcome to Napnix!</h1>
         </div>
         <div class="content">
             <p>Dear {{contact_name}},</p>
-            <p>Welcome to <strong>Nexspire Solutions</strong>! We are thrilled to have you on board.</p>
-            <p>At NexSpire, we are committed to delivering exceptional digital solutions that help businesses thrive in the modern landscape.</p>
+            <p>Welcome to <strong>Napnix</strong>! We are thrilled to have you on board.</p>
+            <p>At Napnix, we are committed to delivering exceptional digital solutions that help businesses thrive in the modern landscape.</p>
             <p>Here is what you can expect from us:</p>
             <ul>
                 <li>Cutting-edge web development solutions</li>
@@ -39,10 +39,10 @@ const templates = [
                 <li>Regular updates on your projects</li>
             </ul>
             <p>If you have any questions, feel free to reach out to us anytime.</p>
-            <a href="https://nexspiresolutions.co.in" class="btn">Visit Our Website</a>
+            <a href="https://napnix.in" class="btn">Visit Our Website</a>
         </div>
         <div class="footer">
-            <p>© ${new Date().getFullYear()} Nexspire Solutions. All rights reserved.</p>
+            <p>© ${new Date().getFullYear()} Napnix. All rights reserved.</p>
             <p>This email was sent to {{email}}</p>
         </div>
     </div>
@@ -55,7 +55,7 @@ const templates = [
     {
         name: 'project-proposal',
         type: 'email',
-        subject: 'Project Proposal from Nexspire Solutions',
+        subject: 'Project Proposal from Napnix',
         html_content: `<!DOCTYPE html>
 <html>
 <head>
@@ -77,7 +77,7 @@ const templates = [
         </div>
         <div class="content">
             <p>Dear {{contact_name}},</p>
-            <p>Thank you for considering <strong>Nexspire Solutions</strong> for your project. We are excited about the opportunity to work with {{company_name}}.</p>
+            <p>Thank you for considering <strong>Napnix</strong> for your project. We are excited about the opportunity to work with {{company_name}}.</p>
             <div class="highlight">
                 <h3 style="margin-top: 0;">Project Overview</h3>
                 <p>{{project_description}}</p>
@@ -93,7 +93,7 @@ const templates = [
             <a href="#" class="btn">View Full Proposal</a>
         </div>
         <div class="footer">
-            <p>© ${new Date().getFullYear()} Nexspire Solutions. All rights reserved.</p>
+            <p>© ${new Date().getFullYear()} Napnix. All rights reserved.</p>
         </div>
     </div>
 </body>
@@ -105,7 +105,7 @@ const templates = [
     {
         name: 'follow-up',
         type: 'email',
-        subject: 'Following Up - Nexspire Solutions',
+        subject: 'Following Up - Napnix',
         html_content: `<!DOCTYPE html>
 <html>
 <head>
@@ -127,13 +127,13 @@ const templates = [
         <div class="content">
             <p>Hi {{contact_name}},</p>
             <p>I wanted to follow up on our previous conversation regarding your project requirements.</p>
-            <p>I understand you might be busy, but I wanted to ensure you have all the information you need to make a decision. Our team at Nexspire Solutions is ready to help bring your vision to life.</p>
+            <p>I understand you might be busy, but I wanted to ensure you have all the information you need to make a decision. Our team at Napnix is ready to help bring your vision to life.</p>
             <p>Would you have time for a quick call this week to discuss the next steps?</p>
             <p>Looking forward to hearing from you!</p>
-            <a href="mailto:contact@nexspiresolutions.co.in" class="btn">Reply to This Email</a>
+            <a href="mailto:contact@napnix.in" class="btn">Reply to This Email</a>
         </div>
         <div class="footer">
-            <p>© ${new Date().getFullYear()} Nexspire Solutions. All rights reserved.</p>
+            <p>© ${new Date().getFullYear()} Napnix. All rights reserved.</p>
         </div>
     </div>
 </body>
@@ -186,7 +186,7 @@ const templates = [
             <a href="#" class="btn">View Project Dashboard</a>
         </div>
         <div class="footer">
-            <p>© ${new Date().getFullYear()} Nexspire Solutions. All rights reserved.</p>
+            <p>© ${new Date().getFullYear()} Napnix. All rights reserved.</p>
         </div>
     </div>
 </body>
@@ -198,7 +198,7 @@ const templates = [
     {
         name: 'thank-you',
         type: 'email',
-        subject: 'Thank You for Choosing Nexspire Solutions!',
+        subject: 'Thank You for Choosing Napnix!',
         html_content: `<!DOCTYPE html>
 <html>
 <head>
@@ -221,14 +221,14 @@ const templates = [
         <div class="content">
             <div class="icon-circle"></div>
             <p>Dear {{contact_name}},</p>
-            <p>We just wanted to take a moment to say <strong>THANK YOU</strong> for choosing Nexspire Solutions.</p>
+            <p>We just wanted to take a moment to say <strong>THANK YOU</strong> for choosing Napnix.</p>
             <p>Your trust in us means the world, and we are committed to exceeding your expectations.</p>
             <p>It has been a pleasure working with you and {{company_name}}. We look forward to continuing our partnership and helping you achieve even greater success.</p>
             <p>If there is anything we can do to make your experience better, please let us know!</p>
-            <a href="https://nexspiresolutions.co.in" class="btn">Stay Connected</a>
+            <a href="https://napnix.in" class="btn">Stay Connected</a>
         </div>
         <div class="footer">
-            <p>© ${new Date().getFullYear()} Nexspire Solutions. All rights reserved.</p>
+            <p>© ${new Date().getFullYear()} Napnix. All rights reserved.</p>
         </div>
     </div>
 </body>
@@ -264,7 +264,7 @@ const templates = [
         </div>
         <div class="content">
             <p>Hi {{contact_name}},</p>
-            <p>Your meeting with Nexspire Solutions has been confirmed!</p>
+            <p>Your meeting with Napnix has been confirmed!</p>
             <div class="meeting-box">
                 <div class="meeting-detail"><strong>Date:</strong> {{meeting_date}}</div>
                 <div class="meeting-detail"><strong>Time:</strong> {{meeting_time}}</div>
@@ -273,10 +273,10 @@ const templates = [
             </div>
             <p>Please make sure to join on time. If you need to reschedule, please let us know at least 24 hours in advance.</p>
             <a href="#" class="btn">Add to Calendar</a>
-            <a href="mailto:contact@nexspiresolutions.co.in" class="btn-outline">Reschedule</a>
+            <a href="mailto:contact@napnix.in" class="btn-outline">Reschedule</a>
         </div>
         <div class="footer">
-            <p>© ${new Date().getFullYear()} Nexspire Solutions. All rights reserved.</p>
+            <p>© ${new Date().getFullYear()} Napnix. All rights reserved.</p>
         </div>
     </div>
 </body>
@@ -288,7 +288,7 @@ const templates = [
     {
         name: 'tenant-agreement-email',
         type: 'email',
-        subject: 'Service Agreement - Nexspire Solutions | {{plan_name}} Plan',
+        subject: 'Service Agreement - Napnix | {{plan_name}} Plan',
         html_content: `<!DOCTYPE html>
 <html>
 <head>
@@ -322,12 +322,12 @@ const templates = [
 <body>
     <div class="container">
         <div class="header">
-            <h1>Nexspire Solutions</h1>
+            <h1>Napnix</h1>
             <p>Service Agreement</p>
         </div>
         <div class="content">
             <p>Dear <strong>{{tenant_name}}</strong>,</p>
-            <p>Thank you for choosing <strong>Nexspire Solutions</strong> as your CRM partner. We are delighted to welcome you on board.</p>
+            <p>Thank you for choosing <strong>Napnix</strong> as your CRM partner. We are delighted to welcome you on board.</p>
             <p>Please find attached your <strong>Service Agreement</strong> for the <strong>{{plan_name}}</strong> plan. This document outlines the terms and conditions of our engagement.</p>
 
             <div class="plan-box">
@@ -349,17 +349,17 @@ const templates = [
             <p><strong>Next Steps:</strong></p>
             <div class="steps">
                 <div class="step"><div class="step-num">1</div><div class="step-text">Review the attached Service Agreement carefully</div></div>
-                <div class="step"><div class="step-num">2</div><div class="step-text">Your NexCRM dashboard is being set up at <strong>{{tenant_slug}}.nexspiresolutions.co.in</strong></div></div>
+                <div class="step"><div class="step-num">2</div><div class="step-text">Your NexCRM dashboard is being set up at <strong>{{tenant_slug}}.napnix.in</strong></div></div>
                 <div class="step"><div class="step-num">3</div><div class="step-text">Our team will reach out to assist you with onboarding</div></div>
             </div>
 
             <p>If you have any questions about the agreement or need any modifications, please do not hesitate to contact us.</p>
 
-            <p>Best regards,<br><strong>Nexspire Solutions Team</strong></p>
+            <p>Best regards,<br><strong>Napnix Team</strong></p>
         </div>
         <div class="footer">
-            <p>&copy; ${new Date().getFullYear()} Nexspire Solutions. All rights reserved.</p>
-            <p><a href="https://nexspiresolutions.co.in">nexspiresolutions.co.in</a></p>
+            <p>&copy; ${new Date().getFullYear()} Napnix. All rights reserved.</p>
+            <p><a href="https://napnix.in">napnix.in</a></p>
             <p style="margin-top: 8px;">This email was sent to {{tenant_email}}</p>
         </div>
     </div>

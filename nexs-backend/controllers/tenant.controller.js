@@ -82,7 +82,7 @@ class TenantController {
                     slug: tenant.slug,
                     subdomain: tenant.subdomain,
                     status: tenant.status,
-                    apiUrl: `https://${tenant.slug}-crm-api.nexspiresolutions.co.in`
+                    apiUrl: `https://${tenant.slug}-crm-api.napnix.in`
                 }
             });
         } catch (error) {
@@ -771,7 +771,7 @@ class TenantController {
             let paymentLinkUrl = '';
             try {
                 // Point users back to their own CRM instance
-                const baseDomain = process.env.VITE_APP_BASE_DOMAIN || 'nexspiresolutions.co.in';
+                const baseDomain = process.env.VITE_APP_BASE_DOMAIN || 'napnix.in';
                 const tenantDomain = tenant.custom_domain || `${tenant.slug}-crm.${baseDomain}`;
                 const tenantUrl = tenantDomain.startsWith('http') ? tenantDomain : `https://${tenantDomain}`;
 
@@ -801,20 +801,20 @@ class TenantController {
 
             const html = `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
-                    <h2 style="color: #4f46e5;">Your Nexspire Trial Has Ended</h2>
+                    <h2 style="color: #4f46e5;">Your Napnix Trial Has Ended</h2>
                     <p>Hi ${tenant.name},</p>
-                    <p>We hope you enjoyed using Nexspire! Your free trial has concluded and your account has been temporarily suspended to prevent overages.</p>
+                    <p>We hope you enjoyed using Napnix! Your free trial has concluded and your account has been temporarily suspended to prevent overages.</p>
                     <p>To restore access to your CRM and storefront instantly, please securely complete payment using the Razorpay link below.</p>
                     ${paymentLinkUrl ? `<p style="margin: 30px 0;"><a href="${paymentLinkUrl}" style="padding: 12px 24px; background: #4f46e5; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">Pay Securely with Razorpay</a></p>` : ''}
                     <p>If you have any questions, please reach out to our team.</p>
                     <hr style="border: none; border-top: 1px solid #eaeaea; margin: 30px 0;" />
-                    <p style="font-size: 12px; color: #888;">&copy; ${new Date().getFullYear()} Nexspire Solutions</p>
+                    <p style="font-size: 12px; color: #888;">&copy; ${new Date().getFullYear()} Napnix</p>
                 </div>
             `;
 
             await EmailService.sendEmail({
                 to: tenant.email,
-                subject: 'Action Required: Your Nexspire Trial Has Ended',
+                subject: 'Action Required: Your Napnix Trial Has Ended',
                 html
             });
 
@@ -862,7 +862,7 @@ class TenantController {
             let paymentLinkUrl = '';
             try {
                 // Point users back to their own CRM instance
-                const baseDomain = process.env.VITE_APP_BASE_DOMAIN || 'nexspiresolutions.co.in';
+                const baseDomain = process.env.VITE_APP_BASE_DOMAIN || 'napnix.in';
                 const tenantDomain = tenant.custom_domain || `${tenant.slug}-crm.${baseDomain}`;
                 const tenantUrl = tenantDomain.startsWith('http') ? tenantDomain : `https://${tenantDomain}`;
 
@@ -900,18 +900,18 @@ class TenantController {
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
                     <h2 style="color: #4f46e5;">Action Required: Complete Your Subscription</h2>
                     <p>Hi ${tenant.name},</p>
-                    <p>Attached is the secure Razorpay payment link for your Nexspire CRM and storefront instance.</p>
+                    <p>Attached is the secure Razorpay payment link for your Napnix CRM and storefront instance.</p>
                     <p>Please click the button below to review your plan details and complete payment securely.</p>
                     <p style="margin: 30px 0;"><a href="${paymentLinkUrl}" style="padding: 12px 24px; background: #4f46e5; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">Review Plan & Pay</a></p>
                     <p>If you have any questions, please reach out to our team.</p>
                     <hr style="border: none; border-top: 1px solid #eaeaea; margin: 30px 0;" />
-                    <p style="font-size: 12px; color: #888;">&copy; ${new Date().getFullYear()} Nexspire Solutions</p>
+                    <p style="font-size: 12px; color: #888;">&copy; ${new Date().getFullYear()} Napnix</p>
                 </div>
             `;
 
             await EmailService.sendEmail({
                 to: tenant.email,
-                subject: 'Action Required: Submit Your Nexspire Subscription Payment',
+                subject: 'Action Required: Submit Your Napnix Subscription Payment',
                 html
             });
 
@@ -980,7 +980,7 @@ class TenantController {
 
             const invoiceNumber = `INV-T${tenant.id}-${billingMonthValue.replace('-', '')}-${Date.now().toString().slice(-6)}`;
 
-            const baseDomain = process.env.VITE_APP_BASE_DOMAIN || 'nexspiresolutions.co.in';
+            const baseDomain = process.env.VITE_APP_BASE_DOMAIN || 'napnix.in';
             const tenantDomain = tenant.custom_domain || `${tenant.slug}-crm.${baseDomain}`;
             const tenantUrl = tenantDomain.startsWith('http') ? tenantDomain : `https://${tenantDomain}`;
 
@@ -1055,8 +1055,8 @@ class TenantController {
                 invoice_number: invoiceNumber,
                 invoice_date: invoiceDateLabel,
                 due_date: dueDateLabel,
-                our_address: 'NexSpire Solutions, India',
-                our_email: process.env.SMTP_FROM_EMAIL || process.env.ZOHO_FROM_EMAIL || process.env.SMTP_USER || 'support@nexspiresolutions.co.in',
+                our_address: 'Napnix, India',
+                our_email: process.env.SMTP_FROM_EMAIL || process.env.ZOHO_FROM_EMAIL || process.env.SMTP_USER || 'support@napnix.in',
                 contact_name: tenant.owner_name || tenant.name,
                 company_name: tenant.business_name || tenant.name,
                 client_email: tenant.owner_email || tenant.email,
@@ -1079,7 +1079,7 @@ class TenantController {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice - NexSpire Solutions</title>
+    <title>Invoice - Napnix</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
     <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;padding:32px 16px;">
@@ -1142,10 +1142,10 @@ class TenantController {
 
             const emailResult = await emailService.sendEmail({
                 to: tenant.email,
-                subject: `Invoice for ${billingMonthLabel} - NexSpire Solutions`,
+                subject: `Invoice for ${billingMonthLabel} - Napnix`,
                 html: emailHtml,
                 attachments: [{
-                    filename: `Nexspire-Invoice-${tenant.slug}-${billingMonthValue}.pdf`,
+                    filename: `Napnix-Invoice-${tenant.slug}-${billingMonthValue}.pdf`,
                     content: pdfBuffer,
                     contentType: 'application/pdf'
                 }]
@@ -1318,7 +1318,7 @@ class TenantController {
                 start_date: startDate,
                 agreement_date: agreementDate,
                 trial_period: tenant.trial_days ? `${tenant.trial_days} days` : '14 days',
-                business_address: 'Nexspire Solutions, India',
+                business_address: 'Napnix, India',
                 custom_terms: 'No additional terms apply unless mutually agreed upon in writing by both parties.'
             };
 
@@ -1335,7 +1335,7 @@ class TenantController {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Agreement - NexSpire Solutions</title>
+    <title>Service Agreement - Napnix</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
     <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;padding:32px 16px;">
@@ -1356,7 +1356,7 @@ class TenantController {
                                 <tr>
                                     <td align="center">
                                         <h1 style="color:#ffffff;margin:0;font-size:22px;font-weight:600;">Service Agreement</h1>
-                                        <p style="color:rgba(255,255,255,0.8);margin:6px 0 0;font-size:14px;">NexSpire Solutions</p>
+                                        <p style="color:rgba(255,255,255,0.8);margin:6px 0 0;font-size:14px;">Napnix</p>
                                     </td>
                                 </tr>
                             </table>
@@ -1369,7 +1369,7 @@ class TenantController {
                                 Dear <strong>${tenantDisplayName}</strong>,
                             </p>
                             <p style="color:#475569;font-size:15px;line-height:1.7;margin:0 0 20px;">
-                                Thank you for choosing NexSpire Solutions. Please find attached your Service Agreement for the <strong>${variables.plan_name}</strong> plan.
+                                Thank you for choosing Napnix. Please find attached your Service Agreement for the <strong>${variables.plan_name}</strong> plan.
                             </p>
                             <p style="color:#475569;font-size:15px;line-height:1.7;margin:0 0 28px;">
                                 Please review the attached agreement carefully. If you have any questions, don't hesitate to reach out to our team.
@@ -1410,7 +1410,7 @@ class TenantController {
                                 Best regards,
                             </p>
                             <p style="color:#1e293b;font-size:14px;font-weight:600;margin:0;">
-                                NexSpire Solutions Team
+                                Napnix Team
                             </p>
                         </td>
                     </tr>
@@ -1421,7 +1421,7 @@ class TenantController {
                                 <tr>
                                     <td align="center">
                                         <p style="color:#94a3b8;font-size:12px;margin:0;">
-                                            &copy; ${new Date().getFullYear()} NexSpire Solutions Pvt. Ltd. All rights reserved.
+                                            &copy; ${new Date().getFullYear()} Napnix Pvt. Ltd. All rights reserved.
                                         </p>
                                     </td>
                                 </tr>
@@ -1438,10 +1438,10 @@ class TenantController {
             // Send email with PDF attachment
             const emailResult = await emailService.sendEmail({
                 to: variables.tenant_email,
-                subject: 'Service Agreement - NexSpire Solutions',
+                subject: 'Service Agreement - Napnix',
                 html: emailHtml,
                 attachments: [{
-                    filename: `Nexspire-Agreement-${tenant.slug}.pdf`,
+                    filename: `Napnix-Agreement-${tenant.slug}.pdf`,
                     content: pdfBuffer,
                     contentType: 'application/pdf'
                 }]

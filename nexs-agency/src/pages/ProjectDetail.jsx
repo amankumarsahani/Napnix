@@ -26,7 +26,7 @@ const ProjectDetail = () => {
         technologies: ["React", "Node.js", "AWS", "MongoDB"],
         image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&q=80&fm=webp",
         testimonial: {
-            text: "Nexspire transformed our digital presence. The team is incredibly talented and delivered beyond our expectations.",
+            text: "Napnix transformed our digital presence. The team is incredibly talented and delivered beyond our expectations.",
             author: "Jane Doe, CTO"
         }
     };
@@ -34,20 +34,20 @@ const ProjectDetail = () => {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white">
             <Helmet>
-                <title>{project.title} | Portfolio | Nexspire Solutions</title>
+                <title>{project.title} | Portfolio | Napnix</title>
                 <meta name="robots" content="noindex, nofollow" />
                 <meta name="description" content={`Case study: ${project.title}. See how we delivered exceptional results.`} />
                 <link rel="canonical" href={`${SITE_URL}/portfolio/${slug}`} />
-                <meta property="og:title" content={`${project.title} | Portfolio | Nexspire Solutions`} />
+                <meta property="og:title" content={`${project.title} | Portfolio | Napnix`} />
                 <meta property="og:description" content={`Case study: ${project.title}. See how we delivered exceptional results.`} />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/portfolio/${slug}`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content={`${project.title} | Portfolio | Nexspire Solutions`} />
+                <meta name="twitter:title" content={`${project.title} | Portfolio | Napnix`} />
                 <meta name="twitter:description" content={`Case study: ${project.title}. See how we delivered exceptional results.`} />
-                <meta property="og:site_name" content="Nexspire Solutions" />
-                <meta name="twitter:site" content="@nexspiresolutions" />
+                <meta property="og:site_name" content="Napnix" />
+                <meta name="twitter:site" content="@napnix" />
             </Helmet>
 
             {/* Breadcrumbs */}

@@ -6,7 +6,7 @@ const milestones = [
     {
         year: '2020',
         title: 'Founded',
-        description: 'Nexspire Solutions was born with a vision to deliver exceptional software.',
+        description: 'Napnix was born with a vision to deliver exceptional software.',
         icon: 'ri-arrow-right-up-line',
         color: 'blue'
     },

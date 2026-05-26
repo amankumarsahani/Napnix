@@ -8,7 +8,7 @@ async function createAdminUser() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                email: 'admin@nexspire.com',
+                email: 'admin@napnix.com',
                 password: 'admin123',
                 firstName: 'Admin',
                 lastName: 'User'
@@ -20,7 +20,7 @@ async function createAdminUser() {
 
         if (response.ok) {
             console.log('\n✅ Admin user created successfully!');
-            console.log('Email: admin@nexspire.com');
+            console.log('Email: admin@napnix.com');
             console.log('Password: admin123');
         } else {
             console.log('\n❌ Error:', data.error || data.message);

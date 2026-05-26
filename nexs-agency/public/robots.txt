@@ -51,4 +51,4 @@ Disallow: /
 User-agent: CCBot
 Disallow: /
 
-Sitemap: https://nexspiresolutions.co.in/sitemap.xml
+Sitemap: https://napnix.in/sitemap.xml

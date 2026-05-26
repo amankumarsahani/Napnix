@@ -184,14 +184,14 @@ export default function NexMailLandingPage() {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-hidden selection:bg-[#2563EB]/10">
             <Helmet>
-                <title>NexMail - Email Marketing Engine by Nexspire | SMTP Rotation, Anti-Spam, Automations</title>
+                <title>NexMail - Email Marketing Engine by Napnix | SMTP Rotation, Anti-Spam, Automations</title>
                 <meta name="description" content="NexMail is an enterprise email marketing engine with smart SMTP rotation, anti-spam scoring, domain throttling, visual automations, and NexCRM integration. Free plan available." />
-                <meta name="keywords" content="email marketing tool India, SMTP rotation, anti-spam email, email automation, NexMail, Nexspire, Mailchimp alternative India, Brevo alternative, email campaign tool, email deliverability" />
+                <meta name="keywords" content="email marketing tool India, SMTP rotation, anti-spam email, email automation, NexMail, Napnix, Mailchimp alternative India, Brevo alternative, email campaign tool, email deliverability" />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/nexmail`} />
-                <meta property="og:site_name" content="Nexspire Solutions" />
+                <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
-                <meta property="og:title" content="NexMail - Email Marketing Engine by Nexspire" />
+                <meta property="og:title" content="NexMail - Email Marketing Engine by Napnix" />
                 <meta property="og:description" content="Smart SMTP rotation, anti-spam scoring, domain throttling, visual automations, and NexCRM integration. Free plan available." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/nexmail`} />
@@ -199,9 +199,9 @@ export default function NexMailLandingPage() {
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:site" content="@nexspiresolutions" />
-                <meta name="twitter:creator" content="@nexspiresolutions" />
-                <meta name="twitter:title" content="NexMail - Email Marketing Engine by Nexspire" />
+                <meta name="twitter:site" content="@napnix" />
+                <meta name="twitter:creator" content="@napnix" />
+                <meta name="twitter:title" content="NexMail - Email Marketing Engine by Napnix" />
                 <meta name="twitter:description" content="Smart SMTP rotation, anti-spam scoring, domain throttling, visual automations, and NexCRM integration." />
             </Helmet>
 
@@ -211,7 +211,7 @@ export default function NexMailLandingPage() {
                 "description": "Enterprise email marketing engine with SMTP rotation, anti-spam scoring, and visual automations.",
                 "url": `${SITE_URL}/nexmail`,
                 "offers": { "@type": "AggregateOffer", "priceCurrency": "INR", "lowPrice": "0", "highPrice": "4999", "offerCount": "5" },
-                "provider": { "@type": "Organization", "name": "Nexspire Solutions", "url": SITE_URL, "telephone": siteConfig.phone.primary, "email": siteConfig.email.primary }
+                "provider": { "@type": "Organization", "name": "Napnix", "url": SITE_URL, "telephone": siteConfig.phone.primary, "email": siteConfig.email.primary }
             })}</script>
             <script type="application/ld+json">{JSON.stringify({
                 "@context": "https://schema.org", "@type": "BreadcrumbList",

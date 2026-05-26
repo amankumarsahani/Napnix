@@ -33,7 +33,7 @@ class Provisioner {
         // Cloudflare config
         this.cfApiToken = process.env.CLOUDFLARE_API_TOKEN;
         this.cfZoneId = process.env.CLOUDFLARE_ZONE_ID;
-        this.cfDomain = process.env.NEXCRM_DOMAIN || 'nexspiresolutions.co.in';
+        this.cfDomain = process.env.NEXCRM_DOMAIN || 'napnix.in';
         this.cfPagesUrl = process.env.NEXCRM_PAGES_URL || 'nexcrm-frontend.pages.dev';
         this.cfAccountId = process.env.CLOUDFLARE_ACCOUNT_ID;
         this.cfPagesProject = process.env.NEXCRM_PAGES_PROJECT || 'nexcrm-frontend';
@@ -120,9 +120,9 @@ class Provisioner {
             const adminPassword = await this.createTenantAdmin(dbName, email, name, server);
             console.log(`[Provisioner] Admin user created`);
 
-            // 4b. Create NexSpire super admin in tenant DB (for support access)
-            await this.createNexSpireSuperAdmin(dbName, server);
-            console.log(`[Provisioner] NexSpire super admin added`);
+            // 4b. Create Napnix super admin in tenant DB (for support access)
+            await this.createNapnixSuperAdmin(dbName, server);
+            console.log(`[Provisioner] Napnix super admin added`);
 
             // 4c. Seed initial settings (company
             // 5. Seed settings
@@ -334,12 +334,12 @@ class Provisioner {
     }
 
     /**
-     * Create NexSpire super admin in tenant database (for support access)
+     * Create Napnix super admin in tenant database (for support access)
      */
-    async createNexSpireSuperAdmin(dbName, server = { is_primary: true }) {
+    async createNapnixSuperAdmin(dbName, server = { is_primary: true }) {
         const bcrypt = require('bcryptjs');
-        const superAdminEmail = process.env.NEXSPIRE_ADMIN_EMAIL || 'admin@nexspiresolutions.co.in';
-        const superAdminPassword = process.env.NEXSPIRE_ADMIN_PASSWORD || 'NexSpire@2024!';
+        const superAdminEmail = process.env.NAPNIX_ADMIN_EMAIL || 'admin@napnix.in';
+        const superAdminPassword = process.env.NAPNIX_ADMIN_PASSWORD || 'Napnix@2024!';
         const hash = await bcrypt.hash(superAdminPassword, 10);
 
         if (server.is_primary) {
@@ -354,7 +354,7 @@ class Provisioner {
             try {
                 await tenantPool.query(
                     `INSERT INTO users (email, password, first_name, last_name, role, status) 
-                     VALUES (?, ?, 'NexSpire', 'Admin', 'admin', 'active')
+                     VALUES (?, ?, 'Napnix', 'Admin', 'admin', 'active')
                      ON DUPLICATE KEY UPDATE password = ?, role = 'admin'`,
                     [superAdminEmail, hash, hash]
                 );
@@ -362,7 +362,7 @@ class Provisioner {
                 await tenantPool.end();
             }
         } else {
-            const sql = `INSERT INTO users (email, password, first_name, last_name, role, status) VALUES ('${superAdminEmail}', '${hash}', 'NexSpire', 'Admin', 'admin', 'active') ON DUPLICATE KEY UPDATE password = '${hash}', role = 'admin'`;
+            const sql = `INSERT INTO users (email, password, first_name, last_name, role, status) VALUES ('${superAdminEmail}', '${hash}', 'Napnix', 'Admin', 'admin', 'active') ON DUPLICATE KEY UPDATE password = '${hash}', role = 'admin'`;
             const cmd = `mysql -u${server.db_user || this.dbUser} -p${server.db_password || this.dbPass} ${dbName} -e "${sql}"`;
             await this.executeOnServer(server, cmd);
         }
@@ -373,7 +373,7 @@ class Provisioner {
      */
     async seedInitialSettings(dbName, tenantData, server = { is_primary: true }) {
         const slug = tenantData.slug || dbName.replace('nexcrm_', '');
-        const domain = this.cfDomain || 'nexspiresolutions.co.in';
+        const domain = this.cfDomain || 'napnix.in';
 
         const settings = [
             { key: 'company_name', value: tenantData.name },
@@ -834,7 +834,7 @@ class Provisioner {
                 results.storefront.cnameTarget = `${storefrontProject}.pages.dev`;
             }
 
-            // API always stays on {slug}-crm-api.nexspiresolutions.co.in (managed via Cloudflare Tunnel)
+            // API always stays on {slug}-crm-api.napnix.in (managed via Cloudflare Tunnel)
             // No custom API domain support — Tunnel requires Cloudflare-proxied DNS which external domains don't have
 
             return {

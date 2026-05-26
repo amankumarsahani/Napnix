@@ -108,25 +108,25 @@ const FAQPage = () => {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white overflow-hidden">
             <Helmet>
-                <title>FAQ - Frequently Asked Questions | Nexspire Solutions</title>
-                <meta name="description" content="Get answers to common questions about Nexspire Solutions' software development services, technologies, project timelines, support, and more. Learn about our web, mobile, AI, and cloud solutions." />
+                <title>FAQ - Frequently Asked Questions | Napnix</title>
+                <meta name="description" content="Get answers to common questions about Napnix' software development services, technologies, project timelines, support, and more. Learn about our web, mobile, AI, and cloud solutions." />
                 <meta name="keywords" content="software development FAQ, web development questions, mobile app development process, project timeline, post-launch support, data security, SEO websites, custom software solutions" />
                 <link rel="canonical" href={`${SITE_URL}/faq`} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-                <meta property="og:title" content="Frequently Asked Questions | Nexspire Solutions" />
+                <meta property="og:title" content="Frequently Asked Questions | Napnix" />
                 <meta property="og:description" content="Common questions answered about our software development services, process, and technologies." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/faq`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
-                <meta property="og:site_name" content="Nexspire Solutions" />
+                <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Frequently Asked Questions | Nexspire Solutions" />
+                <meta name="twitter:title" content="Frequently Asked Questions | Napnix" />
                 <meta name="twitter:description" content="Common questions answered about our software development services, process, and technologies." />
-                <meta name="twitter:site" content="@nexspiresolutions" />
-                <meta name="twitter:creator" content="@nexspiresolutions" />
+                <meta name="twitter:site" content="@napnix" />
+                <meta name="twitter:creator" content="@napnix" />
                 <script type="application/ld+json">
                     {JSON.stringify(faqSchema)}
                 </script>

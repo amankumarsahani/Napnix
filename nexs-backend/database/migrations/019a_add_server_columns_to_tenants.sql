@@ -1,5 +1,5 @@
 -- Add Server and Custom Domain Support to Tenants Table
--- NexSpireSolutions Admin Database
+-- Napnix Admin Database
 -- IDEMPOTENT MIGRATION - Safe to run multiple times
 
 -- =====================================================

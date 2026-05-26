@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS settings (
 
 -- Seed basic settings if they don't exist
 INSERT IGNORE INTO settings (setting_key, setting_value, category) VALUES 
-('company_name', 'NexSpire Solutions', 'general'),
+('company_name', 'Napnix', 'general'),
 ('primary_color', '#6366f1', 'branding'),
 ('secondary_color', '#8b5cf6', 'branding'),
 ('currency', 'INR', 'localization'),

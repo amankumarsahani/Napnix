@@ -80,7 +80,7 @@ const BlogArticle = () => {
         },
         "publisher": {
             "@type": "Organization",
-            "name": "Nexspire Solutions",
+            "name": "Napnix",
             "url": SITE_URL,
             "logo": {
                 "@type": "ImageObject",
@@ -112,7 +112,7 @@ const BlogArticle = () => {
 
     const authorInfo = authorBios[blog.author] || {
         role: 'Contributing Author',
-        bio: 'Part of the Nexspire Solutions team, bringing insights on technology and digital innovation.',
+        bio: 'Part of the Napnix team, bringing insights on technology and digital innovation.',
         linkedin: '',
         twitter: ''
     };
@@ -120,27 +120,27 @@ const BlogArticle = () => {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white pt-20">
             <Helmet>
-                <title>{blog.title} | Nexspire Insights</title>
+                <title>{blog.title} | Napnix Insights</title>
                 <meta name="description" content={metaDesc} />
                 <link rel="canonical" href={`${SITE_URL}/blog/${blog.slug}`} />
-                <meta property="og:title" content={`${blog.title} | Nexspire Insights`} />
+                <meta property="og:title" content={`${blog.title} | Napnix Insights`} />
                 <meta property="og:description" content={metaDesc} />
                 <meta property="og:type" content="article" />
                 <meta property="og:url" content={`${SITE_URL}/blog/${blog.slug}`} />
                 <meta property="og:image" content={ogImage} />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content={`${blog.title} | Nexspire Insights`} />
+                <meta name="twitter:title" content={`${blog.title} | Napnix Insights`} />
                 <meta name="twitter:description" content={metaDesc} />
                 <meta name="twitter:image" content={ogImage} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-                <meta property="og:site_name" content="Nexspire Solutions" />
+                <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
-                <meta name="twitter:site" content="@nexspiresolutions" />
-                <meta name="twitter:creator" content="@nexspiresolutions" />
+                <meta name="twitter:site" content="@napnix" />
+                <meta name="twitter:creator" content="@napnix" />
                 <meta property="article:published_time" content={blog.publishedDate || blog.createdAt} />
-                <meta property="article:author" content="Nexspire Solutions" />
+                <meta property="article:author" content="Napnix" />
                 <meta property="article:section" content={blog.category || 'Technology'} />
                 <script type="application/ld+json">
                     {JSON.stringify(articleSchema)}

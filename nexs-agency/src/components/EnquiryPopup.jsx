@@ -6,7 +6,7 @@ import { RiArrowRightLine, RiCloseLine, RiLoader4Line, RiShieldCheckLine, RiStar
 
 const POPUP_DELAY_MS = 15000;
 const SCROLL_THRESHOLD = 0.5;
-const STORAGE_KEY = 'nexspire_popup_dismissed';
+const STORAGE_KEY = 'napnix_popup_dismissed';
 const DISMISS_DAYS = 7;
 
 const EnquiryPopup = memo(function EnquiryPopup() {

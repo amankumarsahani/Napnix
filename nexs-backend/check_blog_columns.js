@@ -7,7 +7,7 @@ async function check() {
             host: process.env.DB_HOST || 'localhost',
             user: process.env.DB_USER || 'root',
             password: process.env.DB_PASSWORD,
-            database: 'nexspire_crm_test'
+            database: 'napnix_crm_test'
         });
 
         const [rows] = await connection.execute("SHOW COLUMNS FROM blogs");

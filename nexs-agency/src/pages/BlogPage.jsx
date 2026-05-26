@@ -150,34 +150,34 @@ const BlogPage = () => {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white">
             <Helmet>
-                <title>Blog - Tech Insights & Trends | Nexspire Solutions</title>
-                <meta name="description" content="Stay updated with the latest trends in AI, Web Development, Mobile Apps, and Enterprise Software. Expert insights from Nexspire Solutions." />
-                <meta name="keywords" content="tech blog, AI trends 2026, React vs Angular, mobile app development trends, software development insights, nexspire blog" />
+                <title>Blog - Tech Insights & Trends | Napnix</title>
+                <meta name="description" content="Stay updated with the latest trends in AI, Web Development, Mobile Apps, and Enterprise Software. Expert insights from Napnix." />
+                <meta name="keywords" content="tech blog, AI trends 2026, React vs Angular, mobile app development trends, software development insights, napnix blog" />
                 <link rel="canonical" href={`${SITE_URL}/blog`} />
-                <meta property="og:title" content="Blog - Tech Insights & Trends | Nexspire Solutions" />
+                <meta property="og:title" content="Blog - Tech Insights & Trends | Napnix" />
                 <meta property="og:description" content="Read expert articles on AI, Cloud, and Software Development." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/blog`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Blog - Tech Insights & Trends | Nexspire Solutions" />
+                <meta name="twitter:title" content="Blog - Tech Insights & Trends | Napnix" />
                 <meta name="twitter:description" content="Read expert articles on AI, Cloud, and Software Development." />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-                <meta property="og:site_name" content="Nexspire Solutions" />
+                <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
-                <meta name="twitter:site" content="@nexspiresolutions" />
-                <meta name="twitter:creator" content="@nexspiresolutions" />
+                <meta name="twitter:site" content="@napnix" />
+                <meta name="twitter:creator" content="@napnix" />
                 <script type="application/ld+json">{JSON.stringify({
                     "@context": "https://schema.org",
                     "@type": "Blog",
-                    "name": "Nexspire Solutions Blog",
+                    "name": "Napnix Blog",
                     "url": `${SITE_URL}/blog`,
                     "description": "Stay updated with the latest trends in AI, Web Development, Mobile Apps, and Enterprise Software.",
                     "publisher": {
                         "@type": "Organization",
-                        "name": "Nexspire Solutions",
+                        "name": "Napnix",
                         "url": SITE_URL
                     }
                 })}</script>

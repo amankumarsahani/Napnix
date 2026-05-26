@@ -1,13 +1,13 @@
-export const SITE_URL = 'https://nexspiresolutions.co.in';
+export const SITE_URL = 'https://napnix.in';
 
 export const siteConfig = {
     email: {
-        primary: 'info@nexspire.co.in',
-        info: 'info@nexspire.co.in',
-        sales: 'sales@nexspire.co.in',
-        support: 'info@nexspire.co.in',
-        admin: 'admin@nexspire.co.in',
-        noreply: 'noreply@nexspire.co.in',
+        primary: 'info@napnix.in',
+        info: 'info@napnix.in',
+        sales: 'sales@napnix.in',
+        support: 'info@napnix.in',
+        admin: 'admin@napnix.in',
+        noreply: 'noreply@napnix.in',
     },
     phone: {
         primary: '+91 7009614671',
@@ -16,13 +16,13 @@ export const siteConfig = {
     },
     domain: SITE_URL,
     social: [
-        { icon: 'ri-github-line', iconFill: 'ri-github-fill', href: 'https://github.com/orgs/Nexspire-Solutions/repositories', label: 'GitHub' },
-        { icon: 'ri-linkedin-line', iconFill: 'ri-linkedin-fill', href: 'https://www.linkedin.com/company/nexspire-solution', label: 'LinkedIn' },
-        { icon: 'ri-instagram-line', iconFill: 'ri-instagram-fill', href: 'https://www.instagram.com/nexspire_solutions/', label: 'Instagram' },
+        { icon: 'ri-github-line', iconFill: 'ri-github-fill', href: 'https://github.com/orgs/Napnix-Solutions/repositories', label: 'GitHub' },
+        { icon: 'ri-linkedin-line', iconFill: 'ri-linkedin-fill', href: 'https://www.linkedin.com/company/napnix-solution', label: 'LinkedIn' },
+        { icon: 'ri-instagram-line', iconFill: 'ri-instagram-fill', href: 'https://www.instagram.com/napnix/', label: 'Instagram' },
     ],
     socialUrls: [
-        'https://github.com/orgs/Nexspire-Solutions/repositories',
-        'https://www.linkedin.com/company/nexspire-solution',
-        'https://www.instagram.com/nexspire_solutions/',
+        'https://github.com/orgs/Napnix-Solutions/repositories',
+        'https://www.linkedin.com/company/napnix-solution',
+        'https://www.instagram.com/napnix/',
     ],
 };

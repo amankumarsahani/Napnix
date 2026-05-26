@@ -50,12 +50,12 @@ class SEOIndexingService {
 
     async getSiteUrl() {
         const s = await this._getSettings();
-        return s.website_url || process.env.WEBSITE_URL || process.env.FRONTEND_URL || 'https://nexspiresolutions.co.in';
+        return s.website_url || process.env.WEBSITE_URL || process.env.FRONTEND_URL || 'https://napnix.in';
     }
 
     async getSiteHost() {
         const url = await this.getSiteUrl();
-        try { return new URL(url).hostname; } catch { return 'nexspiresolutions.co.in'; }
+        try { return new URL(url).hostname; } catch { return 'napnix.in'; }
     }
 
     async getIndexNowKey() {

@@ -1,20 +1,20 @@
-# Nexspire Solutions — Full Reference
+# Napnix — Full Reference
 
-> Nexspire Solutions is an India-based software development company building custom web applications, mobile apps, cloud infrastructure, AI/ML solutions, NexCRM — an industry-specific CRM platform starting at ₹999/month, and NexMail — an email marketing engine with SMTP rotation and anti-spam scoring.
+> Napnix is an India-based software development company building custom web applications, mobile apps, cloud infrastructure, AI/ML solutions, NexCRM — an industry-specific CRM platform starting at ₹999/month, and NexMail — an email marketing engine with SMTP rotation and anti-spam scoring.
 
 ## Company Overview
 
-Nexspire Solutions is a technology company headquartered in IT Park, Sector 67, Mohali, Punjab, India. Founded in 2023, we build scalable digital products for businesses ranging from startups to enterprises.
+Napnix is a technology company headquartered in IT Park, Sector 67, Mohali, Punjab, India. Founded in 2023, we build scalable digital products for businesses ranging from startups to enterprises.
 
 **Contact Information:**
-- Email: info@nexspire.co.in
-- Sales: sales@nexspire.co.in
-- Support: info@nexspire.co.in
+- Email: info@napnix.in
+- Sales: sales@napnix.in
+- Support: info@napnix.in
 - Phone: +91 7009614671
-- Website: https://nexspiresolutions.co.in
-- LinkedIn: https://www.linkedin.com/company/nexspire-solution
-- GitHub: https://github.com/orgs/Nexspire-Solutions/repositories
-- Instagram: https://www.instagram.com/nexspire_solutions/
+- Website: https://napnix.in
+- LinkedIn: https://www.linkedin.com/company/napnix-solution
+- GitHub: https://github.com/orgs/Napnix-Solutions/repositories
+- Instagram: https://www.instagram.com/napnix/
 
 **Core Technology Stack:**
 - Frontend: React, Next.js, Vue.js, Tailwind CSS
@@ -177,7 +177,7 @@ Custom AI/ML solution development. We build natural language processing systems,
 
 ## Service Areas
 
-Nexspire Solutions serves clients globally, with dedicated landing pages for these regions:
+Napnix serves clients globally, with dedicated landing pages for these regions:
 - London, United Kingdom
 - New York, United States
 - Bangalore, India

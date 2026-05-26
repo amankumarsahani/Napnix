@@ -89,7 +89,7 @@ class EmailService {
     }
 
     getDefaultFrom() {
-        const fromName = this._fromName || process.env.ZOHO_FROM_NAME || process.env.SMTP_FROM_NAME || 'NexSpire Solutions';
+        const fromName = this._fromName || process.env.ZOHO_FROM_NAME || process.env.SMTP_FROM_NAME || 'Napnix';
         const fromEmail = this._fromEmail || process.env.ZOHO_FROM_EMAIL || process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
         return `"${fromName}" <${fromEmail}>`;
     }
@@ -217,7 +217,7 @@ class EmailService {
 
             return await this.sendEmail({
                 to: inquiry.email,
-                subject: 'We received your inquiry - NexSpire Solutions',
+                subject: 'We received your inquiry - Napnix',
                 html
             });
         } catch (error) {
@@ -236,7 +236,7 @@ class EmailService {
     async sendWelcomeEmail(user) {
         return await this.sendTemplateEmail({
             to: user.email,
-            subject: 'Welcome to NexSpire Solutions',
+            subject: 'Welcome to Napnix',
             template: 'welcome',
             data: {
                 name: user.name,
@@ -254,7 +254,7 @@ class EmailService {
     async sendPasswordReset(email, resetLink) {
         return await this.sendTemplateEmail({
             to: email,
-            subject: 'Reset Your Password - NexSpire Solutions',
+            subject: 'Reset Your Password - Napnix',
             template: 'password-reset',
             data: {
                 email,
@@ -277,7 +277,7 @@ class EmailService {
     async sendTenantWelcomeEmail(tenant) {
         const { name, email, password, slug, industry } = tenant;
 
-        const domain = process.env.NEXCRM_DOMAIN || 'nexspiresolutions.co.in';
+        const domain = process.env.NEXCRM_DOMAIN || 'napnix.in';
         const crmUrl = `https://${slug}-crm.${domain}`;
         const storefrontUrl = `https://${slug}.${domain}`;
         const apiUrl = `https://${slug}-crm-api.${domain}`;
@@ -288,7 +288,7 @@ class EmailService {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to NexSpire CRM</title>
+    <title>Welcome to Napnix CRM</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
     <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;padding:32px 16px;">
@@ -309,7 +309,7 @@ class EmailService {
                                 </tr>
                                 <tr>
                                     <td align="center">
-                                        <h1 style="color:#ffffff;margin:0;font-size:24px;font-weight:600;letter-spacing:-0.5px;">Welcome to NexSpire CRM</h1>
+                                        <h1 style="color:#ffffff;margin:0;font-size:24px;font-weight:600;letter-spacing:-0.5px;">Welcome to Napnix CRM</h1>
                                         <p style="color:#94a3b8;margin:8px 0 0;font-size:15px;">Your business management platform is ready</p>
                                     </td>
                                 </tr>
@@ -326,7 +326,7 @@ class EmailService {
                                 Hello <strong>${name}</strong>,
                             </p>
                             <p style="color:#475569;font-size:15px;line-height:1.7;margin:0 0 32px;">
-                                Congratulations! Your NexSpire CRM account has been successfully created and is now ready to use. Below you will find your login credentials and platform access URLs.
+                                Congratulations! Your Napnix CRM account has been successfully created and is now ready to use. Below you will find your login credentials and platform access URLs.
                             </p>
                             
                             <!-- Credentials Section -->
@@ -460,7 +460,7 @@ class EmailService {
                                             Industry: <strong>${industry || 'General'}</strong> | Plan: <strong>Starter</strong>
                                         </p>
                                         <p style="color:#94a3b8;font-size:12px;margin:0;">
-                                            &copy; ${new Date().getFullYear()} NexSpire Solutions. All rights reserved.
+                                            &copy; ${new Date().getFullYear()} Napnix. All rights reserved.
                                         </p>
                                     </td>
                                 </tr>
@@ -478,7 +478,7 @@ class EmailService {
 
         return await this.sendEmail({
             to: email,
-            subject: `Welcome to NexSpire CRM - Your ${name} Account is Ready`,
+            subject: `Welcome to Napnix CRM - Your ${name} Account is Ready`,
             html
         });
     }

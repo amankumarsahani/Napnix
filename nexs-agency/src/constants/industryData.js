@@ -65,7 +65,7 @@ export const industryData = {
       { q: 'What communication channels are included?', a: 'Email (templates, bulk, campaigns), WhatsApp (business API, broadcasts), SMS, in-app chat, push notifications, and AI chatbot.' },
     ],
     seo: {
-      title: 'NexCRM — All-Purpose CRM for Growing Businesses | NexSpire Solutions',
+      title: 'NexCRM — All-Purpose CRM for Growing Businesses | Napnix',
       description: 'Manage leads, automate sales, and grow revenue with NexCRM. Affordable CRM built for Indian businesses with WhatsApp, email campaigns, and workflow automation.',
       keywords: 'CRM for small business India, affordable CRM software, lead management tool, sales automation CRM, WhatsApp CRM India, business CRM software, NexCRM',
     },

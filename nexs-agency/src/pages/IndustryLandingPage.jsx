@@ -95,7 +95,7 @@ export default function IndustryLandingPage() {
         },
         provider: {
             '@type': 'Organization',
-            name: 'Nexspire Solutions',
+            name: 'Napnix',
             url: SITE_URL,
             telephone: siteConfig.phone.tel,
             email: siteConfig.email.primary,
@@ -119,15 +119,15 @@ export default function IndustryLandingPage() {
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
-                <meta property="og:site_name" content="Nexspire Solutions" />
+                <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
 
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={data.seo.title} />
                 <meta name="twitter:description" content={data.seo.description} />
                 <meta name="twitter:image" content={`${SITE_URL}/og-image.jpg`} />
-                <meta name="twitter:site" content="@nexspiresolutions" />
-                <meta name="twitter:creator" content="@nexspiresolutions" />
+                <meta name="twitter:site" content="@napnix" />
+                <meta name="twitter:creator" content="@napnix" />
 
                 <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
                 <script type="application/ld+json">{JSON.stringify(productSchema)}</script>

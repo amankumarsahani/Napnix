@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-const STORAGE_KEY = 'nexspire_currency';
+const STORAGE_KEY = 'napnix_currency';
 const CACHE_TTL = 24 * 60 * 60 * 1000;
 
 const CURRENCIES = {

@@ -35,12 +35,12 @@ const corsOptions = {
             'http://localhost:3000',
             'http://localhost:5173',
             'http://localhost:5174',
-            'https://nexspiresolutions.co.in',
-            'https://admin.nexspiresolutions.co.in'
+            'https://napnix.in',
+            'https://admin.napnix.in'
         ];
 
-        // Allow any subdomain of nexspiresolutions.co.in
-        const isNexspireSubdomain = origin && /https:\/\/[a-z0-9-]+\.nexspiresolutions\.co\.in$/.test(origin);
+        // Allow any subdomain of napnix.in
+        const isNapnixSubdomain = origin && /https:\/\/[a-z0-9-]+\.napnix\.in$/.test(origin);
 
         // Allow any HTTPS origin (for custom domain storefronts calling /api/resolve-domain)
         // The resolve-domain endpoint returns public, non-sensitive data.
@@ -48,7 +48,7 @@ const corsOptions = {
         const isHttps = origin && /^https:\/\/.+/.test(origin);
 
         // Allow requests with no origin (mobile apps, Postman, etc.)
-        if (!origin || allowedOrigins.indexOf(origin) !== -1 || isNexspireSubdomain || isHttps) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1 || isNapnixSubdomain || isHttps) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -99,7 +99,7 @@ app.get('/indexnow-key.txt', async (req, res) => {
 app.get('/health', (req, res) => {
     res.json({
         status: 'OK',
-        message: 'Nexspire Solutions API is running',
+        message: 'Napnix API is running',
         timestamp: new Date().toISOString(),
         environment: process.env.NODE_ENV
     });
@@ -108,7 +108,7 @@ app.get('/health', (req, res) => {
 // API Routes will be added here
 app.get('/api', (req, res) => {
     res.json({
-        message: 'Nexspire Solutions API v1.0',
+        message: 'Napnix API v1.0',
         endpoints: {
             health: '/health',
             auth: '/api/auth/*',
@@ -181,7 +181,7 @@ app.get('/api/resolve-domain', async (req, res) => {
         }
 
         const tenant = rows[0];
-        const baseDomain = process.env.NEXCRM_DOMAIN || 'nexspiresolutions.co.in';
+        const baseDomain = process.env.NEXCRM_DOMAIN || 'napnix.in';
 
         res.json({
             found: true,
@@ -189,7 +189,7 @@ app.get('/api/resolve-domain', async (req, res) => {
                 slug: tenant.slug,
                 name: tenant.name,
                 industry: tenant.industry_type,
-                // API always stays on nexspiresolutions.co.in (Cloudflare Tunnel)
+                // API always stays on napnix.in (Cloudflare Tunnel)
                 // Custom domains are only for CRM and Storefront (Cloudflare Pages)
                 api_url: `https://${tenant.slug}-crm-api.${baseDomain}`,
                 storefront_url: tenant.custom_domain_storefront

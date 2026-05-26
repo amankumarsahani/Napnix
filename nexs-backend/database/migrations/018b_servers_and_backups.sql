@@ -1,11 +1,11 @@
 -- Servers and Backup Systems Migration
--- NexSpireSolutions Admin Database
+-- Napnix Admin Database
 
 -- 1. Create servers table for multi-server tracking
 CREATE TABLE IF NOT EXISTS servers (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
-    hostname VARCHAR(255) NOT NULL,           -- e.g., ssh2.nexspiresolutions.co.in
+    hostname VARCHAR(255) NOT NULL,           -- e.g., ssh2.napnix.in
     ssh_user VARCHAR(100) DEFAULT 'admin',
     cloudflare_tunnel_id VARCHAR(100),
     db_host VARCHAR(255) DEFAULT 'localhost',
@@ -50,5 +50,5 @@ CREATE TABLE IF NOT EXISTS backup_history (
 
 -- Insert primary server record if not already present
 INSERT INTO servers (name, hostname, is_primary, is_active)
-SELECT 'Primary', 'ssh.nexspiresolutions.co.in', TRUE, TRUE
+SELECT 'Primary', 'ssh.napnix.in', TRUE, TRUE
 WHERE NOT EXISTS (SELECT 1 FROM servers WHERE is_primary = TRUE);

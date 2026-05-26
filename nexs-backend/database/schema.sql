@@ -1,9 +1,9 @@
--- Nexspire Solutions Database Schema
+-- Napnix Database Schema
 -- MySQL Database Structure
 
 -- Create database
-CREATE DATABASE IF NOT EXISTS nexspire_solutions;
-USE nexspire_solutions;
+CREATE DATABASE IF NOT EXISTS napnix;
+USE napnix;
 
 -- Users table (for authentication)
 CREATE TABLE IF NOT EXISTS users (
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS documents (
 -- Insert default admin user (password: admin123 - CHANGE IN PRODUCTION!)
 -- Password hash for 'admin123'
 INSERT INTO users (email, password, firstName, lastName, role) 
-VALUES ('admin@nexspiresolutions.co.in', '$2a$10$rGHQd8Z9hKCPqJKpH7xqseVq8Z5YZ5YZ5YZ5YZ5YZ5YZ5YZ5YZ5YZ', 'Admin', 'User', 'admin')
+VALUES ('admin@napnix.in', '$2a$10$rGHQd8Z9hKCPqJKpH7xqseVq8Z5YZ5YZ5YZ5YZ5YZ5YZ5YZ5YZ5YZ', 'Admin', 'User', 'admin')
 ON DUPLICATE KEY UPDATE email=email;
 
 -- Sample data (optional)

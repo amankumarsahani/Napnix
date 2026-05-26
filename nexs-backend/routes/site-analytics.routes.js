@@ -127,7 +127,7 @@ router.get('/traffic-sources', async (req, res) => {
                     WHEN referrer IS NULL OR referrer = 'direct' OR referrer = '' THEN 'Direct'
                     WHEN referrer REGEXP 'google|bing|yahoo|duckduckgo|yandex|baidu' THEN 'Organic Search'
                     WHEN referrer REGEXP 'facebook\\.com|twitter\\.com|linkedin\\.com|instagram\\.com|t\\.co|pinterest' THEN 'Social Media'
-                    WHEN referrer REGEXP 'nexspiresolutions\\.co\\.in' THEN 'Internal'
+                    WHEN referrer REGEXP 'napnix\\.in' THEN 'Internal'
                     ELSE 'Referral'
                 END AS source,
                 COUNT(*) AS count,
@@ -439,7 +439,7 @@ router.post('/ai-insights', async (req, res) => {
             return res.status(400).json({ error: 'analytics data required' });
         }
 
-        const systemMessage = `You are a senior conversion rate optimization specialist and web analytics expert for Nexspire Solutions, a B2B digital agency offering SaaS products (NexCRM), web development, and digital solutions.
+        const systemMessage = `You are a senior conversion rate optimization specialist and web analytics expert for Napnix, a B2B digital agency offering SaaS products (NexCRM), web development, and digital solutions.
 
 Your goal is to analyze website telemetry data and provide deeply actionable recommendations specifically aimed at improving LEAD CAPTURING and CONVERSION RATES from visitors.
 
@@ -457,7 +457,7 @@ Keep recommendations specific, prioritized, and tied to real observations from t
             .map(e => `  - "${e.text || e.element}" on ${e.path} → ${e.count} clicks${e.href ? ` (→ ${e.href})` : ''}`)
             .join('\n');
 
-        const prompt = `Analyze this website telemetry data for nexspiresolutions.co.in and provide insights:
+        const prompt = `Analyze this website telemetry data for napnix.in and provide insights:
 
 ## OVERVIEW (last ${analytics.range || '30'} days)
 - Page Views: ${analytics.overview?.pageViews || 0}
@@ -507,7 +507,7 @@ Please provide:
 ## User Journey Insights
 (how visitors navigate the site and what this means for conversion)
 
-Be specific to Nexspire Solutions' business context — a B2B agency selling NexCRM and digital services.`;
+Be specific to Napnix' business context — a B2B agency selling NexCRM and digital services.`;
 
         const insight = await aiService.generateContent(prompt, systemMessage);
         res.json({ insight });

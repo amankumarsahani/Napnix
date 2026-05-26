@@ -83,7 +83,7 @@ const Hero = memo(function Hero() {
               </h1>
 
               <p className="text-base sm:text-lg lg:text-xl text-white/90 leading-relaxed max-w-3xl mx-auto font-medium">
-                Nexspire Solutions helps startups and growing businesses launch faster, rank better, and convert more with
+                Napnix helps startups and growing businesses launch faster, rank better, and convert more with
                 <span className="font-bold text-[#D97706]"> custom web apps, mobile apps, AI workflows, CRM systems, and technical SEO</span>.
                 Visitors should understand what you offer in seconds, and that is the same standard we build for clients.
               </p>

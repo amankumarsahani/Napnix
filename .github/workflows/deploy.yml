@@ -43,7 +43,7 @@ jobs:
           cd nexs-agency
           npm run build:prod
         env:
-          VITE_API_URL: https://api.nexspiresolutions.co.in/api
+          VITE_API_URL: https://api.napnix.in/api
           VITE_ENV: production
       
       - name: Upload artifact

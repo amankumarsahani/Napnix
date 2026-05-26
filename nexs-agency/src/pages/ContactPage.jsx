@@ -78,29 +78,29 @@ const ContactPage = () => {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white overflow-hidden">
             <Helmet>
-                <title>Contact Nexspire - Hire Experts in Mohali, London, NYC & Dubai</title>
-                <meta name="description" content="Ready to innovate? Contact Nexspire Solutions. We have a physical presence in Mohali (India) and serve clients globally in London, New York, Dubai, Toronto, and Sydney. Hire top-tier software developers today." />
+                <title>Contact Napnix - Hire Experts in Mohali, London, NYC & Dubai</title>
+                <meta name="description" content="Ready to innovate? Contact Napnix. We have a physical presence in Mohali (India) and serve clients globally in London, New York, Dubai, Toronto, and Sydney. Hire top-tier software developers today." />
                 <meta name="keywords" content="contact software company, hire developers mohali, software agency london, tech partners new york, dubai software company, freelance experts india, global software team" />
                 <link rel="canonical" href={`${SITE_URL}/contact`} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-                <meta property="og:title" content="Contact Nexspire - Global Reach, Local Presence" />
+                <meta property="og:title" content="Contact Napnix - Global Reach, Local Presence" />
                 <meta property="og:description" content="Connect with our global team. Offices in Mohali, serving the world." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/contact`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
-                <meta property="og:site_name" content="Nexspire Solutions" />
+                <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Contact Nexspire - Global Reach, Local Presence" />
+                <meta name="twitter:title" content="Contact Napnix - Global Reach, Local Presence" />
                 <meta name="twitter:description" content="Connect with our global team. Offices in Mohali, serving the world." />
-                <meta name="twitter:site" content="@nexspiresolutions" />
-                <meta name="twitter:creator" content="@nexspiresolutions" />
+                <meta name="twitter:site" content="@napnix" />
+                <meta name="twitter:creator" content="@napnix" />
                 <script type="application/ld+json">{JSON.stringify({
                     "@context": "https://schema.org",
                     "@type": "LocalBusiness",
-                    "name": "Nexspire Solutions",
+                    "name": "Napnix",
                     "url": SITE_URL,
                     "email": siteConfig.email.info,
                     "telephone": "+917009614671, +917009108646",
@@ -168,7 +168,7 @@ const ContactPage = () => {
                             <span className="text-[#D97706]">Something Great.</span>
                         </h1>
                         <p className="text-xl text-blue-100/80 max-w-2xl mx-auto">
-                            From Mohali to global markets. Reach the right Nexspire inbox for sales, support, delivery, and project planning.
+                            From Mohali to global markets. Reach the right Napnix inbox for sales, support, delivery, and project planning.
                         </p>
                     </motion.div>
                 </div>

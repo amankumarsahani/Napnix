@@ -147,7 +147,7 @@ const About = memo(function About() {
               <h3 className="text-3xl font-bold text-slate-800 mb-6">Who We Are</h3>
               <div className="space-y-4 text-lg text-slate-600 leading-relaxed">
                 <p>
-                  With over 5 years of experience in software delivery, Nexspire Solutions helps startups and growing
+                  With over 5 years of experience in software delivery, Napnix helps startups and growing
                   businesses ship <strong>custom web platforms, CRM systems, AI workflows, and modern product experiences</strong>
                   with a focus on speed, clarity, and long-term maintainability.
                 </p>
@@ -187,7 +187,7 @@ const About = memo(function About() {
         <div className={`mb-24 transition-all duration-1000 delay-500 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
           <div className="text-left mb-16">
-            <span className="text-sm font-semibold text-[#2563EB] uppercase tracking-wider">Why Choose Nexspire Solutions</span>
+            <span className="text-sm font-semibold text-[#2563EB] uppercase tracking-wider">Why Choose Napnix</span>
             <h3 className="text-3xl md:text-4xl font-bold text-slate-800 mb-6 mt-4">
               What Makes Us <span className="text-[#4F46E5]">Different</span>
             </h3>

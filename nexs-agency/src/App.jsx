@@ -103,20 +103,20 @@ const LandingPage = memo(function LandingPage() {
   return (
     <div className="min-h-screen bg-white w-full overflow-x-hidden">
       <Helmet>
-        <title>Nexspire Solutions - Custom Software, CRM, AI and SEO Delivery</title>
-        <meta name="description" content="Nexspire Solutions builds custom web apps, mobile apps, CRM systems, AI workflows, cloud platforms, and technical SEO experiences for startups and growing businesses." />
+        <title>Napnix - Custom Software, CRM, AI and SEO Delivery</title>
+        <meta name="description" content="Napnix builds custom web apps, mobile apps, CRM systems, AI workflows, cloud platforms, and technical SEO experiences for startups and growing businesses." />
         <meta name="keywords" content="AI software development, custom software agency, web development company mohali, freelance developers chandigarh, mobile app developers, digital transformation services, React developers, Next.js experts, best software agency in mohali, freelance software engineer" />
         <link rel="canonical" href={`${SITE_URL}/`} />
 
         {/* Open Graph */}
-        <meta property="og:title" content="Nexspire Solutions - Custom Software, CRM, AI and SEO Delivery" />
+        <meta property="og:title" content="Napnix - Custom Software, CRM, AI and SEO Delivery" />
         <meta property="og:description" content="Custom web development, mobile apps, CRM systems, AI workflows, cloud engineering, and technical SEO for growing businesses." />
         <meta property="og:url" content={`${SITE_URL}/`} />
         <meta property="og:type" content="website" />
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Nexspire Solutions - Software, CRM, AI and SEO Delivery" />
+        <meta name="twitter:title" content="Napnix - Software, CRM, AI and SEO Delivery" />
         <meta name="twitter:description" content="Custom software engineering, CRM systems, AI workflows, and technical SEO from Mohali for global clients." />
       </Helmet>
 

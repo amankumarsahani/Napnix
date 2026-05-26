@@ -158,29 +158,29 @@ const PortfolioPage = () => {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white">
             <Helmet>
-                <title>Portfolio - Custom Software Case Studies | Nexspire Solutions</title>
-                <meta name="description" content="Explore our portfolio of successful projects including E-commerce platforms, HealthTech apps, and AI-Powered CRM systems. See how Nexspire Solutions delivers measurable results for global clients." />
-                <meta name="keywords" content="software portfolio, case studies, web development projects, mobile app examples, AI CRM case study, healthtech app development, e-commerce success stories, nexspire portfolio" />
+                <title>Portfolio - Custom Software Case Studies | Napnix</title>
+                <meta name="description" content="Explore our portfolio of successful projects including E-commerce platforms, HealthTech apps, and AI-Powered CRM systems. See how Napnix delivers measurable results for global clients." />
+                <meta name="keywords" content="software portfolio, case studies, web development projects, mobile app examples, AI CRM case study, healthtech app development, e-commerce success stories, napnix portfolio" />
                 <link rel="canonical" href={`${SITE_URL}/portfolio`} />
-                <meta property="og:title" content="Portfolio - Custom Software Case Studies | Nexspire Solutions" />
+                <meta property="og:title" content="Portfolio - Custom Software Case Studies | Napnix" />
                 <meta property="og:description" content="See how we've helped businesses worldwide with custom E-commerce, Mobile, and AI solutions." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/portfolio`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Portfolio - Custom Software Case Studies | Nexspire Solutions" />
+                <meta name="twitter:title" content="Portfolio - Custom Software Case Studies | Napnix" />
                 <meta name="twitter:description" content="See how we've helped businesses worldwide with custom E-commerce, Mobile, and AI solutions." />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-                <meta property="og:site_name" content="Nexspire Solutions" />
+                <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
-                <meta name="twitter:site" content="@nexspiresolutions" />
-                <meta name="twitter:creator" content="@nexspiresolutions" />
+                <meta name="twitter:site" content="@napnix" />
+                <meta name="twitter:creator" content="@napnix" />
                 <script type="application/ld+json">{JSON.stringify({
                     "@context": "https://schema.org",
                     "@type": "ItemList",
-                    "name": "Nexspire Solutions Portfolio",
+                    "name": "Napnix Portfolio",
                     "url": `${SITE_URL}/portfolio`,
                     "description": "Explore our portfolio of successful projects including E-commerce platforms, HealthTech apps, and AI-Powered CRM systems.",
                     "numberOfItems": 6,

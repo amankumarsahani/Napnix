@@ -33,7 +33,7 @@ export default function CRMPricingPage() {
                 <meta name="keywords" content="NexCRM pricing, CRM pricing India, affordable CRM plans, CRM software cost, business CRM pricing, agency CRM plans, CRM monthly pricing, CRM enterprise pricing" />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/nexcrm/pricing`} />
-                <meta property="og:site_name" content="Nexspire Solutions" />
+                <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta property="og:title" content="NexCRM Pricing - Plans from $49/mo" />
                 <meta property="og:description" content="Compare NexCRM pricing plans. Starter, Growth, Business, Enterprise. Save 15% yearly. 14-day free trial." />
@@ -43,8 +43,8 @@ export default function CRMPricingPage() {
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:site" content="@nexspiresolutions" />
-                <meta name="twitter:creator" content="@nexspiresolutions" />
+                <meta name="twitter:site" content="@napnix" />
+                <meta name="twitter:creator" content="@napnix" />
                 <meta name="twitter:title" content="NexCRM Pricing - Plans from $49/mo" />
                 <meta name="twitter:description" content="Starter $49/mo, Growth $79/mo, Business $99/mo. Save 15% yearly. 14-day free trial." />
             </Helmet>

@@ -5,8 +5,8 @@ async function fixTenantDatabases() {
     const config = {
         host: process.env.DB_HOST || 'localhost',
         port: process.env.DB_PORT || 3306,
-        user: process.env.DB_USER || 'nexspire_user',
-        password: process.env.DB_PASSWORD || 'NexspireSolutions@2025',
+        user: process.env.DB_USER || 'napnix_user',
+        password: process.env.DB_PASSWORD || 'NapnixSolutions@2025',
         multipleStatements: true
     };
 

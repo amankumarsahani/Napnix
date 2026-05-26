@@ -46,7 +46,7 @@ class EmailQueueWorker {
                         host: process.env.SMTP_HOST,
                         port: parseInt(process.env.SMTP_PORT) || 587,
                         secure: process.env.SMTP_SECURE === 'true',
-                        from_name: process.env.SMTP_FROM_NAME || 'NexSpire',
+                        from_name: process.env.SMTP_FROM_NAME || 'Napnix',
                         from_email: process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER,
                         hourly_limit: parseInt(process.env.SMTP_HOURLY_LIMIT) || 100,
                         sent_this_hour: 0
@@ -129,7 +129,7 @@ class EmailQueueWorker {
      * Generate tracking pixel HTML
      */
     generateTrackingPixel(trackingId) {
-        const baseUrl = process.env.API_URL || 'https://api.nexspiresolutions.co.in';
+        const baseUrl = process.env.API_URL || 'https://api.napnix.in';
         return `<img src="${baseUrl}/api/track/open/${trackingId}" width="1" height="1" style="display:none" alt="" />`;
     }
 
@@ -137,10 +137,10 @@ class EmailQueueWorker {
      * Wrap links with click tracking
      */
     wrapLinksWithTracking(html, trackingId) {
-        const baseUrl = process.env.API_URL || 'https://api.nexspiresolutions.co.in';
+        const baseUrl = process.env.API_URL || 'https://api.napnix.in';
         // Improved regex to handle both single and double quotes, and avoid wrapping internal anchors or already tracked links
         return html.replace(
-            /href=["'](https?:\/\/(?!api\.nexspiresolutions\.co\.in\/api\/track\/)[^"']+)["']/g,
+            /href=["'](https?:\/\/(?!api\.napnix\.in\/api\/track\/)[^"']+)["']/g,
             (match, url) => {
                 const encodedUrl = encodeURIComponent(url);
                 return `href="${baseUrl}/api/track/click/${trackingId}?url=${encodedUrl}"`;
@@ -152,7 +152,7 @@ class EmailQueueWorker {
      * Add unsubscribe link to email
      */
     addUnsubscribeLink(html, email, campaignId) {
-        const baseUrl = process.env.API_URL || 'https://api.nexspiresolutions.co.in';
+        const baseUrl = process.env.API_URL || 'https://api.napnix.in';
         const unsubUrl = `${baseUrl}/api/track/unsubscribe?email=${encodeURIComponent(email)}&campaign=${campaignId}`;
 
         const unsubscribeHtml = `

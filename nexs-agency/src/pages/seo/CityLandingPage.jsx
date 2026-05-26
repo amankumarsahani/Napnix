@@ -14,10 +14,10 @@ const cityData = {
         city: 'London',
         country: 'UK',
         timezone: 'Europe/London',
-        title: 'Software Development Company in London | Nexspire',
-        description: 'Nexspire Solutions provides top web, mobile, AI, cloud, and enterprise software solutions in London, UK. We serve startups and enterprises.',
+        title: 'Software Development Company in London | Napnix',
+        description: 'Napnix provides top web, mobile, AI, cloud, and enterprise software solutions in London, UK. We serve startups and enterprises.',
         heroText: 'Digital Excellence for London\'s Finest.',
-        content: 'Nexspire Solutions is a strategic technology partner for London\'s fast-moving business ecosystem. We combine British market understanding with global engineering talent to deliver software that scales.',
+        content: 'Napnix is a strategic technology partner for London\'s fast-moving business ecosystem. We combine British market understanding with global engineering talent to deliver software that scales.',
         services: ['Custom Web Platforms', 'Fintech & Banking Apps', 'AI-Driven Analytics', 'Cloud Migration (AWS/Azure)', 'Enterprise CRM Solutions'],
         image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 51.5074, lng: -0.1278 },
@@ -29,7 +29,7 @@ const cityData = {
             { label: 'Support', value: '24/7' }
         ],
         whyUs: {
-            title: "Why London Enterprises Choose Nexspire",
+            title: "Why London Enterprises Choose Napnix",
             reasons: [
                 { title: "GDPR Compliance", desc: "Strict adherence to UK and EU data protection regulations.", icon: "ri-shield-keyhole-line" },
                 { title: "Time Zone Aligned", desc: "Workflows synchronized with GMT for real-time collaboration.", icon: "ri-time-line" },
@@ -42,7 +42,7 @@ const cityData = {
         city: 'New York',
         country: 'USA',
         timezone: 'America/New_York',
-        title: 'Software Development Company in New York | Nexspire',
+        title: 'Software Development Company in New York | Napnix',
         description: 'Premier software development agency in New York. Enterprise-grade web, mobile, and AI solutions.',
         heroText: 'Engineering the Future of NYC Business.',
         content: 'In the city that never sleeps, your software needs to perform 24/7. We build robust, high-frequency, and secure systems tailored for New York\'s finance, media, and tech sectors.',
@@ -57,7 +57,7 @@ const cityData = {
             { label: 'Support', value: '24/7' }
         ],
         whyUs: {
-            title: "Why NYC Businesses Partner with Nexspire",
+            title: "Why NYC Businesses Partner with Napnix",
             reasons: [
                 { title: "Enterprise Grade", desc: "Security and stability for high-stakes industries.", icon: "ri-building-4-line" },
                 { title: "Cutting-Edge Stack", desc: "React, Next.js, and GenAI to keep you ahead of the curve.", icon: "ri-stack-line" },
@@ -70,7 +70,7 @@ const cityData = {
         city: 'Bangalore',
         country: 'India',
         timezone: 'Asia/Kolkata',
-        title: 'Software Development Company in Bangalore | Nexspire',
+        title: 'Software Development Company in Bangalore | Napnix',
         description: 'Top-rated software development company in Bangalore. Custom web, mobile, and AI solutions.',
         heroText: 'Silicon Valley Quality, Local Expertise.',
         content: 'Located in the heart of India\'s tech capital, we bring world-class engineering to local startups and enterprises. From MVP to IPO, we are the technical co-founder you need.',
@@ -85,7 +85,7 @@ const cityData = {
             { label: 'Support', value: '24/7' }
         ],
         whyUs: {
-            title: "Why Bangalore Startups Choose Nexspire",
+            title: "Why Bangalore Startups Choose Napnix",
             reasons: [
                 { title: "Top 1% Talent", desc: "Access to the best engineering minds in the tech hub.", icon: "ri-medal-line" },
                 { title: "Rapid MVPs", desc: "We specialize in taking ideas to market in record time.", icon: "ri-flashlight-line" },
@@ -98,10 +98,10 @@ const cityData = {
         city: 'Dubai',
         country: 'UAE',
         timezone: 'Asia/Dubai',
-        title: 'Software Development Company in Dubai | Nexspire',
+        title: 'Software Development Company in Dubai | Napnix',
         description: 'Leading software development company in Dubai. Web, mobile, and AI solutions for MENA.',
         heroText: 'Smart Solutions for a Smart City.',
-        content: 'Nexspire Solutions empowers Dubai\'s vision with futuristic technologies. We build bilingual, compliant, and scalable digital platforms for government, retail, and real estate.',
+        content: 'Napnix empowers Dubai\'s vision with futuristic technologies. We build bilingual, compliant, and scalable digital platforms for government, retail, and real estate.',
         services: ['Arabic-Enabled Apps', 'Mobile App Development', 'Smart City AI', 'E-commerce Solutions', 'Fintech Development'],
         image: 'https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 25.2048, lng: 55.2708 },
@@ -113,7 +113,7 @@ const cityData = {
             { label: 'Support', value: '24/7' }
         ],
         whyUs: {
-            title: "Why Dubai Enterprises Trust Nexspire",
+            title: "Why Dubai Enterprises Trust Napnix",
             reasons: [
                 { title: "Localization", desc: "Fluent in Arabic/English digital experiences.", icon: "ri-translate-2" },
                 { title: "Innovation Focused", desc: "Experts in Blockchain, AI, and IoT solutions.", icon: "ri-lightbulb-flash-line" },
@@ -126,7 +126,7 @@ const cityData = {
         city: 'Sydney',
         country: 'Australia',
         timezone: 'Australia/Sydney',
-        title: 'Software Development Company in Sydney | Nexspire',
+        title: 'Software Development Company in Sydney | Napnix',
         description: 'Expert web and mobile app development in Sydney. Custom software solutions for Australian businesses.',
         heroText: 'Digital Innovation Down Under.',
         content: 'We help Australian businesses bridge the gap between concept and code. Our solutions are built to rigorous standards, ensuring reliability and scalability for the Aussie market.',
@@ -141,7 +141,7 @@ const cityData = {
             { label: 'Support', value: '24/7' }
         ],
         whyUs: {
-            title: "Why Sydney Businesses Choose Nexspire",
+            title: "Why Sydney Businesses Choose Napnix",
             reasons: [
                 { title: "Global Standards", desc: "Code quality that meets international benchmarks.", icon: "ri-global-line" },
                 { title: "Regulated Industries", desc: "Experience in Fintech and Healthtech compliance.", icon: "ri-hospital-line" },
@@ -154,7 +154,7 @@ const cityData = {
         city: 'Toronto',
         country: 'Canada',
         timezone: 'America/Toronto',
-        title: 'Software Development Company in Toronto | Nexspire',
+        title: 'Software Development Company in Toronto | Napnix',
         description: 'Expert web, mobile, and AI development in Toronto. Trusted partner for Canadian tech innovation.',
         heroText: 'Tech Excellence for the North.',
         content: 'From the Financial District to the tech hubs of Waterloo, we provide the high-performance software backbone that Canadian businesses need to compete globally.',
@@ -169,7 +169,7 @@ const cityData = {
             { label: 'Support', value: '24/7' }
         ],
         whyUs: {
-            title: "Why Toronto Innovators Partner with Nexspire",
+            title: "Why Toronto Innovators Partner with Napnix",
             reasons: [
                 { title: "North American Sync", desc: "Seamless collaboration across time zones.", icon: "ri-timer-flash-line" },
                 { title: "AI Leadership", desc: "Leveraging Toronto's status as a global AI hub.", icon: "ri-brain-line" },
@@ -224,7 +224,7 @@ const CityLandingPage = () => {
     const localBusinessSchema = {
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
-        "name": `Nexspire Solutions - ${data.city}`,
+        "name": `Napnix - ${data.city}`,
         "description": data.description,
         "url": `${SITE_URL}/software-development-company/${city}`,
         "telephone": "+91-7009614671",
@@ -257,15 +257,15 @@ const CityLandingPage = () => {
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/software-development-company/${city}`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
-                <meta name="keywords" content={`software development company ${data.city}, web development ${data.city}, mobile app development ${data.city}, IT company ${data.city}, Nexspire Solutions ${data.city}, ${data.country} software services`} />
+                <meta name="keywords" content={`software development company ${data.city}, web development ${data.city}, mobile app development ${data.city}, IT company ${data.city}, Napnix ${data.city}, ${data.country} software services`} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-                <meta property="og:site_name" content="Nexspire Solutions" />
+                <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:site" content="@nexspiresolutions" />
-                <meta name="twitter:creator" content="@nexspiresolutions" />
+                <meta name="twitter:site" content="@napnix" />
+                <meta name="twitter:creator" content="@napnix" />
                 <meta name="twitter:title" content={data.title} />
                 <meta name="twitter:description" content={data.description} />
                 <script type="application/ld+json">
@@ -488,7 +488,7 @@ const CityLandingPage = () => {
 
                 <div className="container-custom relative z-10">
                     <div className="text-center mb-20">
-                        <span className="text-[#2563EB] font-bold tracking-widest uppercase text-sm">The Nexspire Advantage</span>
+                        <span className="text-[#2563EB] font-bold tracking-widest uppercase text-sm">The Napnix Advantage</span>
                         <h2 className="text-4xl font-bold mt-2 text-slate-900">{data.whyUs?.title}</h2>
                     </div>
 
@@ -522,7 +522,7 @@ const CityLandingPage = () => {
                         Ready to Build in {data.city}?
                     </h2>
                     <p className="text-xl text-slate-500 mb-12 max-w-2xl mx-auto leading-relaxed">
-                        Join the hundreds of successful businesses that trust Nexspire for their mission-critical software.
+                        Join the hundreds of successful businesses that trust Napnix for their mission-critical software.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-6 justify-center">
                         <Link
