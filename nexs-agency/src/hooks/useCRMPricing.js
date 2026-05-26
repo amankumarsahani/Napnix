@@ -67,8 +67,8 @@ export default function useCRMPricing() {
             const response = await billingAPI.createPaymentLink({
                 planId: finalPlanId,
                 billingCycle: isYearly ? 'yearly' : 'monthly',
-                successUrl: window.location.origin + '/nexcrm?payment=success',
-                cancelUrl: window.location.origin + '/nexcrm/pricing?payment=cancelled',
+                successUrl: window.location.origin + '/napcrm?payment=success',
+                cancelUrl: window.location.origin + '/napcrm/pricing?payment=cancelled',
                 metadata: {
                     source: 'agency_pricing_page',
                     billing_cycle: isYearly ? 'yearly' : 'monthly'
@@ -114,7 +114,7 @@ export default function useCRMPricing() {
             email: formData.get('email'),
             phone: formData.get('phone'),
             company: formData.get('company'),
-            message: `Plan: NexCRM ${plan}\n\n${formData.get('message') || 'Interested in learning more about NexCRM.'}`,
+            message: `Plan: NapCRM ${plan}\n\n${formData.get('message') || 'Interested in learning more about NapCRM.'}`,
             captchaToken
         };
 

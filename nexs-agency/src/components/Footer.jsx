@@ -27,8 +27,8 @@ const Footer = memo(function Footer() {
       { name: 'Portfolio', href: '/portfolio' },
       { name: 'Contact', href: '/contact' },
       { name: 'Blog', href: '/blog' },
-      { name: 'NexCRM', href: '/nexcrm' },
-      { name: 'NexMail', href: '/nexmail' }
+      { name: 'NapCRM', href: '/napcrm' },
+      { name: 'NapMail', href: '/napmail' }
     ]
   };
 

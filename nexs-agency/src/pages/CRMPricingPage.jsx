@@ -28,24 +28,24 @@ export default function CRMPricingPage() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
             <Helmet>
-                <title>NexCRM Pricing - Plans from $49/mo | Starter, Growth, Business, Enterprise</title>
-                <meta name="description" content="Compare NexCRM pricing plans. Starter $49/mo, Growth $79/mo, Business $99/mo, Enterprise custom. Save 15% with yearly billing. 14-day free trial on all plans." />
-                <meta name="keywords" content="NexCRM pricing, CRM pricing India, affordable CRM plans, CRM software cost, business CRM pricing, agency CRM plans, CRM monthly pricing, CRM enterprise pricing" />
+                <title>NapCRM Pricing - Plans from $49/mo | Starter, Growth, Business, Enterprise</title>
+                <meta name="description" content="Compare NapCRM pricing plans. Starter $49/mo, Growth $79/mo, Business $99/mo, Enterprise custom. Save 15% with yearly billing. 14-day free trial on all plans." />
+                <meta name="keywords" content="NapCRM pricing, CRM pricing India, affordable CRM plans, CRM software cost, business CRM pricing, agency CRM plans, CRM monthly pricing, CRM enterprise pricing" />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-                <link rel="canonical" href={`${SITE_URL}/nexcrm/pricing`} />
+                <link rel="canonical" href={`${SITE_URL}/napcrm/pricing`} />
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
-                <meta property="og:title" content="NexCRM Pricing - Plans from $49/mo" />
-                <meta property="og:description" content="Compare NexCRM pricing plans. Starter, Growth, Business, Enterprise. Save 15% yearly. 14-day free trial." />
+                <meta property="og:title" content="NapCRM Pricing - Plans from $49/mo" />
+                <meta property="og:description" content="Compare NapCRM pricing plans. Starter, Growth, Business, Enterprise. Save 15% yearly. 14-day free trial." />
                 <meta property="og:type" content="website" />
-                <meta property="og:url" content={`${SITE_URL}/nexcrm/pricing`} />
+                <meta property="og:url" content={`${SITE_URL}/napcrm/pricing`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:site" content="@napnix" />
                 <meta name="twitter:creator" content="@napnix" />
-                <meta name="twitter:title" content="NexCRM Pricing - Plans from $49/mo" />
+                <meta name="twitter:title" content="NapCRM Pricing - Plans from $49/mo" />
                 <meta name="twitter:description" content="Starter $49/mo, Growth $79/mo, Business $99/mo. Save 15% yearly. 14-day free trial." />
             </Helmet>
             <script type="application/ld+json">{JSON.stringify({
@@ -53,14 +53,14 @@ export default function CRMPricingPage() {
                 "@type": "BreadcrumbList",
                 "itemListElement": [
                     { "@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL },
-                    { "@type": "ListItem", "position": 2, "name": "NexCRM", "item": `${SITE_URL}/nexcrm` },
-                    { "@type": "ListItem", "position": 3, "name": "Pricing", "item": `${SITE_URL}/nexcrm/pricing` }
+                    { "@type": "ListItem", "position": 2, "name": "NapCRM", "item": `${SITE_URL}/napcrm` },
+                    { "@type": "ListItem", "position": 3, "name": "Pricing", "item": `${SITE_URL}/napcrm/pricing` }
                 ]
             })}</script>
             <script type="application/ld+json">{JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "ItemList",
-                "name": "NexCRM Pricing Plans",
+                "name": "NapCRM Pricing Plans",
                 "description": "CRM pricing plans for agencies and businesses",
                 "numberOfItems": 4,
                 "itemListElement": crmTiers.map((tier, i) => ({
@@ -68,7 +68,7 @@ export default function CRMPricingPage() {
                     "position": i + 1,
                     "item": {
                         "@type": "Product",
-                        "name": `NexCRM ${tier.name}`,
+                        "name": `NapCRM ${tier.name}`,
                         "description": tier.tagline,
                         ...(!tier.isCustom ? {
                             "offers": {
@@ -106,7 +106,7 @@ export default function CRMPricingPage() {
             <section className="pt-32 pb-16 px-4">
                 <div className="max-w-7xl mx-auto text-center">
                     <span className="inline-block px-4 py-1.5 bg-[#2563EB]/10 text-[#2563EB] text-sm font-medium rounded-full mb-4">
-                        NexCRM Pricing
+                        NapCRM Pricing
                     </span>
                     <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
                         Simple, Transparent Pricing

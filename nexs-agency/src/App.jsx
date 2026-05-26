@@ -1,5 +1,5 @@
 import { lazy, memo, Suspense, useEffect, useRef } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { SITE_URL } from './constants/siteConfig';
 import { useAuth } from './context/AuthContext';
@@ -28,8 +28,8 @@ const AboutPage = lazy(() => import('./pages/AboutPage'));
 const PortfolioPage = lazy(() => import('./pages/PortfolioPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
-const NexCRMLandingPage = lazy(() => import('./pages/NexCRMLandingPage'));
-const NexMailLandingPage = lazy(() => import('./pages/NexMailLandingPage'));
+const NapCRMLandingPage = lazy(() => import('./pages/NapCRMLandingPage'));
+const NapMailLandingPage = lazy(() => import('./pages/NapMailLandingPage'));
 const CRMPricingPage = lazy(() => import('./pages/CRMPricingPage'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('./pages/TermsOfService'));
@@ -180,6 +180,11 @@ const LandingPage = memo(function LandingPage() {
   );
 });
 
+function RedirectNexCRMIndustry() {
+  const { industry } = useParams();
+  return <Navigate to={`/napcrm/industries/${industry}`} replace />;
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -194,10 +199,14 @@ function App() {
           <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/blog" element={<BlogPage />} />
-          <Route path="/nexcrm" element={<NexCRMLandingPage />} />
-          <Route path="/nexcrm/pricing" element={<CRMPricingPage />} />
-          <Route path="/nexcrm/industries/:industry" element={<IndustryLandingPage />} />
-          <Route path="/nexmail" element={<NexMailLandingPage />} />
+          <Route path="/napcrm" element={<NapCRMLandingPage />} />
+          <Route path="/napcrm/pricing" element={<CRMPricingPage />} />
+          <Route path="/napcrm/industries/:industry" element={<IndustryLandingPage />} />
+          <Route path="/napmail" element={<NapMailLandingPage />} />
+          <Route path="/nexcrm" element={<Navigate to="/napcrm" replace />} />
+          <Route path="/nexcrm/pricing" element={<Navigate to="/napcrm/pricing" replace />} />
+          <Route path="/nexcrm/industries/:industry" element={<RedirectNexCRMIndustry />} />
+          <Route path="/nexmail" element={<Navigate to="/napmail" replace />} />
           <Route path="/admin/backups" element={<ProtectedRoute><AdminBackupsPage /></ProtectedRoute>} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />

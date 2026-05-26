@@ -1,5 +1,5 @@
-// Industry data for NexCRM industry landing pages
-// Each key maps to a URL slug: /nexcrm/industries/:slug
+// Industry data for NapCRM industry landing pages
+// Each key maps to a URL slug: /napcrm/industries/:slug
 
 export const industryData = {
   general: {
@@ -52,22 +52,22 @@ export const industryData = {
     ],
     recommendedTier: 'Growth',
     testimonial: {
-      quote: 'NexCRM replaced three separate tools for us. Leads, emails, and WhatsApp — all in one place now.',
+      quote: 'NapCRM replaced three separate tools for us. Leads, emails, and WhatsApp — all in one place now.',
       author: 'Rahul Mehta',
       role: 'Founder',
       company: 'BrightPath Consulting',
       image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&q=80&fm=webp',
     },
     faqs: [
-      { q: 'Is NexCRM suitable for small businesses?', a: 'Yes. The Starter plan supports up to 3 team members and 500 leads — enough for most small businesses to get started.' },
+      { q: 'Is NapCRM suitable for small businesses?', a: 'Yes. The Starter plan supports up to 3 team members and 500 leads — enough for most small businesses to get started.' },
       { q: 'Can I migrate from another CRM?', a: 'We support CSV imports for leads, contacts, and deals. Our team can assist with migration from spreadsheets or other CRMs.' },
       { q: 'Is there a free trial?', a: 'Every plan comes with a 14-day free trial. No credit card required.' },
       { q: 'What communication channels are included?', a: 'Email (templates, bulk, campaigns), WhatsApp (business API, broadcasts), SMS, in-app chat, push notifications, and AI chatbot.' },
     ],
     seo: {
-      title: 'NexCRM — All-Purpose CRM for Growing Businesses | Napnix',
-      description: 'Manage leads, automate sales, and grow revenue with NexCRM. Affordable CRM built for Indian businesses with WhatsApp, email campaigns, and workflow automation.',
-      keywords: 'CRM for small business India, affordable CRM software, lead management tool, sales automation CRM, WhatsApp CRM India, business CRM software, NexCRM',
+      title: 'NapCRM — All-Purpose CRM for Growing Businesses | Napnix',
+      description: 'Manage leads, automate sales, and grow revenue with NapCRM. Affordable CRM built for Indian businesses with WhatsApp, email campaigns, and workflow automation.',
+      keywords: 'CRM for small business India, affordable CRM software, lead management tool, sales automation CRM, WhatsApp CRM India, business CRM software, NapCRM',
     },
   },
 
@@ -129,12 +129,12 @@ export const industryData = {
     },
     faqs: [
       { q: 'Can I manage product variants and categories?', a: 'Yes. The product catalog supports variants (size, color, etc.), categories, pricing tiers, and real-time inventory tracking.' },
-      { q: 'How does return handling work?', a: 'Customers or your team can initiate return requests. NexCRM tracks the return through approval, pickup, refund, or exchange.' },
+      { q: 'How does return handling work?', a: 'Customers or your team can initiate return requests. NapCRM tracks the return through approval, pickup, refund, or exchange.' },
       { q: 'Is vendor management included?', a: 'Yes. Onboard vendors, manage their listings, and track performance — included in Business and Enterprise plans.' },
       { q: 'Do you charge per order?', a: 'No. All plans have flat monthly pricing regardless of your order volume.' },
     ],
     seo: {
-      title: 'E-Commerce CRM — Products, Orders & Inventory Management | NexCRM',
+      title: 'E-Commerce CRM — Products, Orders & Inventory Management | NapCRM',
       description: 'CRM built for online stores. Manage products, orders, inventory, shipping, returns, and vendors. Full e-commerce operations in one dashboard.',
       keywords: 'ecommerce CRM India, online store CRM, order management CRM, inventory management ecommerce, vendor management CRM, product catalog CRM, ecommerce operations',
     },
@@ -203,7 +203,7 @@ export const industryData = {
       { q: 'Can agents access the system?', a: 'Yes. Create agent accounts with appropriate access levels to manage their leads, schedule visits, and update deal status.' },
     ],
     seo: {
-      title: 'Real Estate CRM — Manage Properties, Leads & Agents | NexCRM',
+      title: 'Real Estate CRM — Manage Properties, Leads & Agents | NapCRM',
       description: 'CRM for real estate brokers and developers. Manage properties, track site visits, handle transactions, and coordinate agent teams from one platform.',
       keywords: 'real estate CRM India, property management CRM, broker CRM software, real estate lead management, site visit scheduler, builder CRM, agent management CRM',
     },
@@ -272,7 +272,7 @@ export const industryData = {
       { q: 'Is timesheet tracking included?', a: 'Yes. Log hours per client or service, review time reports, and track staff utilization — included in all plans.' },
     ],
     seo: {
-      title: 'Professional Services CRM — Bookings, Appointments & Client Management | NexCRM',
+      title: 'Professional Services CRM — Bookings, Appointments & Client Management | NapCRM',
       description: 'CRM for consultants, agencies, and service businesses. Manage appointments, track timesheets, sell packages, and grow your client base.',
       keywords: 'services CRM India, consulting CRM, agency CRM software, appointment booking CRM, service business management, client management CRM, freelancer CRM',
     },
@@ -335,13 +335,13 @@ export const industryData = {
       image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&q=80&fm=webp',
     },
     faqs: [
-      { q: 'Is this suitable for coaching institutes?', a: 'Yes. NexCRM works for schools, coaching centers, and edtech platforms. Batch management and attendance are designed around how institutes operate.' },
+      { q: 'Is this suitable for coaching institutes?', a: 'Yes. NapCRM works for schools, coaching centers, and edtech platforms. Batch management and attendance are designed around how institutes operate.' },
       { q: 'Can I track student attendance?', a: 'Yes. Mark attendance per batch per session. Generate attendance reports and send alerts to students with low attendance.' },
       { q: 'How do grades and results work?', a: 'Enter exam scores, assign grades, and generate student-wise and batch-wise performance reports across terms and subjects.' },
       { q: 'Can I manage multiple branches?', a: 'Yes. Multi-branch support is available on Business and Enterprise plans with branch-wise data isolation and consolidated reporting.' },
     ],
     seo: {
-      title: 'Education CRM — Courses, Students & Attendance Management | NexCRM',
+      title: 'Education CRM — Courses, Students & Attendance Management | NapCRM',
       description: 'CRM for schools, coaching institutes, and edtech. Manage courses, batches, student records, attendance, and grades from one platform.',
       keywords: 'education CRM India, school management CRM, student management software, edtech CRM, attendance tracking system, coaching institute CRM, batch management software',
     },
@@ -410,7 +410,7 @@ export const industryData = {
       { q: 'How does lab integration work?', a: 'Create lab orders from patient records, record results, and automatically link them to the patient\'s medical history.' },
     ],
     seo: {
-      title: 'Healthcare CRM — Patient Management, Prescriptions & Billing | NexCRM',
+      title: 'Healthcare CRM — Patient Management, Prescriptions & Billing | NapCRM',
       description: 'CRM for hospitals and clinics. Manage patients, appointments, prescriptions, lab results, and billing. Complete clinical workflow in one platform.',
       keywords: 'healthcare CRM India, hospital CRM software, patient management system, clinic appointment software, prescription management, medical records CRM, healthcare billing',
     },
@@ -479,7 +479,7 @@ export const industryData = {
       { q: 'Is it suitable for multi-property management?', a: 'Yes. Business and Enterprise plans support multi-property management with property-wise dashboards and consolidated reporting.' },
     ],
     seo: {
-      title: 'Hospitality CRM — Hotel Reservations, Rooms & Guest Management | NexCRM',
+      title: 'Hospitality CRM — Hotel Reservations, Rooms & Guest Management | NapCRM',
       description: 'CRM for hotels and resorts. Manage reservations, rooms, guest profiles, housekeeping, and tour packages. Operations-first hospitality management.',
       keywords: 'hotel CRM India, hospitality CRM software, guest management system, resort booking CRM, room management software, housekeeping management, hotel operations CRM',
     },
@@ -548,7 +548,7 @@ export const industryData = {
       { q: 'How does document management work?', a: 'Upload passport copies, visa documents, and insurance per traveler. Documents are linked to profiles and accessible from bookings.' },
     ],
     seo: {
-      title: 'Travel CRM — Tours, Itineraries & Booking Management | NexCRM',
+      title: 'Travel CRM — Tours, Itineraries & Booking Management | NapCRM',
       description: 'CRM for travel agencies and tour operators. Manage packages, build itineraries, track bookings, and coordinate agents from one platform.',
       keywords: 'travel agency CRM India, tour operator CRM, itinerary builder, travel booking management, travel agent software, holiday package CRM, tourism CRM',
     },
@@ -617,7 +617,7 @@ export const industryData = {
       { q: 'Does it track gym equipment?', a: 'Yes. Maintain an equipment inventory with purchase dates, maintenance schedules, and status tracking.' },
     ],
     seo: {
-      title: 'Fitness CRM — Gym Membership, Workouts & Class Management | NexCRM',
+      title: 'Fitness CRM — Gym Membership, Workouts & Class Management | NapCRM',
       description: 'CRM for gyms and fitness centers. Manage memberships, subscriptions, class schedules, trainers, and workout plans. Built for Indian fitness businesses.',
       keywords: 'gym CRM India, fitness center CRM, gym management software, membership management system, workout tracking CRM, gym billing software, fitness studio CRM',
     },
@@ -686,7 +686,7 @@ export const industryData = {
       { q: 'How does billing work?', a: 'Log time entries per case, set hourly rates per lawyer, and generate itemized invoices. Track payments and outstanding balances.' },
     ],
     seo: {
-      title: 'Legal CRM — Case Management, Time Tracking & Invoicing | NexCRM',
+      title: 'Legal CRM — Case Management, Time Tracking & Invoicing | NapCRM',
       description: 'CRM for law firms and advocates. Manage cases, track court dates, log billable hours, and generate invoices. Built for Indian legal practice.',
       keywords: 'legal CRM India, law firm CRM, case management software, advocate management system, legal billing software, court date tracker, legal practice management',
     },
@@ -752,7 +752,7 @@ export const industryData = {
     ],
     recommendedTier: 'Enterprise',
     testimonial: {
-      quote: 'We replaced three separate systems — ERP, quality tracking, and invoicing — with NexCRM. The batch traceability alone paid for itself.',
+      quote: 'We replaced three separate systems — ERP, quality tracking, and invoicing — with NapCRM. The batch traceability alone paid for itself.',
       author: 'Rajesh Agarwal',
       role: 'Managing Director',
       company: 'PrecisionTech Industries',
@@ -765,7 +765,7 @@ export const industryData = {
       { q: 'Does it handle GST invoicing?', a: 'Yes. GST-compliant invoicing with auto-calculation, invoice automation from sales orders, and detailed invoice reports.' },
     ],
     seo: {
-      title: 'Manufacturing CRM — Production, Quality, MRP & Invoicing | NexCRM',
+      title: 'Manufacturing CRM — Production, Quality, MRP & Invoicing | NapCRM',
       description: 'India\'s most comprehensive manufacturing CRM. 26+ modules for production, scheduling, quality control, MRP planning, equipment maintenance, and invoicing.',
       keywords: 'manufacturing CRM India, production management CRM, factory management software, MRP planning CRM, quality control manufacturing, batch tracking system, manufacturing ERP India',
     },
@@ -834,7 +834,7 @@ export const industryData = {
       { q: 'Does it support route planning?', a: 'Yes. Define routes with stops, estimated timings, and distances. Assign routes to vehicles and track progress.' },
     ],
     seo: {
-      title: 'Logistics CRM — Shipment Tracking, Fleet & Warehouse Management | NexCRM',
+      title: 'Logistics CRM — Shipment Tracking, Fleet & Warehouse Management | NapCRM',
       description: 'CRM for logistics and freight companies. Track shipments, manage fleets, coordinate drivers, and operate warehouses. Built for Indian logistics.',
       keywords: 'logistics CRM India, freight management CRM, shipment tracking software, fleet management CRM, transport CRM, warehouse management, supply chain CRM',
     },
@@ -903,7 +903,7 @@ export const industryData = {
       { q: 'Can I track ingredient inventory?', a: 'Yes. Track stock levels, monitor usage, and get alerts when supplies need reordering.' },
     ],
     seo: {
-      title: 'Restaurant CRM — Menu, Orders, Kitchen & Table Management | NexCRM',
+      title: 'Restaurant CRM — Menu, Orders, Kitchen & Table Management | NapCRM',
       description: 'CRM for restaurants and cafes. Manage menus, orders, tables, kitchen operations, inventory, and staff scheduling. Built for Indian F&B businesses.',
       keywords: 'restaurant CRM India, cafe management software, restaurant order management, kitchen display system, table reservation system, restaurant inventory, F&B management CRM',
     },
@@ -972,7 +972,7 @@ export const industryData = {
       { q: 'How do packages work?', a: 'Create packages (e.g., "10 haircuts for ₹3000") or combo deals. The system tracks remaining sessions per client with auto-deduction.' },
     ],
     seo: {
-      title: 'Salon CRM — Appointments, Services & Client Management | NexCRM',
+      title: 'Salon CRM — Appointments, Services & Client Management | NapCRM',
       description: 'CRM for salons and spas. Manage appointments, track client preferences, sell packages, and showcase your portfolio. Built for Indian beauty businesses.',
       keywords: 'salon CRM India, spa management software, beauty salon CRM, appointment booking salon, salon management system, beauty parlour software, salon marketing tool',
     },
@@ -982,6 +982,6 @@ export const industryData = {
 export const industryList = Object.entries(industryData).map(([slug, data]) => ({
   slug,
   name: data.name,
-  path: `/nexcrm/industries/${slug}`,
+  path: `/napcrm/industries/${slug}`,
   icon: data.icon,
 }));

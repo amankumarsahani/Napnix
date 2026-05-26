@@ -52,18 +52,18 @@ export default function IndustryLandingPage() {
     } = useCRMPricing();
 
     const { currency, setCurrency, symbol, formatPrice, currencies } = useCurrency();
-    if (!data) return <Navigate to="/nexcrm" replace />;
+    if (!data) return <Navigate to="/napcrm" replace />;
 
     const colors = colorMap[data.color] || colorMap.blue;
     const otherIndustries = industryList.filter((ind) => ind.slug !== industry);
-    const pageUrl = `${SITE_URL}/nexcrm/industries/${industry}`;
+    const pageUrl = `${SITE_URL}/napcrm/industries/${industry}`;
 
     const breadcrumbSchema = {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
         itemListElement: [
             { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
-            { '@type': 'ListItem', position: 2, name: 'NexCRM', item: `${SITE_URL}/nexcrm` },
+            { '@type': 'ListItem', position: 2, name: 'NapCRM', item: `${SITE_URL}/napcrm` },
             { '@type': 'ListItem', position: 3, name: data.name, item: pageUrl },
         ],
     };
@@ -81,7 +81,7 @@ export default function IndustryLandingPage() {
     const productSchema = {
         '@context': 'https://schema.org',
         '@type': 'SoftwareApplication',
-        name: `NexCRM for ${data.name}`,
+        name: `NapCRM for ${data.name}`,
         applicationCategory: 'BusinessApplication',
         operatingSystem: 'Web',
         url: pageUrl,
@@ -162,7 +162,7 @@ export default function IndustryLandingPage() {
                         <nav className="flex items-center justify-center gap-2 text-sm text-slate-500 mb-8">
                             <Link to="/" className="hover:text-slate-900 transition-colors">Home</Link>
                             <span>/</span>
-                            <Link to="/nexcrm" className="hover:text-slate-900 transition-colors">NexCRM</Link>
+                            <Link to="/napcrm" className="hover:text-slate-900 transition-colors">NapCRM</Link>
                             <span>/</span>
                             <span className="text-slate-900 font-medium">{data.name}</span>
                         </nav>
@@ -285,11 +285,11 @@ export default function IndustryLandingPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-16 items-start">
                         <FadeIn y={24} duration={0.6}>
                             <div className="lg:sticky lg:top-32">
-                                <span className={`font-bold tracking-wider uppercase text-sm mb-4 block ${colors.text}`}>Why NexCRM</span>
+                                <span className={`font-bold tracking-wider uppercase text-sm mb-4 block ${colors.text}`}>Why NapCRM</span>
                                 <h2 className="text-3xl md:text-5xl font-bold text-slate-900 mb-6">
                                     Built for teams like yours
                                 </h2>
-                                <p className="text-xl text-slate-600 font-light leading-relaxed">Here&rsquo;s why {data.name.toLowerCase()} businesses trust NexCRM to streamline operations and accelerate growth.</p>
+                                <p className="text-xl text-slate-600 font-light leading-relaxed">Here&rsquo;s why {data.name.toLowerCase()} businesses trust NapCRM to streamline operations and accelerate growth.</p>
                             </div>
                         </FadeIn>
 
@@ -538,7 +538,7 @@ export default function IndustryLandingPage() {
                                 {data.cta?.title || `Ready to transform your ${data.name.toLowerCase()} business?`}
                             </h2>
                             <p className="text-xl text-slate-400 mb-10 max-w-2xl mx-auto">
-                                {data.cta?.subtitle || `Join businesses using NexCRM to scale their ${data.name.toLowerCase()} operations.`}
+                                {data.cta?.subtitle || `Join businesses using NapCRM to scale their ${data.name.toLowerCase()} operations.`}
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <button
@@ -565,7 +565,7 @@ export default function IndustryLandingPage() {
                         <FadeIn y={24} duration={0.6}>
                             <div className="text-center mb-14">
                                 <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-3">Explore Other Industries</h2>
-                                <p className="text-slate-500 text-lg">NexCRM is built for every business type.</p>
+                                <p className="text-slate-500 text-lg">NapCRM is built for every business type.</p>
                             </div>
                         </FadeIn>
 
