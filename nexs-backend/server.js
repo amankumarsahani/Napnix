@@ -163,17 +163,31 @@ app.get('/api/resolve-domain', async (req, res) => {
 
         const normalizedDomain = domain.toLowerCase().trim();
         const { pool: adminPool } = require('./config/database');
+        const baseDomain = process.env.NEXCRM_DOMAIN || 'napnix.in';
 
-        // Search across all custom domain columns
+        // Match custom domains OR default {slug}.napnix.in / {slug}-crm.napnix.in / {slug}-crm-api.napnix.in
         const [rows] = await adminPool.query(
             `SELECT slug, name, industry_type, assigned_port, status,
                     custom_domain_crm, custom_domain_storefront, custom_domain_api,
                     custom_domain_verified
              FROM tenants
              WHERE status IN ('active', 'trial')
-               AND (custom_domain_storefront = ? OR custom_domain_crm = ? OR custom_domain_api = ? OR custom_domain = ?)
+               AND (
+                 custom_domain_storefront = ?
+                 OR custom_domain_crm = ?
+                 OR custom_domain_api = ?
+                 OR custom_domain = ?
+                 OR ? = CONCAT(slug, '.', ?)
+                 OR ? = CONCAT(slug, '-crm.', ?)
+                 OR ? = CONCAT(slug, '-crm-api.', ?)
+               )
              LIMIT 1`,
-            [normalizedDomain, normalizedDomain, normalizedDomain, normalizedDomain]
+            [
+                normalizedDomain, normalizedDomain, normalizedDomain, normalizedDomain,
+                normalizedDomain, baseDomain,
+                normalizedDomain, baseDomain,
+                normalizedDomain, baseDomain
+            ]
         );
 
         if (!rows.length) {
@@ -181,7 +195,6 @@ app.get('/api/resolve-domain', async (req, res) => {
         }
 
         const tenant = rows[0];
-        const baseDomain = process.env.NEXCRM_DOMAIN || 'napnix.in';
 
         res.json({
             found: true,
