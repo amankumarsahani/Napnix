@@ -256,6 +256,9 @@ app.use('/api/billing', require('./routes/billing.routes'));
 // Blog
 app.use('/api/blogs', require('./routes/blog.routes'));
 
+// Expenses
+app.use('/api/expenses', require('./routes/expense.routes'));
+
 // Start email worker (after routes are set up)
 const emailWorker = require('./workers/emailWorker');
 emailWorker.start(30000); // Process queue every 30 seconds
