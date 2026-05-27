@@ -5,7 +5,7 @@ class ExpenseController {
         try {
             const {
                 page = 1, limit = 50,
-                date_from, date_to,
+                type, date_from, date_to,
                 category, payment_method,
                 search, is_recurring
             } = req.query;
@@ -14,18 +14,19 @@ class ExpenseController {
             const conditions = [];
             const params = [];
 
-            if (date_from) { conditions.push('date >= ?'); params.push(date_from); }
-            if (date_to)   { conditions.push('date <= ?'); params.push(date_to); }
-            if (category)  { conditions.push('category = ?'); params.push(category); }
-            if (payment_method) { conditions.push('payment_method = ?'); params.push(payment_method); }
+            if (type)          { conditions.push('type = ?');            params.push(type); }
+            if (date_from)     { conditions.push('date >= ?');           params.push(date_from); }
+            if (date_to)       { conditions.push('date <= ?');           params.push(date_to); }
+            if (category)      { conditions.push('category = ?');        params.push(category); }
+            if (payment_method){ conditions.push('payment_method = ?');  params.push(payment_method); }
             if (is_recurring !== undefined && is_recurring !== '') {
                 conditions.push('is_recurring = ?');
                 params.push(is_recurring === 'true' || is_recurring === '1' ? 1 : 0);
             }
             if (search) {
-                conditions.push('(vendor LIKE ? OR description LIKE ? OR notes LIKE ?)');
+                conditions.push('(vendor LIKE ? OR description LIKE ? OR notes LIKE ? OR reference LIKE ?)');
                 const like = `%${search}%`;
-                params.push(like, like, like);
+                params.push(like, like, like, like);
             }
 
             const where = conditions.length ? 'WHERE ' + conditions.join(' AND ') : '';
@@ -33,7 +34,6 @@ class ExpenseController {
             const [[{ total }]] = await pool.query(
                 `SELECT COUNT(*) as total FROM expenses ${where}`, params
             );
-
             const [rows] = await pool.query(
                 `SELECT * FROM expenses ${where} ORDER BY date DESC, id DESC LIMIT ? OFFSET ?`,
                 [...params, parseInt(limit), offset]
@@ -51,7 +51,7 @@ class ExpenseController {
             });
         } catch (err) {
             console.error('Expenses getAll error:', err);
-            res.status(500).json({ error: 'Failed to fetch expenses' });
+            res.status(500).json({ error: 'Failed to fetch records' });
         }
     }
 
@@ -61,27 +61,47 @@ class ExpenseController {
             const monthStart = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
             const yearStart  = `${now.getFullYear()}-01-01`;
 
-            const [[monthRow]] = await pool.query(
-                'SELECT COALESCE(SUM(amount),0) as total FROM expenses WHERE date >= ?',
-                [monthStart]
+            // This month totals by type
+            const [monthRows] = await pool.query(
+                `SELECT type, COALESCE(SUM(amount),0) as total FROM expenses
+                 WHERE date >= ? GROUP BY type`, [monthStart]
             );
-            const [[ytdRow]] = await pool.query(
-                'SELECT COALESCE(SUM(amount),0) as total FROM expenses WHERE date >= ?',
-                [yearStart]
-            );
+            const monthByType = Object.fromEntries(monthRows.map(r => [r.type, parseFloat(r.total)]));
 
-            const [byCategory] = await pool.query(
+            // YTD totals by type
+            const [ytdRows] = await pool.query(
+                `SELECT type, COALESCE(SUM(amount),0) as total FROM expenses
+                 WHERE date >= ? GROUP BY type`, [yearStart]
+            );
+            const ytdByType = Object.fromEntries(ytdRows.map(r => [r.type, parseFloat(r.total)]));
+
+            // By category (expenses)
+            const [expByCategory] = await pool.query(
                 `SELECT category, COALESCE(SUM(amount),0) as total, COUNT(*) as count
-                 FROM expenses GROUP BY category ORDER BY total DESC`
+                 FROM expenses WHERE type = 'expense' GROUP BY category ORDER BY total DESC`
+            );
+            // By category (deposits)
+            const [depByCategory] = await pool.query(
+                `SELECT category, COALESCE(SUM(amount),0) as total, COUNT(*) as count
+                 FROM expenses WHERE type = 'deposit' GROUP BY category ORDER BY total DESC`
             );
 
+            // Monthly trend (last 12 months, both types)
             const [monthlyTrend] = await pool.query(
-                `SELECT DATE_FORMAT(date, '%Y-%m') as month, COALESCE(SUM(amount),0) as total
+                `SELECT DATE_FORMAT(date,'%Y-%m') as month, type, COALESCE(SUM(amount),0) as total
                  FROM expenses
                  WHERE date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
-                 GROUP BY month ORDER BY month ASC`
+                 GROUP BY month, type ORDER BY month ASC`
             );
+            // Merge into { month, expense, deposit }
+            const trendMap = {};
+            for (const r of monthlyTrend) {
+                if (!trendMap[r.month]) trendMap[r.month] = { month: r.month, expense: 0, deposit: 0 };
+                trendMap[r.month][r.type] = parseFloat(r.total);
+            }
+            const trend = Object.values(trendMap).sort((a, b) => a.month.localeCompare(b.month));
 
+            // Recurring monthly expense equivalent
             const [[recurringRow]] = await pool.query(
                 `SELECT COALESCE(SUM(
                     CASE recurring_interval
@@ -91,47 +111,64 @@ class ExpenseController {
                         ELSE amount
                     END
                  ),0) as monthly_total
-                 FROM expenses WHERE is_recurring = 1`
+                 FROM expenses WHERE is_recurring = 1 AND type = 'expense'`
             );
 
             const [allCategories] = await pool.query(
-                'SELECT DISTINCT category FROM expenses ORDER BY category'
+                'SELECT DISTINCT category, type FROM expenses ORDER BY type, category'
             );
+
+            const expYtd = ytdByType['expense'] || 0;
+            const depYtd = ytdByType['deposit'] || 0;
 
             res.json({
                 success: true,
                 data: {
-                    thisMonth: parseFloat(monthRow.total),
-                    ytd: parseFloat(ytdRow.total),
-                    topCategory: byCategory[0]?.category || null,
-                    recurringPerMonth: parseFloat(recurringRow.monthly_total),
-                    byCategory: byCategory.map(r => ({ ...r, total: parseFloat(r.total) })),
-                    monthlyTrend: monthlyTrend.map(r => ({ ...r, total: parseFloat(r.total) })),
-                    allCategories: allCategories.map(r => r.category)
+                    expense: {
+                        thisMonth: monthByType['expense'] || 0,
+                        ytd: expYtd,
+                        topCategory: expByCategory[0]?.category || null,
+                        recurringPerMonth: parseFloat(recurringRow.monthly_total),
+                        byCategory: expByCategory.map(r => ({ ...r, total: parseFloat(r.total) })),
+                    },
+                    deposit: {
+                        thisMonth: monthByType['deposit'] || 0,
+                        ytd: depYtd,
+                        topCategory: depByCategory[0]?.category || null,
+                        byCategory: depByCategory.map(r => ({ ...r, total: parseFloat(r.total) })),
+                    },
+                    net: {
+                        thisMonth: (monthByType['deposit'] || 0) - (monthByType['expense'] || 0),
+                        ytd: depYtd - expYtd,
+                    },
+                    monthlyTrend: trend,
+                    allExpenseCategories: allCategories.filter(r => r.type === 'expense').map(r => r.category),
+                    allDepositCategories: allCategories.filter(r => r.type === 'deposit').map(r => r.category),
                 }
             });
         } catch (err) {
             console.error('Expenses getStats error:', err);
-            res.status(500).json({ error: 'Failed to fetch expense stats' });
+            res.status(500).json({ error: 'Failed to fetch stats' });
         }
     }
 
     async getById(req, res) {
         try {
             const [[row]] = await pool.query('SELECT * FROM expenses WHERE id = ?', [req.params.id]);
-            if (!row) return res.status(404).json({ error: 'Expense not found' });
+            if (!row) return res.status(404).json({ error: 'Record not found' });
             res.json({ success: true, data: row });
         } catch (err) {
-            res.status(500).json({ error: 'Failed to fetch expense' });
+            res.status(500).json({ error: 'Failed to fetch record' });
         }
     }
 
     async create(req, res) {
         try {
             const {
+                type = 'expense',
                 date, amount, category = 'Other', description,
                 vendor, payment_method = 'card',
-                is_recurring = 0, recurring_interval, notes
+                is_recurring = 0, recurring_interval, notes, reference
             } = req.body;
 
             if (!date || amount === undefined) {
@@ -139,15 +176,15 @@ class ExpenseController {
             }
 
             const [result] = await pool.query(
-                `INSERT INTO expenses (date, amount, category, description, vendor, payment_method,
-                 is_recurring, recurring_interval, notes, created_by)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                `INSERT INTO expenses (type, date, amount, category, description, vendor, payment_method,
+                 is_recurring, recurring_interval, notes, reference, created_by)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
-                    date, parseFloat(amount), category, description || null,
-                    vendor || null, payment_method,
+                    type, date, parseFloat(amount), category,
+                    description || null, vendor || null, payment_method,
                     is_recurring ? 1 : 0,
                     is_recurring && recurring_interval ? recurring_interval : null,
-                    notes || null,
+                    notes || null, reference || null,
                     req.user?.id || null
                 ]
             );
@@ -156,7 +193,7 @@ class ExpenseController {
             res.status(201).json({ success: true, data: created });
         } catch (err) {
             console.error('Expenses create error:', err);
-            res.status(500).json({ error: 'Failed to create expense' });
+            res.status(500).json({ error: 'Failed to create record' });
         }
     }
 
@@ -164,13 +201,15 @@ class ExpenseController {
         try {
             const { id } = req.params;
             const {
-                date, amount, category, description,
-                vendor, payment_method, is_recurring, recurring_interval, notes
+                type, date, amount, category, description,
+                vendor, payment_method, is_recurring, recurring_interval,
+                notes, reference
             } = req.body;
 
             const fields = [];
             const params = [];
 
+            if (type !== undefined)              { fields.push('type = ?');               params.push(type); }
             if (date !== undefined)              { fields.push('date = ?');               params.push(date); }
             if (amount !== undefined)            { fields.push('amount = ?');             params.push(parseFloat(amount)); }
             if (category !== undefined)          { fields.push('category = ?');           params.push(category); }
@@ -184,27 +223,28 @@ class ExpenseController {
                 params.push(rec && recurring_interval ? recurring_interval : null);
             }
             if (notes !== undefined)             { fields.push('notes = ?');              params.push(notes || null); }
+            if (reference !== undefined)         { fields.push('reference = ?');          params.push(reference || null); }
 
             if (!fields.length) return res.status(400).json({ error: 'No fields to update' });
 
             await pool.query(`UPDATE expenses SET ${fields.join(', ')} WHERE id = ?`, [...params, id]);
             const [[updated]] = await pool.query('SELECT * FROM expenses WHERE id = ?', [id]);
-            if (!updated) return res.status(404).json({ error: 'Expense not found' });
+            if (!updated) return res.status(404).json({ error: 'Record not found' });
 
             res.json({ success: true, data: updated });
         } catch (err) {
             console.error('Expenses update error:', err);
-            res.status(500).json({ error: 'Failed to update expense' });
+            res.status(500).json({ error: 'Failed to update record' });
         }
     }
 
     async delete(req, res) {
         try {
             const [result] = await pool.query('DELETE FROM expenses WHERE id = ?', [req.params.id]);
-            if (result.affectedRows === 0) return res.status(404).json({ error: 'Expense not found' });
+            if (result.affectedRows === 0) return res.status(404).json({ error: 'Record not found' });
             res.json({ success: true });
         } catch (err) {
-            res.status(500).json({ error: 'Failed to delete expense' });
+            res.status(500).json({ error: 'Failed to delete record' });
         }
     }
 
@@ -218,7 +258,7 @@ class ExpenseController {
             await pool.query(`DELETE FROM expenses WHERE id IN (${placeholders})`, ids);
             res.json({ success: true, deleted: ids.length });
         } catch (err) {
-            res.status(500).json({ error: 'Failed to bulk delete expenses' });
+            res.status(500).json({ error: 'Failed to bulk delete' });
         }
     }
 }
