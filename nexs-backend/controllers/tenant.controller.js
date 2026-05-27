@@ -145,8 +145,8 @@ class TenantController {
             }
 
             const toolsToEnable = Array.isArray(selectedTools) ? selectedTools : [];
-            const enableCRM = toolsToEnable.length === 0 || toolsToEnable.some(t => t.slug === 'nexcrm' || t === 'nexcrm');
-            const enableNexMail = toolsToEnable.some(t => t.slug === 'nexmail' || t === 'nexmail');
+            const enableCRM = toolsToEnable.length === 0 || toolsToEnable.some(t => t.slug === 'napcrm' || t === 'napcrm');
+            const enableNexMail = toolsToEnable.some(t => t.slug === 'napmail' || t === 'napmail');
 
             try {
                 if (enableCRM) {
@@ -173,7 +173,7 @@ class TenantController {
                     res.status(201).json({
                         success: true,
                         message: 'Tenant created. Provisioning selected tools in background.',
-                        data: { tenantId, slug, status: 'provisioning', tools: { crm: enableCRM, nexmail: enableNexMail } }
+                        data: { tenantId, slug, status: 'provisioning', tools: { napcrm: enableCRM, napmail: enableNexMail } }
                     });
 
                     try {
@@ -194,7 +194,7 @@ class TenantController {
                     }, server.id, {
                         skipPortAllocation: true, assignedPort: port, skipDbCreation: true
                     }).then(() => {
-                        this._recordToolEnabled(tenantId, 'nexcrm', plan_id);
+                        this._recordToolEnabled(tenantId, 'napcrm', plan_id);
                     }).catch(async (bgError) => {
                         console.error(`[Background Provisioning Error] Tenant ${slug}:`, bgError);
                         await TenantModel.updateProcessStatus(tenantId, 'error');
@@ -203,20 +203,20 @@ class TenantController {
                     res.status(201).json({
                         success: true,
                         message: 'Tenant created. Provisioning selected tools in background.',
-                        data: { tenantId, slug, status: 'created', tools: { crm: false, nexmail: enableNexMail } }
+                        data: { tenantId, slug, status: 'created', tools: { napcrm: false, napmail: enableNexMail } }
                     });
                 }
 
                 if (enableNexMail) {
                     this._provisionNexMail(tenantId, slug, null, email, name).catch(e =>
-                        console.warn(`[Tenant] NexMail provision failed for ${slug}:`, e.message)
+                        console.warn(`[Tenant] NapMail provision failed for ${slug}:`, e.message)
                     );
                 }
 
                 for (const tool of toolsToEnable) {
                     const toolSlug = typeof tool === 'string' ? tool : tool.slug;
                     const toolPlanId = typeof tool === 'object' ? tool.plan_id : null;
-                    if (toolSlug !== 'nexcrm' && toolSlug !== 'nexmail') {
+                    if (toolSlug !== 'napcrm' && toolSlug !== 'napmail') {
                         this._provisionGenericTool(tenantId, toolSlug, toolPlanId).catch(e =>
                             console.warn(`[Tenant] Tool ${toolSlug} provision failed:`, e.message)
                         );
@@ -289,7 +289,7 @@ class TenantController {
     }
 
     async _provisionNexMail(tenantId, slug, planId, adminEmail, adminName) {
-        const [nexmailTool] = await pool.query("SELECT id, internal_api_url FROM tools WHERE slug = 'nexmail' AND status = 'active'");
+        const [nexmailTool] = await pool.query("SELECT id, internal_api_url FROM tools WHERE slug = 'napmail' AND status = 'active'");
         if (!nexmailTool.length) return;
 
         const toolId = nexmailTool[0].id;
