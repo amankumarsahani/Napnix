@@ -194,7 +194,7 @@ class TenantController {
                     }, server.id, {
                         skipPortAllocation: true, assignedPort: port, skipDbCreation: true
                     }).then(() => {
-                        this._recordToolEnabled(tenantId, 'napcrm', plan_id);
+                        module.exports._recordToolEnabled(tenantId, 'napcrm', plan_id);
                     }).catch(async (bgError) => {
                         console.error(`[Background Provisioning Error] Tenant ${slug}:`, bgError);
                         await TenantModel.updateProcessStatus(tenantId, 'error');
