@@ -1169,6 +1169,26 @@ INSERT IGNORE INTO cms_menus (name, items) VALUES
 ('footer', '[{"label":"Privacy Policy","url":"/privacy-policy"},{"label":"Terms","url":"/terms"},{"label":"Contact","url":"/contact"}]');
 
 -- ============================================
+-- ECOMMERCE: RETURNS
+-- ============================================
+CREATE TABLE IF NOT EXISTS returns (
+    id              INT AUTO_INCREMENT PRIMARY KEY,
+    order_id        INT NOT NULL,
+    order_number    VARCHAR(50),
+    customer_name   VARCHAR(100),
+    customer_email  VARCHAR(100),
+    reason          VARCHAR(50),
+    description     TEXT,
+    refund_amount   DECIMAL(10,2) DEFAULT 0.00,
+    status          VARCHAR(20) DEFAULT 'pending',
+    notes           TEXT,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    INDEX idx_order (order_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================
 -- ECOMMERCE: RETURNS ITEMS
 -- ============================================
 CREATE TABLE IF NOT EXISTS return_items (
