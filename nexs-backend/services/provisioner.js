@@ -34,9 +34,9 @@ class Provisioner {
         this.cfApiToken = process.env.CLOUDFLARE_API_TOKEN;
         this.cfZoneId = process.env.CLOUDFLARE_ZONE_ID;
         this.cfDomain = process.env.NEXCRM_DOMAIN || 'napnix.in';
-        this.cfPagesUrl = process.env.NEXCRM_PAGES_URL || 'nexcrm-frontend.pages.dev';
+        this.cfPagesUrl = process.env.NEXCRM_PAGES_URL || 'napcrm-frontend.pages.dev';
         this.cfAccountId = process.env.CLOUDFLARE_ACCOUNT_ID;
-        this.cfPagesProject = process.env.NEXCRM_PAGES_PROJECT || 'nexcrm-frontend';
+        this.cfPagesProject = process.env.NEXCRM_PAGES_PROJECT || 'napcrm-frontend';
 
         // Registry service config
         this.registryUrl = process.env.REGISTRY_URL || 'http://localhost:4000';
@@ -666,8 +666,8 @@ class Provisioner {
         }
 
         const storefrontDomain = `${slug}.${this.cfDomain}`;
-        const storefrontPagesUrl = process.env.NEXCRM_STOREFRONT_PAGES_URL || 'nexcrm-storefront.pages.dev';
-        const storefrontProject = process.env.NEXCRM_STOREFRONT_PROJECT || 'nexcrm-storefront';
+        const storefrontPagesUrl = process.env.NEXCRM_STOREFRONT_PAGES_URL || 'napcrm-storefront.pages.dev';
+        const storefrontProject = process.env.NEXCRM_STOREFRONT_PROJECT || 'napcrm-storefront';
 
         try {
             // Create DNS CNAME record for storefront
@@ -824,7 +824,7 @@ class Provisioner {
             // 2. Storefront Domain - Attach to Storefront Pages project
             if (domains.storefront) {
                 console.log(`[Provisioner] Attaching Storefront domain: ${domains.storefront}`);
-                const storefrontProject = process.env.NEXCRM_STOREFRONT_PROJECT || 'nexcrm-storefront';
+                const storefrontProject = process.env.NEXCRM_STOREFRONT_PROJECT || 'napcrm-storefront';
                 const storefrontSuccess = await this.attachCustomDomainToPages(
                     this.cfAccountId,
                     storefrontProject,
@@ -1511,7 +1511,7 @@ class Provisioner {
         try {
             const frontendDomain = `${tenant.slug}-crm.${this.cfDomain}`;
             const storefrontDomain = `${tenant.slug}.${this.cfDomain}`;
-            const storefrontProject = process.env.NEXCRM_STOREFRONT_PROJECT || 'nexcrm-storefront';
+            const storefrontProject = process.env.NEXCRM_STOREFRONT_PROJECT || 'napcrm-storefront';
             await this.removeDomainFromPages(frontendDomain, this.cfPagesProject);
             await this.removeDomainFromPages(storefrontDomain, storefrontProject);
             results.pagesDomainsRemoved = true;
