@@ -569,6 +569,7 @@ class Provisioner {
         }
 
         const customDomain = `${slug}-crm.${this.cfDomain}`;
+        let dnsRecordId = null;
 
         try {
             // Step 1: Create DNS CNAME record
@@ -593,20 +594,26 @@ class Provisioner {
             const dnsData = await dnsResponse.json();
 
             if (!dnsData.success) {
-                console.error('[Provisioner] Frontend DNS error:', dnsData.errors);
-                return null;
+                const alreadyExists = dnsData.errors?.some(e => e.code === 81053);
+                if (alreadyExists) {
+                    console.log(`[Provisioner] Frontend DNS already exists: ${customDomain}`);
+                } else {
+                    console.error('[Provisioner] Frontend DNS error:', dnsData.errors);
+                    return null;
+                }
+            } else {
+                dnsRecordId = dnsData.result?.id || null;
+                console.log(`[Provisioner] DNS record created: ${customDomain}`);
             }
 
-            console.log(`[Provisioner] DNS record created: ${customDomain}`);
-
-            // Step 2: Attach domain to Cloudflare Pages project
+            // Always attempt the Pages attachment, even on retries where the DNS record already exists.
             if (this.cfAccountId && this.cfPagesProject) {
                 await this.attachDomainToPages(customDomain);
             } else {
                 console.warn('[Provisioner] Pages account/project not set, manual domain attachment required');
             }
 
-            return dnsData.result.id;
+            return dnsRecordId;
 
         } catch (error) {
             console.warn('[Provisioner] Frontend DNS error:', error.message);
@@ -668,6 +675,7 @@ class Provisioner {
         const storefrontDomain = `${slug}.${this.cfDomain}`;
         const storefrontPagesUrl = process.env.NEXCRM_STOREFRONT_PAGES_URL || 'napcrm-storefront.pages.dev';
         const storefrontProject = process.env.NEXCRM_STOREFRONT_PROJECT || 'napcrm-storefront';
+        let dnsRecordId = null;
 
         try {
             // Create DNS CNAME record for storefront
@@ -692,46 +700,33 @@ class Provisioner {
             const dnsData = await dnsResponse.json();
 
             if (!dnsData.success) {
-                // Check if record already exists
-                if (dnsData.errors?.[0]?.code === 81053) {
+                const alreadyExists = dnsData.errors?.some(e => e.code === 81053);
+                if (alreadyExists) {
                     console.log(`[Provisioner] Storefront DNS already exists: ${storefrontDomain}`);
+                } else {
+                    console.error('[Provisioner] Storefront DNS error:', dnsData.errors);
                     return null;
                 }
-                console.error('[Provisioner] Storefront DNS error:', dnsData.errors);
-                return null;
+            } else {
+                dnsRecordId = dnsData.result?.id || null;
+                console.log(`[Provisioner] Storefront DNS created: ${storefrontDomain}`);
             }
 
-            console.log(`[Provisioner] Storefront DNS created: ${storefrontDomain}`);
-
-            // Attach domain to storefront Pages project
+            // Always attempt the Pages attachment, even when DNS creation is a retry.
             if (this.cfAccountId && storefrontProject) {
-                try {
-                    const pagesResponse = await fetch(
-                        `https://api.cloudflare.com/client/v4/accounts/${this.cfAccountId}/pages/projects/${storefrontProject}/domains`,
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Authorization': `Bearer ${this.cfApiToken}`,
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ name: storefrontDomain })
-                        }
-                    );
-                    const pagesData = await pagesResponse.json();
-
-                    if (!pagesData.success) {
-                        console.error(`[Provisioner] Storefront Pages domain error:`, pagesData.errors);
-                    } else {
-                        console.log(`[Provisioner] Storefront domain attached to Pages: ${storefrontDomain}`);
-                    }
-                } catch (e) {
-                    console.warn('[Provisioner] Could not attach storefront domain to Pages:', e.message);
+                const attached = await this.attachCustomDomainToPages(
+                    this.cfAccountId,
+                    storefrontProject,
+                    storefrontDomain
+                );
+                if (!attached) {
+                    console.warn(`[Provisioner] Storefront Pages attachment still pending for ${storefrontDomain}`);
                 }
             } else {
                 console.warn('[Provisioner] Missing cfAccountId or storefrontProject for Pages attachment');
             }
 
-            return dnsData.result.id;
+            return dnsRecordId;
 
         } catch (error) {
             console.warn('[Provisioner] Storefront DNS error:', error.message);
