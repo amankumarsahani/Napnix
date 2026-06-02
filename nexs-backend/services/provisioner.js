@@ -914,7 +914,8 @@ class Provisioner {
                 SMTP_USER: process.env.SMTP_USER || '',
                 SMTP_PASS: process.env.SMTP_PASS || '',
                 SMTP_FROM: process.env.SMTP_FROM || '',
-                FRONTEND_URL: process.env.NEXCRM_FRONTEND_URL || ''
+                FRONTEND_URL: process.env.NEXCRM_FRONTEND_URL || '',
+                STOREFRONT_URL: `https://${slug}.${this.cfDomain || 'napnix.in'}`
             };
 
             // Write a temporary PM2 JSON config to inject env block reliably
