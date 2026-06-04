@@ -7,7 +7,8 @@ const templateLoader = require('./template.loader');
  */
 class EmailService {
     constructor() {
-        this.transporter = null;
+        this.transporter = null;      // primary transporter (kept for backward compat)
+        this.transports = [];         // prioritized list used for automatic failover
         this.isConfigured = false;
         this._dbLoaded = false;
         this._fromName = null;
@@ -17,44 +18,70 @@ class EmailService {
 
     initializeTransporter() {
         const {
-            ZOHO_SMTP_HOST, ZOHO_SMTP_PORT, ZOHO_SMTP_USER, ZOHO_SMTP_PASSWORD,
-            SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_SECURE
+            ZOHO_SMTP_HOST, ZOHO_SMTP_PORT, ZOHO_SMTP_USER, ZOHO_SMTP_PASSWORD, ZOHO_FROM_NAME, ZOHO_FROM_EMAIL,
+            SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_SECURE, SMTP_FROM_NAME, SMTP_FROM_EMAIL
         } = process.env;
 
-        // Priority: Zoho env vars first, then Gmail/generic SMTP env vars
-        let host, port, user, password, secure, provider;
+        // Build a prioritized list of providers. sendEmail() tries them in order
+        // and automatically falls back to the next one if a send fails.
+        this.transports = [];
 
+        // 1. Zoho (primary, if configured)
         if (ZOHO_SMTP_HOST && ZOHO_SMTP_USER && ZOHO_SMTP_PASSWORD) {
-            host = ZOHO_SMTP_HOST;
-            port = parseInt(ZOHO_SMTP_PORT) || 587;
-            user = ZOHO_SMTP_USER;
-            password = ZOHO_SMTP_PASSWORD;
-            secure = false;
-            provider = 'Zoho';
-        } else if (SMTP_HOST && SMTP_USER && SMTP_PASSWORD) {
-            host = SMTP_HOST;
-            port = parseInt(SMTP_PORT) || 587;
-            user = SMTP_USER;
-            password = SMTP_PASSWORD;
-            secure = SMTP_SECURE === 'true';
-            provider = 'Gmail';
-        } else {
+            this.transports.push(this._buildTransport({
+                label: 'Zoho',
+                host: ZOHO_SMTP_HOST,
+                port: parseInt(ZOHO_SMTP_PORT) || 587,
+                secure: ZOHO_SMTP_PORT,
+                user: ZOHO_SMTP_USER,
+                password: ZOHO_SMTP_PASSWORD,
+                fromName: ZOHO_FROM_NAME || 'Napnix',
+                fromEmail: ZOHO_FROM_EMAIL || ZOHO_SMTP_USER
+            }));
+        }
+
+        // 2. Gmail / generic SMTP (fallback, if configured)
+        if (SMTP_HOST && SMTP_USER && SMTP_PASSWORD) {
+            this.transports.push(this._buildTransport({
+                label: 'Gmail',
+                host: SMTP_HOST,
+                port: parseInt(SMTP_PORT) || 587,
+                secure: SMTP_SECURE === 'true' ? 465 : SMTP_PORT,
+                user: SMTP_USER,
+                password: SMTP_PASSWORD,
+                fromName: SMTP_FROM_NAME || 'Napnix',
+                fromEmail: SMTP_FROM_EMAIL || SMTP_USER
+            }));
+        }
+
+        if (this.transports.length === 0) {
             console.warn('⚠ Email service: No SMTP configured (checked Zoho, then Gmail). Emails will not be sent.');
             return;
         }
 
-        try {
-            this.transporter = nodemailer.createTransport({
+        this.transporter = this.transports[0].transporter; // primary, for backward compat
+        this.isConfigured = true;
+        console.log(`✓ Email service initialized. Providers (in failover order): ${this.transports.map(t => t.label).join(' → ')}`);
+    }
+
+    /**
+     * Build a single transport entry. `secure` is derived from the port
+     * (465 => implicit SSL, anything else => STARTTLS) so a port/TLS mismatch
+     * can never produce the "wrong version number" SSL error.
+     */
+    _buildTransport({ label, host, port, secure, user, password, fromName, fromEmail }) {
+        const useSSL = parseInt(secure) === 465 || port === 465;
+        return {
+            label,
+            fromName,
+            fromEmail,
+            transporter: nodemailer.createTransport({
                 host,
                 port,
-                secure,
+                secure: useSSL,
                 auth: { user, pass: password }
-            });
-            this.isConfigured = true;
-            console.log(`✓ Email service initialized via ${provider} SMTP`);
-        } catch (error) {
-            console.error('✗ Email service initialization failed:', error.message);
-        }
+            })
+        };
     }
 
     async _loadFromDB() {
@@ -68,16 +95,24 @@ class EmailService {
             const s = {};
             rows.forEach(r => { s[r.setting_key] = r.setting_value; });
             if (s.smtp_host && s.smtp_user && s.smtp_password) {
-                this.transporter = nodemailer.createTransport({
+                const dbPort = parseInt(s.smtp_port) || 587;
+                const dbTransport = this._buildTransport({
+                    label: 'DB-SMTP',
                     host: s.smtp_host,
-                    port: parseInt(s.smtp_port) || 587,
-                    secure: s.smtp_secure === 'true',
-                    auth: { user: s.smtp_user, pass: s.smtp_password }
+                    port: dbPort,
+                    secure: s.smtp_secure === 'true' ? 465 : dbPort,
+                    user: s.smtp_user,
+                    password: s.smtp_password,
+                    fromName: s.smtp_from_name || 'Napnix',
+                    fromEmail: s.smtp_from_email || s.smtp_user
                 });
+                // Highest priority, but env providers remain as fallbacks.
+                this.transports = [dbTransport, ...this.transports.filter(t => t.label !== 'DB-SMTP')];
+                this.transporter = dbTransport.transporter;
                 this._fromEmail = s.smtp_from_email || null;
                 this._fromName = s.smtp_from_name || null;
                 this.isConfigured = true;
-                console.log('✓ Email service loaded SMTP from DB settings');
+                console.log(`✓ Email service loaded SMTP from DB settings. Failover order: ${this.transports.map(t => t.label).join(' → ')}`);
             }
         } catch (e) {
             // DB not ready or no smtp settings yet — env var config stays active
@@ -106,35 +141,44 @@ class EmailService {
      */
     async sendEmail({ to, subject, html, text, from, attachments }) {
         await this._loadFromDB();
-        if (!this.isConfigured) {
+        if (!this.isConfigured || this.transports.length === 0) {
             console.warn('Email not sent: SMTP not configured');
             return { success: false, error: 'SMTP not configured' };
         }
 
-        try {
-            const mailOptions = {
-                from: from || this.getDefaultFrom(),
-                to: Array.isArray(to) ? to.join(', ') : to,
-                subject,
-                html,
-                text: text || this.stripHtml(html),
-                attachments: attachments || []
-            };
+        const recipient = Array.isArray(to) ? to.join(', ') : to;
+        const baseOptions = {
+            to: recipient,
+            subject,
+            html,
+            text: text || this.stripHtml(html),
+            attachments: attachments || []
+        };
 
-            const result = await this.transporter.sendMail(mailOptions);
-            console.log(`✓ Email sent to ${mailOptions.to}: ${subject}`);
-
-            return {
-                success: true,
-                messageId: result.messageId
-            };
-        } catch (error) {
-            console.error('✗ Email send failed:', error.message);
-            return {
-                success: false,
-                error: error.message
-            };
+        // Try each provider in priority order; fall back to the next on failure.
+        const errors = [];
+        for (const tp of this.transports) {
+            try {
+                const mailOptions = {
+                    ...baseOptions,
+                    from: from || `"${tp.fromName}" <${tp.fromEmail}>`
+                };
+                const result = await tp.transporter.sendMail(mailOptions);
+                console.log(`✓ Email sent via ${tp.label} to ${recipient}: ${subject}`);
+                return {
+                    success: true,
+                    messageId: result.messageId,
+                    provider: tp.label
+                };
+            } catch (error) {
+                console.error(`✗ ${tp.label} send failed: ${error.message}` +
+                    (this.transports.indexOf(tp) < this.transports.length - 1 ? ' — falling back to next provider...' : ''));
+                errors.push(`${tp.label}: ${error.message}`);
+            }
         }
+
+        console.error('✗ Email send failed on all providers:', errors.join(' | '));
+        return { success: false, error: errors.join(' | ') };
     }
 
     /**
