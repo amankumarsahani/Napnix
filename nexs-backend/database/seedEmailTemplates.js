@@ -349,7 +349,7 @@ const templates = [
             <p><strong>Next Steps:</strong></p>
             <div class="steps">
                 <div class="step"><div class="step-num">1</div><div class="step-text">Review the attached Service Agreement carefully</div></div>
-                <div class="step"><div class="step-num">2</div><div class="step-text">Your NexCRM dashboard is being set up at <strong>{{tenant_slug}}.napnix.in</strong></div></div>
+                <div class="step"><div class="step-num">2</div><div class="step-text">Your Napnix CRM dashboard is being set up at <strong>{{tenant_slug}}.napnix.in</strong></div></div>
                 <div class="step"><div class="step-num">3</div><div class="step-text">Our team will reach out to assist you with onboarding</div></div>
             </div>
 

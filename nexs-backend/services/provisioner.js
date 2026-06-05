@@ -572,7 +572,19 @@ class Provisioner {
         let dnsRecordId = null;
 
         try {
-            // Step 1: Create DNS CNAME record
+            // Step 1: Claim the hostname on the Pages project before creating DNS.
+            if (this.cfAccountId && this.cfPagesProject) {
+                const attached = await this.attachDomainToPages(customDomain);
+                if (!attached) {
+                    console.warn(`[Provisioner] Skipping frontend DNS until Pages domain attachment succeeds: ${customDomain}`);
+                    return null;
+                }
+            } else {
+                console.warn('[Provisioner] Pages account/project not set, manual domain attachment required');
+                return null;
+            }
+
+            // Step 2: Create DNS CNAME record after Pages owns the hostname.
             const dnsResponse = await fetch(
                 `https://api.cloudflare.com/client/v4/zones/${this.cfZoneId}/dns_records`,
                 {
@@ -604,13 +616,6 @@ class Provisioner {
             } else {
                 dnsRecordId = dnsData.result?.id || null;
                 console.log(`[Provisioner] DNS record created: ${customDomain}`);
-            }
-
-            // Always attempt the Pages attachment, even on retries where the DNS record already exists.
-            if (this.cfAccountId && this.cfPagesProject) {
-                await this.attachDomainToPages(customDomain);
-            } else {
-                console.warn('[Provisioner] Pages account/project not set, manual domain attachment required');
             }
 
             return dnsRecordId;
@@ -678,7 +683,23 @@ class Provisioner {
         let dnsRecordId = null;
 
         try {
-            // Create DNS CNAME record for storefront
+            // Claim the hostname on the Storefront Pages project before creating DNS.
+            if (this.cfAccountId && storefrontProject) {
+                const attached = await this.attachCustomDomainToPages(
+                    this.cfAccountId,
+                    storefrontProject,
+                    storefrontDomain
+                );
+                if (!attached) {
+                    console.warn(`[Provisioner] Skipping storefront DNS until Pages domain attachment succeeds: ${storefrontDomain}`);
+                    return null;
+                }
+            } else {
+                console.warn('[Provisioner] Missing cfAccountId or storefrontProject for Pages attachment');
+                return null;
+            }
+
+            // Create DNS CNAME record for storefront after Pages owns the hostname.
             const dnsResponse = await fetch(
                 `https://api.cloudflare.com/client/v4/zones/${this.cfZoneId}/dns_records`,
                 {
@@ -710,20 +731,6 @@ class Provisioner {
             } else {
                 dnsRecordId = dnsData.result?.id || null;
                 console.log(`[Provisioner] Storefront DNS created: ${storefrontDomain}`);
-            }
-
-            // Always attempt the Pages attachment, even when DNS creation is a retry.
-            if (this.cfAccountId && storefrontProject) {
-                const attached = await this.attachCustomDomainToPages(
-                    this.cfAccountId,
-                    storefrontProject,
-                    storefrontDomain
-                );
-                if (!attached) {
-                    console.warn(`[Provisioner] Storefront Pages attachment still pending for ${storefrontDomain}`);
-                }
-            } else {
-                console.warn('[Provisioner] Missing cfAccountId or storefrontProject for Pages attachment');
             }
 
             return dnsRecordId;
