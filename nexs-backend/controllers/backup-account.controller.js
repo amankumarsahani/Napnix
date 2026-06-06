@@ -61,8 +61,26 @@ class BackupAccountController {
     updateAccount = async (req, res) => {
         try {
             const { id } = req.params;
-            this.validatePayload(req.body);
-            await BackupAccountModel.update(id, req.body);
+            const existingAccount = await BackupAccountModel.findById(id, { includeSecrets: true });
+            if (!existingAccount) {
+                return res.status(404).json({ success: false, message: 'Backup account not found' });
+            }
+
+            const authType = req.body.auth_type === 'oauth_personal' ? 'oauth_personal' : 'service_account';
+            const payload = {
+                ...req.body,
+                auth_type: authType
+            };
+
+            if (authType === 'oauth_personal') {
+                payload.oauth_client_secret = payload.oauth_client_secret || existingAccount.oauth_client_secret || '';
+                payload.oauth_refresh_token = payload.oauth_refresh_token || existingAccount.oauth_refresh_token || '';
+            } else {
+                payload.credentials_json = payload.credentials_json || existingAccount.credentials_json || '';
+            }
+
+            this.validatePayload(payload);
+            await BackupAccountModel.update(id, payload);
             const account = await BackupAccountModel.findById(id);
             res.json({ success: true, data: account });
         } catch (error) {

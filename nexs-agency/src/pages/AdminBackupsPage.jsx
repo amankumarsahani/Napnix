@@ -135,6 +135,7 @@ export default function AdminBackupsPage() {
     const [servers, setServers] = useState([]);
     const [form, setForm] = useState(EMPTY_FORM);
     const [editingId, setEditingId] = useState(null);
+    const [editingAccountMeta, setEditingAccountMeta] = useState(null);
     const [pageLoading, setPageLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [running, setRunning] = useState(false);
@@ -151,6 +152,7 @@ export default function AdminBackupsPage() {
 
     const resetForm = () => {
         setEditingId(null);
+        setEditingAccountMeta(null);
         setForm(EMPTY_FORM);
     };
 
@@ -349,15 +351,16 @@ export default function AdminBackupsPage() {
     const handleEdit = (account) => {
         const authType = account.auth_type === 'oauth_personal' ? 'oauth_personal' : 'service_account';
         setEditingId(account.id);
+        setEditingAccountMeta(account);
         setForm({
             auth_type: authType,
             account_name: account.account_name || '',
             folder_id: account.folder_id || '',
             subject_email: account.subject_email || '',
-            credentials_json: safePrettyJson(account.credentials_json),
+            credentials_json: '',
             oauth_client_id: account.oauth_client_id || '',
-            oauth_client_secret: account.oauth_client_secret || '',
-            oauth_refresh_token: account.oauth_refresh_token || ''
+            oauth_client_secret: '',
+            oauth_refresh_token: ''
         });
         setMessage(`Editing "${account.account_name}"`, 'info');
     };
@@ -382,11 +385,17 @@ export default function AdminBackupsPage() {
         let credentials = null;
 
         if (authType === 'service_account') {
-            try {
-                credentials = JSON.parse(form.credentials_json);
-            } catch {
+            if (form.credentials_json.trim()) {
+                try {
+                    credentials = JSON.parse(form.credentials_json);
+                } catch {
+                    setSaving(false);
+                    setMessage('Credentials JSON is invalid', 'error');
+                    return;
+                }
+            } else if (!editingId || !editingAccountMeta?.credentials_configured) {
                 setSaving(false);
-                setMessage('Credentials JSON is invalid', 'error');
+                setMessage('Credentials JSON is required for service account backup mode', 'error');
                 return;
             }
         }
@@ -624,12 +633,18 @@ export default function AdminBackupsPage() {
                                             </div>
                                             <div>
                                                 <label className="mb-2 block text-sm font-medium text-slate-700">OAuth client secret</label>
-                                                <input name="oauth_client_secret" value={form.oauth_client_secret} onChange={handleChange} className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#2563EB] focus:ring-4 focus:ring-blue-100" required />
+                                                <input name="oauth_client_secret" value={form.oauth_client_secret} onChange={handleChange} className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#2563EB] focus:ring-4 focus:ring-blue-100" required={!editingId && !editingAccountMeta?.oauth_client_secret_configured} />
+                                                {editingId && editingAccountMeta?.oauth_client_secret_configured ? (
+                                                    <p className="mt-2 text-xs text-slate-500">Leave blank to keep the currently stored OAuth client secret.</p>
+                                                ) : null}
                                             </div>
                                         </div>
                                         <div>
                                             <label className="mb-2 block text-sm font-medium text-slate-700">OAuth refresh token</label>
-                                            <textarea name="oauth_refresh_token" value={form.oauth_refresh_token} onChange={handleChange} rows={5} spellCheck={false} className="w-full rounded-3xl border border-slate-200 bg-slate-950 px-4 py-4 font-mono text-sm text-cyan-100 outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100" required />
+                                            <textarea name="oauth_refresh_token" value={form.oauth_refresh_token} onChange={handleChange} rows={5} spellCheck={false} className="w-full rounded-3xl border border-slate-200 bg-slate-950 px-4 py-4 font-mono text-sm text-cyan-100 outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100" required={!editingId && !editingAccountMeta?.oauth_refresh_token_configured} />
+                                            {editingId && editingAccountMeta?.oauth_refresh_token_configured ? (
+                                                <p className="mt-2 text-xs text-slate-500">Stored token: {editingAccountMeta.oauth_refresh_token_preview || 'Configured'}. Leave blank to keep it unchanged.</p>
+                                            ) : null}
                                         </div>
                                         <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
                                             <p className="font-semibold text-slate-900">Authorized redirect URI</p>
@@ -666,7 +681,10 @@ export default function AdminBackupsPage() {
                                         </div>
                                         <div>
                                             <label className="mb-2 block text-sm font-medium text-slate-700">Service account JSON</label>
-                                            <textarea name="credentials_json" value={form.credentials_json} onChange={handleChange} rows={14} spellCheck={false} className="w-full rounded-3xl border border-slate-200 bg-slate-950 px-4 py-4 font-mono text-sm text-cyan-100 outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100" required />
+                                            <textarea name="credentials_json" value={form.credentials_json} onChange={handleChange} rows={14} spellCheck={false} className="w-full rounded-3xl border border-slate-200 bg-slate-950 px-4 py-4 font-mono text-sm text-cyan-100 outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100" required={!editingId && !editingAccountMeta?.credentials_configured} />
+                                            {editingId && editingAccountMeta?.credentials_configured ? (
+                                                <p className="mt-2 text-xs text-slate-500">Existing service account: {editingAccountMeta.credentials_summary || 'Configured'}. Leave blank to keep the stored JSON.</p>
+                                            ) : null}
                                         </div>
                                         <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
                                             Use a Shared Drive or a folder already shared with the service account.

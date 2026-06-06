@@ -30,7 +30,19 @@ export default function BackupAccountList({ accounts, pageLoading, onEdit, onDel
                     }
 
                     return (
-                        <div key={account.id} className="rounded-3xl border border-slate-200 bg-slate-50/80 p-5">
+                        <div
+                            key={account.id}
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => onEdit(account)}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter' || event.key === ' ') {
+                                    event.preventDefault();
+                                    onEdit(account);
+                                }
+                            }}
+                            className="cursor-pointer rounded-3xl border border-slate-200 bg-slate-50/80 p-5 transition hover:border-[#2563EB]/40 hover:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"
+                        >
                             <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                                 <div className="space-y-3">
                                     <div className="flex flex-wrap items-center gap-3">
@@ -47,22 +59,42 @@ export default function BackupAccountList({ accounts, pageLoading, onEdit, onDel
                                         {authType === 'oauth_personal' ? (
                                             <>
                                                 <p><span className="font-medium text-slate-800">OAuth client ID:</span> {account.oauth_client_id || 'Not set'}</p>
-                                                <p><span className="font-medium text-slate-800">Refresh token:</span> {account.oauth_refresh_token ? 'Stored' : 'Missing'}</p>
+                                                <p>
+                                                    <span className="font-medium text-slate-800">Refresh token:</span>{' '}
+                                                    {account.oauth_refresh_token_configured
+                                                        ? account.oauth_refresh_token_preview || 'Stored'
+                                                        : 'Missing'}
+                                                </p>
                                             </>
                                         ) : (
                                             <>
-                                                <p><span className="font-medium text-slate-800">Service account:</span> {clientEmail || 'Hidden / unavailable'}</p>
+                                                <p><span className="font-medium text-slate-800">Service account:</span> {account.credentials_summary || clientEmail || 'Hidden / unavailable'}</p>
                                                 <p><span className="font-medium text-slate-800">Impersonate email:</span> {account.subject_email || 'Not set'}</p>
                                             </>
                                         )}
                                         <p><span className="font-medium text-slate-800">Usage count:</span> {account.usage_count ?? 0}</p>
+                                        <p className="text-xs text-slate-500">Click this card to edit the account.</p>
                                     </div>
                                 </div>
                                 <div className="flex flex-wrap gap-2">
-                                    <button type="button" onClick={() => onEdit(account)} className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">
+                                    <button
+                                        type="button"
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                            onEdit(account);
+                                        }}
+                                        className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700"
+                                    >
                                         Edit
                                     </button>
-                                    <button type="button" onClick={() => onDelete(account.id, account.account_name)} className="rounded-2xl border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-600">
+                                    <button
+                                        type="button"
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                            onDelete(account.id, account.account_name);
+                                        }}
+                                        className="rounded-2xl border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-600"
+                                    >
                                         Delete
                                     </button>
                                 </div>
