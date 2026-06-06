@@ -73,15 +73,42 @@ class ServerController {
                 return res.json({ success: true, message: 'Primary server is always connected' });
             }
 
-            // Test SSH connectivity using cloudflared access command if no public IP
-            // We use a simple command like 'pm2 -v' to check connectivity
-            const testCmd = `ssh -o BatchMode=yes -o ConnectTimeout=5 ${server.hostname} "pm2 -v"`;
+            const quoteShellArg = (value) => `'${String(value ?? '').replace(/'/g, `'\\''`)}'`;
+            const sshTarget = server.hostname.includes('@') || !server.ssh_user
+                ? server.hostname
+                : `${server.ssh_user}@${server.hostname}`;
+            const backendPath = server.nexcrm_backend_path || process.env.NEXCRM_BACKEND_PATH || '/var/www/html/napcrm-backend';
+            const ecosystemPath = server.ecosystem_config_path || '/var/www/html/ecosystem.config.js';
+            const tunnelPath = server.cloudflare_config_path || '/etc/cloudflared/config.yml';
+            const dbHost = server.db_host || 'localhost';
+            const dbPort = Number(server.db_port || process.env.DB_PORT || 3306);
+            const dbUser = server.db_user || process.env.DB_USER || 'root';
+            const dbPassword = server.db_password || process.env.DB_PASSWORD || '';
 
+            const remoteChecks = [
+                'pm2 -v',
+                `test -d ${quoteShellArg(backendPath)}`,
+                `test -f ${quoteShellArg(ecosystemPath)}`,
+                `sudo test -f ${quoteShellArg(tunnelPath)}`,
+                `MYSQL_PWD=${quoteShellArg(dbPassword)} mysql -h ${quoteShellArg(dbHost)} -P ${quoteShellArg(dbPort)} -u ${quoteShellArg(dbUser)} -e ${quoteShellArg('SELECT 1')}`
+            ].join(' && ');
+
+            const testCmd = `ssh -o BatchMode=yes -o ConnectTimeout=5 ${sshTarget} \"${remoteChecks.replace(/\"/g, '\\\\"')}\"`;
             const { stdout } = await execAsync(testCmd);
+            const pm2Version = stdout.split(/\r?\n/).map(line => line.trim()).find(Boolean) || 'unknown';
+
             res.json({
                 success: true,
                 message: 'Connection successful',
-                version: stdout.trim()
+                checks: {
+                    ssh: true,
+                    pm2: true,
+                    backendPath,
+                    ecosystemPath,
+                    tunnelPath,
+                    database: `${dbHost}:${dbPort}`
+                },
+                version: pm2Version
             });
         } catch (error) {
             res.status(500).json({

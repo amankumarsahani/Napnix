@@ -47,17 +47,24 @@ class ServerModel {
     static async create(serverData) {
         const {
             name, hostname, ssh_user, cloudflare_tunnel_id,
-            db_host, db_user, db_password, is_active, is_primary
+            db_host, db_port, db_user, db_password,
+            nexcrm_backend_path, ecosystem_config_path, cloudflare_config_path,
+            is_active, is_primary
         } = serverData;
 
         const [result] = await pool.query(`
             INSERT INTO servers (
                 name, hostname, ssh_user, cloudflare_tunnel_id,
-                db_host, db_user, db_password, is_active, is_primary
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                db_host, db_port, db_user, db_password,
+                nexcrm_backend_path, ecosystem_config_path, cloudflare_config_path,
+                is_active, is_primary
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
             name, hostname, ssh_user || 'admin', cloudflare_tunnel_id,
-            db_host || 'localhost', db_user, db_password,
+            db_host || 'localhost', db_port || 3306, db_user, db_password,
+            nexcrm_backend_path || null,
+            ecosystem_config_path || null,
+            cloudflare_config_path || null,
             is_active !== undefined ? is_active : true,
             is_primary !== undefined ? is_primary : false
         ]);
@@ -71,7 +78,9 @@ class ServerModel {
     static async update(id, serverData) {
         const allowedFields = [
             'name', 'hostname', 'ssh_user', 'cloudflare_tunnel_id',
-            'db_host', 'db_user', 'db_password', 'is_active', 'is_primary'
+            'db_host', 'db_port', 'db_user', 'db_password',
+            'nexcrm_backend_path', 'ecosystem_config_path', 'cloudflare_config_path',
+            'is_active', 'is_primary'
         ];
         const updates = [];
         const values = [];
@@ -96,7 +105,8 @@ class ServerModel {
     static async getStats() {
         const [rows] = await pool.query(`
             SELECT s.id, s.name, s.hostname, s.is_active, s.is_primary,
-                   s.cloudflare_tunnel_id, s.ssh_user, s.db_host,
+                   s.cloudflare_tunnel_id, s.ssh_user, s.db_host, s.db_port,
+                   s.nexcrm_backend_path, s.ecosystem_config_path, s.cloudflare_config_path,
                    COUNT(t.id) as tenant_count,
                    SUM(CASE WHEN t.process_status = 'running' THEN 1 ELSE 0 END) as running_count
             FROM servers s

@@ -57,12 +57,136 @@ class Provisioner {
             console.log(`[Provisioner] Executing locally: ${command}`);
             return execAsync(command);
         } else {
+            const sshTarget = this.getServerSshTarget(server);
             // Use SSH over Cloudflare Tunnel if no public IP
             // Assumes ~/.ssh/config is set up to use cloudflared for this hostname
-            const sshCmd = `ssh -o BatchMode=yes ${server.hostname} "${command.replace(/"/g, '\\"')}"`;
+            const sshCmd = `ssh -o BatchMode=yes ${sshTarget} \"${command.replace(/\"/g, '\\\\"')}\"`;
             console.log(`[Provisioner] Executing remotely on ${server.name}: ${sshCmd}`);
             return execAsync(sshCmd);
         }
+    }
+
+    getServerSshTarget(server = {}) {
+        if (!server.hostname) {
+            throw new Error('Server hostname is required for remote execution');
+        }
+
+        if (server.hostname.includes('@') || !server.ssh_user) {
+            return server.hostname;
+        }
+
+        return `${server.ssh_user}@${server.hostname}`;
+    }
+
+    getServerDbPort(server = {}) {
+        return Number(server.db_port || this.dbPort || 3306);
+    }
+
+    getServerBackendPath(server = {}) {
+        return server.nexcrm_backend_path || this.nexcrmBackendPath;
+    }
+
+    getServerEcosystemConfigPath(server = {}) {
+        return server.ecosystem_config_path || '/var/www/html/ecosystem.config.js';
+    }
+
+    getServerTunnelConfigPath(server = {}) {
+        return server.cloudflare_config_path || server.cf_config_path || '/etc/cloudflared/config.yml';
+    }
+
+    quoteShellArg(value) {
+        return `'${String(value ?? '').replace(/'/g, `'\\''`)}'`;
+    }
+
+    buildMysqlCliPrefix(server = {}) {
+        const dbHost = server.db_host || this.dbHost;
+        const dbPort = this.getServerDbPort(server);
+        const dbUser = server.db_user || this.dbUser;
+        const dbPass = server.db_password || this.dbPass;
+
+        return [
+            `MYSQL_PWD=${this.quoteShellArg(dbPass)}`,
+            'mysql',
+            '-h',
+            this.quoteShellArg(dbHost),
+            '-P',
+            this.quoteShellArg(dbPort),
+            '-u',
+            this.quoteShellArg(dbUser)
+        ].join(' ');
+    }
+
+    buildTenantEcosystemApp(tenant, port, server) {
+        const processName = `tenant-${tenant.slug}`;
+        const backendPath = this.getServerBackendPath(server);
+        const dbSlug = tenant.slug.replace(/-/g, '_');
+        const dbPass = server.db_password || this.dbPass;
+
+        return {
+            name: processName,
+            cwd: backendPath,
+            script: 'server.js',
+            args: `--port ${port} --db nexcrm_${dbSlug} --industry ${tenant.industry_type || 'general'} --plan ${tenant.plan_slug || 'starter'}`,
+            env: {
+                PORT: port,
+                DB_HOST: server.db_host || this.dbHost,
+                DB_PORT: this.getServerDbPort(server),
+                DB_NAME: `nexcrm_${dbSlug}`,
+                DB_USER: server.db_user || this.dbUser,
+                DB_PASSWORD: dbPass,
+                TENANT_ID: tenant.id,
+                TENANT_SLUG: tenant.slug,
+                INDUSTRY_TYPE: tenant.industry_type || 'general',
+                PLAN_SLUG: tenant.plan_slug || 'starter'
+            }
+        };
+    }
+
+    buildEcosystemMutationCommand(ecosystemPath, operation, payload) {
+        const payloadBase64 = require('node:buffer').Buffer.from(JSON.stringify(payload), 'utf8').toString('base64');
+
+        return `node - "${ecosystemPath}" "${operation}" "${payloadBase64}" <<'EOFNODE'
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const vm = require('vm');
+
+const ecosystemPath = process.argv[2];
+const operation = process.argv[3];
+const payload = JSON.parse(Buffer.from(process.argv[4], 'base64').toString('utf8'));
+const sandbox = { module: { exports: {} }, exports: {} };
+
+let currentConfig = { apps: [] };
+if (fs.existsSync(ecosystemPath)) {
+  const source = fs.readFileSync(ecosystemPath, 'utf8');
+  vm.runInNewContext(source, sandbox, { filename: ecosystemPath });
+  currentConfig = sandbox.module.exports || sandbox.exports || currentConfig;
+}
+
+if (!currentConfig || typeof currentConfig !== 'object' || Array.isArray(currentConfig)) {
+  throw new Error('ecosystem.config.js must export an object');
+}
+
+const apps = Array.isArray(currentConfig.apps) ? currentConfig.apps : [];
+let nextApps;
+
+if (operation === 'upsert') {
+  nextApps = apps.filter((app) => app && app.name !== payload.name);
+  nextApps.push(payload);
+} else if (operation === 'remove') {
+  nextApps = apps.filter((app) => app && app.name !== payload.processName);
+} else {
+  throw new Error(\`Unsupported ecosystem mutation: \${operation}\`);
+}
+
+const nextConfig = { ...currentConfig, apps: nextApps };
+const nextSource = 'module.exports = ' + JSON.stringify(nextConfig, null, 2) + ';\\n';
+vm.runInNewContext(nextSource, { module: { exports: {} }, exports: {} }, { filename: ecosystemPath });
+
+const tmpPath = path.join(os.tmpdir(), \`ecosystem.\${Date.now()}.\${process.pid}.js\`);
+fs.writeFileSync(tmpPath, nextSource, 'utf8');
+console.log(tmpPath);
+EOFNODE`;
     }
 
     /**
@@ -103,10 +227,9 @@ class Provisioner {
 
             // 2. Create database
             const dbName = `nexcrm_${slug.replace(/-/g, '_')}`;
-            const dbHost = server.db_host || 'localhost';
 
             if (!options.skipDbCreation) {
-                await this.createDatabase(dbName, dbHost, server.db_user, server.db_password);
+                await this.createDatabase(dbName, server);
                 console.log(`[Provisioner] Created database: ${dbName}`);
             } else {
                 console.log(`[Provisioner] Database creation skipped (assumed pre-created): ${dbName}`);
@@ -218,20 +341,33 @@ class Provisioner {
     /**
      * Create new database for tenant
      */
-    async createDatabase(dbName, dbHost = 'localhost', dbUser = null, dbPassword = null) {
-        const targetHost = dbHost || this.dbHost;
-        const targetUser = dbUser || this.dbUser;
-        const targetPass = dbPassword || this.dbPass;
+    async createDatabase(dbName, serverOrHost = 'localhost', dbUser = null, dbPassword = null) {
+        const isServerObject = serverOrHost && typeof serverOrHost === 'object';
+        const server = isServerObject ? serverOrHost : null;
+        const targetHost = server ? (server.db_host || this.dbHost) : (serverOrHost || this.dbHost);
+        const targetPort = server ? this.getServerDbPort(server) : Number(this.dbPort || 3306);
+        const targetUser = server ? (server.db_user || this.dbUser) : (dbUser || this.dbUser);
+        const targetPass = server ? (server.db_password || this.dbPass) : (dbPassword || this.dbPass);
+        const sql = `CREATE DATABASE IF NOT EXISTS \`${dbName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; GRANT ALL PRIVILEGES ON \`${dbName}\`.* TO '${targetUser}'@'localhost'; FLUSH PRIVILEGES;`;
 
-        if (targetHost === 'localhost' || targetHost === '127.0.0.1') {
-            await pool.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
-            await pool.query(`GRANT ALL PRIVILEGES ON \`${dbName}\`.* TO '${targetUser}'@'localhost'`);
-            await pool.query('FLUSH PRIVILEGES');
-        } else {
-            // Remote DB creation via SSH
-            const cmd = `mysql -u${targetUser} -p${targetPass} -e "CREATE DATABASE IF NOT EXISTS \\\`${dbName}\\\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; GRANT ALL PRIVILEGES ON \\\`${dbName}\\\`.* TO '${targetUser}'@'%'; FLUSH PRIVILEGES;"`;
-            // Note: This needs a server object to executeOnServer, but the current signature doesn't take it.
-            // For now, if called from provisionTenant, it works as it's usually local or uses this.executeOnServer elsewhere.
+        if (server && !server.is_primary) {
+            await this.executeOnServer(server, `${this.buildMysqlCliPrefix(server)} -e ${this.quoteShellArg(sql)}`);
+            return;
+        }
+
+        const mysql = require('mysql2/promise');
+        const connection = await mysql.createConnection({
+            host: targetHost,
+            port: targetPort,
+            user: targetUser,
+            password: targetPass,
+            multipleStatements: true
+        });
+
+        try {
+            await connection.query(sql);
+        } finally {
+            await connection.end();
         }
     }
 
@@ -242,10 +378,9 @@ class Provisioner {
         const schemaFile = path.join(this.migrationsPath, 'nexcrm_base_schema.sql');
 
         if (server.is_primary) {
-            // Local migration using pool
             const tenantPool = require('mysql2/promise').createPool({
                 host: server.db_host || this.dbHost,
-                port: server.db_port || this.dbPort,
+                port: this.getServerDbPort(server),
                 user: server.db_user || this.dbUser,
                 password: server.db_password || this.dbPass,
                 database: dbName,
@@ -271,16 +406,15 @@ class Provisioner {
                 await tenantPool.end();
             }
         } else {
-            // Remote migration via SSH
-            const remotePath = server.nexcrm_backend_path || '/var/www/nexs-backend';
+            const remotePath = this.getServerBackendPath(server);
             const migrationPath = path.join(remotePath, 'database/migrations');
-            const dbPass = server.db_password || this.dbPass;
+            const mysqlPrefix = this.buildMysqlCliPrefix(server);
 
-            const cmd = `mysql -u${server.db_user || this.dbUser} -p${dbPass} ${dbName} < ${path.join(migrationPath, 'nexcrm_base_schema.sql')}`;
+            const cmd = `${mysqlPrefix} ${this.quoteShellArg(dbName)} < ${this.quoteShellArg(path.join(migrationPath, 'nexcrm_base_schema.sql'))}`;
             await this.executeOnServer(server, cmd);
 
             if (industryType && industryType !== 'general') {
-                const industryCmd = `for f in ${path.join(migrationPath, 'industry', industryType)}/*.sql; do mysql -u${server.db_user || this.dbUser} -p${dbPass} ${dbName} < "$f"; done`;
+                const industryCmd = `for f in ${path.join(migrationPath, 'industry', industryType)}/*.sql; do ${mysqlPrefix} ${this.quoteShellArg(dbName)} < "$f"; done`;
                 await this.executeOnServer(server, industryCmd);
             }
         }
@@ -297,7 +431,7 @@ class Provisioner {
         if (server.is_primary) {
             const tenantPool = require('mysql2/promise').createPool({
                 host: server.db_host || this.dbHost,
-                port: server.db_port || this.dbPort,
+                port: this.getServerDbPort(server),
                 user: server.db_user || this.dbUser,
                 password: server.db_password || this.dbPass,
                 database: dbName
@@ -314,7 +448,7 @@ class Provisioner {
             }
         } else {
             const sql = `INSERT INTO users (email, password, first_name, last_name, role, status) VALUES ('${email}', '${hash}', '${name.split(' ')[0]}', '', 'admin', 'active')`;
-            const cmd = `mysql -u${server.db_user || this.dbUser} -p${server.db_password || this.dbPass} ${dbName} -e "${sql}"`;
+            const cmd = `${this.buildMysqlCliPrefix(server)} ${this.quoteShellArg(dbName)} -e ${this.quoteShellArg(sql)}`;
             await this.executeOnServer(server, cmd);
         }
 
@@ -345,7 +479,7 @@ class Provisioner {
         if (server.is_primary) {
             const tenantPool = require('mysql2/promise').createPool({
                 host: server.db_host || this.dbHost,
-                port: server.db_port || this.dbPort,
+                port: this.getServerDbPort(server),
                 user: server.db_user || this.dbUser,
                 password: server.db_password || this.dbPass,
                 database: dbName
@@ -363,7 +497,7 @@ class Provisioner {
             }
         } else {
             const sql = `INSERT INTO users (email, password, first_name, last_name, role, status) VALUES ('${superAdminEmail}', '${hash}', 'Napnix', 'Admin', 'admin', 'active') ON DUPLICATE KEY UPDATE password = '${hash}', role = 'admin'`;
-            const cmd = `mysql -u${server.db_user || this.dbUser} -p${server.db_password || this.dbPass} ${dbName} -e "${sql}"`;
+            const cmd = `${this.buildMysqlCliPrefix(server)} ${this.quoteShellArg(dbName)} -e ${this.quoteShellArg(sql)}`;
             await this.executeOnServer(server, cmd);
         }
     }
@@ -390,7 +524,7 @@ class Provisioner {
         if (server.is_primary) {
             const tenantPool = require('mysql2/promise').createPool({
                 host: server.db_host || this.dbHost,
-                port: server.db_port || this.dbPort,
+                port: this.getServerDbPort(server),
                 user: server.db_user || this.dbUser,
                 password: server.db_password || this.dbPass,
                 database: dbName
@@ -422,14 +556,14 @@ class Provisioner {
             try {
                 for (const setting of settings) {
                     const sql = `INSERT IGNORE INTO settings (setting_key, setting_value) VALUES ('${setting.key}', '${setting.value}')`;
-                    const cmd = `mysql -u${server.db_user || this.dbUser} -p${server.db_password || this.dbPass} ${dbName} -e "${sql}"`;
+                    const cmd = `${this.buildMysqlCliPrefix(server)} ${this.quoteShellArg(dbName)} -e ${this.quoteShellArg(sql)}`;
                     await this.executeOnServer(server, cmd);
                 }
 
                 // Fix: Force update industry if it's stuck on 'general'
                 if (tenantData.industry_type && tenantData.industry_type !== 'general') {
                     const sql = `UPDATE settings SET setting_value = '${tenantData.industry_type}' WHERE setting_key = 'industry' AND setting_value = 'general'`;
-                    const cmd = `mysql -u${server.db_user || this.dbUser} -p${server.db_password || this.dbPass} ${dbName} -e "${sql}"`;
+                    const cmd = `${this.buildMysqlCliPrefix(server)} ${this.quoteShellArg(dbName)} -e ${this.quoteShellArg(sql)}`;
                     await this.executeOnServer(server, cmd);
                 }
 
@@ -459,7 +593,7 @@ class Provisioner {
         if (server.is_primary) {
             const tenantPool = require('mysql2/promise').createPool({
                 host: server.db_host || this.dbHost,
-                port: server.db_port || this.dbPort,
+                port: this.getServerDbPort(server),
                 user: server.db_user || this.dbUser,
                 password: server.db_password || this.dbPass,
                 database: dbName
@@ -483,7 +617,7 @@ class Provisioner {
             try {
                 for (const update of updates) {
                     const sql = `INSERT INTO settings (setting_key, setting_value) VALUES ('${update.key}', '${update.value}') ON DUPLICATE KEY UPDATE setting_value = '${update.value}'`;
-                    const cmd = `mysql -u${server.db_user || this.dbUser} -p${server.db_password || this.dbPass} ${dbName} -e "${sql}"`;
+                    const cmd = `${this.buildMysqlCliPrefix(server)} ${this.quoteShellArg(dbName)} -e ${this.quoteShellArg(sql)}`;
                     await this.executeOnServer(server, cmd);
                 }
                 console.log(`[Provisioner] Settings synced remotely for ${tenant.slug}`);
@@ -745,57 +879,26 @@ class Provisioner {
      * This ensures the tenant process restarts on system reboot
      */
     async updateEcosystemConfig(tenant, port, server = { is_primary: true }) {
-        const ecosystemPath = server.ecosystem_config_path || '/var/www/html/ecosystem.config.js';
+        const ecosystemPath = this.getServerEcosystemConfigPath(server);
         const processName = `tenant-${tenant.slug}`;
-        const backendPath = server.nexcrm_backend_path || this.nexcrmBackendPath;
-        const dbSlug = tenant.slug.replace(/-/g, '_');
-        const dbPass = server.db_password || this.dbPass;
 
         try {
-            // Read current config
-            const { stdout: configContent } = await this.executeOnServer(server, `cat ${ecosystemPath} || echo "module.exports = { apps: [] };"`);
+            const appConfig = this.buildTenantEcosystemApp(tenant, port, server);
+            const mutationCommand = this.buildEcosystemMutationCommand(ecosystemPath, 'upsert', appConfig);
+            const { stdout } = await this.executeOnServer(server, mutationCommand);
+            const tmpPath = stdout.trim().split('\n').pop();
 
-            if (!configContent) {
-                throw new Error(`Failed to read ecosystem config from ${ecosystemPath}`);
+            if (!tmpPath) {
+                throw new Error(`Failed to prepare rewritten ecosystem config for ${processName}`);
             }
 
-            // Check if already exists
-            if (configContent.includes(`name: "${processName}"`) || configContent.includes(`name: '${processName}'`)) {
-                console.log(`[Provisioner] Ecosystem config already has ${processName}`);
-                return;
-            }
+            const backupAndMoveCmd = [
+                `if [ -f "${ecosystemPath}" ]; then sudo cp "${ecosystemPath}" "${ecosystemPath}.bak"; fi`,
+                `sudo mv "${tmpPath}" "${ecosystemPath}"`
+            ].join('\n');
 
-            // Create new app entry with env block for database credentials
-            const newApp = `    {
-      name: "${processName}",
-      cwd: "${backendPath}",
-      script: "server.js",
-      args: "--port ${port} --db nexcrm_${dbSlug} --industry ${tenant.industry_type || 'general'} --plan ${tenant.plan_slug || 'starter'}",
-      env: {
-        PORT: ${port},
-        DB_HOST: "${server.db_host || this.dbHost}",
-        DB_PORT: ${server.db_port || this.dbPort},
-        DB_NAME: "nexcrm_${dbSlug}",
-        DB_USER: "${server.db_user || this.dbUser}",
-        DB_PASSWORD: "${dbPass}",
-        TENANT_ID: ${tenant.id},
-        TENANT_SLUG: "${tenant.slug}",
-        INDUSTRY_TYPE: "${tenant.industry_type || 'general'}",
-        PLAN_SLUG: "${tenant.plan_slug || 'starter'}"
-      }
-    }`;
-
-            // Naive insertion: replace the last ] with , newApp ]
-            // This assumes a simple ecosystem.config.js structure
-            const newConfig = configContent.trim().replace(/\]\s*\}\s*;?\s*$/, `,\n${newApp}\n  ]\n};`);
-
-            // Write back to server
-            // Using a temp file and moving it is safer
-            const tmpFile = `/tmp/ecosystem_${tenant.slug}.js`;
-            await this.executeOnServer(server, `echo "${newConfig.replace(/"/g, '\\"')}" > ${tmpFile} && sudo mv ${tmpFile} ${ecosystemPath}`);
-
-            console.log(`[Provisioner] Added ${processName} to ecosystem.config.js on server ${server.name}`);
-
+            await this.executeOnServer(server, backupAndMoveCmd);
+            console.log(`[Provisioner] Upserted ${processName} in ecosystem.config.js on server ${server.name}`);
         } catch (error) {
             console.warn(`[Provisioner] Could not update ecosystem.config.js on ${server.name}:`, error.message);
         }
@@ -892,13 +995,13 @@ class Provisioner {
 
         try {
             // Path structure for tenant backend on target server
-            const backendPath = server.nexcrm_backend_path || this.nexcrmBackendPath;
+            const backendPath = this.getServerBackendPath(server);
 
             // Environment variables for tenant
             const dbPass = server.db_password || this.dbPass;
             const dbUser = server.db_user || this.dbUser;
             const dbHost = server.db_host || this.dbHost;
-            const dbPort = server.db_port || this.dbPort;
+            const dbPort = this.getServerDbPort(server);
 
             const dbName = `nexcrm_${slug.replace(/-/g, '_')}`;
 
@@ -1311,7 +1414,7 @@ class Provisioner {
      */
     async removeFromTunnelConfig(slug, server, customDomain = null) {
         try {
-            const tunnelConfigPath = server.cloudflare_config_path || '/etc/cloudflared/config.yml';
+            const tunnelConfigPath = this.getServerTunnelConfigPath(server);
             const hostname = customDomain || `${slug}-crm-api.${this.cfDomain}`;
 
             const { stdout: config } = await this.executeOnServer(server, `cat ${tunnelConfigPath}`);
@@ -1349,16 +1452,21 @@ class Provisioner {
      */
     async removeFromEcosystemConfig(processName, server) {
         try {
-            const ecosystemPath = server.ecosystem_config_path || '/var/www/html/ecosystem.config.js';
-            const { stdout: configContent } = await this.executeOnServer(server, `cat ${ecosystemPath}`);
+            const ecosystemPath = this.getServerEcosystemConfigPath(server);
+            const mutationCommand = this.buildEcosystemMutationCommand(ecosystemPath, 'remove', { processName });
+            const { stdout } = await this.executeOnServer(server, mutationCommand);
+            const tmpPath = stdout.trim().split('\n').pop();
 
-            const regex = new RegExp(`\\s*,?\\s*\\{[^}]*name:\\s*"${processName}"[^}]*\\}`, 'g');
-            let newContent = configContent.replace(regex, '');
-            newContent = newContent.replace(/,(\s*,)+/g, ',').replace(/\[\s*,/g, '[');
+            if (!tmpPath) {
+                throw new Error(`Failed to prepare rewritten ecosystem config for ${processName}`);
+            }
 
-            const tmpFile = `/tmp/ecosystem_rm_${processName}.js`;
-            await this.executeOnServer(server, `echo "${newContent.replace(/"/g, '\\"')}" > ${tmpFile} && sudo mv ${tmpFile} ${ecosystemPath}`);
+            const backupAndMoveCmd = [
+                `if [ -f "${ecosystemPath}" ]; then sudo cp "${ecosystemPath}" "${ecosystemPath}.bak"; fi`,
+                `sudo mv "${tmpPath}" "${ecosystemPath}"`
+            ].join('\n');
 
+            await this.executeOnServer(server, backupAndMoveCmd);
             console.log(`[Provisioner] Removed ${processName} from ecosystem.config.js on ${server.name}`);
             return true;
         } catch (error) {
@@ -1372,7 +1480,7 @@ class Provisioner {
      */
     async updateTunnelConfig(slug, port, server, customDomain = null) {
         try {
-            const configPath = server.cf_config_path || '/etc/cloudflared/config.yml';
+            const configPath = this.getServerTunnelConfigPath(server);
             const hostname = customDomain || `${slug}-crm-api.${this.cfDomain}`;
             const service = `http://localhost:${port}`;
 
@@ -1440,14 +1548,14 @@ class Provisioner {
             if (server.is_primary) {
                 await pool.query(`DROP DATABASE IF EXISTS \`${dbName}\``);
             } else {
-                const cmd = `mysql -u${server.db_user} -p${server.db_password} -e "DROP DATABASE IF EXISTS \\\`${dbName}\\\`"`;
+                const sql = `DROP DATABASE IF EXISTS \`${dbName}\``;
+                const cmd = `${this.buildMysqlCliPrefix(server)} -e ${this.quoteShellArg(sql)}`;
                 await this.executeOnServer(server, cmd);
             }
             console.log(`[Provisioner] Dropped database: ${dbName} on ${server.name || 'primary'}`);
             return true;
         } catch (error) {
             console.error('[Provisioner] Could not drop database:', error.message);
-            // Don't swallow this error as DB drop is critical for "full" cleanup, but return false
             return false;
         }
     }
@@ -1455,17 +1563,6 @@ class Provisioner {
     /**
      * Create database
      */
-    async createDatabase(dbName, dbHost = 'localhost', dbUser = 'root', dbPassword = '') {
-        try {
-            const connection = await pool.getConnection();
-            await connection.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
-            connection.release();
-            console.log(`[Provisioner] Database "${dbName}" created successfully on ${dbHost}`);
-        } catch (error) {
-            console.error(`[Provisioner] Database creation failed: ${error.message}`);
-            throw error; // Rethrow because DB creation is critical
-        }
-    }
 
     /**
      * Full cleanup - remove all tenant resources
@@ -1501,7 +1598,7 @@ class Provisioner {
                     results.storageCleanedUp = true;
                 }
             } else {
-                const remoteDir = path.join(server.nexcrm_backend_path || '/var/www/nexcrm-backend', 'uploads', tenant.slug);
+                const remoteDir = path.join(this.getServerBackendPath(server), 'uploads', tenant.slug);
                 await this.executeOnServer(server, `sudo rm -rf ${remoteDir}`);
                 results.storageCleanedUp = true;
             }

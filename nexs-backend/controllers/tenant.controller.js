@@ -167,8 +167,7 @@ class TenantController {
                     await TenantModel.update(tenantId, { server_id: server.id });
 
                     const dbName = `nexcrm_${slug.replace(/-/g, '_')}`;
-                    const dbHost = server.db_host || 'localhost';
-                    await provisioner.createDatabase(dbName, dbHost, server.db_user, server.db_password);
+                    await provisioner.createDatabase(dbName, server);
 
                     res.status(201).json({
                         success: true,
@@ -703,21 +702,27 @@ class TenantController {
 
             // Perform full cleanup in background
             (async () => {
+                let cleanupResults = null;
+
                 try {
                     const provisioner = new Provisioner();
-                    await provisioner.fullCleanup(tenant, {
+                    cleanupResults = await provisioner.fullCleanup(tenant, {
                         dropDb: dropDatabase
                     });
                 } catch (cleanupError) {
                     console.error('[Background Delete] Cleanup partial error:', cleanupError);
-                } finally {
-                    // Hard delete from database regardless of cleanup success
-                    try {
-                        await TenantModel.hardDelete(id);
-                        console.log(`[Background Delete] Tenant ${id} hard deleted from DB`);
-                    } catch (dbError) {
-                        console.error(`[Background Delete] Failed to hard delete tenant ${id} from DB:`, dbError);
-                    }
+                }
+
+                if (!cleanupResults || !cleanupResults.ecosystemUpdated) {
+                    console.error(`[Background Delete] Skipping hard delete for tenant ${id} because ecosystem cleanup did not complete successfully`);
+                    return;
+                }
+
+                try {
+                    await TenantModel.hardDelete(id);
+                    console.log(`[Background Delete] Tenant ${id} hard deleted from DB`);
+                } catch (dbError) {
+                    console.error(`[Background Delete] Failed to hard delete tenant ${id} from DB:`, dbError);
                 }
             })();
         } catch (error) {

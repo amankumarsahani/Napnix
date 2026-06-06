@@ -3,6 +3,7 @@ const { promisify } = require('util');
 const execAsync = promisify(exec);
 const fs = require('fs');
 const path = require('path');
+const { pool } = require('../config/database');
 const TenantModel = require('../models/tenant.model');
 const ServerModel = require('../models/server.model');
 const BackupAccountModel = require('../models/backup-account.model');
@@ -15,6 +16,50 @@ class BackupService {
             const message = error?.message || 'unknown error';
             throw new Error(`Google APIs module unavailable: ${message}`);
         }
+    }
+
+    quoteShellArg(value) {
+        return `'${String(value ?? '').replace(/'/g, `'\\''`)}'`;
+    }
+
+    async getScheduleConfig() {
+        const defaultTime = process.env.BACKUP_SCHEDULE_TIME || '02:00';
+        const defaultTimezone = process.env.BACKUP_TIMEZONE || 'Asia/Calcutta';
+
+        try {
+            const [rows] = await pool.query(
+                `SELECT setting_key, setting_value
+                 FROM settings
+                 WHERE setting_key IN ('backup_schedule_time', 'backup_schedule_timezone', 'backup_last_success_at')`
+            );
+
+            const settings = {};
+            rows.forEach((row) => {
+                settings[row.setting_key] = row.setting_value;
+            });
+
+            return {
+                scheduleTime: settings.backup_schedule_time || defaultTime,
+                timezone: settings.backup_schedule_timezone || defaultTimezone,
+                lastSuccessAt: settings.backup_last_success_at || null
+            };
+        } catch (error) {
+            console.warn(`[BackupService] Falling back to env/default backup schedule: ${error.message}`);
+            return {
+                scheduleTime: defaultTime,
+                timezone: defaultTimezone,
+                lastSuccessAt: null
+            };
+        }
+    }
+
+    async markScheduledRunSuccess(timestamp = new Date().toISOString()) {
+        await pool.query(
+            `INSERT INTO settings (setting_key, setting_value)
+             VALUES (?, ?)
+             ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)`,
+            ['backup_last_success_at', timestamp]
+        );
     }
 
     getAccountAuthType(account) {
@@ -113,20 +158,31 @@ class BackupService {
         try {
             console.log(`[BackupService] Backing up ${tenant.slug} on server ${server.name}...`);
 
-            // 1. Generate dump via SSH (stream it locally)
-            const sshPrefix = server.is_primary ? '' : `ssh ${server.hostname} "`;
-            const sshSuffix = server.is_primary ? '' : '"';
             const dbHost = server.db_host || 'localhost';
+            const dbUser = server.db_user || 'root';
+            const remoteDumpCmd = [
+                `MYSQL_PWD=${this.quoteShellArg(server.db_password || '')}`,
+                'mysqldump',
+                '-h',
+                this.quoteShellArg(dbHost),
+                '-u',
+                this.quoteShellArg(dbUser),
+                this.quoteShellArg(tenant.db_name),
+                '| gzip'
+            ].join(' ');
 
-            const dumpCmd = `${sshPrefix}mysqldump -h ${dbHost} -u ${server.db_user || 'root'} -p'${server.db_password}' ${tenant.db_name} | gzip${sshSuffix} > ${localPath}`;
+            const sshTarget = server.hostname && server.ssh_user && !String(server.hostname).includes('@')
+                ? `${server.ssh_user}@${server.hostname}`
+                : server.hostname;
+            const dumpCmd = server.is_primary
+                ? `${remoteDumpCmd} > ${this.quoteShellArg(localPath)}`
+                : `ssh ${this.quoteShellArg(sshTarget)} ${this.quoteShellArg(remoteDumpCmd)} > ${this.quoteShellArg(localPath)}`;
 
             await execAsync(dumpCmd);
             const stats = fs.statSync(localPath);
 
-            // 2. Upload to Google Drive
             const gdriveFileId = await this.uploadToGDrive(backupAccount, localPath, fileName);
 
-            // 3. Record in history
             await BackupAccountModel.addHistory({
                 tenant_id: tenant.id,
                 server_id: server.id,
@@ -139,7 +195,6 @@ class BackupService {
 
             await BackupAccountModel.incrementUsage(backupAccount.id);
             console.log(`[BackupService] Successfully backed up ${tenant.slug} to Google Drive.`);
-
         } catch (error) {
             await BackupAccountModel.addHistory({
                 tenant_id: tenant.id,
@@ -150,7 +205,6 @@ class BackupService {
             });
             throw error;
         } finally {
-            // Clean up local temp file
             if (fs.existsSync(localPath)) {
                 fs.unlinkSync(localPath);
             }
@@ -214,10 +268,19 @@ class BackupService {
 
         for (const backup of expiredBackups) {
             try {
-                const account = await BackupAccountModel.findById(backup.backup_account_id);
+                const account = backup.backup_account_id
+                    ? await BackupAccountModel.findById(backup.backup_account_id, { includeSecrets: true })
+                    : null;
+
+                if (backup.gdrive_file_id && !account) {
+                    console.warn(`[BackupService] Skipping history cleanup for ${backup.file_name}: backup account ${backup.backup_account_id} is unavailable, so the Drive file cannot be verified/deleted.`);
+                    continue;
+                }
+
                 if (account && backup.gdrive_file_id) {
                     await this.deleteFromGDrive(account, backup.gdrive_file_id);
                 }
+
                 await BackupAccountModel.deleteHistory(backup.id);
                 console.log(`[BackupService] Deleted expired backup: ${backup.file_name}`);
             } catch (error) {

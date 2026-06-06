@@ -1,34 +1,66 @@
 const { pool } = require('../config/database');
 
 class BackupAccountModel {
+    static maskSecret(value) {
+        if (!value) return null;
+        const str = String(value);
+        if (str.length <= 8) return '********';
+        return `${str.slice(0, 4)}...${str.slice(-4)}`;
+    }
+
+    static sanitizeForResponse(account) {
+        if (!account) return account;
+
+        let credentialsSummary = null;
+        if (account.credentials_json) {
+            try {
+                const parsed = typeof account.credentials_json === 'string'
+                    ? JSON.parse(account.credentials_json)
+                    : account.credentials_json;
+                credentialsSummary = parsed?.client_email || 'configured';
+            } catch (error) {
+                credentialsSummary = 'configured';
+            }
+        }
+
+        return {
+            id: account.id,
+            account_name: account.account_name,
+            auth_type: account.auth_type,
+            folder_id: account.folder_id,
+            subject_email: account.subject_email,
+            oauth_client_id: account.oauth_client_id || null,
+            is_active: account.is_active,
+            usage_count: account.usage_count,
+            created_at: account.created_at,
+            updated_at: account.updated_at,
+            credentials_configured: Boolean(account.credentials_json),
+            credentials_summary: credentialsSummary,
+            oauth_client_secret_configured: Boolean(account.oauth_client_secret),
+            oauth_refresh_token_configured: Boolean(account.oauth_refresh_token),
+            oauth_refresh_token_preview: this.maskSecret(account.oauth_refresh_token)
+        };
+    }
     /**
      * Get all backup accounts
      */
-    static async findAll() {
+    static async findAll(options = {}) {
+        const { includeSecrets = false } = options;
         const [rows] = await pool.query(`
-            SELECT
-                id,
-                account_name,
-                auth_type,
-                folder_id,
-                subject_email,
-                credentials_json,
-                oauth_client_id,
-                oauth_client_secret,
-                oauth_refresh_token,
-                is_active,
-                usage_count
+            SELECT *
             FROM backup_accounts
         `);
-        return rows;
+        return includeSecrets ? rows : rows.map(row => this.sanitizeForResponse(row));
     }
 
     /**
      * Get account with secrets (internal use)
      */
-    static async findById(id) {
+    static async findById(id, options = {}) {
+        const { includeSecrets = false } = options;
         const [rows] = await pool.query('SELECT * FROM backup_accounts WHERE id = ?', [id]);
-        return rows[0];
+        const account = rows[0];
+        return includeSecrets ? account : this.sanitizeForResponse(account);
     }
 
     /**

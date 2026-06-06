@@ -208,7 +208,7 @@ router.post('/tenant/:tenantId/enable-crm', async (req, res) => {
         await TenantModel.update(tenantId, { server_id: server.id });
 
         const dbName = `nexcrm_${tenant.slug.replace(/-/g, '_')}`;
-        await provisioner.createDatabase(dbName, server.db_host || 'localhost', server.db_user, server.db_password);
+        await provisioner.createDatabase(dbName, server);
 
         res.json({ success: true, message: 'CRM provisioning started in background.' });
 
