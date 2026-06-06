@@ -45,7 +45,7 @@ const Hero = memo(function Hero() {
   }, [])
 
   return (
-    <section id="home" className="relative min-h-screen lg:h-screen overflow-hidden">
+    <section id="home" className="relative flex min-h-screen flex-col overflow-hidden">
       <div className="absolute inset-0">
         <img
           src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1920&auto=format&fit=crop&fm=webp"
@@ -59,11 +59,11 @@ const Hero = memo(function Hero() {
         <div className="absolute inset-0 bg-black/60"></div>
       </div>
 
-      <div className="relative z-10 w-full min-h-screen flex items-center px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto py-20 sm:py-24">
-          <div className="space-y-4 sm:space-y-6 text-center animate-fade-in-up">
+      <div className="relative z-10 flex flex-1 items-center px-4 pb-10 pt-24 sm:px-6 sm:pb-12 sm:pt-28 lg:px-8 lg:pb-14 lg:pt-32">
+        <div className="mx-auto max-w-4xl">
+          <div className="space-y-5 text-center animate-fade-in-up sm:space-y-6">
 
-            <div className="inline-flex items-center bg-white/90 backdrop-blur-sm border border-white/30 rounded-full px-3 sm:px-4 py-2 text-[#2563EB] font-semibold text-sm sm:text-base">
+            <div className="mx-auto inline-flex max-w-2xl flex-wrap items-center justify-center gap-x-1.5 gap-y-1 rounded-full border border-white/30 bg-white/90 px-3 py-2 text-center text-sm font-semibold text-[#2563EB] backdrop-blur-sm sm:px-4 sm:text-base">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2"></div>
               <RiCodeSSlashLine className="mr-1 text-sm" />
               Custom Software, NapCRM, AI Automation and SEO
@@ -71,9 +71,9 @@ const Hero = memo(function Hero() {
 
             <div className="space-y-4">
               <h1 className="font-bold text-white leading-tight drop-shadow-lg">
-                <span className="block mb-1 text-2xl sm:text-3xl md:text-4xl lg:text-5xl">Build Faster With</span>
-                <span className="block mb-1 text-2xl sm:text-3xl md:text-4xl lg:text-5xl">Revenue-Focused Systems for</span>
-                <span className="block relative text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl min-h-[1.2em]">
+                <span className="block mb-1 text-2xl sm:text-3xl md:text-4xl lg:text-[3.25rem]">Build Faster With</span>
+                <span className="block mb-1 text-2xl sm:text-3xl md:text-4xl lg:text-[3.25rem]">Revenue-Focused Systems for</span>
+                <span className="block relative min-h-[1.2em] text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[5rem]">
                   <span className="relative" aria-live="polite" aria-atomic="true">
                     <span className="text-[#D97706]">
                       {rotatingTexts[currentTextIndex]}
@@ -82,14 +82,14 @@ const Hero = memo(function Hero() {
                 </span>
               </h1>
 
-              <p className="text-base sm:text-lg lg:text-xl text-white/90 leading-relaxed max-w-3xl mx-auto font-medium">
+              <p className="mx-auto max-w-3xl text-base font-medium leading-relaxed text-white/90 sm:text-lg lg:text-xl">
                 Napnix helps teams turn research traffic into qualified conversations with
                 <span className="font-bold text-[#D97706]"> custom software, mobile apps, AI workflows, CRM rollouts, and technical SEO</span>.
                 If you already know the problem, we can show you the next best build or conversion step quickly.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mt-6 sm:mt-8">
+            <div className="mt-6 flex flex-col justify-center gap-3 sm:mt-8 sm:flex-row sm:gap-4">
               <MagneticButton
                 href="/contact?intent=demo"
                 className="bg-[#2563EB] text-white px-8 sm:px-8 lg:px-6 py-4 sm:py-4 lg:py-3 rounded-xl text-base sm:text-lg lg:text-base font-semibold shadow-xl inline-flex items-center justify-center hover:bg-[#1D4ED8] active:scale-95 transition-colors duration-300 group"
@@ -120,11 +120,11 @@ const Hero = memo(function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 bg-white/10 backdrop-blur-sm py-4 sm:py-6">
-        <div className="overflow-hidden">
-          <div className="flex animate-scroll-infinite">
+      <div className="relative z-10 mt-auto hidden border-t border-white/10 bg-black/20 backdrop-blur-sm md:block">
+        <div className="overflow-hidden py-4 lg:py-5">
+          <div className="flex animate-scroll-infinite items-center">
             {[...technologies, ...technologies].map((tech, index) => (
-              <div key={`${tech.name}-${index}`} className="flex-shrink-0 mx-4 sm:mx-6 lg:mx-8 flex items-center justify-center">
+              <div key={`${tech.name}-${index}`} className="mx-4 flex flex-shrink-0 items-center justify-center sm:mx-6 lg:mx-8">
                 <img
                   src={tech.logo}
                   alt={tech.name}
