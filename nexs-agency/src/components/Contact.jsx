@@ -19,9 +19,11 @@ import {
   RiUserLine
 } from 'react-icons/ri';
 import Icon from './ui/Icon';
+import { buildInquiryMessage, defaultInquiryIntent, inquiryIntentOptions } from '../utils/inquiry';
 
 const Contact = memo(function Contact() {
   const [formData, setFormData] = useState({
+    intent: defaultInquiryIntent,
     name: '',
     email: '',
     phone: '',
@@ -52,14 +54,27 @@ const Contact = memo(function Contact() {
     setSubmitStatus({ type: '', message: '' });
 
     try {
-      await inquiryAPI.submit(formData);
+      await inquiryAPI.submit({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.company,
+        message: buildInquiryMessage(formData.intent, formData.message)
+      });
 
       setSubmitStatus({
         type: 'success',
-        message: 'Thank you for your message! We\'ll get back to you within 24 hours.'
+        message: 'Thanks. We\'ll route this to the right team and reply within 24 hours.'
       });
 
-      setFormData({ name: '', email: '', phone: '', company: '', message: '' });
+      setFormData({
+        intent: defaultInquiryIntent,
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        message: ''
+      });
 
       statusTimeoutRef.current = setTimeout(() => {
         setSubmitStatus({ type: '', message: '' });
@@ -135,12 +150,37 @@ const Contact = memo(function Contact() {
                   <RiMailLine className="text-lg text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-800">
-                  Send us a message
+                  Get your next step
                 </h3>
               </div>
 
               <div className="flex-1">
                 <form onSubmit={handleSubmit} className="space-y-5 h-full flex flex-col">
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-3">
+                      What do you need most? *
+                    </label>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      {inquiryIntentOptions.map((option) => (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => setFormData((current) => ({ ...current, intent: option.value }))}
+                          className={`rounded-xl border p-4 text-left transition-all ${formData.intent === option.value
+                            ? 'border-[#2563EB] bg-[#2563EB]/5 shadow-sm'
+                            : 'border-slate-200 bg-white hover:border-slate-300'
+                            }`}
+                        >
+                          <span className="block text-sm font-semibold text-slate-900">{option.label}</span>
+                          <span className="mt-1 block text-xs text-slate-500">{option.description}</span>
+                        </button>
+                      ))}
+                    </div>
+                    <p className="mt-2 text-xs text-slate-500">
+                      Name and email are enough to start. Add more detail only if useful.
+                    </p>
+                  </div>
+
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="name" className="block text-sm font-semibold text-slate-700 mb-2">
@@ -230,7 +270,7 @@ const Contact = memo(function Contact() {
 
                   <div className="flex-1">
                     <label htmlFor="message" className="block text-sm font-semibold text-slate-700 mb-2">
-                      Message *
+                      Extra Details (Optional)
                     </label>
                     <div className="relative h-full">
                       <textarea
@@ -238,11 +278,9 @@ const Contact = memo(function Contact() {
                         name="message"
                         value={formData.message}
                         onChange={handleChange}
-                        required
-                        minLength={10}
                         maxLength={2000}
                         className="w-full h-32 px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all resize-none bg-white text-sm"
-                        placeholder="What are you trying to build, improve, rank, automate, or fix?"
+                        placeholder="Any context, timeline, industry, or current problem helps."
                       ></textarea>
                       <div className="absolute top-3 right-3 pointer-events-none">
                         <RiMessage3Line className="text-slate-400 text-sm" />
@@ -279,7 +317,7 @@ const Contact = memo(function Contact() {
                           </>
                         ) : (
                           <>
-                            Send Message
+                            Get My Next Step
                             <RiSendPlaneLine className="ml-2" />
                           </>
                         )}

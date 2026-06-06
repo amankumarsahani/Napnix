@@ -121,6 +121,7 @@ export default function NapCRMLandingPage() {
         selectedPlan,
         submitting, submitted,
         toast,
+        openContactModal,
         handleAction,
         submitContactForm,
     } = useCRMPricing();
@@ -239,10 +240,10 @@ export default function NapCRMLandingPage() {
 
                         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                             <button onClick={() => document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' })} className="px-8 py-4 bg-slate-900 text-white rounded-xl font-semibold shadow-xl shadow-slate-900/20 hover:bg-slate-800 transition-all duration-300 ring-4 ring-slate-900/10">
-                                View Plans
+                                Compare Plans
                             </button>
-                            <a href="/contact" className="px-8 py-4 bg-white text-slate-700 border border-slate-200 rounded-xl font-semibold hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 shadow-sm">
-                                Book a Demo
+                            <a href="/contact?intent=demo" className="px-8 py-4 bg-white text-slate-700 border border-slate-200 rounded-xl font-semibold hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 shadow-sm">
+                                Book a 20-min Demo
                             </a>
                         </div>
                     </motion.div>
@@ -436,7 +437,7 @@ export default function NapCRMLandingPage() {
                     <FadeIn y={24}>
                         <div className="text-center mb-16">
                             <h2 className="text-4xl font-bold text-slate-900 mb-6">Simple, Transparent Pricing</h2>
-                            <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-12">Choose the plan that fits your agency.</p>
+                            <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-12">Choose the plan that fits your agency. If you want help deciding monthly vs yearly, book a live walkthrough before you commit.</p>
 
                             <div className="inline-flex bg-slate-50 p-1 rounded-full border border-slate-200 shadow-sm relative">
                                 <div
@@ -451,6 +452,15 @@ export default function NapCRMLandingPage() {
                             </div>
                             <div className="mt-4">
                                 <CurrencySwitcher currency={currency} setCurrency={setCurrency} currencies={currencies} />
+                            </div>
+                            <div className="mt-6 flex flex-col items-center gap-3 text-sm text-slate-500">
+                                <span>Need a faster answer on packaging, setup, or yearly pricing?</span>
+                                <button
+                                    onClick={() => openContactModal('')}
+                                    className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-2.5 font-semibold text-slate-900 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50"
+                                >
+                                    Talk to Sales Before You Choose
+                                </button>
                             </div>
                         </div>
                     </FadeIn>
@@ -614,7 +624,10 @@ export default function NapCRMLandingPage() {
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <button onClick={() => document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' })} className="px-10 py-5 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-all shadow-lg">
-                                    Get Started Now
+                                    Review Pricing
+                                </button>
+                                <button onClick={() => openContactModal('')} className="px-10 py-5 bg-white text-slate-900 rounded-xl font-bold text-lg hover:bg-slate-100 transition-all shadow-lg">
+                                    Book a Live Demo
                                 </button>
                             </div>
                         </div>

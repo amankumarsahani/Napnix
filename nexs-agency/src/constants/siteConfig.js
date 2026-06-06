@@ -5,7 +5,7 @@ export const siteConfig = {
         primary: 'info@napnix.in',
         info: 'info@napnix.in',
         sales: 'sales@napnix.in',
-        support: 'info@napnix.in',
+        support: 'support@napnix.in',
         admin: 'admin@napnix.in',
         noreply: 'noreply@napnix.in',
     },

@@ -1,20 +1,25 @@
 // TODO: Replace console.error with Sentry or proper error tracking
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import { inquiryAPI } from '../services/api';
 import FadeIn from '../components/ui/FadeIn';
 import ReadingProgress from '../components/ui/ReadingProgress';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
 import Icon from '../components/ui/Icon';
 import { RiCheckLine, RiErrorWarningLine, RiLoader4Line, RiMailSendLine, RiMapPinLine, RiPhoneLine, RiSendPlaneFill } from 'react-icons/ri';
+import { buildInquiryMessage, getInquiryIntentFromSearch, inquiryIntentOptions } from '../utils/inquiry';
 
 const FADE_IN_SMOOTH = { duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] };
 
 const ContactPage = () => {
+    const location = useLocation();
+    const initialIntent = getInquiryIntentFromSearch(location.search);
 
 
     const [formState, setFormState] = useState({
+        intent: initialIntent,
         name: '',
         email: '',
         phone: '',
@@ -25,6 +30,13 @@ const ContactPage = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        setFormState((current) => ({
+            ...current,
+            intent: getInquiryIntentFromSearch(location.search)
+        }));
+    }, [location.search]);
 
     const handleChange = (e) => {
         setFormState({
@@ -40,8 +52,13 @@ const ContactPage = () => {
         setError('');
 
         try {
-            // Submit form data directly (fields now match backend API)
-            await inquiryAPI.submit(formState);
+            await inquiryAPI.submit({
+                name: formState.name,
+                email: formState.email,
+                phone: formState.phone,
+                company: formState.company,
+                message: buildInquiryMessage(formState.intent, formState.message)
+            });
 
             setIsSubmitting(false);
             setIsSuccess(true);
@@ -276,9 +293,30 @@ const ContactPage = () => {
                                     exit={{ opacity: 0 }}
                                 >
                                     <h2 className="text-3xl font-bold text-slate-800 mb-2">Send us a Message</h2>
-                                    <p className="text-slate-500 mb-10">We'd love to hear about your project.</p>
+                                    <p className="text-slate-500 mb-10">Pick your goal, leave name and email, and we will come back with the clearest next step.</p>
 
                                     <form onSubmit={handleSubmit} className="space-y-8">
+                                        <div className="space-y-3">
+                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">What do you need most?</label>
+                                            <div className="grid gap-3 sm:grid-cols-2">
+                                                {inquiryIntentOptions.map((option) => (
+                                                    <button
+                                                        key={option.value}
+                                                        type="button"
+                                                        onClick={() => setFormState((current) => ({ ...current, intent: option.value }))}
+                                                        className={`rounded-2xl border p-4 text-left transition-all ${formState.intent === option.value
+                                                            ? 'border-[#2563EB] bg-[#2563EB]/5 shadow-sm'
+                                                            : 'border-slate-200 hover:border-slate-300'
+                                                            }`}
+                                                    >
+                                                        <span className="block text-sm font-semibold text-slate-900">{option.label}</span>
+                                                        <span className="mt-1 block text-xs text-slate-500">{option.description}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                            <p className="text-sm text-slate-500">Need help deciding monthly vs yearly NapCRM pricing? Choose demo and we will walk you through it.</p>
+                                        </div>
+
                                         <div className="space-y-2 group">
                                             <label htmlFor="contact-name" className="text-xs font-bold text-slate-500 uppercase tracking-widest group-focus-within:text-[#2563EB] transition-colors">Full Name</label>
                                             <input
@@ -338,18 +376,16 @@ const ContactPage = () => {
                                         </div>
 
                                         <div className="space-y-2 group">
-                                            <label htmlFor="contact-message" className="text-xs font-bold text-slate-500 uppercase tracking-widest group-focus-within:text-[#2563EB] transition-colors">Message</label>
+                                            <label htmlFor="contact-message" className="text-xs font-bold text-slate-500 uppercase tracking-widest group-focus-within:text-[#2563EB] transition-colors">Extra Details</label>
                                             <textarea
                                                 id="contact-message"
                                                 name="message"
                                                 value={formState.message}
                                                 onChange={handleChange}
-                                                required
-                                                minLength={10}
                                                 maxLength={2000}
                                                 rows="4"
                                                 className="w-full px-0 py-3 border-b-2 border-slate-200 focus:border-blue-600 focus:outline-none transition-colors bg-transparent placeholder-gray-300 font-medium text-lg resize-none"
-                                                placeholder="Tell us about your project..."
+                                                placeholder="Timeline, budget range, industry, or current problem."
                                             ></textarea>
                                         </div>
 

@@ -19,6 +19,7 @@ export default function CRMPricingPage() {
         pricingMode,
         toast,
         dismissToast,
+        openContactModal,
         handleAction,
         submitContactForm,
     } = useCRMPricing();
@@ -112,7 +113,7 @@ export default function CRMPricingPage() {
                         Simple, Transparent Pricing
                     </h1>
                     <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-8">
-                        Choose a plan that scales with your business. Contact our sales team to get started.
+                        Choose the plan that fits your team. If you want help deciding monthly vs yearly, book a live demo and we will map the right setup first.
                     </p>
 
                     <div className="flex items-center justify-center gap-4 mb-8">
@@ -129,6 +130,15 @@ export default function CRMPricingPage() {
                     </div>
                     <div className="flex justify-center mb-12">
                         <CurrencySwitcher currency={currency} setCurrency={setCurrency} currencies={currencies} />
+                    </div>
+                    <div className="mb-12 flex flex-col items-center gap-3 text-sm text-slate-500">
+                        <span>Need a real person before you choose a billing cycle?</span>
+                        <button
+                            onClick={() => openContactModal('')}
+                            className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-2.5 font-semibold text-slate-900 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50"
+                        >
+                            Book a Live Demo
+                        </button>
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
@@ -298,16 +308,16 @@ export default function CRMPricingPage() {
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <button
-                            onClick={() => handleAction('')}
+                            onClick={() => openContactModal('')}
                             className="px-8 py-4 bg-white text-[#2563EB] rounded-lg font-semibold hover:bg-[#F8FAFC] transition-colors"
                         >
-                            Contact Sales
+                            Book a Live Demo
                         </button>
                         <a
-                            href="/contact"
+                            href="/contact?intent=demo"
                             className="px-8 py-4 border-2 border-white text-white rounded-lg font-semibold hover:bg-white/10 transition-colors"
                         >
-                            Learn More
+                            Contact the Team
                         </a>
                     </div>
                 </div>

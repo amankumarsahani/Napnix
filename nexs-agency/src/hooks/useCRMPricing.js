@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { settingsAPI, billingAPI } from '../services/api';
 import { getRecaptchaToken } from '../utils/recaptcha';
+import { buildInquiryMessage } from '../utils/inquiry';
 
 export default function useCRMPricing() {
     const [isYearly, setIsYearly] = useState(false);
@@ -114,7 +115,11 @@ export default function useCRMPricing() {
             email: formData.get('email'),
             phone: formData.get('phone'),
             company: formData.get('company'),
-            message: `Plan: NapCRM ${plan}\n\n${formData.get('message') || 'Interested in learning more about NapCRM.'}`,
+            message: buildInquiryMessage(
+                'demo',
+                formData.get('message'),
+                `Product: NapCRM\nInterested plan: ${plan}\nPreferred billing: ${isYearly ? 'Yearly' : 'Monthly'}`
+            ),
             captchaToken
         };
 
@@ -149,6 +154,7 @@ export default function useCRMPricing() {
         toast,
         showToast,
         dismissToast,
+        openContactModal,
         handleAction,
         submitContactForm,
     };
