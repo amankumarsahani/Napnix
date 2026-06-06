@@ -3,17 +3,26 @@ const { promisify } = require('util');
 const execAsync = promisify(exec);
 const fs = require('fs');
 const path = require('path');
-const { google } = require('googleapis');
 const TenantModel = require('../models/tenant.model');
 const ServerModel = require('../models/server.model');
 const BackupAccountModel = require('../models/backup-account.model');
 
 class BackupService {
+    getGoogleApis() {
+        try {
+            return require('googleapis').google;
+        } catch (error) {
+            const message = error?.message || 'unknown error';
+            throw new Error(`Google APIs module unavailable: ${message}`);
+        }
+    }
+
     getAccountAuthType(account) {
         return account?.auth_type === 'oauth_personal' ? 'oauth_personal' : 'service_account';
     }
 
     createDriveClient(account) {
+        const google = this.getGoogleApis();
         const authType = this.getAccountAuthType(account);
 
         if (authType === 'oauth_personal') {

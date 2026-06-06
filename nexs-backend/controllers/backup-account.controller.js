@@ -1,7 +1,15 @@
 const BackupAccountModel = require('../models/backup-account.model');
-const { google } = require('googleapis');
 
 class BackupAccountController {
+    getGoogleApis = () => {
+        try {
+            return require('googleapis').google;
+        } catch (error) {
+            const message = error?.message || 'unknown error';
+            throw new Error(`Google APIs module unavailable: ${message}`);
+        }
+    }
+
     validatePayload = (payload) => {
         const authType = payload.auth_type === 'oauth_personal' ? 'oauth_personal' : 'service_account';
 
@@ -94,6 +102,7 @@ class BackupAccountController {
     exchangeGoogleOauthCode = async (req, res) => {
         try {
             const { client_id, client_secret, code, redirect_uri } = req.body;
+            const google = this.getGoogleApis();
 
             if (!client_id || !client_secret || !code || !redirect_uri) {
                 return res.status(400).json({
