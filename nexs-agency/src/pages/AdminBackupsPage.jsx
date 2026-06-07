@@ -4,7 +4,7 @@ import { adminAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import BackupAccountList from './admin/BackupAccountList';
 import ServerSnapshot from './admin/ServerSnapshot';
-import { RiGoogleLine, RiHardDrive3Line } from 'react-icons/ri';
+import { RiGoogleLine, RiHardDrive3Line, RiQuestionLine } from 'react-icons/ri';
 
 const EMPTY_FORM = {
     auth_type: 'oauth_personal',
@@ -16,6 +16,18 @@ const EMPTY_FORM = {
     oauth_client_secret: '',
     oauth_refresh_token: ''
 };
+
+const PERSONAL_OAUTH_SETUP_STEPS = [
+    'Open Google Cloud Console and create or select a project for Napnix backups.',
+    'Go to APIs & Services -> Library and enable the Google Drive API for that project.',
+    'Go to APIs & Services -> OAuth consent screen, configure the app, and add your admin Google account as a test user if the app is still in testing.',
+    'Go to APIs & Services -> Credentials -> Create Credentials -> OAuth client ID.',
+    'Choose Web application and add the Authorized redirect URI shown below exactly as displayed.',
+    'Copy the generated Client ID and Client Secret into this form.',
+    'Open the Google Drive folder you want to use, copy the folder ID from the URL, and paste it into Folder ID.',
+    'Click Connect Google Drive here, sign in with the Google account that owns or can edit that folder, then allow Drive access.',
+    'Save the backup account after Google returns here so the refresh token is stored in the backend.'
+];
 
 const GOOGLE_OAUTH_SESSION_KEY = 'nexs_backup_google_oauth';
 
@@ -136,6 +148,7 @@ export default function AdminBackupsPage() {
     const [form, setForm] = useState(EMPTY_FORM);
     const [editingId, setEditingId] = useState(null);
     const [editingAccountMeta, setEditingAccountMeta] = useState(null);
+    const [personalHelpOpen, setPersonalHelpOpen] = useState(false);
     const [pageLoading, setPageLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [running, setRunning] = useState(false);
@@ -614,6 +627,58 @@ export default function AdminBackupsPage() {
                                         </button>
                                     </div>
                                 </div>
+
+                                {form.auth_type === 'oauth_personal' ? (
+                                    <div className="rounded-3xl border border-blue-200 bg-blue-50/70 p-5">
+                                        <div className="flex flex-wrap items-start justify-between gap-3">
+                                            <div>
+                                                <p className="text-sm font-semibold text-slate-900">Personal Drive setup</p>
+                                                <p className="mt-1 text-sm text-slate-600">Use this when you want backups to upload into a normal Google Drive folder owned by a Gmail or Workspace user.</p>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => setPersonalHelpOpen((prev) => !prev)}
+                                                className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-3 py-2 text-sm font-semibold text-[#2563EB]"
+                                                aria-expanded={personalHelpOpen}
+                                                aria-controls="personal-oauth-help"
+                                            >
+                                                <RiQuestionLine className="text-base" />
+                                                How do I get these keys?
+                                            </button>
+                                        </div>
+
+                                        <div className="mt-4 grid gap-3 text-sm text-slate-700 md:grid-cols-2">
+                                            <div className="rounded-2xl bg-white px-4 py-3">
+                                                <p className="font-semibold text-slate-900">You need all four values</p>
+                                                <p className="mt-1">Folder ID, OAuth client ID, OAuth client secret, and a refresh token.</p>
+                                            </div>
+                                            <div className="rounded-2xl bg-white px-4 py-3">
+                                                <p className="font-semibold text-slate-900">Best order</p>
+                                                <p className="mt-1">Set the redirect URI first, then click Connect Google Drive here, then save the account after Google sends you back.</p>
+                                            </div>
+                                        </div>
+
+                                        {personalHelpOpen ? (
+                                            <div id="personal-oauth-help" className="mt-4 rounded-3xl border border-blue-100 bg-white p-5">
+                                                <p className="text-sm font-semibold text-slate-900">Step-by-step</p>
+                                                <ol className="mt-3 space-y-3 text-sm text-slate-700">
+                                                    {PERSONAL_OAUTH_SETUP_STEPS.map((step, index) => (
+                                                        <li key={step} className="flex gap-3">
+                                                            <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-[#2563EB]">
+                                                                {index + 1}
+                                                            </span>
+                                                            <span>{step}</span>
+                                                        </li>
+                                                    ))}
+                                                </ol>
+                                                <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                                                    <p className="font-semibold text-slate-900">Where to find the Folder ID</p>
+                                                    <p className="mt-1">Open the Google Drive folder in your browser. In a URL like `https://drive.google.com/drive/folders/1abcXYZ...`, the part after `/folders/` is the Folder ID.</p>
+                                                </div>
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                ) : null}
 
                                 <div>
                                     <label className="mb-2 block text-sm font-medium text-slate-700">Account name</label>
