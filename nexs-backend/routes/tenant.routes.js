@@ -29,6 +29,9 @@ router.delete('/:id/full-delete', tenantController.fullDeleteTenant);
 // Custom Domain Setup
 router.post('/:id/custom-domain', tenantController.setupCustomDomain);
 
+// DNS Repair (fixes Cloudflare Error 1014 — re-attaches Pages custom domains and waits for active)
+router.post('/:id/repair-dns', tenantController.repairDns);
+
 // Process Management
 router.post('/:id/provision', tenantController.provisionTenant);
 router.post('/:id/start', tenantController.startTenant);

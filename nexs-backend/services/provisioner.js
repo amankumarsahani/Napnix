@@ -773,9 +773,7 @@ EOFNODE`;
                         'Authorization': `Bearer ${this.cfApiToken}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        name: domain
-                    })
+                    body: JSON.stringify({ name: domain })
                 }
             );
 
@@ -783,13 +781,19 @@ EOFNODE`;
 
             if (data.success) {
                 console.log(`[Provisioner] Domain attached to Pages: ${domain}`);
+                const active = await this.waitForPagesDomainActive(this.cfAccountId, this.cfPagesProject, domain);
+                if (!active) {
+                    console.warn(`[Provisioner] Pages domain ${domain} did not reach active state — DNS creation skipped`);
+                    return false;
+                }
                 return true;
             }
 
-            // Treat "already added" (code 8000018) as success
+            // Treat "already added" (code 8000018) as success — still wait for active
             const alreadyExists = data.errors?.some(e => e.code === 8000018);
             if (alreadyExists) {
-                console.log(`[Provisioner] Pages domain ${domain} already attached to ${this.cfPagesProject} — treating as success`);
+                console.log(`[Provisioner] Pages domain ${domain} already attached to ${this.cfPagesProject}`);
+                await this.waitForPagesDomainActive(this.cfAccountId, this.cfPagesProject, domain);
                 return true;
             }
 
@@ -967,12 +971,23 @@ EOFNODE`;
                 }
             );
             const data = await response.json();
-            if (data.success) return true;
+            if (data.success) {
+                // Wait for CF to activate the domain before DNS is created.
+                // Without this, DNS CNAME created immediately after POST causes Error 1014
+                // (CNAME Cross-User Banned) because CF edge hasn't propagated ownership yet.
+                const active = await this.waitForPagesDomainActive(accountId, projectName, domain);
+                if (!active) {
+                    console.warn(`[Provisioner] Pages domain ${domain} did not reach active state — DNS creation skipped`);
+                    return false;
+                }
+                return true;
+            }
 
-            // Treat "already added" (code 8000018) as success
+            // Treat "already added" (code 8000018) as success — still wait for active
             const alreadyExists = data.errors?.some(e => e.code === 8000018);
             if (alreadyExists) {
-                console.log(`[Provisioner] Pages domain ${domain} already attached to ${projectName} — treating as success`);
+                console.log(`[Provisioner] Pages domain ${domain} already attached to ${projectName}`);
+                await this.waitForPagesDomainActive(accountId, projectName, domain);
                 return true;
             }
 
@@ -982,6 +997,39 @@ EOFNODE`;
             console.error(`[Provisioner] Cloudflare Pages domain attachment failed: ${error.message}`);
             return false;
         }
+    }
+
+    /**
+     * Poll until Pages reports the custom domain as active.
+     * CF Pages API returns success immediately but propagation takes 5-30s.
+     * Creating a CNAME DNS record before the domain is active causes Error 1014.
+     */
+    async waitForPagesDomainActive(accountId, projectName, domain, maxWaitMs = 60000) {
+        const interval = 4000;
+        const deadline = Date.now() + maxWaitMs;
+
+        while (Date.now() < deadline) {
+            try {
+                const res = await fetch(
+                    `https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects/${projectName}/domains/${domain}`,
+                    { headers: { 'Authorization': `Bearer ${this.cfApiToken}` } }
+                );
+                const data = await res.json();
+                const status = data.result?.status;
+                console.log(`[Provisioner] Pages domain ${domain} status: ${status}`);
+                if (status === 'active') return true;
+                if (status === 'blocked' || status === 'error') {
+                    console.error(`[Provisioner] Pages domain ${domain} in terminal error state: ${status}`);
+                    return false;
+                }
+            } catch (e) {
+                console.warn(`[Provisioner] Pages domain status check error: ${e.message}`);
+            }
+            await new Promise(r => setTimeout(r, interval));
+        }
+
+        console.warn(`[Provisioner] Pages domain ${domain} did not become active within ${maxWaitMs / 1000}s`);
+        return false;
     }
     // NOTE: updateTunnelConfig is defined below (near line 1373)
     // It takes (slug, port, server, customDomain) and constructs hostname as {slug}-crm-api.{domain}

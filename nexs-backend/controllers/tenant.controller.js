@@ -681,6 +681,48 @@ class TenantController {
     }
 
     /**
+     * Repair DNS + Pages domain registration for a tenant.
+     * Use when tenant shows Cloudflare Error 1014 (CNAME Cross-User Banned).
+     * Cause: DNS CNAME exists but Pages project never claimed the custom domain,
+     * or Pages domain is stuck in "initializing" state.
+     * Action: re-attach Pages custom domains and wait for active, then ensure DNS CNAMEs exist.
+     */
+    async repairDns(req, res) {
+        try {
+            const { id } = req.params;
+            const tenant = await TenantModel.findById(id);
+            if (!tenant) return res.status(404).json({ error: 'Tenant not found' });
+
+            const provisioner = new Provisioner();
+            const results = { frontend: null, storefront: null };
+
+            // Re-attach CRM frontend domain (slug-crm.domain)
+            try {
+                results.frontend = await provisioner.addCloudflareFrontendRoute(tenant.slug);
+            } catch (e) {
+                results.frontend = `error: ${e.message}`;
+            }
+
+            // Re-attach storefront domain (slug.domain)
+            try {
+                results.storefront = await provisioner.addStorefrontRoute(tenant.slug);
+            } catch (e) {
+                results.storefront = `error: ${e.message}`;
+            }
+
+            const success = results.frontend !== null || results.storefront !== null;
+            res.json({
+                success,
+                message: success ? 'DNS repair completed' : 'DNS repair attempted but Pages attachment may still be pending',
+                data: results
+            });
+        } catch (error) {
+            console.error('Repair DNS error:', error);
+            res.status(500).json({ error: error.message || 'DNS repair failed' });
+        }
+    }
+
+    /**
      * Full delete tenant - removes all resources
      */
     async fullDeleteTenant(req, res) {
