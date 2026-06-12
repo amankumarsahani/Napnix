@@ -32,6 +32,9 @@ router.post('/:id/custom-domain', tenantController.setupCustomDomain);
 // DNS Repair (fixes Cloudflare Error 1014 — re-attaches Pages custom domains and waits for active)
 router.post('/:id/repair-dns', tenantController.repairDns);
 
+// Database Migration (runs core + industry migrations for this tenant's DB)
+router.post('/:id/migrate', tenantController.runMigration);
+
 // Process Management
 router.post('/:id/provision', tenantController.provisionTenant);
 router.post('/:id/start', tenantController.startTenant);

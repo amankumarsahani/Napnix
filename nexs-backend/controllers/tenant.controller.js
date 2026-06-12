@@ -8,6 +8,8 @@ const pdfService = require('../services/pdf.service');
 const emailService = require('../services/email.service');
 const workflowEngine = require('../services/workflowEngine');
 const { pool } = require('../config/database');
+const { execFile } = require('child_process');
+const path = require('path');
 
 class TenantController {
     /**
@@ -719,6 +721,44 @@ class TenantController {
         } catch (error) {
             console.error('Repair DNS error:', error);
             res.status(500).json({ error: error.message || 'DNS repair failed' });
+        }
+    }
+
+    /**
+     * Run database migrations for a specific tenant.
+     * Runs core + industry-specific migrations via migrate_tenants.js.
+     */
+    async runMigration(req, res) {
+        try {
+            const { id } = req.params;
+            const tenant = await TenantModel.findById(id);
+            if (!tenant) return res.status(404).json({ error: 'Tenant not found' });
+
+            const nexcrmPath = process.env.NEXCRM_BACKEND_PATH;
+            if (!nexcrmPath) return res.status(500).json({ error: 'NEXCRM_BACKEND_PATH not configured' });
+
+            const scriptPath = path.join(nexcrmPath, 'scripts', 'migrate_tenants.js');
+
+            await new Promise((resolve, reject) => {
+                execFile('node', [scriptPath, `--tenant=${tenant.slug}`], {
+                    env: { ...process.env },
+                    cwd: nexcrmPath,
+                    timeout: 120000
+                }, (err, stdout, stderr) => {
+                    if (err) {
+                        console.error(`[Migration] Tenant ${tenant.slug} failed:`, err.message);
+                        console.error(stderr);
+                        return reject(new Error(stderr || err.message));
+                    }
+                    console.log(`[Migration] Tenant ${tenant.slug}:`, stdout);
+                    resolve(stdout);
+                });
+            });
+
+            res.json({ success: true, message: `Migration completed for tenant ${tenant.slug}` });
+        } catch (error) {
+            console.error('Run migration error:', error);
+            res.status(500).json({ error: error.message || 'Migration failed' });
         }
     }
 
