@@ -17,12 +17,12 @@ export const siteConfig = {
     domain: SITE_URL,
     social: [
         { icon: 'ri-github-line', iconFill: 'ri-github-fill', href: 'https://github.com/orgs/Napnix-Solutions/repositories', label: 'GitHub' },
-        { icon: 'ri-linkedin-line', iconFill: 'ri-linkedin-fill', href: 'https://www.linkedin.com/company/napnix-solution', label: 'LinkedIn' },
-        { icon: 'ri-instagram-line', iconFill: 'ri-instagram-fill', href: 'https://www.instagram.com/napnix/', label: 'Instagram' },
+        { icon: 'ri-linkedin-line', iconFill: 'ri-linkedin-fill', href: 'https://www.linkedin.com/company/napnix', label: 'LinkedIn' },
+        { icon: 'ri-instagram-line', iconFill: 'ri-instagram-fill', href: 'https://www.instagram.com/napnixofficial/', label: 'Instagram' },
     ],
     socialUrls: [
         'https://github.com/orgs/Napnix-Solutions/repositories',
-        'https://www.linkedin.com/company/napnix-solution',
-        'https://www.instagram.com/napnix/',
+        'https://www.linkedin.com/company/napnix',
+        'https://www.instagram.com/napnixofficial/',
     ],
 };

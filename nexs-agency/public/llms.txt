@@ -1,14 +1,14 @@
 # Napnix
 
-> Napnix is an India-based software development company building custom web applications, mobile apps, cloud infrastructure, AI/ML solutions, NexCRM — an industry-specific CRM platform starting at ₹999/month, and NexMail — an email marketing engine with SMTP rotation and anti-spam scoring.
+> Napnix is an India-based software development company building custom web applications, mobile apps, cloud infrastructure, AI/ML solutions, NapCRM — an industry-specific CRM platform starting at ₹999/month, and NapMail — an email marketing engine with SMTP rotation and anti-spam scoring.
 
 Napnix (napnix.in) specializes in end-to-end digital product development for startups and enterprises. Founded in 2023, headquartered in IT Park Sector 67, Mohali, Punjab, India. Core expertise: React, Node.js, Flutter, AWS, AI/ML. Contact: info@napnix.in | +91 7009614671.
 
 ## Products
 
-- [NexCRM](https://napnix.in/nexcrm): Industry-specific CRM platform with lead management, e-commerce tools, automation, and multi-channel communication. Plans from ₹999/month (Starter) to ₹5,999/month (Business), plus custom Enterprise tier.
-- [NexCRM Pricing](https://napnix.in/nexcrm/pricing): Detailed feature comparison across Starter, Growth, Business, and Enterprise plans with yearly discount options.
-- [NexMail](https://napnix.in/nexmail): Email marketing engine with smart SMTP rotation, anti-spam scoring (50+ checks), per-domain throttling, visual automation builder, and NexCRM integration. Free plan (1K contacts, 5K emails/mo), paid plans from ₹699/month to ₹4,999/month, plus custom Enterprise.
+- [NapCRM](https://napnix.in/napcrm): Industry-specific CRM platform with lead management, e-commerce tools, automation, and multi-channel communication. Plans from ₹999/month (Starter) to ₹5,999/month (Business), plus custom Enterprise tier.
+- [NapCRM Pricing](https://napnix.in/napcrm/pricing): Detailed feature comparison across Starter, Growth, Business, and Enterprise plans with yearly discount options.
+- [NapMail](https://napnix.in/napmail): Email marketing engine with smart SMTP rotation, anti-spam scoring (50+ checks), per-domain throttling, visual automation builder, and NapCRM integration. Free plan (1K contacts, 5K emails/mo), paid plans from ₹699/month to ₹4,999/month, plus custom Enterprise.
 
 ## Services
 
@@ -18,22 +18,22 @@ Napnix (napnix.in) specializes in end-to-end digital product development for sta
 - [Cloud Solutions](https://napnix.in/services/cloud-solutions): AWS, Azure, GCP infrastructure, DevOps, CI/CD pipelines, containerization.
 - [AI & Machine Learning](https://napnix.in/services/ai-machine-learning): Custom AI models, NLP, computer vision, predictive analytics, and ML pipeline development.
 
-## NexCRM Industry Solutions
+## NapCRM Industry Solutions
 
-- [CRM for E-commerce](https://napnix.in/nexcrm/industries/ecommerce): Abandoned cart recovery, product catalog sync, order tracking, customer segmentation.
-- [CRM for Real Estate](https://napnix.in/nexcrm/industries/realestate): Property listing management, lead scoring, site visit scheduling, document management.
-- [CRM for Healthcare](https://napnix.in/nexcrm/industries/healthcare): Patient management, appointment scheduling, HIPAA-compliant communication, treatment tracking.
-- [CRM for Education](https://napnix.in/nexcrm/industries/education): Student enrollment tracking, course management, parent communication, fee tracking.
-- [CRM for Hospitality](https://napnix.in/nexcrm/industries/hospitality): Reservation management, guest profiles, loyalty programs, review management.
-- [CRM for Restaurants](https://napnix.in/nexcrm/industries/restaurant): Table reservation, menu management, delivery integration, customer loyalty.
-- [CRM for Salons & Spas](https://napnix.in/nexcrm/industries/salon): Appointment booking, stylist scheduling, membership management, product inventory.
-- [CRM for Fitness](https://napnix.in/nexcrm/industries/fitness): Member management, class scheduling, trainer assignments, attendance tracking.
-- [CRM for Travel](https://napnix.in/nexcrm/industries/travel): Itinerary management, booking workflows, traveler profiles, supplier coordination.
-- [CRM for Legal](https://napnix.in/nexcrm/industries/legal): Case management, client intake, document management, billing and time tracking.
-- [CRM for Manufacturing](https://napnix.in/nexcrm/industries/manufacturing): Order management, inventory tracking, supplier relations, quality control.
-- [CRM for Logistics](https://napnix.in/nexcrm/industries/logistics): Shipment tracking, fleet management, route optimization, warehouse management.
-- [CRM for Service Businesses](https://napnix.in/nexcrm/industries/services): Project tracking, client communication, invoicing, team collaboration.
-- [CRM for Small Business](https://napnix.in/nexcrm/industries/general): Contact management, deal pipeline, task automation, email campaigns.
+- [CRM for E-commerce](https://napnix.in/napcrm/industries/ecommerce): Abandoned cart recovery, product catalog sync, order tracking, customer segmentation.
+- [CRM for Real Estate](https://napnix.in/napcrm/industries/realestate): Property listing management, lead scoring, site visit scheduling, document management.
+- [CRM for Healthcare](https://napnix.in/napcrm/industries/healthcare): Patient management, appointment scheduling, HIPAA-compliant communication, treatment tracking.
+- [CRM for Education](https://napnix.in/napcrm/industries/education): Student enrollment tracking, course management, parent communication, fee tracking.
+- [CRM for Hospitality](https://napnix.in/napcrm/industries/hospitality): Reservation management, guest profiles, loyalty programs, review management.
+- [CRM for Restaurants](https://napnix.in/napcrm/industries/restaurant): Table reservation, menu management, delivery integration, customer loyalty.
+- [CRM for Salons & Spas](https://napnix.in/napcrm/industries/salon): Appointment booking, stylist scheduling, membership management, product inventory.
+- [CRM for Fitness](https://napnix.in/napcrm/industries/fitness): Member management, class scheduling, trainer assignments, attendance tracking.
+- [CRM for Travel](https://napnix.in/napcrm/industries/travel): Itinerary management, booking workflows, traveler profiles, supplier coordination.
+- [CRM for Legal](https://napnix.in/napcrm/industries/legal): Case management, client intake, document management, billing and time tracking.
+- [CRM for Manufacturing](https://napnix.in/napcrm/industries/manufacturing): Order management, inventory tracking, supplier relations, quality control.
+- [CRM for Logistics](https://napnix.in/napcrm/industries/logistics): Shipment tracking, fleet management, route optimization, warehouse management.
+- [CRM for Service Businesses](https://napnix.in/napcrm/industries/services): Project tracking, client communication, invoicing, team collaboration.
+- [CRM for Small Business](https://napnix.in/napcrm/industries/general): Contact management, deal pipeline, task automation, email campaigns.
 
 ## Company
 

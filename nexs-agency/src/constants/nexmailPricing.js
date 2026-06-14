@@ -106,7 +106,7 @@ export const nexmailFeatures = {
         items: [
             { name: 'Contact management', values: [true, true, true, true, true] },
             { name: 'CSV import', values: [true, true, true, true, true] },
-            { name: 'NexCRM sync', values: [false, true, true, true, true] },
+            { name: 'NapCRM sync', values: [false, true, true, true, true] },
             { name: 'Dynamic segments', values: [false, false, true, true, true] },
             { name: 'Contact scoring', values: [false, false, true, true, true] },
             { name: 'Tags & custom fields', values: [true, true, true, true, true] },

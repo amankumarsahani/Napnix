@@ -1,14 +1,11 @@
-Contact: mailto:security@napnixsolution.com
-Contact: https://napnixsolution.com/security
+Contact: mailto:security@napnix.in
+Contact: https://napnix.in/contact
 Expires: 2026-12-31T23:59:59.000Z
-Encryption: https://napnixsolution.com/pgp-key.txt
-Acknowledgments: https://napnixsolution.com/hall-of-fame
-Policy: https://napnixsolution.com/vulnerability-disclosure-policy
-Hiring: https://napnixsolution.com/careers
+Policy: https://napnix.in/privacy-policy
 
 # Napnix Security Contact Information
 # We take security seriously and appreciate responsible disclosure.
 # Please allow up to 48 hours for initial response.
 
 Preferred-Languages: en, es
-Canonical: https://napnixsolution.com/.well-known/security.txt
+Canonical: https://napnix.in/.well-known/security.txt
