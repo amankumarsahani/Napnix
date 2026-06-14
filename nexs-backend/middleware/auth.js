@@ -1,7 +1,17 @@
 const jwt = require('jsonwebtoken');
 
-// Middleware to verify JWT token
+// Middleware to verify JWT token or service API key
 const auth = async (req, res, next) => {
+    // Service-to-service API key (e.g. NapLead integration)
+    const apiKey = req.headers['x-api-key'];
+    if (apiKey) {
+        if (!process.env.NAPLEAD_API_KEY || apiKey !== process.env.NAPLEAD_API_KEY) {
+            return res.status(401).json({ error: 'Invalid API key.' });
+        }
+        req.user = { id: 0, name: 'NapLead Service', role: 'sales_operator', service: true };
+        return next();
+    }
+
     try {
         // Get token from header
         const token = req.header('Authorization')?.replace('Bearer ', '');
