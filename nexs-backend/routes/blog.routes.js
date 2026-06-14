@@ -25,8 +25,9 @@ router.get('/sitemap.xml', async (req, res) => {
             { loc: '/services/seo-optimization', priority: '0.7', changefreq: 'monthly' },
             { loc: '/portfolio', priority: '0.7', changefreq: 'monthly' },
             { loc: '/blog', priority: '0.8', changefreq: 'daily' },
-            { loc: '/nexcrm', priority: '0.8', changefreq: 'monthly' },
-            { loc: '/nexcrm/pricing', priority: '0.7', changefreq: 'monthly' },
+            { loc: '/napcrm', priority: '0.8', changefreq: 'monthly' },
+            { loc: '/napcrm/pricing', priority: '0.7', changefreq: 'monthly' },
+            { loc: '/napmail', priority: '0.8', changefreq: 'monthly' },
             { loc: '/privacy-policy', priority: '0.3', changefreq: 'yearly' },
             { loc: '/terms-of-service', priority: '0.3', changefreq: 'yearly' },
         ];

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { RiArrowDownSLine, RiArrowRightLine } from 'react-icons/ri';
+import { siteConfig } from '../constants/siteConfig';
 
 const navItems = [
   { label: 'Home', path: '/' },
@@ -105,15 +106,15 @@ const Header = memo(function Header() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <Link
-              to="/"
-              className="group flex items-center space-x-3"
-            >
-              <div className="relative">
-                <div className="w-9 h-9 bg-[#2563EB] rounded-xl flex items-center justify-center shadow-lg transition-all duration-300">
-                  <span className="text-white font-bold text-base">N</span>
-                </div>
-              </div>
+            <Link to="/" className="group flex items-center space-x-3">
+              <img
+                src={siteConfig.logo}
+                alt=""
+                aria-hidden="true"
+                className="h-10 w-auto object-contain transition-all duration-300"
+                width={40}
+                height={40}
+              />
               <span className="text-xl font-bold text-slate-800 tracking-wide">
                 Napnix
               </span>

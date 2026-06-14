@@ -89,7 +89,7 @@ const AboutPage = () => {
             "@type": "Organization",
             "name": "Napnix",
             "url": SITE_URL,
-            "logo": `${SITE_URL}/og-image.jpg`,
+            "logo": `${SITE_URL}/logo.png`,
             "description": "Top software development agency delivering web, mobile, AI, cloud, and enterprise solutions to clients globally.",
             "email": siteConfig.email.info,
             "telephone": "+917009614671, +917009108646",
