@@ -1,6 +1,8 @@
 export const SITE_URL = 'https://napnix.in';
 
 export const siteConfig = {
+    logo: '/logo.png',
+    logoAlt: 'Napnix',
     email: {
         primary: 'info@napnix.in',
         info: 'info@napnix.in',

@@ -40,8 +40,14 @@ const Footer = memo(function Footer() {
         <div className="py-16">
           <div className="grid lg:grid-cols-4 gap-8">
             <div className="lg:col-span-1">
-              <Link to="/" className="text-2xl font-bold text-white mb-4 inline-block">
-                Napnix
+              <Link to="/" className="mb-4 inline-block">
+                <img
+                  src={siteConfig.logo}
+                  alt={siteConfig.logoAlt}
+                  className="h-12 w-auto rounded-lg object-contain"
+                  width={192}
+                  height={48}
+                />
               </Link>
               <p className="text-slate-400 mb-6 leading-relaxed">
                 We build custom software, CRM systems, AI workflows, and growth-ready websites for businesses that need qualified leads and reliable delivery.
