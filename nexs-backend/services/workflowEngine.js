@@ -44,7 +44,8 @@ class WorkflowEngine {
             index_url: this.handleIndexUrl.bind(this),
 
             // WhatsApp
-            send_whatsapp: this.handleSendWhatsApp.bind(this)
+            send_whatsapp: this.handleSendWhatsApp.bind(this),
+            send_whatsapp_reply: this.handleSendWhatsApp.bind(this)
         };
     }
 
@@ -978,7 +979,8 @@ class WorkflowEngine {
         if (!accountId) throw new Error('No WhatsApp account configured');
 
         // Resolve to_phone with variable substitution
-        let toPhone = config.to_phone || '{{phone}}';
+        // For reply flows: default to from_phone (the person who messaged us), else lead phone
+        let toPhone = config.to_phone || (contextData.from_phone ? '{{from_phone}}' : '{{phone}}');
         for (const [key, value] of Object.entries(contextData)) {
             toPhone = toPhone.replace(new RegExp(`{{${key}}}`, 'g'), value || '');
         }

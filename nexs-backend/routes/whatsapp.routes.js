@@ -416,7 +416,29 @@ router.post('/incoming', async (req, res) => {
              VALUES (?, ?, ?, 'inbound', ?, ?, FROM_UNIXTIME(?))`,
             [conv.id, account.id, messageId || null, text || null, mediaType || 'text', timestamp || Math.floor(Date.now() / 1000)]
         );
+
         res.json({ success: true });
+
+        // Fire workflow trigger asynchronously after responding
+        const workflowEngine = require('../services/workflowEngine');
+        workflowEngine.trigger('whatsapp_message_received', 'whatsapp_message', conv.id, {
+            from_jid: from,
+            from_phone: phone,
+            from_name: fromName || '',
+            text: text || '',
+            message_text: text || '',
+            media_type: mediaType || 'text',
+            message_id: messageId || '',
+            session_id: sessionId,
+            account_id: account.id,
+            account_label: account.label || '',
+            conversation_id: conv.id,
+            // Aliases for AI prompt convenience
+            name: fromName || phone,
+            phone: phone,
+            message: text || '',
+        }).catch(err => console.error('[WA incoming] Workflow trigger failed:', err.message));
+
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
