@@ -419,16 +419,10 @@ router.post('/incoming', async (req, res) => {
 });
 
 // SSE proxy — pipe nap-whatsapp events to frontend (admin or tenant)
-// Uses built-in http to avoid node-fetch stream incompatibility
 router.get('/internal/session/events/:sessionId', (req, res) => {
     const { sessionId } = req.params;
     const WA_SERVICE_URL = process.env.WHATSAPP_SERVICE_URL || 'http://localhost:5100';
     const WA_SERVICE_KEY = process.env.WHATSAPP_SERVICE_KEY;
-
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.flushHeaders();
 
     const url = new URL(`/session/events/${sessionId}`, WA_SERVICE_URL);
     const lib = url.protocol === 'https:' ? require('https') : require('http');
@@ -436,16 +430,23 @@ router.get('/internal/session/events/:sessionId', (req, res) => {
     const proxyReq = lib.request({
         hostname: url.hostname,
         port: url.port || (url.protocol === 'https:' ? 443 : 80),
-        path: `${url.pathname}${url.search}`,
+        path: url.pathname,
         method: 'GET',
         headers: { 'x-service-key': WA_SERVICE_KEY },
     }, (proxyRes) => {
+        res.writeHead(200, {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+            'X-Accel-Buffering': 'no',   // Disable nginx buffering for SSE
+        });
         proxyRes.pipe(res, { end: true });
     });
 
     proxyReq.on('error', (err) => {
         console.error('[WA SSE proxy] error:', err.message);
-        res.end();
+        if (!res.headersSent) res.status(502).json({ error: 'WA service unavailable' });
+        else res.end();
     });
 
     req.on('close', () => proxyReq.destroy());
