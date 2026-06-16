@@ -10,6 +10,7 @@ const AIBlogService = require('./aiBlog.service');
 const PDFService = require('./pdf.service');
 const DocumentTemplateModel = require('../models/document-template.model');
 const SEOIndexingService = require('./seoIndexing.service');
+const waSvc = require('./whatsapp.service');
 
 class WorkflowEngine {
     constructor() {
@@ -40,7 +41,10 @@ class WorkflowEngine {
             ai_post_blog: this.handleAIPostBlog.bind(this),
 
             // SEO
-            index_url: this.handleIndexUrl.bind(this)
+            index_url: this.handleIndexUrl.bind(this),
+
+            // WhatsApp
+            send_whatsapp: this.handleSendWhatsApp.bind(this)
         };
     }
 
@@ -303,7 +307,7 @@ class WorkflowEngine {
             } else if (node.node_type === 'condition') {
                 branchResult = await this.handleCondition(node, contextData);
                 outputData = contextData;
-            } else if (node.node_type === 'action') {
+            } else if (node.node_type === 'action' || node.node_type === 'whatsapp') {
                 const handler = this.nodeHandlers[node.action_type];
                 if (handler) {
                     outputData = await handler(node, contextData);
@@ -960,6 +964,62 @@ class WorkflowEngine {
                 blog_error: error.message
             };
         }
+    }
+
+    async handleSendWhatsApp(node, contextData) {
+        console.log(`[WorkflowEngine] Executing Send WhatsApp node`);
+
+        let config = node.config || {};
+        if (typeof config === 'string') {
+            try { config = JSON.parse(config); } catch (e) { config = {}; }
+        }
+
+        const accountId = config.account_id;
+        if (!accountId) throw new Error('No WhatsApp account configured');
+
+        // Resolve to_phone with variable substitution
+        let toPhone = config.to_phone || '{{phone}}';
+        for (const [key, value] of Object.entries(contextData)) {
+            toPhone = toPhone.replace(new RegExp(`{{${key}}}`, 'g'), value || '');
+        }
+        toPhone = toPhone.replace(/[^0-9+]/g, '');
+        if (!toPhone) throw new Error('No phone number resolved for WhatsApp message');
+
+        // Resolve message with variable substitution
+        let message = config.message || '';
+        for (const [key, value] of Object.entries(contextData)) {
+            message = message.replace(new RegExp(`{{${key}}}`, 'g'), value || '');
+        }
+        if (!message.trim()) throw new Error('WhatsApp message is empty after variable substitution');
+
+        // Load account from DB
+        const [accounts] = await db.query(
+            'SELECT * FROM whatsapp_accounts WHERE id = ? AND status = "connected"',
+            [accountId]
+        );
+        if (!accounts.length) throw new Error(`WhatsApp account ${accountId} not found or not connected`);
+
+        const account = accounts[0];
+
+        if (account.channel === 'baileys') {
+            if (!account.session_id) throw new Error('WhatsApp account has no session_id');
+            await waSvc.sendText(account.session_id, toPhone, message);
+        } else if (account.channel === 'meta') {
+            if (!account.meta_token || !account.meta_phone_number_id) {
+                throw new Error('WhatsApp Meta account missing token or phone number ID');
+            }
+            await waSvc.sendMetaText(account.meta_token, account.meta_phone_number_id, toPhone, message);
+        } else {
+            throw new Error(`Unknown WhatsApp channel: ${account.channel}`);
+        }
+
+        console.log(`[WorkflowEngine] WhatsApp message sent to ${toPhone} via account ${accountId}`);
+        return {
+            ...contextData,
+            wa_sent: true,
+            wa_to: toPhone,
+            wa_account_id: accountId
+        };
     }
 
     async handleIndexUrl(node, contextData) {
