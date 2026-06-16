@@ -107,11 +107,15 @@ router.get('/accounts/:id/status', async (req, res) => {
 
         if (account.channel === 'baileys' && account.session_id) {
             const live = await waSvc.getSessionStatus(account.session_id);
-            // Sync status to DB if changed
-            if (live.status !== account.status && ['connected', 'disconnected'].includes(live.status)) {
-                await pool.query(`UPDATE whatsapp_accounts SET status = ? WHERE id = ?`, [live.status, account.id]);
+            const statusChanged = live.status !== account.status && ['connected', 'disconnected'].includes(live.status);
+            const phoneChanged = live.phone && live.phone !== account.phone;
+            if (statusChanged || phoneChanged) {
+                await pool.query(
+                    `UPDATE whatsapp_accounts SET status = ?, phone = COALESCE(?, phone) WHERE id = ?`,
+                    [live.status || account.status, live.phone || null, account.id]
+                );
             }
-            return res.json({ ...account, liveStatus: live.status });
+            return res.json({ ...account, status: live.status || account.status, phone: live.phone || account.phone, liveStatus: live.status });
         }
         res.json(account);
     } catch (err) {
