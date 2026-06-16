@@ -301,6 +301,123 @@ router.put('/internal/meta-credentials', async (req, res) => {
     }
 });
 
+// ── Conversations (Napnix accounts) ──────────────────────
+
+// GET /api/admin/whatsapp/accounts/:id/conversations
+router.get('/accounts/:id/conversations', async (req, res) => {
+    try {
+        const [rows] = await pool.query(
+            `SELECT c.*, a.label as account_label
+             FROM whatsapp_conversations c
+             JOIN whatsapp_accounts a ON a.id = c.account_id
+             WHERE c.account_id = ?
+             ORDER BY c.last_message_at DESC LIMIT 100`,
+            [req.params.id]
+        );
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// GET /api/admin/whatsapp/conversations/:id/messages
+router.get('/conversations/:id/messages', async (req, res) => {
+    const { page = 1, limit = 50 } = req.query;
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+    try {
+        const [rows] = await pool.query(
+            `SELECT * FROM whatsapp_messages WHERE conversation_id = ?
+             ORDER BY sent_at DESC LIMIT ? OFFSET ?`,
+            [req.params.id, parseInt(limit), offset]
+        );
+        // Mark as read
+        await pool.query(
+            `UPDATE whatsapp_conversations SET unread_count = 0 WHERE id = ?`,
+            [req.params.id]
+        );
+        res.json(rows.reverse());
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// POST /api/admin/whatsapp/conversations/:id/messages — send reply
+router.post('/conversations/:id/messages', async (req, res) => {
+    const { message } = req.body;
+    if (!message) return res.status(400).json({ error: 'message required' });
+    try {
+        const [convRows] = await pool.query(
+            `SELECT c.*, a.channel, a.session_id, a.meta_token, a.meta_phone_id
+             FROM whatsapp_conversations c JOIN whatsapp_accounts a ON a.id = c.account_id
+             WHERE c.id = ?`,
+            [req.params.id]
+        );
+        if (!convRows.length) return res.status(404).json({ error: 'Conversation not found' });
+        const conv = convRows[0];
+
+        if (conv.channel === 'baileys') {
+            await waSvc.sendText(conv.session_id, conv.contact_jid, message);
+        } else {
+            const plain = waSvc.decryptToken(conv.meta_token);
+            await waSvc.sendMetaText(plain, conv.meta_phone_id, conv.contact_jid.replace('@s.whatsapp.net', ''), message);
+        }
+
+        const [msgResult] = await pool.query(
+            `INSERT INTO whatsapp_messages (conversation_id, account_id, direction, body, media_type)
+             VALUES (?, ?, 'outbound', ?, 'text')`,
+            [conv.id, conv.account_id, message]
+        );
+        await pool.query(
+            `UPDATE whatsapp_conversations SET last_message = ?, last_message_at = NOW() WHERE id = ?`,
+            [message, conv.id]
+        );
+        res.json({ success: true, messageId: msgResult.insertId });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// POST /api/admin/whatsapp/incoming — called by nap-whatsapp on incoming message
+router.post('/incoming', async (req, res) => {
+    const serviceKey = req.headers['x-service-key'];
+    if (serviceKey !== process.env.WHATSAPP_SERVICE_KEY) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const { sessionId, from, fromName, text, mediaType, messageId, timestamp } = req.body;
+    if (!sessionId || !from) return res.status(400).json({ error: 'sessionId, from required' });
+
+    try {
+        const [accounts] = await pool.query(`SELECT * FROM whatsapp_accounts WHERE session_id = ?`, [sessionId]);
+        if (!accounts.length) return res.status(404).json({ error: 'Account not found' });
+        const account = accounts[0];
+        const phone = from.replace('@s.whatsapp.net', '');
+
+        await pool.query(
+            `INSERT INTO whatsapp_conversations (account_id, contact_jid, contact_name, contact_phone, last_message, last_message_at, unread_count)
+             VALUES (?, ?, ?, ?, ?, NOW(), 1)
+             ON DUPLICATE KEY UPDATE
+               contact_name = COALESCE(VALUES(contact_name), contact_name),
+               last_message = VALUES(last_message),
+               last_message_at = NOW(),
+               unread_count = unread_count + 1`,
+            [account.id, from, fromName || null, phone, text || '[media]']
+        );
+
+        const [[conv]] = await pool.query(
+            `SELECT id FROM whatsapp_conversations WHERE account_id = ? AND contact_jid = ?`,
+            [account.id, from]
+        );
+        await pool.query(
+            `INSERT INTO whatsapp_messages (conversation_id, account_id, message_id, direction, body, media_type, sent_at)
+             VALUES (?, ?, ?, 'inbound', ?, ?, FROM_UNIXTIME(?))`,
+            [conv.id, account.id, messageId || null, text || null, mediaType || 'text', timestamp || Math.floor(Date.now() / 1000)]
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // SSE proxy for tenant QR events — nexcrm-backend polls this
 router.get('/internal/session/events/:sessionId', async (req, res) => {
     const { sessionId } = req.params;
