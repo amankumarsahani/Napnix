@@ -418,8 +418,9 @@ router.post('/incoming', async (req, res) => {
     }
 });
 
-// SSE proxy for tenant QR events — nexcrm-backend polls this
-router.get('/internal/session/events/:sessionId', async (req, res) => {
+// SSE proxy — pipe nap-whatsapp events to frontend (admin or tenant)
+// Uses built-in http to avoid node-fetch stream incompatibility
+router.get('/internal/session/events/:sessionId', (req, res) => {
     const { sessionId } = req.params;
     const WA_SERVICE_URL = process.env.WHATSAPP_SERVICE_URL || 'http://localhost:5100';
     const WA_SERVICE_KEY = process.env.WHATSAPP_SERVICE_KEY;
@@ -429,14 +430,26 @@ router.get('/internal/session/events/:sessionId', async (req, res) => {
     res.setHeader('Connection', 'keep-alive');
     res.flushHeaders();
 
-    const { default: fetch } = await import('node-fetch');
-    const upstream = await fetch(`${WA_SERVICE_URL}/session/events/${sessionId}`, {
-        headers: { 'x-service-key': WA_SERVICE_KEY }
+    const url = new URL(`/session/events/${sessionId}`, WA_SERVICE_URL);
+    const lib = url.protocol === 'https:' ? require('https') : require('http');
+
+    const proxyReq = lib.request({
+        hostname: url.hostname,
+        port: url.port || (url.protocol === 'https:' ? 443 : 80),
+        path: `${url.pathname}${url.search}`,
+        method: 'GET',
+        headers: { 'x-service-key': WA_SERVICE_KEY },
+    }, (proxyRes) => {
+        proxyRes.pipe(res, { end: true });
     });
 
-    upstream.body.on('data', chunk => res.write(chunk));
-    upstream.body.on('end', () => res.end());
-    req.on('close', () => upstream.body.destroy());
+    proxyReq.on('error', (err) => {
+        console.error('[WA SSE proxy] error:', err.message);
+        res.end();
+    });
+
+    req.on('close', () => proxyReq.destroy());
+    proxyReq.end();
 });
 
 module.exports = router;
