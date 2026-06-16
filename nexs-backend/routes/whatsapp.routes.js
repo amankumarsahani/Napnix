@@ -1,0 +1,325 @@
+const express = require('express');
+const router = express.Router();
+const { pool } = require('../config/database');
+const { auth, isAdmin } = require('../middleware/auth');
+const waSvc = require('../services/whatsapp.service');
+
+// All routes require admin auth
+router.use(auth, isAdmin);
+
+// ── Account CRUD ──────────────────────────────────────────
+
+// GET /api/admin/whatsapp/accounts
+// List all accounts (napnix + tenant) visible to admin
+router.get('/accounts', async (req, res) => {
+    try {
+        const [rows] = await pool.query(
+            `SELECT id, owner_type, owner_id, channel, label, phone,
+                    session_id, meta_phone_id, meta_waba_id, status, created_at
+             FROM whatsapp_accounts ORDER BY owner_type, owner_id, id`
+        );
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// POST /api/admin/whatsapp/accounts
+// Create account (napnix-owned only via this route)
+router.post('/accounts', async (req, res) => {
+    const { channel, label, ownerType = 'napnix', ownerId = null } = req.body;
+    if (!channel || !label) return res.status(400).json({ error: 'channel, label required' });
+
+    try {
+        const [result] = await pool.query(
+            `INSERT INTO whatsapp_accounts (owner_type, owner_id, channel, label) VALUES (?, ?, ?, ?)`,
+            [ownerType, ownerId, channel, label]
+        );
+        const accountId = result.insertId;
+        const sessionId = waSvc.makeSessionId(ownerType, ownerId, accountId);
+        await pool.query(`UPDATE whatsapp_accounts SET session_id = ? WHERE id = ?`, [sessionId, accountId]);
+
+        res.json({ id: accountId, sessionId, channel, label });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// DELETE /api/admin/whatsapp/accounts/:id
+router.delete('/accounts/:id', async (req, res) => {
+    try {
+        const [rows] = await pool.query(`SELECT * FROM whatsapp_accounts WHERE id = ?`, [req.params.id]);
+        if (!rows.length) return res.status(404).json({ error: 'Account not found' });
+        const account = rows[0];
+
+        if (account.channel === 'baileys' && account.session_id) {
+            try { await waSvc.disconnectSession(account.session_id); } catch (_) {}
+        }
+
+        await pool.query(`DELETE FROM whatsapp_accounts WHERE id = ?`, [req.params.id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ── Baileys: QR connect flow ──────────────────────────────
+
+// POST /api/admin/whatsapp/accounts/:id/connect
+router.post('/accounts/:id/connect', async (req, res) => {
+    try {
+        const [rows] = await pool.query(`SELECT * FROM whatsapp_accounts WHERE id = ?`, [req.params.id]);
+        if (!rows.length) return res.status(404).json({ error: 'Account not found' });
+        const account = rows[0];
+        if (account.channel !== 'baileys') return res.status(400).json({ error: 'Only baileys accounts use QR connect' });
+
+        const result = await waSvc.startSession(account.session_id);
+        await pool.query(`UPDATE whatsapp_accounts SET status = 'pending_qr' WHERE id = ?`, [account.id]);
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// POST /api/admin/whatsapp/accounts/:id/disconnect
+router.post('/accounts/:id/disconnect', async (req, res) => {
+    try {
+        const [rows] = await pool.query(`SELECT * FROM whatsapp_accounts WHERE id = ?`, [req.params.id]);
+        if (!rows.length) return res.status(404).json({ error: 'Account not found' });
+        const account = rows[0];
+
+        if (account.channel === 'baileys' && account.session_id) {
+            await waSvc.disconnectSession(account.session_id);
+        }
+        await pool.query(`UPDATE whatsapp_accounts SET status = 'disconnected', phone = NULL WHERE id = ?`, [account.id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// GET /api/admin/whatsapp/accounts/:id/status
+router.get('/accounts/:id/status', async (req, res) => {
+    try {
+        const [rows] = await pool.query(`SELECT * FROM whatsapp_accounts WHERE id = ?`, [req.params.id]);
+        if (!rows.length) return res.status(404).json({ error: 'Account not found' });
+        const account = rows[0];
+
+        if (account.channel === 'baileys' && account.session_id) {
+            const live = await waSvc.getSessionStatus(account.session_id);
+            // Sync status to DB if changed
+            if (live.status !== account.status && ['connected', 'disconnected'].includes(live.status)) {
+                await pool.query(`UPDATE whatsapp_accounts SET status = ? WHERE id = ?`, [live.status, account.id]);
+            }
+            return res.json({ ...account, liveStatus: live.status });
+        }
+        res.json(account);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ── Meta: Save credentials ────────────────────────────────
+
+// PUT /api/admin/whatsapp/accounts/:id/meta-credentials
+router.put('/accounts/:id/meta-credentials', async (req, res) => {
+    const { token, phoneNumberId, wabaId } = req.body;
+    if (!token || !phoneNumberId) return res.status(400).json({ error: 'token, phoneNumberId required' });
+
+    try {
+        // Test before saving
+        const test = await waSvc.testMetaCredentials(token, phoneNumberId);
+        if (!test.valid) return res.status(400).json({ error: `Invalid Meta credentials: ${test.error}` });
+
+        const encrypted = waSvc.encryptToken(token);
+        await pool.query(
+            `UPDATE whatsapp_accounts SET meta_token = ?, meta_phone_id = ?, meta_waba_id = ?,
+             phone = ?, status = 'connected' WHERE id = ?`,
+            [encrypted, phoneNumberId, wabaId || null, test.phone || null, req.params.id]
+        );
+        res.json({ success: true, phone: test.phone, name: test.name });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ── Webhook: Status callback from nexs-whatsapp ──────────
+// nexs-whatsapp can POST here to update session status in DB
+// Protected by internal service key
+
+// POST /api/admin/whatsapp/webhook/status (internal — nexs-whatsapp calls this)
+router.post('/webhook/status', auth, async (req, res) => {
+    // Override auth — allow service key too (already handled in auth.js via x-api-key)
+    const { sessionId, status, phone } = req.body;
+    if (!sessionId || !status) return res.status(400).json({ error: 'sessionId, status required' });
+
+    try {
+        const update = { status };
+        if (phone) update.phone = phone;
+        await pool.query(
+            `UPDATE whatsapp_accounts SET status = ?, ${phone ? 'phone = ?,' : ''} updated_at = NOW()
+             WHERE session_id = ?`,
+            phone ? [status, phone, sessionId] : [status, sessionId]
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ── Send messages ─────────────────────────────────────────
+
+// POST /api/admin/whatsapp/send/text
+router.post('/send/text', async (req, res) => {
+    const { accountId, to, message } = req.body;
+    if (!accountId || !to || !message) return res.status(400).json({ error: 'accountId, to, message required' });
+
+    try {
+        const [rows] = await pool.query(`SELECT * FROM whatsapp_accounts WHERE id = ?`, [accountId]);
+        if (!rows.length) return res.status(404).json({ error: 'Account not found' });
+        const account = rows[0];
+
+        let result;
+        if (account.channel === 'baileys') {
+            result = await waSvc.sendText(account.session_id, to, message);
+        } else {
+            const plain = waSvc.decryptToken(account.meta_token);
+            result = await waSvc.sendMetaText(plain, account.meta_phone_id, to, message);
+        }
+        res.json({ success: true, result });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// POST /api/admin/whatsapp/send/template (Meta only)
+router.post('/send/template', async (req, res) => {
+    const { accountId, to, templateName, languageCode, components } = req.body;
+    if (!accountId || !to || !templateName) return res.status(400).json({ error: 'accountId, to, templateName required' });
+
+    try {
+        const [rows] = await pool.query(`SELECT * FROM whatsapp_accounts WHERE id = ? AND channel = 'meta'`, [accountId]);
+        if (!rows.length) return res.status(404).json({ error: 'Meta account not found' });
+        const account = rows[0];
+
+        const plain = waSvc.decryptToken(account.meta_token);
+        const result = await waSvc.sendMetaTemplate(plain, account.meta_phone_id, to, templateName, languageCode, components);
+        res.json({ success: true, result });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// GET /api/admin/whatsapp/templates?accountId=X
+router.get('/templates', async (req, res) => {
+    const { accountId } = req.query;
+    if (!accountId) return res.status(400).json({ error: 'accountId required' });
+
+    try {
+        const [rows] = await pool.query(`SELECT * FROM whatsapp_accounts WHERE id = ? AND channel = 'meta'`, [accountId]);
+        if (!rows.length) return res.status(404).json({ error: 'Meta account not found' });
+        const account = rows[0];
+
+        const plain = waSvc.decryptToken(account.meta_token);
+        const result = await waSvc.getMetaTemplates(plain, account.meta_waba_id);
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ── Internal proxy for nexcrm-backend tenant sessions ─────
+
+// POST /api/admin/whatsapp/internal/session/start
+// Called by nexcrm-backend to start a tenant session
+router.post('/internal/session/start', async (req, res) => {
+    const { sessionId } = req.body;
+    if (!sessionId) return res.status(400).json({ error: 'sessionId required' });
+    try {
+        const result = await waSvc.startSession(sessionId);
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.delete('/internal/session/:sessionId', async (req, res) => {
+    try {
+        await waSvc.disconnectSession(req.params.sessionId);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.get('/internal/session/status/:sessionId', async (req, res) => {
+    try {
+        const result = await waSvc.getSessionStatus(req.params.sessionId);
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.post('/internal/send/text', async (req, res) => {
+    const { sessionId, to, message } = req.body;
+    try {
+        const result = await waSvc.sendText(sessionId, to, message);
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// POST /api/admin/whatsapp/internal/meta/send/text — tenant proxy for Meta send
+router.post('/internal/meta/send/text', async (req, res) => {
+    const { accountId, to, message } = req.body;
+    if (!accountId || !to || !message) return res.status(400).json({ error: 'accountId, to, message required' });
+    try {
+        const [rows] = await pool.query(
+            `SELECT * FROM whatsapp_accounts WHERE id = ? AND channel = 'meta'`, [accountId]
+        );
+        if (!rows.length) return res.status(404).json({ error: 'Meta account not found' });
+        const result = await waSvc.sendMetaText(rows[0].meta_token, rows[0].meta_phone_id, to, message);
+        res.json({ success: true, result });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// PUT /api/admin/whatsapp/internal/meta-credentials — tenant saves Meta creds, nexs-backend encrypts
+router.put('/internal/meta-credentials', async (req, res) => {
+    const { token, phoneNumberId, wabaId } = req.body;
+    if (!token || !phoneNumberId) return res.status(400).json({ error: 'token, phoneNumberId required' });
+    try {
+        const test = await waSvc.testMetaCredentials(token, phoneNumberId);
+        if (!test.valid) return res.json({ valid: false, error: test.error });
+        const encryptedToken = waSvc.encryptToken(token);
+        res.json({ valid: true, encryptedToken, phone: test.phone, name: test.name });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// SSE proxy for tenant QR events — nexcrm-backend polls this
+router.get('/internal/session/events/:sessionId', async (req, res) => {
+    const { sessionId } = req.params;
+    const WA_SERVICE_URL = process.env.WHATSAPP_SERVICE_URL || 'http://localhost:5100';
+    const WA_SERVICE_KEY = process.env.WHATSAPP_SERVICE_KEY;
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    const { default: fetch } = await import('node-fetch');
+    const upstream = await fetch(`${WA_SERVICE_URL}/session/events/${sessionId}`, {
+        headers: { 'x-service-key': WA_SERVICE_KEY }
+    });
+
+    upstream.body.on('data', chunk => res.write(chunk));
+    upstream.body.on('end', () => res.end());
+    req.on('close', () => upstream.body.destroy());
+});
+
+module.exports = router;

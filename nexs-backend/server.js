@@ -226,6 +226,9 @@ app.use('/api/admin', require('./routes/admin.routes'));
 app.use('/api/cms', require('./routes/cms.routes')); // Added CMS Routes
 app.use('/api/plans', require('./routes/plan.routes'));
 
+// WhatsApp (admin + internal proxy for tenant sessions)
+app.use('/api/admin/whatsapp', require('./routes/whatsapp.routes'));
+
 // Security Monitoring
 app.get('/api/security/banned-ips', (req, res) => {
     const { getBannedIPs } = require('./middleware/security');
