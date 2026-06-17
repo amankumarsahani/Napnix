@@ -1011,6 +1011,11 @@ class WorkflowEngine {
                 throw new Error('WhatsApp Meta account missing token or phone number ID');
             }
             await waSvc.sendMetaText(account.meta_token, account.meta_phone_number_id, toPhone, message);
+        } else if (account.channel === 'evolution') {
+            if (!account.evolution_api_url || !account.evolution_api_key || !account.session_id) {
+                throw new Error('WhatsApp Evolution account missing api_url, api_key, or instance name');
+            }
+            await waSvc.evolutionSendText(account.evolution_api_url, account.evolution_api_key, account.session_id, toPhone, message);
         } else {
             throw new Error(`Unknown WhatsApp channel: ${account.channel}`);
         }

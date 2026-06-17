@@ -89,6 +89,66 @@ async function testMetaCredentials(token, phoneNumberId) {
     return data;
 }
 
+// ── Evolution API proxy calls ─────────────────────────────
+
+function evolutionClient(apiUrl, apiKey) {
+    return axios.create({
+        baseURL: apiUrl.replace(/\/$/, ''),
+        headers: { 'apikey': apiKey },
+        timeout: 15000,
+    });
+}
+
+async function evolutionCreateInstance(apiUrl, apiKey, instanceName) {
+    const client = evolutionClient(apiUrl, apiKey);
+    const { data } = await client.post('/instance/create', {
+        instanceName,
+        qrcode: true,
+        integration: 'WHATSAPP-BAILEYS',
+    });
+    return data;
+}
+
+async function evolutionGetQR(apiUrl, apiKey, instanceName) {
+    const client = evolutionClient(apiUrl, apiKey);
+    const { data } = await client.get(`/instance/connect/${instanceName}`);
+    return data; // { base64, code }
+}
+
+async function evolutionGetStatus(apiUrl, apiKey, instanceName) {
+    const client = evolutionClient(apiUrl, apiKey);
+    const { data } = await client.get(`/instance/connectionState/${instanceName}`);
+    // data.instance.state: 'open' | 'close' | 'connecting'
+    return data;
+}
+
+async function evolutionDisconnect(apiUrl, apiKey, instanceName) {
+    const client = evolutionClient(apiUrl, apiKey);
+    const { data } = await client.delete(`/instance/logout/${instanceName}`);
+    return data;
+}
+
+async function evolutionSetWebhook(apiUrl, apiKey, instanceName, webhookUrl) {
+    const client = evolutionClient(apiUrl, apiKey);
+    const { data } = await client.post(`/webhook/set/${instanceName}`, {
+        url: webhookUrl,
+        enabled: true,
+        events: ['MESSAGES_UPSERT', 'CONNECTION_UPDATE'],
+        webhook_by_events: false,
+    });
+    return data;
+}
+
+async function evolutionSendText(apiUrl, apiKey, instanceName, to, message) {
+    const client = evolutionClient(apiUrl, apiKey);
+    const number = to.replace(/[^0-9]/g, '');
+    const { data } = await client.post(`/message/sendText/${instanceName}`, {
+        number,
+        text: message,
+    });
+    return data;
+}
+
 module.exports = {
     encryptToken,
     decryptToken,
@@ -102,4 +162,10 @@ module.exports = {
     sendMetaTemplate,
     getMetaTemplates,
     testMetaCredentials,
+    evolutionCreateInstance,
+    evolutionGetQR,
+    evolutionGetStatus,
+    evolutionDisconnect,
+    evolutionSetWebhook,
+    evolutionSendText,
 };

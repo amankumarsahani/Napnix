@@ -71,11 +71,30 @@ router.post('/accounts/:id/connect', async (req, res) => {
         const [rows] = await pool.query(`SELECT * FROM whatsapp_accounts WHERE id = ?`, [req.params.id]);
         if (!rows.length) return res.status(404).json({ error: 'Account not found' });
         const account = rows[0];
-        if (account.channel !== 'baileys') return res.status(400).json({ error: 'Only baileys accounts use QR connect' });
 
-        const result = await waSvc.startSession(account.session_id);
-        await pool.query(`UPDATE whatsapp_accounts SET status = 'pending_qr' WHERE id = ?`, [account.id]);
-        res.json(result);
+        if (account.channel === 'baileys') {
+            const result = await waSvc.startSession(account.session_id);
+            await pool.query(`UPDATE whatsapp_accounts SET status = 'pending_qr' WHERE id = ?`, [account.id]);
+            return res.json(result);
+        }
+
+        if (account.channel === 'evolution') {
+            if (!account.evolution_api_url || !account.evolution_api_key) {
+                return res.status(400).json({ error: 'Set evolution_api_url and evolution_api_key first' });
+            }
+            // Create instance if not exists, then get QR
+            try {
+                await waSvc.evolutionCreateInstance(account.evolution_api_url, account.evolution_api_key, account.session_id);
+            } catch (_) { /* already exists */ }
+            // Set webhook so incoming messages reach nexs-backend
+            const webhookUrl = `${process.env.SERVER_URL || 'http://localhost:5000'}/api/admin/whatsapp/incoming/evolution`;
+            try { await waSvc.evolutionSetWebhook(account.evolution_api_url, account.evolution_api_key, account.session_id, webhookUrl); } catch (_) {}
+            const qrData = await waSvc.evolutionGetQR(account.evolution_api_url, account.evolution_api_key, account.session_id);
+            await pool.query(`UPDATE whatsapp_accounts SET status = 'pending_qr' WHERE id = ?`, [account.id]);
+            return res.json({ ...qrData, sessionId: account.session_id });
+        }
+
+        return res.status(400).json({ error: 'Meta accounts do not use QR connect' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -89,7 +108,9 @@ router.post('/accounts/:id/disconnect', async (req, res) => {
         const account = rows[0];
 
         if (account.channel === 'baileys' && account.session_id) {
-            await waSvc.disconnectSession(account.session_id);
+            try { await waSvc.disconnectSession(account.session_id); } catch (_) {}
+        } else if (account.channel === 'evolution' && account.session_id) {
+            try { await waSvc.evolutionDisconnect(account.evolution_api_url, account.evolution_api_key, account.session_id); } catch (_) {}
         }
         await pool.query(`UPDATE whatsapp_accounts SET status = 'disconnected', phone = NULL WHERE id = ?`, [account.id]);
         res.json({ success: true });
@@ -117,7 +138,42 @@ router.get('/accounts/:id/status', async (req, res) => {
             }
             return res.json({ ...account, status: live.status || account.status, phone: live.phone || account.phone, liveStatus: live.status });
         }
+
+        if (account.channel === 'evolution' && account.session_id && account.evolution_api_url) {
+            try {
+                const live = await waSvc.evolutionGetStatus(account.evolution_api_url, account.evolution_api_key, account.session_id);
+                const state = live?.instance?.state;
+                const mapped = state === 'open' ? 'connected' : state === 'connecting' ? 'pending_qr' : 'disconnected';
+                if (mapped !== account.status) {
+                    await pool.query(`UPDATE whatsapp_accounts SET status = ? WHERE id = ?`, [mapped, account.id]);
+                }
+                return res.json({ ...account, status: mapped, liveStatus: state });
+            } catch (_) {}
+        }
+
         res.json(account);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ── Evolution API: Save credentials ──────────────────────
+
+// PUT /api/admin/whatsapp/accounts/:id/evolution-credentials
+router.put('/accounts/:id/evolution-credentials', async (req, res) => {
+    const { apiUrl, apiKey, instanceName } = req.body;
+    if (!apiUrl || !apiKey || !instanceName) return res.status(400).json({ error: 'apiUrl, apiKey, instanceName required' });
+
+    try {
+        // Test connectivity
+        const client = require('axios').create({ baseURL: apiUrl.replace(/\/$/, ''), headers: { apikey: apiKey }, timeout: 8000 });
+        await client.get('/instance/fetchInstances').catch(() => {}); // just test auth/reachability
+
+        await pool.query(
+            `UPDATE whatsapp_accounts SET evolution_api_url = ?, evolution_api_key = ?, session_id = ? WHERE id = ?`,
+            [apiUrl.replace(/\/$/, ''), apiKey, instanceName, req.params.id]
+        );
+        res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -186,6 +242,8 @@ router.post('/send/text', async (req, res) => {
         let result;
         if (account.channel === 'baileys') {
             result = await waSvc.sendText(account.session_id, to, message);
+        } else if (account.channel === 'evolution') {
+            result = await waSvc.evolutionSendText(account.evolution_api_url, account.evolution_api_key, account.session_id, to, message);
         } else {
             const plain = waSvc.decryptToken(account.meta_token);
             result = await waSvc.sendMetaText(plain, account.meta_phone_id, to, message);
@@ -361,6 +419,9 @@ router.post('/conversations/:id/messages', async (req, res) => {
 
         if (conv.channel === 'baileys') {
             await waSvc.sendText(conv.session_id, conv.contact_jid, message);
+        } else if (conv.channel === 'evolution') {
+            const [accs] = await pool.query(`SELECT evolution_api_url, evolution_api_key FROM whatsapp_accounts WHERE id = ?`, [conv.account_id]);
+            await waSvc.evolutionSendText(accs[0].evolution_api_url, accs[0].evolution_api_key, conv.session_id, conv.contact_jid.replace('@s.whatsapp.net', ''), message);
         } else {
             const plain = waSvc.decryptToken(conv.meta_token);
             await waSvc.sendMetaText(plain, conv.meta_phone_id, conv.contact_jid.replace('@s.whatsapp.net', ''), message);
@@ -438,6 +499,83 @@ router.post('/incoming', async (req, res) => {
             phone: phone,
             message: text || '',
         }).catch(err => console.error('[WA incoming] Workflow trigger failed:', err.message));
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// POST /api/admin/whatsapp/incoming/evolution — Evolution API webhook
+// Evolution API posts events here (no service key — secured by obscurity + optional API key check)
+router.post('/incoming/evolution', async (req, res) => {
+    const body = req.body;
+    // Only handle incoming messages
+    if (body.event !== 'messages.upsert') return res.json({ success: true });
+    const data = body.data;
+    if (!data || data.key?.fromMe) return res.json({ success: true });
+
+    const instanceName = body.instance;
+    const from = data.key?.remoteJid || '';
+    const fromName = data.pushName || '';
+    const messageId = data.key?.id || '';
+    const timestamp = data.messageTimestamp || Math.floor(Date.now() / 1000);
+    const text = data.message?.conversation
+        || data.message?.extendedTextMessage?.text
+        || data.message?.imageMessage?.caption
+        || data.message?.videoMessage?.caption || '';
+    const mediaType = data.message?.imageMessage ? 'image'
+        : data.message?.videoMessage ? 'video'
+        : data.message?.audioMessage ? 'audio'
+        : data.message?.documentMessage ? 'document' : 'text';
+
+    if (!from || from.endsWith('@g.us')) return res.json({ success: true }); // skip groups
+
+    try {
+        const [accounts] = await pool.query(`SELECT * FROM whatsapp_accounts WHERE session_id = ? AND channel = 'evolution'`, [instanceName]);
+        if (!accounts.length) return res.status(404).json({ error: 'Account not found' });
+        const account = accounts[0];
+        const phone = from.replace('@s.whatsapp.net', '');
+
+        await pool.query(
+            `INSERT INTO whatsapp_conversations (account_id, contact_jid, contact_name, contact_phone, last_message, last_message_at, unread_count)
+             VALUES (?, ?, ?, ?, ?, NOW(), 1)
+             ON DUPLICATE KEY UPDATE
+               contact_name = COALESCE(VALUES(contact_name), contact_name),
+               last_message = VALUES(last_message),
+               last_message_at = NOW(),
+               unread_count = unread_count + 1`,
+            [account.id, from, fromName || null, phone, text || '[media]']
+        );
+
+        const [[conv]] = await pool.query(
+            `SELECT id FROM whatsapp_conversations WHERE account_id = ? AND contact_jid = ?`,
+            [account.id, from]
+        );
+        await pool.query(
+            `INSERT INTO whatsapp_messages (conversation_id, account_id, message_id, direction, body, media_type, sent_at)
+             VALUES (?, ?, ?, 'inbound', ?, ?, FROM_UNIXTIME(?))`,
+            [conv.id, account.id, messageId || null, text || null, mediaType, timestamp]
+        );
+
+        res.json({ success: true });
+
+        const workflowEngine = require('../services/workflowEngine');
+        workflowEngine.trigger('whatsapp_message_received', 'whatsapp_message', conv.id, {
+            from_jid: from,
+            from_phone: phone,
+            from_name: fromName || '',
+            text: text || '',
+            message_text: text || '',
+            media_type: mediaType,
+            message_id: messageId || '',
+            session_id: instanceName,
+            account_id: account.id,
+            account_label: account.label || '',
+            conversation_id: conv.id,
+            name: fromName || phone,
+            phone,
+            message: text || '',
+        }).catch(err => console.error('[WA Evolution incoming] Workflow trigger failed:', err.message));
 
     } catch (err) {
         res.status(500).json({ error: err.message });
