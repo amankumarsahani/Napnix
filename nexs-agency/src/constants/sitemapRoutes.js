@@ -44,15 +44,6 @@ export const BLOG_PATHS = [
     '/blog/why-business-needs-pwa',
 ];
 
-export const PORTFOLIO_PATHS = [
-    '/portfolio/ecommerce-platform',
-    '/portfolio/food-delivery-app',
-    '/portfolio/healthcare-dashboard',
-    '/portfolio/real-estate-portal',
-    '/portfolio/fitness-tracker',
-    '/portfolio/inventory-management',
-];
-
 /** @returns {{ path: string, priority: string, changefreq: string }[]} */
 export function getSitemapEntries() {
     const today = new Date().toISOString().slice(0, 10);
@@ -61,15 +52,16 @@ export function getSitemapEntries() {
         { path: '/', priority: '1.0', changefreq: 'weekly' },
         { path: '/services', priority: '0.9', changefreq: 'weekly' },
         { path: '/about', priority: '0.8', changefreq: 'monthly' },
-        { path: '/portfolio', priority: '0.9', changefreq: 'weekly' },
         { path: '/contact', priority: '0.8', changefreq: 'monthly' },
         { path: '/blog', priority: '0.8', changefreq: 'daily' },
         { path: '/faq', priority: '0.8', changefreq: 'weekly' },
         { path: '/napcrm', priority: '0.9', changefreq: 'weekly' },
         { path: '/napcrm/pricing', priority: '0.9', changefreq: 'weekly' },
         { path: '/napmail', priority: '0.9', changefreq: 'weekly' },
-        { path: '/privacy-policy', priority: '0.3', changefreq: 'yearly' },
-        { path: '/terms', priority: '0.3', changefreq: 'yearly' },
+        { path: '/privacy-policy', priority: '0.4', changefreq: 'yearly' },
+        { path: '/terms', priority: '0.4', changefreq: 'yearly' },
+        { path: '/cookie-policy', priority: '0.3', changefreq: 'yearly' },
+        { path: '/security', priority: '0.4', changefreq: 'yearly' },
     ];
 
     const cities = CITY_SLUGS.map((slug) => ({
@@ -96,13 +88,7 @@ export function getSitemapEntries() {
         changefreq: 'monthly',
     }));
 
-    const portfolio = PORTFOLIO_PATHS.map((path) => ({
-        path,
-        priority: '0.7',
-        changefreq: 'monthly',
-    }));
-
-    return [...core, ...cities, ...industries, ...services, ...blogs, ...portfolio].map((entry) => ({
+    return [...core, ...cities, ...industries, ...services, ...blogs].map((entry) => ({
         ...entry,
         lastmod: today,
     }));

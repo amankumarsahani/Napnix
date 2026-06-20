@@ -236,7 +236,8 @@ const ContactPage = () => {
                                     <div>
                                         <h3 className="font-bold text-xl mb-1">Call Us</h3>
                                         <p className="text-blue-100 opacity-80">+91 7009614671</p>
-                                        <p className="text-blue-100 opacity-80">Mon-Fri, 9am - 6pm IST</p>
+                                        <p className="text-blue-100 opacity-80">24/7 support for active clients</p>
+                                        <p className="text-blue-100 opacity-80 text-sm mt-1">New enquiries typically answered within 24 hours</p>
                                     </div>
                                 </div>
 

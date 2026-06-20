@@ -209,8 +209,8 @@ const EnquiryPopup = memo(function EnquiryPopup() {
                 {/* Main Card */}
                 <div className="relative bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-indigo-500/30">
                     {/* Glow effect */}
-                    <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#F8FAFC]0/30 rounded-full blur-3xl"></div>
-                    <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-[#F8FAFC]0/30 rounded-full blur-3xl"></div>
+                    <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#F8FAFC]/30 rounded-full blur-3xl"></div>
+                    <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-[#F8FAFC]/30 rounded-full blur-3xl"></div>
 
                     {/* Close button */}
                     <button
@@ -343,7 +343,7 @@ const EnquiryPopup = memo(function EnquiryPopup() {
                             </div>
                             <div className="flex items-center">
                                 <RiStarLine className="mr-1 text-yellow-400" />
-                                150+ Projects
+                                10+ Projects
                             </div>
                         </div>
                     </div>

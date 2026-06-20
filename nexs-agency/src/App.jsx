@@ -15,7 +15,6 @@ import PublicLayout from './components/PublicLayout';
 // Below-fold landing page sections - lazy loaded
 const Services = lazy(() => import('./components/Services'));
 const About = lazy(() => import('./components/About'));
-const Portfolio = lazy(() => import('./components/Portfolio'));
 const Technologies = lazy(() => import('./components/Technologies'));
 const Testimonials = lazy(() => import('./components/Testimonials'));
 const Blog = lazy(() => import('./components/Blog'));
@@ -26,7 +25,6 @@ const Contact = lazy(() => import('./components/Contact'));
 // Lazy load pages (route-based splitting - these actually benefit from it)
 const ServicesPage = lazy(() => import('./pages/ServicesPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
-const PortfolioPage = lazy(() => import('./pages/PortfolioPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
 const NapCRMLandingPage = lazy(() => import('./pages/NapCRMLandingPage'));
@@ -34,6 +32,8 @@ const NapMailLandingPage = lazy(() => import('./pages/NapMailLandingPage'));
 const CRMPricingPage = lazy(() => import('./pages/CRMPricingPage'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('./pages/TermsOfService'));
+const CookiePolicy = lazy(() => import('./pages/CookiePolicy'));
+const SecurityPolicy = lazy(() => import('./pages/SecurityPolicy'));
 const FAQPage = lazy(() => import('./pages/FAQPage'));
 const CityLandingPage = lazy(() => import('./pages/seo/CityLandingPage'));
 const IndustryLandingPage = lazy(() => import('./pages/IndustryLandingPage'));
@@ -48,7 +48,6 @@ const CostOfCustomCrm = lazy(() => import('./pages/blog/CostOfCustomCrm'));
 const MonolithToMicroservices = lazy(() => import('./pages/blog/MonolithToMicroservices'));
 const PwaBenefits = lazy(() => import('./pages/blog/PwaBenefits'));
 const BlogArticle = lazy(() => import('./pages/BlogArticle'));
-const ProjectDetail = lazy(() => import('./pages/ProjectDetail'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const AdminBackupsPage = lazy(() => import('./pages/AdminBackupsPage'));
 
@@ -180,12 +179,6 @@ const LandingPage = memo(function LandingPage() {
 
       <ScrollReveal>
         <Suspense fallback={null}>
-          <Portfolio />
-        </Suspense>
-      </ScrollReveal>
-
-      <ScrollReveal>
-        <Suspense fallback={null}>
           <Technologies />
         </Suspense>
       </ScrollReveal>
@@ -239,7 +232,8 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/portfolio" element={<PortfolioPage />} />
+          <Route path="/portfolio" element={<Navigate to="/" replace />} />
+          <Route path="/portfolio/:slug" element={<Navigate to="/" replace />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/napcrm" element={<NapCRMLandingPage />} />
@@ -253,6 +247,8 @@ function App() {
           <Route path="/admin/backups" element={<ProtectedRoute><AdminBackupsPage /></ProtectedRoute>} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/cookie-policy" element={<CookiePolicy />} />
+          <Route path="/security" element={<SecurityPolicy />} />
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/software-development-company/:city" element={<CityLandingPage />} />
           <Route path="/services/custom-web-development" element={<CustomWebDevelopment />} />
@@ -266,7 +262,6 @@ function App() {
           <Route path="/blog/monolith-to-microservices" element={<MonolithToMicroservices />} />
           <Route path="/blog/why-business-needs-pwa" element={<PwaBenefits />} />
           <Route path="/blog/:slug" element={<BlogArticle />} />
-          <Route path="/portfolio/:slug" element={<ProjectDetail />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

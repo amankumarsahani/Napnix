@@ -24,6 +24,8 @@ import {
     RiArrowDownSLine
 } from 'react-icons/ri';
 
+import { COMPANY_STATS } from '../constants/companyStats';
+
 const industries = [
     { name: "Digital Agencies", icon: "ri-briefcase-4-line", color: "text-[#2563EB]", bg: "bg-[#F8FAFC]", slug: "services" },
     { name: "Freelancers", icon: "ri-macbook-line", color: "text-[#2563EB]", bg: "bg-[#F8FAFC]", slug: "general" },
@@ -43,10 +45,10 @@ const tiers = crmTiers.map((tier, i) => {
 const features = crmFeatures;
 
 const trustStats = [
-    { value: '500+', label: 'Active Users', icon: RiGroupLine },
-    { value: '99.9%', label: 'Uptime', icon: RiTimeLine },
-    { value: '4.8', label: 'Rating', icon: RiStarFill, isStar: true },
-    { value: '50+', label: 'Integrations', icon: RiLinksLine },
+    { value: COMPANY_STATS.clients, label: 'Teams Onboarded', icon: RiGroupLine },
+    { value: '99.9%', label: 'Uptime Target', icon: RiTimeLine },
+    { value: COMPANY_STATS.support, label: 'Support', icon: RiStarFill, isStar: false },
+    { value: '14', label: 'Industries', icon: RiLinksLine },
 ];
 
 const howItWorks = [
@@ -593,7 +595,7 @@ export default function NapCRMLandingPage() {
                                 Ready to transform your agency?
                             </h2>
                             <p className="text-xl text-slate-400 mb-10 max-w-2xl mx-auto">
-                                Join 2,000+ agencies using NapCRM to scale their operations.
+                                Built for agencies and growing teams who need CRM, pipelines, and client workflows in one place.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <button onClick={() => document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' })} className="px-10 py-5 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-all shadow-lg">

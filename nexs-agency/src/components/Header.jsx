@@ -42,7 +42,6 @@ const navItems = [
     { label: 'Pricing', path: '/napmail#pricing' },
   ]},
   { label: 'About', path: '/about' },
-  { label: 'Portfolio', path: '/portfolio' },
   { label: 'Blog', path: '/blog' },
   { label: 'FAQ', path: '/faq' },
   { label: 'Contact', path: '/contact' },

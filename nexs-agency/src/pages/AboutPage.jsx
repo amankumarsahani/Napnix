@@ -15,6 +15,7 @@ import ReadingProgress from '../components/ui/ReadingProgress';
 import { SITE_URL, LOGO_URL, siteConfig } from '../constants/siteConfig';
 import { withBrandKeywords } from '../constants/seoConfig';
 import Icon from '../components/ui/Icon';
+import { COMPANY_STATS } from '../constants/companyStats';
 import { RiArrowRightLine } from 'react-icons/ri';
 
 const FADE_IN_SMOOTH = { duration: 0.7, y: 30, ease: [0.21, 0.47, 0.32, 0.98] };
@@ -31,9 +32,9 @@ const AboutPage = () => {
 
   const stats = [
     { label: "Years of Innovation", value: "5+" },
-    { label: "Projects Delivered", value: "150+" },
-    { label: "Global Clients", value: "50+" },
-    { label: "Client Retention", value: "98%" }
+    { label: "Projects Delivered", value: COMPANY_STATS.projects },
+    { label: "Global Clients", value: COMPANY_STATS.clients },
+    { label: "Client Retention", value: COMPANY_STATS.successRate }
   ];
 
   const values = [
@@ -67,7 +68,7 @@ const AboutPage = () => {
     <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white overflow-hidden">
       <Helmet>
         <title>About Napnix – Global Software Agency</title>
-        <meta name="description" content="Discover Napnix, a software development agency delivering web, mobile, AI, cloud, and enterprise solutions globally. Founded in 2023, serving startups and enterprises across India, North America, Europe, and Asia-Pacific." />
+        <meta name="description" content="Discover Napnix, a software development agency delivering web, mobile, AI, cloud, and enterprise solutions globally. Founded in 2020, serving startups and enterprises across India, North America, Europe, and Asia-Pacific." />
         <meta name="keywords" content={withBrandKeywords('global software agency, international software solutions, AI software development, about napnix, software company india, tech experts usa uk, digital transformation partners')} />
         <link rel="canonical" href={`${SITE_URL}/about`} />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
@@ -94,7 +95,7 @@ const AboutPage = () => {
             "description": "Top software development agency delivering web, mobile, AI, cloud, and enterprise solutions to clients globally.",
             "email": siteConfig.email.info,
             "telephone": "+917009614671, +917009108646",
-            "foundingDate": "2023",
+            "foundingDate": "2020",
             "address": {
                 "@type": "PostalAddress",
                 "addressLocality": "Mohali",

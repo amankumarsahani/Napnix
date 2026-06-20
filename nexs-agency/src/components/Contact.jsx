@@ -113,7 +113,7 @@ const Contact = memo(function Contact() {
       icon: "ri-phone-line",
       title: "Call Us",
       details: "+91 7009614671, +91 7009108646",
-      description: "Mon-Fri from 8am to 10pm"
+      description: "24/7 support for active client engagements"
     },
     {
       icon: "ri-map-pin-line",

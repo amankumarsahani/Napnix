@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { COMPANY_STATS } from '../constants/companyStats';
 
 const clients = [
     { name: 'TechCorp', initial: 'TC' },
@@ -40,7 +41,7 @@ export default function ClientLogos({ className = '', title = 'Trusted by Indust
 
                 <div className="text-center mt-8">
                     <p className="text-sm text-slate-400">
-                        Join 50+ companies transforming their digital presence
+                        Join {COMPANY_STATS.clients} companies working with Napnix
                     </p>
                 </div>
             </div>

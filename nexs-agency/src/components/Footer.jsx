@@ -26,7 +26,6 @@ const Footer = memo(function Footer() {
     ],
     Company: [
       { name: 'About Us', href: '/about' },
-      { name: 'Portfolio', href: '/portfolio' },
       { name: 'FAQ', href: '/faq' },
       { name: 'Contact', href: '/contact' },
       { name: 'Blog', href: '/blog' },
@@ -129,11 +128,17 @@ const Footer = memo(function Footer() {
               <Link to="/privacy-policy" className="text-slate-400 hover:text-white text-sm transition-colors">
                 Privacy Policy
               </Link>
-              <Link to="/faq" className="text-slate-400 hover:text-white text-sm transition-colors">
-                FAQ
-              </Link>
               <Link to="/terms" className="text-slate-400 hover:text-white text-sm transition-colors">
                 Terms of Service
+              </Link>
+              <Link to="/cookie-policy" className="text-slate-400 hover:text-white text-sm transition-colors">
+                Cookie Policy
+              </Link>
+              <Link to="/security" className="text-slate-400 hover:text-white text-sm transition-colors">
+                Security
+              </Link>
+              <Link to="/faq" className="text-slate-400 hover:text-white text-sm transition-colors">
+                FAQ
               </Link>
             </div>
           </div>

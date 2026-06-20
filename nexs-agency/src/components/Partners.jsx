@@ -1,5 +1,7 @@
-import { memo } from 'react'
+import { memo } from 'react';
+import { Link } from 'react-router-dom';
 import Icon from './ui/Icon';
+import { COMPANY_STATS } from '../constants/companyStats';
 import { RiArrowRightLine, RiPhoneLine, RiShakeHandsLine, RiVerifiedBadgeLine } from 'react-icons/ri';
 
 const Partners = memo(function Partners() {
@@ -26,7 +28,7 @@ const Partners = memo(function Partners() {
             { icon: "ri-team-line", number: "50+", label: "Technology Partners", bgColor: "bg-[#2563EB]/10", textColor: "text-[#2563EB]" },
             { icon: "ri-award-line", number: "30+", label: "Certifications", bgColor: "bg-[#D97706]/10", textColor: "text-[#D97706]" },
             { icon: "ri-cloud-line", number: "12+", label: "Cloud Platforms", bgColor: "bg-emerald-50", textColor: "text-emerald-600" },
-            { icon: "ri-shield-check-line", number: "100%", label: "Success Rate", bgColor: "bg-orange-50", textColor: "text-orange-600" }
+            { icon: "ri-shield-check-line", number: COMPANY_STATS.successRate, label: "Success Rate", bgColor: "bg-orange-50", textColor: "text-orange-600" }
           ].map((stat, index) => (
             <div key={index} className="group text-center">
               <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 group-hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5">
@@ -225,24 +227,24 @@ const Partners = memo(function Partners() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-              <a
+              <Link
+                to="/contact"
                 className="bg-white text-[#4F46E5] px-8 py-4 rounded-xl font-semibold hover:bg-[#F8FAFC] transition-all duration-300 cursor-pointer"
-                href="#contact"
               >
                 <span className="flex items-center justify-center">
                   Start Your Project
                   <RiArrowRightLine className="ml-2" />
                 </span>
-              </a>
-              <a
+              </Link>
+              <Link
+                to="/contact?intent=demo"
                 className="border border-white/30 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 cursor-pointer"
-                href="#contact"
               >
                 <span className="flex items-center justify-center">
                   <RiPhoneLine className="mr-2" />
                   Schedule Call
                 </span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

@@ -9,7 +9,7 @@ export default function TrustBadges({ className = '' }) {
         {
             icon: 'ri-lock-line',
             title: 'Data Protected',
-            subtitle: 'GDPR Compliant'
+            subtitle: 'Privacy & cookie policies'
         },
         {
             icon: 'ri-customer-service-2-line',
@@ -18,8 +18,8 @@ export default function TrustBadges({ className = '' }) {
         },
         {
             icon: 'ri-verified-badge-line',
-            title: 'ISO Certified',
-            subtitle: 'Quality assured'
+            title: 'Security Practices',
+            subtitle: 'See Security Policy'
         }
     ];
 

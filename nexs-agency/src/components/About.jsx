@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, memo } from 'react'
 import Icon from './ui/Icon';
+import { COMPANY_STATS } from '../constants/companyStats';
 
 const useCountUp = (target, duration = 2000, shouldAnimate = false) => {
   const [count, setCount] = useState(0)
@@ -44,10 +45,10 @@ const StatNumber = memo(function StatNumber({ stat, isVisible }) {
 })
 
 const stats = [
-  { number: "150+", label: "Projects Completed", icon: "ri-bar-chart-box-line" },
-  { number: "80+", label: "Happy Clients", icon: "ri-heart-line" },
-  { number: "98%", label: "Success Rate", icon: "ri-flashlight-line" },
-  { number: "24/7", label: "Support Available", icon: "ri-customer-service-line" }
+  { number: COMPANY_STATS.projects, label: "Projects Completed", icon: "ri-bar-chart-box-line" },
+  { number: COMPANY_STATS.clients, label: "Happy Clients", icon: "ri-heart-line" },
+  { number: COMPANY_STATS.successRate, label: "Success Rate", icon: "ri-flashlight-line" },
+  { number: COMPANY_STATS.support, label: "Support Available", icon: "ri-customer-service-line" }
 ];
 
 const features = [
@@ -135,7 +136,7 @@ const About = memo(function About() {
 
               <div className="absolute -top-4 -left-4 bg-white rounded-xl p-4 shadow-xl border border-slate-200">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-[#4F46E5]">150+</div>
+                  <div className="text-2xl font-bold text-[#4F46E5]">{COMPANY_STATS.projects}</div>
                   <div className="text-xs text-slate-600 font-medium">Projects Done</div>
                 </div>
               </div>

@@ -135,6 +135,7 @@ const Services = memo(function Services() {
 
   const goToSlide = (index) => {
     setCurrentSlide(index)
+    if (!isPaused) startAutoSlide()
   }
 
   const servicesPerSlide = 3
@@ -166,12 +167,17 @@ const Services = memo(function Services() {
             <div
               className="flex transition-transform duration-700 ease-in-out"
               style={{
-                transform: `translateX(-${currentSlide * 100}%)`
+                width: `${totalSlides * 100}%`,
+                transform: `translateX(-${(currentSlide * 100) / totalSlides}%)`,
               }}
             >
               {Array.from({ length: totalSlides }).map((_, slideIndex) => (
-                <div key={slideIndex} className="w-full flex-shrink-0">
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8 px-4">
+                <div
+                  key={slideIndex}
+                  className="flex-shrink-0 px-2 sm:px-4"
+                  style={{ width: `${100 / totalSlides}%` }}
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
                     {services.slice(slideIndex * servicesPerSlide, (slideIndex + 1) * servicesPerSlide).map((service, index) => {
                       const actualIndex = slideIndex * servicesPerSlide + index;
                       return (
@@ -238,7 +244,7 @@ const Services = memo(function Services() {
           <button
             onClick={() => goToSlide(currentSlide === 0 ? totalSlides - 1 : currentSlide - 1)}
             aria-label="Previous service"
-            className="absolute -left-16 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center group lg:block hidden"
+            className="absolute left-0 sm:left-2 top-1/2 z-10 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hidden lg:flex items-center justify-center group"
           >
             <RiArrowLeftLine className="text-xl text-slate-700 group-hover:text-[#2563EB] transition-colors" />
           </button>
@@ -246,7 +252,7 @@ const Services = memo(function Services() {
           <button
             onClick={() => goToSlide(currentSlide === totalSlides - 1 ? 0 : currentSlide + 1)}
             aria-label="Next service"
-            className="absolute -right-16 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center group lg:block hidden"
+            className="absolute right-0 sm:right-2 top-1/2 z-10 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hidden lg:flex items-center justify-center group"
           >
             <RiArrowRightLine className="text-xl text-slate-700 group-hover:text-[#2563EB] transition-colors" />
           </button>

@@ -11,6 +11,8 @@ import { withBrandKeywords } from '../../constants/seoConfig';
 import Icon from '../../components/ui/Icon';
 import { RiArrowRightLine, RiBriefcase4Line, RiCheckLine, RiGlobalLine, RiMapPinLine, RiShieldCheckLine, RiTimeLine } from 'react-icons/ri';
 
+import { DEFAULT_CITY_STATS, COMPANY_STATS } from '../../constants/companyStats';
+
 // City data with SEO content & Timezones
 const cityData = {
     'london': {
@@ -25,12 +27,7 @@ const cityData = {
         image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 51.5074, lng: -0.1278 },
         color: 'blue',
-        stats: [
-            { label: 'UK Clients served', value: '50+' },
-            { label: 'Projects Delivered', value: '120+' },
-            { label: 'Years in London', value: '4+' },
-            { label: 'Support', value: '24/7' }
-        ],
+        stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: "Why London Enterprises Choose Napnix",
             reasons: [
@@ -53,12 +50,7 @@ const cityData = {
         image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 40.7128, lng: -74.0060 },
         color: 'indigo',
-        stats: [
-            { label: 'US Clients served', value: '80+' },
-            { label: 'Projects Delivered', value: '200+' },
-            { label: 'Years in USA', value: '5+' },
-            { label: 'Support', value: '24/7' }
-        ],
+        stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: "Why NYC Businesses Partner with Napnix",
             reasons: [
@@ -81,12 +73,7 @@ const cityData = {
         image: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 12.9716, lng: 77.5946 },
         color: 'orange',
-        stats: [
-            { label: 'Startups Scaled', value: '40+' },
-            { label: 'Projects Delivered', value: '150+' },
-            { label: 'Expert Developers', value: '50+' },
-            { label: 'Support', value: '24/7' }
-        ],
+        stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: "Why Bangalore Startups Choose Napnix",
             reasons: [
@@ -109,12 +96,7 @@ const cityData = {
         image: 'https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 25.2048, lng: 55.2708 },
         color: 'emerald',
-        stats: [
-            { label: 'UAE Clients', value: '30+' },
-            { label: 'Govt Projects', value: '5+' },
-            { label: 'Years in MENA', value: '3+' },
-            { label: 'Support', value: '24/7' }
-        ],
+        stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: "Why Dubai Enterprises Trust Napnix",
             reasons: [
@@ -137,12 +119,7 @@ const cityData = {
         image: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: -33.8688, lng: 151.2093 },
         color: 'cyan',
-        stats: [
-            { label: 'Aus Clients', value: '25+' },
-            { label: 'Projects Delivered', value: '60+' },
-            { label: 'Years in Region', value: '4+' },
-            { label: 'Support', value: '24/7' }
-        ],
+        stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: "Why Sydney Businesses Choose Napnix",
             reasons: [
@@ -165,12 +142,7 @@ const cityData = {
         image: 'https://images.unsplash.com/photo-1517090504332-eac35b2cc8ab?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 43.65107, lng: -79.347015 },
         color: 'red',
-        stats: [
-            { label: 'Canadian Clients', value: '35+' },
-            { label: 'Projects Delivered', value: '90+' },
-            { label: 'Years in Canada', value: '3+' },
-            { label: 'Support', value: '24/7' }
-        ],
+        stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: "Why Toronto Innovators Partner with Napnix",
             reasons: [
@@ -193,12 +165,7 @@ const cityData = {
         image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 30.6954, lng: 76.7289 },
         color: 'blue',
-        stats: [
-            { label: 'Local Projects', value: '100+' },
-            { label: 'Expert Developers', value: '50+' },
-            { label: 'Founded', value: '2023' },
-            { label: 'Support', value: '24/7' }
-        ],
+        stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: 'Why Mohali Businesses Choose Napnix',
             reasons: [
@@ -221,12 +188,7 @@ const cityData = {
         image: 'https://images.unsplash.com/photo-1587477592983-9ef9a1554714?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 30.7333, lng: 76.7794 },
         color: 'emerald',
-        stats: [
-            { label: 'Tricity Clients', value: '60+' },
-            { label: 'Products Shipped', value: '150+' },
-            { label: 'Industries Served', value: '12+' },
-            { label: 'Support', value: '24/7' }
-        ],
+        stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: 'Why Chandigarh Teams Work with Napnix',
             reasons: [
@@ -434,7 +396,7 @@ const CityLandingPage = () => {
                             >
                                 <Link
                                     to="/contact"
-                                    className="px-8 py-4 bg-blue-600 rounded-full font-bold text-white hover:bg-[#F8FAFC]0 transition-all shadow-lg hover:shadow-lg flex items-center gap-2 group"
+                                    className="px-8 py-4 bg-blue-600 rounded-full font-bold text-white hover:bg-blue-700 transition-all shadow-lg hover:shadow-lg flex items-center gap-2 group"
                                 >
                                     Start Project in {data.city} <RiArrowRightLine className="group-hover:translate-x-1 transition-transform" />
                                 </Link>
@@ -522,22 +484,22 @@ const CityLandingPage = () => {
                                             </div>
                                             <div>
                                                 <p className="font-bold text-white text-lg">Global Standards</p>
-                                                <p className="text-sm text-blue-200">ISO 27001 Certified Processes</p>
+                                                <p className="text-sm text-blue-200">Security-first delivery — see our Security Policy</p>
                                             </div>
                                         </div>
                                         <div className="h-px bg-white/10 my-4"></div>
                                         <div className="flex justify-between items-center">
                                             <div className="text-center">
-                                                <p className="text-2xl font-bold text-white">100%</p>
-                                                <p className="text-[10px] uppercase tracking-wider text-slate-300">On-Time</p>
+                                                <p className="text-2xl font-bold text-white">{COMPANY_STATS.successRate}</p>
+                                                <p className="text-[10px] uppercase tracking-wider text-slate-300">Success Rate</p>
                                             </div>
                                             <div className="text-center">
-                                                <p className="text-2xl font-bold text-white">4.9</p>
-                                                <p className="text-[10px] uppercase tracking-wider text-slate-300">Client Rating</p>
+                                                <p className="text-2xl font-bold text-white">{COMPANY_STATS.projects}</p>
+                                                <p className="text-[10px] uppercase tracking-wider text-slate-300">Projects</p>
                                             </div>
                                             <div className="text-center">
-                                                <p className="text-2xl font-bold text-white">24h</p>
-                                                <p className="text-[10px] uppercase tracking-wider text-slate-300">Turnaround</p>
+                                                <p className="text-2xl font-bold text-white">{COMPANY_STATS.support}</p>
+                                                <p className="text-[10px] uppercase tracking-wider text-slate-300">Support</p>
                                             </div>
                                         </div>
                                     </div>
@@ -593,7 +555,7 @@ const CityLandingPage = () => {
                     <div className="flex flex-col sm:flex-row gap-6 justify-center">
                         <Link
                             to="/contact"
-                            className="inline-flex items-center justify-center gap-4 px-10 py-5 bg-blue-600 text-white rounded-full text-lg font-bold hover:bg-[#F8FAFC]0 shadow-lg hover:shadow-lg transition-all duration-300 "
+                            className="inline-flex items-center justify-center gap-4 px-10 py-5 bg-blue-600 text-white rounded-full text-lg font-bold hover:bg-blue-700 shadow-lg hover:shadow-lg transition-all duration-300 "
                         >
                             Start Your Project
                             <RiArrowRightLine />

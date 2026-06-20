@@ -6,35 +6,35 @@ const milestones = [
     {
         year: '2020',
         title: 'Founded',
-        description: 'Napnix was born with a vision to deliver exceptional software.',
+        description: 'Napnix started as a small engineering team focused on practical software delivery.',
         icon: 'ri-arrow-right-up-line',
         color: 'blue'
     },
     {
         year: '2021',
-        title: 'First Major Client',
-        description: 'Secured our first enterprise client in the US market.',
-        icon: 'ri-handshake-line',
+        title: 'First Client Projects',
+        description: 'Delivered initial web and mobile builds for early startup and SME clients.',
+        icon: 'ri-shake-hands-line',
         color: 'purple'
     },
     {
         year: '2022',
-        title: '50+ Projects',
-        description: 'Completed 50 successful projects across 8 countries.',
-        icon: 'ri-award-line',
+        title: 'Product Foundations',
+        description: 'Began building internal CRM and email tooling that later became NapCRM and NapMail.',
+        icon: 'ri-stack-line',
         color: 'emerald'
     },
     {
         year: '2023',
-        title: 'AI Integration',
-        description: 'Launched AI/ML solutions division, expanding service offerings.',
+        title: 'NapCRM Launch',
+        description: 'Released NapCRM for agencies and businesses needing pipeline and customer management.',
         icon: 'ri-brain-line',
         color: 'orange'
     },
     {
         year: '2024',
-        title: 'Global Reach',
-        description: '150+ projects, 12+ countries, 95% client retention rate.',
+        title: 'Growing Delivery',
+        description: '10+ projects delivered across web, mobile, CRM, and cloud for clients in India and abroad.',
         icon: 'ri-global-line',
         color: 'pink'
     }
@@ -60,7 +60,7 @@ const Timeline = memo(function Timeline({ className = '' }) {
                         Milestones That Define Us
                     </h2>
                     <p className="text-slate-500 text-lg max-w-2xl mx-auto">
-                        From a small team with big dreams to a global software agency.
+                        From a small Mohali team to products and client delivery across multiple markets.
                     </p>
                 </div>
 
@@ -82,7 +82,6 @@ const Timeline = memo(function Timeline({ className = '' }) {
                                     className={`relative flex flex-col md:flex-row items-center md:items-start ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'
                                         }`}
                                 >
-                                    {/* Content Card */}
                                     <div className={`w-full md:w-5/12 ${isEven ? 'md:text-right md:pr-12' : 'md:text-left md:pl-12'}`}>
                                         <div className={`inline-block bg-white rounded-2xl p-6 shadow-lg border border-slate-200 hover:shadow-xl transition-shadow ${isEven ? 'md:ml-auto' : ''
                                             }`}>
@@ -98,7 +97,6 @@ const Timeline = memo(function Timeline({ className = '' }) {
                                         </div>
                                     </div>
 
-                                    {/* Center Icon */}
                                     <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-2xl bg-white shadow-lg border-2 items-center justify-center z-10"
                                          style={{ borderColor: colors.borderHex }}
                                     >
@@ -107,7 +105,6 @@ const Timeline = memo(function Timeline({ className = '' }) {
                                         </div>
                                     </div>
 
-                                    {/* Spacer for opposite side */}
                                     <div className="hidden md:block w-5/12" />
                                 </motion.div>
                             );
@@ -117,6 +114,6 @@ const Timeline = memo(function Timeline({ className = '' }) {
             </div>
         </section>
     );
-})
+});
 
 export default Timeline;

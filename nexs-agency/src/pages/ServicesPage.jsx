@@ -5,6 +5,7 @@ import RelatedServices from '../components/seo/RelatedServices';
 import AreasWeServe from '../components/seo/AreasWeServe';
 import ProcessSection from '../components/ProcessSection';
 import ClientLogos from '../components/ClientLogos';
+import { COMPANY_STATS } from '../constants/companyStats';
 import FadeIn from '../components/ui/FadeIn';
 import Breadcrumbs from '../components/ui/Breadcrumbs';
 import BackToTop from '../components/ui/BackToTop';
@@ -172,8 +173,8 @@ const ServicesPage = () => {
     ];
 
     const stats = [
-        { label: "Projects Delivered", value: "150+" },
-        { label: "Client Retention", value: "95%" },
+        { label: "Projects Delivered", value: COMPANY_STATS.projects },
+        { label: "Client Retention", value: COMPANY_STATS.successRate },
         { label: "Years Experience", value: "5+" },
         { label: "Global Clients", value: "12+" }
     ];

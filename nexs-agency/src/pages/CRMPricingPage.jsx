@@ -93,7 +93,7 @@ export default function CRMPricingPage() {
             })}</script>
 
             {toast.show && (
-                <div className={`fixed top-4 right-4 z-[100] px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in ${toast.type === 'error' ? 'bg-red-500 text-white' : (toast.type === 'info' ? 'bg-[#F8FAFC]0 text-white' : 'bg-emerald-500 text-white')
+                <div className={`fixed top-4 right-4 z-[100] px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in ${toast.type === 'error' ? 'bg-red-500 text-white' : (toast.type === 'info' ? 'bg-blue-600 text-white' : 'bg-emerald-500 text-white')
                     }`}>
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         {toast.type === 'error' ? (
