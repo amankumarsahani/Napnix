@@ -35,7 +35,7 @@ const CookiePolicy = () => (
                     <p className="mb-4">We use cookies and similar tools for the following purposes:</p>
                     <ul className="list-disc pl-6 space-y-2 mb-4">
                         <li><strong>Essential operation</strong> — session management, form security, and load balancing.</li>
-                        <li><strong>Analytics</strong> — Google Analytics (G-RM3W4K8VWK) to understand traffic patterns and improve content.</li>
+                        <li><strong>Analytics</strong> — Google Analytics (G-XZZDQ3BX19) to understand traffic patterns and improve content.</li>
                         <li><strong>Security</strong> — Google reCAPTCHA on contact and inquiry forms to reduce spam and abuse.</li>
                         <li><strong>Preferences</strong> — remembering choices such as currency display where applicable.</li>
                     </ul>
