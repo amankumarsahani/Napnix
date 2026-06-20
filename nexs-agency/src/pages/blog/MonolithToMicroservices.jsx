@@ -1,7 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import RelatedServices from '../../components/seo/RelatedServices';
-import { SITE_URL, siteConfig } from '../../constants/siteConfig';
+import { SITE_URL, LOGO_URL } from '../../constants/siteConfig';
+import { withBrandKeywords } from '../../constants/seoConfig';
 
 const MonolithToMicroservices = () => {
 
@@ -18,7 +19,7 @@ const MonolithToMicroservices = () => {
             "@type": "Organization",
             "name": "Napnix",
             "url": SITE_URL,
-            "logo": { "@type": "ImageObject", "url": `${SITE_URL}/logo.png` }
+            "logo": { "@type": "ImageObject", "url": LOGO_URL }
         },
         "datePublished": "2024-03-25",
         "description": "Is your legacy monolith slowing you down? Learn the risks and rewards of migrating to a microservices architecture in 2026."
@@ -39,7 +40,7 @@ const MonolithToMicroservices = () => {
                 <meta name="twitter:title" content="Monolith to Microservices Migration Guide | Napnix Cloud" />
                 <meta name="twitter:description" content="Is your legacy monolith slowing you down? Learn the risks and rewards of migrating to a microservices architecture." />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-                <meta name="keywords" content="monolith to microservices, microservices migration, software architecture modernization, microservices India, legacy system migration, distributed systems, containerization Docker Kubernetes" />
+                <meta name="keywords" content={withBrandKeywords('monolith to microservices, microservices migration, software architecture modernization, microservices India, legacy system migration, distributed systems, containerization Docker Kubernetes')} />
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta property="og:image:width" content="1200" />

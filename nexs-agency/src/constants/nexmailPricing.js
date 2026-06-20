@@ -66,6 +66,7 @@ export const nexmailTiers = [
         description: 'Unlimited everything with dedicated support',
         popular: false,
         cta: 'Contact Sales',
+        isCustom: true,
         limits: {
             contacts: 'Unlimited',
             emailsPerMonth: 'Unlimited',

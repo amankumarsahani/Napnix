@@ -44,6 +44,7 @@ const navItems = [
   { label: 'About', path: '/about' },
   { label: 'Portfolio', path: '/portfolio' },
   { label: 'Blog', path: '/blog' },
+  { label: 'FAQ', path: '/faq' },
   { label: 'Contact', path: '/contact' },
 ];
 
@@ -106,18 +107,14 @@ const Header = memo(function Header() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <Link to="/" className="group flex items-center space-x-3">
+            <Link to="/" className="group flex items-center">
               <img
                 src={siteConfig.logo}
-                alt=""
-                aria-hidden="true"
-                className="h-10 w-auto object-contain transition-all duration-300"
-                width={40}
+                alt={siteConfig.logoAlt}
+                className="h-9 w-auto object-contain transition-all duration-300 sm:h-10"
+                width={160}
                 height={40}
               />
-              <span className="text-xl font-bold text-slate-800 tracking-wide">
-                Napnix
-              </span>
             </Link>
           </div>
 

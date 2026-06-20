@@ -10,6 +10,7 @@ import Breadcrumbs from '../components/ui/Breadcrumbs';
 import BackToTop from '../components/ui/BackToTop';
 import ReadingProgress from '../components/ui/ReadingProgress';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
+import { withBrandKeywords } from '../constants/seoConfig';
 import Icon from '../components/ui/Icon';
 import { RiArrowRightLine } from 'react-icons/ri';
 
@@ -182,7 +183,7 @@ const ServicesPage = () => {
             <Helmet>
                 <title>Our Services - Web, Mobile, AI & Cloud | Napnix</title>
                 <meta name="description" content="Explore our comprehensive software development services. From custom web and mobile apps to AI integration and cloud solutions." />
-                <meta name="keywords" content="software development services India, custom web development, mobile app development, cloud solutions, AI ML services, Napnix, IT company Mohali, ecommerce development India" />
+                <meta name="keywords" content={withBrandKeywords('software development services India, custom web development, mobile app development, cloud solutions, AI ML services, IT company Mohali, ecommerce development India')} />
                 <link rel="canonical" href={`${SITE_URL}/services`} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <meta property="og:title" content="Our Services - Web, Mobile, AI & Cloud | Napnix" />

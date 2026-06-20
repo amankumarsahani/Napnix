@@ -2,6 +2,7 @@ import { lazy, memo, Suspense, useEffect, useRef } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { SITE_URL } from './constants/siteConfig';
+import { DEFAULT_SITE_KEYWORDS } from './constants/seoConfig';
 import { useAuth } from './context/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -99,25 +100,67 @@ function ProtectedRoute({ children }) {
 }
 
 // Memoized Landing Page for better performance
+const HOME_FAQ_SCHEMA = [
+  {
+    question: 'How long does it typically take to complete a web development project?',
+    answer: 'Project timelines vary based on complexity and requirements. A simple website typically takes 4-6 weeks, while complex web applications can take 3-6 months.',
+  },
+  {
+    question: 'What technologies do you use for web and mobile development?',
+    answer: 'We use React, Next.js, Node.js, Python, Flutter, React Native, and cloud platforms like AWS, Azure, and Google Cloud.',
+  },
+  {
+    question: 'Do you provide ongoing maintenance and support after project completion?',
+    answer: 'Yes, we offer maintenance and support packages including bug fixes, security updates, performance monitoring, and technical assistance.',
+  },
+  {
+    question: 'Do you serve clients globally?',
+    answer: 'Yes. Napnix works with clients in India, USA, UK, Canada, Australia, UAE, and other markets across multiple time zones.',
+  },
+  {
+    question: 'Can you help with SEO-friendly websites?',
+    answer: 'Yes. We build with semantic HTML, fast load times, mobile responsiveness, structured data, and Core Web Vitals best practices.',
+  },
+];
+
 const LandingPage = memo(function LandingPage() {
+  const homeFaqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: HOME_FAQ_SCHEMA.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-white w-full overflow-x-hidden">
       <Helmet>
-        <title>Napnix - Custom Software, CRM, AI and SEO Delivery</title>
-        <meta name="description" content="Napnix builds custom web apps, mobile apps, CRM systems, AI workflows, cloud platforms, and technical SEO experiences for startups and growing businesses." />
-        <meta name="keywords" content="AI software development, custom software agency, web development company mohali, freelance developers chandigarh, mobile app developers, digital transformation services, React developers, Next.js experts, best software agency in mohali, freelance software engineer" />
+        <title>Custom Software Development Company | Web, Mobile, CRM & AI | Napnix</title>
+        <meta name="description" content="Napnix builds custom web apps, mobile apps, CRM systems, AI workflows, and cloud platforms for startups and enterprises worldwide. Based in Mohali, serving India, USA, UK, UAE, and beyond." />
+        <meta name="keywords" content={DEFAULT_SITE_KEYWORDS} />
         <link rel="canonical" href={`${SITE_URL}/`} />
 
         {/* Open Graph */}
-        <meta property="og:title" content="Napnix - Custom Software, CRM, AI and SEO Delivery" />
-        <meta property="og:description" content="Custom web development, mobile apps, CRM systems, AI workflows, cloud engineering, and technical SEO for growing businesses." />
+        <meta property="og:title" content="Custom Software Development Company | Web, Mobile, CRM & AI | Napnix" />
+        <meta property="og:description" content="Custom web apps, mobile apps, CRM systems, AI workflows, and cloud platforms for startups and enterprises. Mohali-based team serving global clients." />
         <meta property="og:url" content={`${SITE_URL}/`} />
         <meta property="og:type" content="website" />
+        <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="Napnix" />
+        <meta property="og:locale" content="en_IN" />
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Napnix - Software, CRM, AI and SEO Delivery" />
-        <meta name="twitter:description" content="Custom software engineering, CRM systems, AI workflows, and technical SEO from Mohali for global clients." />
+        <meta name="twitter:site" content="@napnix" />
+        <meta name="twitter:creator" content="@napnix" />
+        <meta name="twitter:title" content="Custom Software Development Company | Web, Mobile, CRM & AI | Napnix" />
+        <meta name="twitter:description" content="Custom web apps, mobile apps, CRM systems, AI workflows, and cloud platforms for startups and enterprises worldwide." />
+        <meta name="twitter:image" content={`${SITE_URL}/og-image.jpg`} />
+        <script type="application/ld+json">{JSON.stringify(homeFaqSchema)}</script>
       </Helmet>
 
       {/* Hero loads immediately for faster FCP */}

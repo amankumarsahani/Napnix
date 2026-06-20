@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:prod": "vite build --mode production",
+    "build:prod": "node scripts/generate-sitemap.mjs && vite build --mode production && node scripts/copy-404.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",

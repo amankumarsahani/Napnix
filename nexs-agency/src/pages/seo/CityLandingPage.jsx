@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import NotFound from '../NotFound';
 import FadeIn from '../../components/ui/FadeIn';
 import ReadingProgress from '../../components/ui/ReadingProgress';
 import { SITE_URL, siteConfig } from '../../constants/siteConfig';
+import { getLocalBusinessOffers } from '../../constants/schemaOffers';
+import { withBrandKeywords } from '../../constants/seoConfig';
 import Icon from '../../components/ui/Icon';
 import { RiArrowRightLine, RiBriefcase4Line, RiCheckLine, RiGlobalLine, RiMapPinLine, RiShieldCheckLine, RiTimeLine } from 'react-icons/ri';
 
@@ -177,6 +180,62 @@ const cityData = {
                 { title: "Full Stack", desc: "From UI/UX to DevOps, we handle the full stack.", icon: "ri-layers-line" }
             ]
         }
+    },
+    'mohali': {
+        city: 'Mohali',
+        country: 'India',
+        timezone: 'Asia/Kolkata',
+        title: 'Software Development Company in Mohali | Napnix',
+        description: 'Napnix is a Mohali-based software development company offering custom web, mobile, CRM, AI, and cloud solutions for startups and enterprises in Punjab and beyond.',
+        heroText: 'Your Mohali Technology Partner.',
+        content: 'Headquartered in IT Park, Sector 67, Mohali, Napnix delivers end-to-end software engineering for Chandigarh Tricity startups, SMEs, and global clients who want reliable delivery from India\'s growing tech corridor.',
+        services: ['Custom Web & SaaS Development', 'Mobile App Development', 'NapCRM Implementation', 'AI & Automation', 'Cloud & DevOps'],
+        image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&q=80&w=1200&fm=webp',
+        coordinates: { lat: 30.6954, lng: 76.7289 },
+        color: 'blue',
+        stats: [
+            { label: 'Local Projects', value: '100+' },
+            { label: 'Expert Developers', value: '50+' },
+            { label: 'Founded', value: '2023' },
+            { label: 'Support', value: '24/7' }
+        ],
+        whyUs: {
+            title: 'Why Mohali Businesses Choose Napnix',
+            reasons: [
+                { title: 'Local HQ Advantage', desc: 'On-the-ground team in Sector 67 with direct access to founders and engineers.', icon: 'ri-building-2-line' },
+                { title: 'Tricity Coverage', desc: 'Serving Mohali, Chandigarh, Panchkula, and Zirakpur with fast turnaround.', icon: 'ri-map-pin-line' },
+                { title: 'Product + Services', desc: 'Custom builds plus NapCRM and NapMail products for faster go-to-market.', icon: 'ri-stack-line' },
+                { title: 'Global Delivery', desc: 'Local presence with experience shipping software for US, UK, and UAE clients.', icon: 'ri-global-line' }
+            ]
+        }
+    },
+    'chandigarh': {
+        city: 'Chandigarh',
+        country: 'India',
+        timezone: 'Asia/Kolkata',
+        title: 'Software Development Company in Chandigarh | Napnix',
+        description: 'Custom web, mobile, CRM, and AI software development in Chandigarh. Napnix helps Tricity businesses build scalable digital products.',
+        heroText: 'Engineering Growth for Chandigarh.',
+        content: 'From Sector 17 enterprises to Chandigarh startup hubs, Napnix combines product thinking with full-stack engineering to help businesses launch CRM platforms, customer portals, and AI-powered workflows.',
+        services: ['React & Next.js Development', 'CRM & ERP Systems', 'Mobile Apps', 'AI Integrations', 'E-commerce Platforms'],
+        image: 'https://images.unsplash.com/photo-1587477592983-9ef9a1554714?auto=format&fit=crop&q=80&w=1200&fm=webp',
+        coordinates: { lat: 30.7333, lng: 76.7794 },
+        color: 'emerald',
+        stats: [
+            { label: 'Tricity Clients', value: '60+' },
+            { label: 'Products Shipped', value: '150+' },
+            { label: 'Industries Served', value: '12+' },
+            { label: 'Support', value: '24/7' }
+        ],
+        whyUs: {
+            title: 'Why Chandigarh Teams Work with Napnix',
+            reasons: [
+                { title: 'Nearby Mohali HQ', desc: 'Fast collaboration from our Sector 67 office, minutes from Chandigarh.', icon: 'ri-car-line' },
+                { title: 'Industry CRM Expertise', desc: 'Pre-built NapCRM workflows for healthcare, education, real estate, and more.', icon: 'ri-briefcase-line' },
+                { title: 'Startup Friendly', desc: 'Flexible engagement models for MVPs, scale-ups, and enterprise rollouts.', icon: 'ri-rocket-line' },
+                { title: 'Secure Delivery', desc: 'Enterprise-grade security, QA, and post-launch support built in.', icon: 'ri-shield-check-line' }
+            ]
+        }
     }
 };
 
@@ -184,7 +243,11 @@ const FADE_IN_MINIMAL = { margin: '0px', ease: 'linear' };
 
 const CityLandingPage = () => {
     const { city } = useParams();
-    const data = cityData[city] || cityData['london'];
+    const data = cityData[city];
+
+    if (!data) {
+        return <NotFound />;
+    }
 
     // Live Clock State
     const [time, setTime] = useState('');
@@ -220,13 +283,15 @@ const CityLandingPage = () => {
 
     const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
 
+    const pageUrl = `${SITE_URL}/software-development-company/${city}`;
+
     // LocalBusiness Schema for the city
     const localBusinessSchema = {
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
         "name": `Napnix - ${data.city}`,
         "description": data.description,
-        "url": `${SITE_URL}/software-development-company/${city}`,
+        "url": pageUrl,
         "telephone": "+91-7009614671",
         "email": siteConfig.email.info,
         "areaServed": data.city,
@@ -243,7 +308,8 @@ const CityLandingPage = () => {
         "serviceArea": {
             "@type": "City",
             "name": data.city
-        }
+        },
+        "offers": getLocalBusinessOffers(pageUrl)
     };
 
     return (
@@ -257,7 +323,7 @@ const CityLandingPage = () => {
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/software-development-company/${city}`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
-                <meta name="keywords" content={`software development company ${data.city}, web development ${data.city}, mobile app development ${data.city}, IT company ${data.city}, Napnix ${data.city}, ${data.country} software services`} />
+                <meta name="keywords" content={withBrandKeywords(`software development company ${data.city}, web development ${data.city}, mobile app development ${data.city}, IT company ${data.city}, Napnix ${data.city}, Napix ${data.city}, ${data.country} software services`)} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />

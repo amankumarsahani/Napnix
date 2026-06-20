@@ -33,6 +33,18 @@ const cities = [
         image: "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?auto=format&fit=crop&q=80&w=800&fm=webp"
     },
     {
+        name: "Mohali",
+        slug: "mohali",
+        country: "India",
+        image: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&q=80&w=800&fm=webp"
+    },
+    {
+        name: "Chandigarh",
+        slug: "chandigarh",
+        country: "India",
+        image: "https://images.unsplash.com/photo-1587477592983-9ef9a1554714?auto=format&fit=crop&q=80&w=800&fm=webp"
+    },
+    {
         name: "Bangalore",
         slug: "bangalore",
         country: "India",

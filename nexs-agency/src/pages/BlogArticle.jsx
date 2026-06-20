@@ -12,7 +12,8 @@ import SocialShare from '../components/ui/SocialShare';
 import AuthorBio from '../components/ui/AuthorBio';
 import BackToTop from '../components/ui/BackToTop';
 import TableOfContents, { addIdsToHeadings } from '../components/ui/TableOfContents';
-import { SITE_URL, siteConfig } from '../constants/siteConfig';
+import { SITE_URL, LOGO_URL } from '../constants/siteConfig';
+import { withBrandKeywords, BRAND_KEYWORDS } from '../constants/seoConfig';
 import { RiTimeLine, RiEyeLine } from 'react-icons/ri';
 
 const BlogArticle = () => {
@@ -69,11 +70,14 @@ const BlogArticle = () => {
         );
     }
 
+    const articleUrl = `${SITE_URL}/blog/${blog.slug}`;
+    const articleImage = blog.imageUrl || `${SITE_URL}/og-image.jpg`;
+
     const articleSchema = {
         "@context": "https://schema.org",
         "@type": "Article",
         "headline": blog.title,
-        "image": blog.imageUrl,
+        "image": [articleImage],
         "author": {
             "@type": "Person",
             "name": blog.author
@@ -81,18 +85,25 @@ const BlogArticle = () => {
         "publisher": {
             "@type": "Organization",
             "name": "Napnix",
+            "alternateName": "Napix",
             "url": SITE_URL,
             "logo": {
                 "@type": "ImageObject",
-                "url": `${SITE_URL}/logo.png`
+                "url": LOGO_URL
             }
         },
         "datePublished": blog.createdAt,
         "dateModified": blog.updatedAt || blog.createdAt,
-        "description": blog.metaDescription || blog.excerpt
+        "description": blog.metaDescription || blog.excerpt,
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": articleUrl
+        },
+        "articleSection": blog.category || 'Technology',
+        "keywords": withBrandKeywords(blog.metaKeywords || blog.category || '')
     };
 
-    const ogImage = blog.ogImage || blog.imageUrl || `${SITE_URL}/og-image.jpg`;
+    const ogImage = blog.ogImage || articleImage;
     const metaDesc = blog.metaDescription || blog.excerpt;
 
     const authorBios = {
@@ -122,7 +133,8 @@ const BlogArticle = () => {
             <Helmet>
                 <title>{blog.title} | Napnix Insights</title>
                 <meta name="description" content={metaDesc} />
-                <link rel="canonical" href={`${SITE_URL}/blog/${blog.slug}`} />
+                <meta name="keywords" content={withBrandKeywords(blog.metaKeywords || blog.category || BRAND_KEYWORDS)} />
+                <link rel="canonical" href={articleUrl} />
                 <meta property="og:title" content={`${blog.title} | Napnix Insights`} />
                 <meta property="og:description" content={metaDesc} />
                 <meta property="og:type" content="article" />

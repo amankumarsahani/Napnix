@@ -5,6 +5,8 @@ import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import { crmTiers, crmFeatures } from '../constants/crmPricing';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
+import { buildAggregateSaasOffers, buildSoftwareApplicationSchema } from '../constants/productSchema';
+import { withBrandKeywords } from '../constants/seoConfig';
 import { CheckIcon, XIcon } from '../components/ui/Icons';
 import FeatureValue from '../components/crm/FeatureValue';
 import useCRMPricing from '../hooks/useCRMPricing';
@@ -133,7 +135,7 @@ export default function NapCRMLandingPage() {
             <Helmet>
                 <title>NapCRM - All-in-One CRM for Agencies &amp; Businesses | Napnix</title>
                 <meta name="description" content="NapCRM is the complete operating system for modern agencies. Integrated lead management, e-commerce, invoicing, team chat, and client portals — starting at $49/month." />
-                <meta name="keywords" content="CRM for agencies India, NapCRM, all-in-one CRM software, agency management platform, lead management CRM, business CRM India, client portal CRM, project management CRM, affordable CRM software" />
+                <meta name="keywords" content={withBrandKeywords('CRM for agencies India, NapCRM, all-in-one CRM software, agency management platform, lead management CRM, business CRM India, client portal CRM')} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/napcrm`} />
                 <meta property="og:site_name" content="Napnix" />
@@ -153,43 +155,14 @@ export default function NapCRMLandingPage() {
             </Helmet>
 
             {/* Structured Data */}
-            <script type="application/ld+json">{JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "SoftwareApplication",
-                "name": "NapCRM",
-                "applicationCategory": "BusinessApplication",
-                "operatingSystem": "Web, Android, iOS",
-                "description": "All-in-one CRM platform for agencies with lead management, e-commerce, invoicing, team chat, and client portals.",
-                "url": `${SITE_URL}/napcrm`,
-                "offers": {
-                    "@type": "AggregateOffer",
-                    "priceCurrency": "INR",
-                    "lowPrice": "4165",
-                    "highPrice": "8415",
-                    "offerCount": "4",
-                    "offers": crmTiers.filter(t => !t.isCustom).map(tier => ({
-                        "@type": "Offer",
-                        "name": tier.name,
-                        "price": String(tier.price.monthly.INR),
-                        "priceCurrency": "INR",
-                        "billingIncrement": "P1M",
-                        "description": tier.description
-                    }))
-                },
-                "provider": {
-                    "@type": "Organization",
-                    "name": "Napnix",
-                    "url": SITE_URL,
-                    "telephone": siteConfig.phone.primary,
-                    "email": siteConfig.email.primary
-                },
-                "aggregateRating": {
-                    "@type": "AggregateRating",
-                    "ratingValue": "4.8",
-                    "reviewCount": "240",
-                    "bestRating": "5"
-                }
-            })}</script>
+            <script type="application/ld+json">{JSON.stringify(buildSoftwareApplicationSchema({
+                name: 'NapCRM',
+                description: 'All-in-one CRM platform for agencies with lead management, e-commerce, invoicing, team chat, and client portals.',
+                url: `${SITE_URL}/napcrm`,
+                sku: 'napcrm',
+                operatingSystem: 'Web, Android, iOS',
+                offers: buildAggregateSaasOffers(crmTiers, `${SITE_URL}/napcrm`),
+            }))}</script>
             <script type="application/ld+json">{JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "BreadcrumbList",

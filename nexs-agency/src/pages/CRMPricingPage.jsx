@@ -2,6 +2,8 @@ import { Helmet } from 'react-helmet-async';
 import { CheckIcon } from '../components/ui/Icons';
 import { crmTiers, crmFeatures } from '../constants/crmPricing';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
+import { buildSaasProduct, enrichOffer, slugifyProductName } from '../constants/productSchema';
+import { withBrandKeywords } from '../constants/seoConfig';
 import FeatureValue from '../components/crm/FeatureValue';
 import useCRMPricing from '../hooks/useCRMPricing';
 import useCurrency from '../hooks/useCurrency';
@@ -31,7 +33,7 @@ export default function CRMPricingPage() {
             <Helmet>
                 <title>NapCRM Pricing - Plans from $49/mo | Starter, Growth, Business, Enterprise</title>
                 <meta name="description" content="Compare NapCRM pricing plans. Starter $49/mo, Growth $79/mo, Business $99/mo, Enterprise custom. Save 15% with yearly billing. 14-day free trial on all plans." />
-                <meta name="keywords" content="NapCRM pricing, CRM pricing India, affordable CRM plans, CRM software cost, business CRM pricing, agency CRM plans, CRM monthly pricing, CRM enterprise pricing" />
+                <meta name="keywords" content={withBrandKeywords('NapCRM pricing, CRM pricing India, affordable CRM plans, CRM software cost, business CRM pricing, agency CRM plans')} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/napcrm/pricing`} />
                 <meta property="og:site_name" content="Napnix" />
@@ -67,19 +69,26 @@ export default function CRMPricingPage() {
                 "itemListElement": crmTiers.map((tier, i) => ({
                     "@type": "ListItem",
                     "position": i + 1,
-                    "item": {
-                        "@type": "Product",
+                    "item": tier.isCustom ? {
+                        "@type": "Service",
                         "name": `NapCRM ${tier.name}`,
-                        "description": tier.tagline,
-                        ...(!tier.isCustom ? {
-                            "offers": {
-                                "@type": "Offer",
-                                "price": String(tier.price.monthly.INR),
-                                "priceCurrency": "INR",
-                                "availability": "https://schema.org/InStock"
-                            }
-                        } : {})
-                    }
+                        "description": tier.description,
+                        "offers": enrichOffer({
+                            "@type": "Offer",
+                            "name": `NapCRM ${tier.name}`,
+                            "description": `${tier.description} — contact sales for custom enterprise pricing.`,
+                            "url": `${SITE_URL}/contact`,
+                            "priceCurrency": "INR",
+                            "availability": "https://schema.org/InStock",
+                        })
+                    } : buildSaasProduct({
+                        name: `NapCRM ${tier.name}`,
+                        description: tier.description,
+                        url: `${SITE_URL}/napcrm/pricing`,
+                        sku: `napcrm-${slugifyProductName(tier.name)}`,
+                        priceINR: tier.price.monthly.INR,
+                        offerUrl: `${SITE_URL}/napcrm/pricing`,
+                    })
                 }))
             })}</script>
 

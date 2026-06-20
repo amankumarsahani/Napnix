@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { crmTiers } from '../constants/crmPricing';
 import { industryData, industryList } from '../constants/industryData';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
+import { buildAggregateSaasOffers, buildSoftwareApplicationSchema } from '../constants/productSchema';
+import { withBrandKeywords } from '../constants/seoConfig';
 import FadeIn from '../components/ui/FadeIn';
 import Icon from '../components/ui/Icon';
 import useCRMPricing from '../hooks/useCRMPricing';
@@ -78,29 +80,13 @@ export default function IndustryLandingPage() {
         })),
     } : null;
 
-    const productSchema = {
-        '@context': 'https://schema.org',
-        '@type': 'SoftwareApplication',
+    const productSchema = buildSoftwareApplicationSchema({
         name: `NapCRM for ${data.name}`,
-        applicationCategory: 'BusinessApplication',
-        operatingSystem: 'Web',
-        url: pageUrl,
         description: data.seo.description,
-        offers: {
-            '@type': 'AggregateOffer',
-            priceCurrency: 'INR',
-            lowPrice: '4165',
-            highPrice: '8415',
-            offerCount: '4',
-        },
-        provider: {
-            '@type': 'Organization',
-            name: 'Napnix',
-            url: SITE_URL,
-            telephone: siteConfig.phone.tel,
-            email: siteConfig.email.primary,
-        },
-    };
+        url: pageUrl,
+        sku: `napcrm-${industry}`,
+        offers: buildAggregateSaasOffers(crmTiers, pageUrl),
+    });
 
     return (
         <div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-hidden selection:bg-[#2563EB]/10">
@@ -108,7 +94,7 @@ export default function IndustryLandingPage() {
             <Helmet>
                 <title>{data.seo.title}</title>
                 <meta name="description" content={data.seo.description} />
-                {data.seo.keywords && <meta name="keywords" content={data.seo.keywords} />}
+                {data.seo.keywords && <meta name="keywords" content={withBrandKeywords(data.seo.keywords)} />}
                 <link rel="canonical" href={pageUrl} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
 

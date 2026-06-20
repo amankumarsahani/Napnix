@@ -1,8 +1,8 @@
-# Napnix
+# Napnix (Napix)
 
-> Napnix is an India-based software development company building custom web applications, mobile apps, cloud infrastructure, AI/ML solutions, NapCRM — an industry-specific CRM platform starting at ₹999/month, and NapMail — an email marketing engine with SMTP rotation and anti-spam scoring.
+> Napnix — also commonly searched as Napix — is an India-based software development company building custom web applications, mobile apps, cloud infrastructure, AI/ML solutions, NapCRM, and NapMail.
 
-Napnix (napnix.in) specializes in end-to-end digital product development for startups and enterprises. Founded in 2023, headquartered in IT Park Sector 67, Mohali, Punjab, India. Core expertise: React, Node.js, Flutter, AWS, AI/ML. Contact: info@napnix.in | +91 7009614671.
+Napnix (napnix.in, Napix) specializes in end-to-end digital product development for startups and enterprises. Founded in 2023, headquartered in IT Park Sector 67, Mohali, Punjab, India. Core expertise: React, Node.js, Flutter, AWS, AI/ML. Contact: info@napnix.in | +91 7009614671.
 
 ## Products
 
@@ -34,6 +34,11 @@ Napnix (napnix.in) specializes in end-to-end digital product development for sta
 - [CRM for Logistics](https://napnix.in/napcrm/industries/logistics): Shipment tracking, fleet management, route optimization, warehouse management.
 - [CRM for Service Businesses](https://napnix.in/napcrm/industries/services): Project tracking, client communication, invoicing, team collaboration.
 - [CRM for Small Business](https://napnix.in/napcrm/industries/general): Contact management, deal pipeline, task automation, email campaigns.
+
+## Local Presence
+
+- [Software Development in Mohali](https://napnix.in/software-development-company/mohali): HQ-based custom software, CRM, mobile, and AI delivery for Punjab and Tricity businesses.
+- [Software Development in Chandigarh](https://napnix.in/software-development-company/chandigarh): Web, mobile, CRM, and AI solutions for Chandigarh startups and enterprises.
 
 ## Company
 

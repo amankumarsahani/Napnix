@@ -15,6 +15,8 @@ const Footer = memo(function Footer() {
       { name: 'E-commerce Solutions', href: '/services/ecommerce-development' }
     ],
     Locations: [
+      { name: 'Software Dev in Mohali', href: '/software-development-company/mohali' },
+      { name: 'Software Dev in Chandigarh', href: '/software-development-company/chandigarh' },
       { name: 'Web Dev in London', href: '/software-development-company/london' },
       { name: 'Web Dev in New York', href: '/software-development-company/new-york' },
       { name: 'Web Dev in Dubai', href: '/software-development-company/dubai' },
@@ -25,6 +27,7 @@ const Footer = memo(function Footer() {
     Company: [
       { name: 'About Us', href: '/about' },
       { name: 'Portfolio', href: '/portfolio' },
+      { name: 'FAQ', href: '/faq' },
       { name: 'Contact', href: '/contact' },
       { name: 'Blog', href: '/blog' },
       { name: 'NapCRM', href: '/napcrm' },
@@ -40,21 +43,17 @@ const Footer = memo(function Footer() {
         <div className="py-16">
           <div className="grid lg:grid-cols-4 gap-8">
             <div className="lg:col-span-1">
-              <Link to="/" className="mb-4 inline-flex items-center space-x-3">
+              <Link to="/" className="mb-4 inline-flex items-center">
                 <img
-                  src={siteConfig.logo}
-                  alt=""
-                  aria-hidden="true"
-                  className="h-12 w-auto object-contain"
-                  width={48}
-                  height={48}
+                  src={siteConfig.logoDark}
+                  alt={siteConfig.logoAlt}
+                  className="h-10 w-auto object-contain"
+                  width={180}
+                  height={44}
                 />
-                <span className="text-2xl font-bold text-white">
-                  Napnix
-                </span>
               </Link>
               <p className="text-slate-400 mb-6 leading-relaxed">
-                We build custom software, CRM systems, AI workflows, and growth-ready websites for businesses that need qualified leads and reliable delivery.
+                Napnix builds custom software, CRM systems, AI workflows, and growth-ready websites for businesses that need qualified leads and reliable delivery.
               </p>
               <div className="space-y-2 text-sm text-slate-400 mb-6">
                 <p><span className="text-white font-medium">Info:</span> {siteConfig.email.info}</p>
@@ -129,6 +128,9 @@ const Footer = memo(function Footer() {
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link to="/privacy-policy" className="text-slate-400 hover:text-white text-sm transition-colors">
                 Privacy Policy
+              </Link>
+              <Link to="/faq" className="text-slate-400 hover:text-white text-sm transition-colors">
+                FAQ
               </Link>
               <Link to="/terms" className="text-slate-400 hover:text-white text-sm transition-colors">
                 Terms of Service

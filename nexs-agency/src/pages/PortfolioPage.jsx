@@ -8,6 +8,7 @@ import Breadcrumbs from '../components/ui/Breadcrumbs';
 import BackToTop from '../components/ui/BackToTop';
 import ReadingProgress from '../components/ui/ReadingProgress';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
+import { withBrandKeywords } from '../constants/seoConfig';
 import { RiArrowRightLine, RiArrowUpLine } from 'react-icons/ri';
 
 const FADE_IN_SMOOTH = { duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] };
@@ -160,7 +161,7 @@ const PortfolioPage = () => {
             <Helmet>
                 <title>Portfolio - Custom Software Case Studies | Napnix</title>
                 <meta name="description" content="Explore our portfolio of successful projects including E-commerce platforms, HealthTech apps, and AI-Powered CRM systems. See how Napnix delivers measurable results for global clients." />
-                <meta name="keywords" content="software portfolio, case studies, web development projects, mobile app examples, AI CRM case study, healthtech app development, e-commerce success stories, napnix portfolio" />
+                <meta name="keywords" content={withBrandKeywords('software portfolio, case studies, web development projects, mobile app examples, AI CRM case study, healthtech app development, e-commerce success stories')} />
                 <link rel="canonical" href={`${SITE_URL}/portfolio`} />
                 <meta property="og:title" content="Portfolio - Custom Software Case Studies | Napnix" />
                 <meta property="og:description" content="See how we've helped businesses worldwide with custom E-commerce, Mobile, and AI solutions." />

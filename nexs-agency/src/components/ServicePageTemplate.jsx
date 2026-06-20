@@ -6,11 +6,11 @@ import RelatedServices from './seo/RelatedServices';
 import AreasWeServe from './seo/AreasWeServe';
 import FadeIn from './ui/FadeIn';
 import ReadingProgress from './ui/ReadingProgress';
-import { siteConfig } from '../constants/siteConfig';
+import { siteConfig, SITE_URL } from '../constants/siteConfig';
+import { enrichOffer } from '../constants/productSchema';
+import { withBrandKeywords } from '../constants/seoConfig';
 import Icon from './ui/Icon';
 import { RiArrowRightLine, RiCheckLine } from 'react-icons/ri';
-
-const SITE_URL = siteConfig.domain;
 
 // Static color maps — Tailwind can detect these complete class strings at build time
 const themeColorMap = {
@@ -141,7 +141,15 @@ export default function ServicePageTemplate({ data }) {
         "name": schema.name,
         "provider": { "@type": "Organization", "name": "Napnix", "url": SITE_URL },
         "description": schema.description,
-        "areaServed": "Global"
+        "areaServed": "Global",
+        "offers": enrichOffer({
+            "@type": "Offer",
+            "name": `Quote for ${schema.name}`,
+            "description": `Request a quote for ${schema.name}. ${schema.description}`,
+            "url": `${SITE_URL}/contact`,
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock",
+        }, { saas: false })
     };
 
     return (
@@ -149,7 +157,7 @@ export default function ServicePageTemplate({ data }) {
             <Helmet>
                 <title>{seo.title}</title>
                 <meta name="description" content={seo.description} />
-                {seo.keywords && <meta name="keywords" content={seo.keywords} />}
+                {seo.keywords && <meta name="keywords" content={withBrandKeywords(seo.keywords)} />}
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}${seo.canonicalPath}`} />
                 <meta property="og:title" content={seo.ogTitle || seo.title} />

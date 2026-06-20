@@ -7,6 +7,8 @@ import { inquiryAPI } from '../services/api';
 import FadeIn from '../components/ui/FadeIn';
 import ReadingProgress from '../components/ui/ReadingProgress';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
+import { getLocalBusinessOffers } from '../constants/schemaOffers';
+import { withBrandKeywords } from '../constants/seoConfig';
 import Icon from '../components/ui/Icon';
 import { RiCheckLine, RiErrorWarningLine, RiLoader4Line, RiMailSendLine, RiMapPinLine, RiPhoneLine, RiSendPlaneFill } from 'react-icons/ri';
 import { buildInquiryMessage, getInquiryIntentFromSearch, inquiryIntentOptions } from '../utils/inquiry';
@@ -97,7 +99,7 @@ const ContactPage = () => {
             <Helmet>
                 <title>Contact Napnix - Hire Experts in Mohali, London, NYC & Dubai</title>
                 <meta name="description" content="Ready to innovate? Contact Napnix. We have a physical presence in Mohali (India) and serve clients globally in London, New York, Dubai, Toronto, and Sydney. Hire top-tier software developers today." />
-                <meta name="keywords" content="contact software company, hire developers mohali, software agency london, tech partners new york, dubai software company, freelance experts india, global software team" />
+                <meta name="keywords" content={withBrandKeywords('contact software company, hire developers mohali, software agency london, tech partners new york, dubai software company, global software team')} />
                 <link rel="canonical" href={`${SITE_URL}/contact`} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <meta property="og:title" content="Contact Napnix - Global Reach, Local Presence" />
@@ -129,7 +131,8 @@ const ContactPage = () => {
                         "addressCountry": "IN"
                     },
                     "openingHours": "Mo-Fr 09:00-18:00",
-                    "priceRange": "₹₹"
+                    "priceRange": "₹₹",
+                    "offers": getLocalBusinessOffers(`${SITE_URL}/contact`)
                 })}</script>
             </Helmet>
             <script type="application/ld+json">{JSON.stringify({

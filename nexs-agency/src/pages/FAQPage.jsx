@@ -7,6 +7,7 @@ import BackToTop from '../components/ui/BackToTop';
 
 import ReadingProgress from '../components/ui/ReadingProgress';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
+import { withBrandKeywords } from '../constants/seoConfig';
 import { RiArrowDownSLine, RiArrowRightLine, RiCheckLine, RiCloseLine, RiSearchEyeLine, RiSearchLine, RiThumbDownLine, RiThumbUpLine } from 'react-icons/ri';
 
 const FAQPage = () => {
@@ -110,7 +111,7 @@ const FAQPage = () => {
             <Helmet>
                 <title>FAQ - Frequently Asked Questions | Napnix</title>
                 <meta name="description" content="Get answers to common questions about Napnix' software development services, technologies, project timelines, support, and more. Learn about our web, mobile, AI, and cloud solutions." />
-                <meta name="keywords" content="software development FAQ, web development questions, mobile app development process, project timeline, post-launch support, data security, SEO websites, custom software solutions" />
+                <meta name="keywords" content={withBrandKeywords('software development FAQ, web development questions, mobile app development process, project timeline, post-launch support, data security, SEO websites, custom software solutions')} />
                 <link rel="canonical" href={`${SITE_URL}/faq`} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <meta property="og:title" content="Frequently Asked Questions | Napnix" />

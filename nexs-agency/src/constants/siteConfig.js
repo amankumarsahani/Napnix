@@ -1,8 +1,17 @@
 export const SITE_URL = 'https://napnix.in';
 
+export const LOGO_PATH = '/assets/logos/Napnix_v2_h_l_nobg.png';
+export const LOGO_DARK_PATH = '/assets/logos/Napnix_v2_h_d_nobg.png';
+export const FAVICON_PATH = '/assets/logos/Napnix_v2_logo_nobg.png';
+export const LOGO_URL = `${SITE_URL}${LOGO_PATH}`;
+
 export const siteConfig = {
-    logo: '/logo.png',
-    logoAlt: 'Napnix',
+    logo: LOGO_PATH,
+    logoDark: LOGO_DARK_PATH,
+    favicon: FAVICON_PATH,
+    logoAlt: 'Napnix logo',
+    brandName: 'Napnix',
+    brandAlias: 'Napix',
     email: {
         primary: 'info@napnix.in',
         info: 'info@napnix.in',

@@ -4,6 +4,8 @@ import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { nexmailTiers, nexmailFeatures } from '../constants/napmailPricing';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
+import { buildAggregateSaasOffers, buildSoftwareApplicationSchema } from '../constants/productSchema';
+import { withBrandKeywords } from '../constants/seoConfig';
 import { CheckIcon, XIcon } from '../components/ui/Icons';
 import FeatureValue from '../components/crm/FeatureValue';
 import FadeIn from '../components/ui/FadeIn';
@@ -186,7 +188,7 @@ export default function NapMailLandingPage() {
             <Helmet>
                 <title>NapMail - Email Marketing Engine by Napnix | SMTP Rotation, Anti-Spam, Automations</title>
                 <meta name="description" content="NapMail is an enterprise email marketing engine with smart SMTP rotation, anti-spam scoring, domain throttling, visual automations, and NapCRM integration. Free plan available." />
-                <meta name="keywords" content="email marketing tool India, SMTP rotation, anti-spam email, email automation, NapMail, Napnix, Mailchimp alternative India, Brevo alternative, email campaign tool, email deliverability" />
+                <meta name="keywords" content={withBrandKeywords('email marketing tool India, SMTP rotation, anti-spam email, email automation, NapMail, Mailchimp alternative India, Brevo alternative, email deliverability')} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/napmail`} />
                 <meta property="og:site_name" content="Napnix" />
@@ -205,14 +207,13 @@ export default function NapMailLandingPage() {
                 <meta name="twitter:description" content="Smart SMTP rotation, anti-spam scoring, domain throttling, visual automations, and NapCRM integration." />
             </Helmet>
 
-            <script type="application/ld+json">{JSON.stringify({
-                "@context": "https://schema.org", "@type": "SoftwareApplication",
-                "name": "NapMail", "applicationCategory": "BusinessApplication", "operatingSystem": "Web",
-                "description": "Enterprise email marketing engine with SMTP rotation, anti-spam scoring, and visual automations.",
-                "url": `${SITE_URL}/napmail`,
-                "offers": { "@type": "AggregateOffer", "priceCurrency": "INR", "lowPrice": "0", "highPrice": "4999", "offerCount": "5" },
-                "provider": { "@type": "Organization", "name": "Napnix", "url": SITE_URL, "telephone": siteConfig.phone.primary, "email": siteConfig.email.primary }
-            })}</script>
+            <script type="application/ld+json">{JSON.stringify(buildSoftwareApplicationSchema({
+                name: 'NapMail',
+                description: 'Enterprise email marketing engine with SMTP rotation, anti-spam scoring, domain throttling, and visual automations.',
+                url: `${SITE_URL}/napmail`,
+                sku: 'napmail',
+                offers: buildAggregateSaasOffers(nexmailTiers, `${SITE_URL}/napmail`),
+            }))}</script>
             <script type="application/ld+json">{JSON.stringify({
                 "@context": "https://schema.org", "@type": "BreadcrumbList",
                 "itemListElement": [

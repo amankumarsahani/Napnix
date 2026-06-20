@@ -12,7 +12,8 @@ import BackToTop from '../components/ui/BackToTop';
 import TrustBadges from '../components/ui/TrustBadges';
 import FadeIn from '../components/ui/FadeIn';
 import ReadingProgress from '../components/ui/ReadingProgress';
-import { SITE_URL, siteConfig } from '../constants/siteConfig';
+import { SITE_URL, LOGO_URL, siteConfig } from '../constants/siteConfig';
+import { withBrandKeywords } from '../constants/seoConfig';
 import Icon from '../components/ui/Icon';
 import { RiArrowRightLine } from 'react-icons/ri';
 
@@ -66,8 +67,8 @@ const AboutPage = () => {
     <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white overflow-hidden">
       <Helmet>
         <title>About Napnix – Global Software Agency</title>
-        <meta name="description" content="Discover Napnix, a top software development agency delivering web, mobile, AI, cloud, and enterprise solutions to clients globally. Founded in 2020, serving startups, SMEs, and enterprises across North America, Europe, Middle East, and Asia-Pacific." />
-        <meta name="keywords" content="global software agency, top software company worldwide, international software solutions, AI software development, about napnix solutions, software company india, tech experts usa uk, digital transformation partners" />
+        <meta name="description" content="Discover Napnix, a software development agency delivering web, mobile, AI, cloud, and enterprise solutions globally. Founded in 2023, serving startups and enterprises across India, North America, Europe, and Asia-Pacific." />
+        <meta name="keywords" content={withBrandKeywords('global software agency, international software solutions, AI software development, about napnix, software company india, tech experts usa uk, digital transformation partners')} />
         <link rel="canonical" href={`${SITE_URL}/about`} />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
         <meta property="og:title" content="About Napnix – Global Software Agency" />
@@ -89,7 +90,7 @@ const AboutPage = () => {
             "@type": "Organization",
             "name": "Napnix",
             "url": SITE_URL,
-            "logo": `${SITE_URL}/logo.png`,
+            "logo": LOGO_URL,
             "description": "Top software development agency delivering web, mobile, AI, cloud, and enterprise solutions to clients globally.",
             "email": siteConfig.email.info,
             "telephone": "+917009614671, +917009108646",

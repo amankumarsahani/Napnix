@@ -9,6 +9,7 @@ import FadeIn from '../components/ui/FadeIn';
 import Breadcrumbs from '../components/ui/Breadcrumbs';
 import BackToTop from '../components/ui/BackToTop';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
+import { withBrandKeywords } from '../constants/seoConfig';
 import Icon from '../components/ui/Icon';
 import { RiArrowRightLine, RiArticleLine, RiCalendarLine, RiSearchLine, RiShareCircleLine, RiTimeLine, RiEyeLine } from 'react-icons/ri';
 
@@ -152,7 +153,7 @@ const BlogPage = () => {
             <Helmet>
                 <title>Blog - Tech Insights & Trends | Napnix</title>
                 <meta name="description" content="Stay updated with the latest trends in AI, Web Development, Mobile Apps, and Enterprise Software. Expert insights from Napnix." />
-                <meta name="keywords" content="tech blog, AI trends 2026, React vs Angular, mobile app development trends, software development insights, napnix blog" />
+                <meta name="keywords" content={withBrandKeywords('tech blog, AI trends 2026, React vs Angular, mobile app development trends, software development insights')} />
                 <link rel="canonical" href={`${SITE_URL}/blog`} />
                 <meta property="og:title" content="Blog - Tech Insights & Trends | Napnix" />
                 <meta property="og:description" content="Read expert articles on AI, Cloud, and Software Development." />
