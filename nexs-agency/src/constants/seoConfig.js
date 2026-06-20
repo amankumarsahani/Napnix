@@ -3,8 +3,11 @@ import { SITE_URL, siteConfig, LOGO_URL } from './siteConfig';
 export const BRAND_NAME = 'Napnix';
 export const BRAND_ALIAS = 'Napix';
 
-/** Brand + common search spellings for meta keywords. */
-export const BRAND_KEYWORDS = 'napnix, napix, napnix.in, napix software, napnix software company';
+/** Visible/meta keyword brand terms (no domain — brand name only). */
+export const BRAND_KEYWORDS = 'napnix, napix, napix software, napnix software company';
+
+/** Hidden crawler-only terms (llms.txt, not shown on pages). */
+export const HIDDEN_SEO_KEYWORDS = 'napnix.in';
 
 export const DEFAULT_SITE_KEYWORDS = [
     BRAND_KEYWORDS,
@@ -39,9 +42,13 @@ export function organizationSchema() {
         logo: LOGO_URL,
         email: siteConfig.email.primary,
         telephone: siteConfig.phone.tel,
-        foundingDate: '2023',
+        foundingDate: '2020',
         description:
             'Napnix is a software development company building custom web apps, mobile apps, CRM systems, AI workflows, and cloud platforms.',
+        brand: {
+            '@type': 'Brand',
+            name: BRAND_NAME,
+        },
         sameAs: siteConfig.socialUrls,
         address: {
             '@type': 'PostalAddress',

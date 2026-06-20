@@ -136,13 +136,13 @@ const LandingPage = memo(function LandingPage() {
   return (
     <div className="min-h-screen bg-white w-full overflow-x-hidden">
       <Helmet>
-        <title>Custom Software Development Company | Web, Mobile, CRM & AI | Napnix</title>
+        <title>Napnix | Custom Software Development | Web, Mobile, CRM & AI</title>
         <meta name="description" content="Napnix builds custom web apps, mobile apps, CRM systems, AI workflows, and cloud platforms for startups and enterprises worldwide. Based in Mohali, serving India, USA, UK, UAE, and beyond." />
         <meta name="keywords" content={DEFAULT_SITE_KEYWORDS} />
         <link rel="canonical" href={`${SITE_URL}/`} />
 
         {/* Open Graph */}
-        <meta property="og:title" content="Custom Software Development Company | Web, Mobile, CRM & AI | Napnix" />
+        <meta property="og:title" content="Napnix | Custom Software Development | Web, Mobile, CRM & AI" />
         <meta property="og:description" content="Custom web apps, mobile apps, CRM systems, AI workflows, and cloud platforms for startups and enterprises. Mohali-based team serving global clients." />
         <meta property="og:url" content={`${SITE_URL}/`} />
         <meta property="og:type" content="website" />
@@ -156,7 +156,7 @@ const LandingPage = memo(function LandingPage() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@napnix" />
         <meta name="twitter:creator" content="@napnix" />
-        <meta name="twitter:title" content="Custom Software Development Company | Web, Mobile, CRM & AI | Napnix" />
+        <meta name="twitter:title" content="Napnix | Custom Software Development | Web, Mobile, CRM & AI" />
         <meta name="twitter:description" content="Custom web apps, mobile apps, CRM systems, AI workflows, and cloud platforms for startups and enterprises worldwide." />
         <meta name="twitter:image" content={`${SITE_URL}/og-image.jpg`} />
         <script type="application/ld+json">{JSON.stringify(homeFaqSchema)}</script>
