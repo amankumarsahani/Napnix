@@ -3,10 +3,12 @@ import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-
 import { Helmet } from 'react-helmet-async';
 import { SITE_URL } from './constants/siteConfig';
 import { DEFAULT_SITE_KEYWORDS } from './constants/seoConfig';
+import { lazyWithRetry } from './utils/lazyWithRetry';
 import { useAuth } from './context/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
 import ErrorBoundary from './components/ErrorBoundary';
 import TelemetryTracker from './components/TelemetryTracker';
+import NotFound from './pages/NotFound';
 
 // Critical components - load immediately (above-fold only)
 import Hero from './components/Hero';
@@ -23,33 +25,32 @@ const Partners = lazy(() => import('./components/Partners'));
 const Contact = lazy(() => import('./components/Contact'));
 
 // Lazy load pages (route-based splitting - these actually benefit from it)
-const ServicesPage = lazy(() => import('./pages/ServicesPage'));
-const AboutPage = lazy(() => import('./pages/AboutPage'));
-const ContactPage = lazy(() => import('./pages/ContactPage'));
-const BlogPage = lazy(() => import('./pages/BlogPage'));
-const NapCRMLandingPage = lazy(() => import('./pages/NapCRMLandingPage'));
-const NapMailLandingPage = lazy(() => import('./pages/NapMailLandingPage'));
-const CRMPricingPage = lazy(() => import('./pages/CRMPricingPage'));
-const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
-const TermsOfService = lazy(() => import('./pages/TermsOfService'));
-const CookiePolicy = lazy(() => import('./pages/CookiePolicy'));
-const SecurityPolicy = lazy(() => import('./pages/SecurityPolicy'));
-const FAQPage = lazy(() => import('./pages/FAQPage'));
-const CityLandingPage = lazy(() => import('./pages/seo/CityLandingPage'));
-const IndustryLandingPage = lazy(() => import('./pages/IndustryLandingPage'));
-const CustomWebDevelopment = lazy(() => import('./pages/services/CustomWebDevelopment'));
-const MobileAppDevelopment = lazy(() => import('./pages/services/MobileAppDevelopment'));
-const AiMachineLearning = lazy(() => import('./pages/services/AiMachineLearning'));
-const CloudSolutions = lazy(() => import('./pages/services/CloudSolutions'));
-const EcommerceDevelopment = lazy(() => import('./pages/services/EcommerceDevelopment'));
-const AiTrends2026 = lazy(() => import('./pages/blog/AiTrends2026'));
-const ReactVsFlutter = lazy(() => import('./pages/blog/ReactVsFlutter'));
-const CostOfCustomCrm = lazy(() => import('./pages/blog/CostOfCustomCrm'));
-const MonolithToMicroservices = lazy(() => import('./pages/blog/MonolithToMicroservices'));
-const PwaBenefits = lazy(() => import('./pages/blog/PwaBenefits'));
-const BlogArticle = lazy(() => import('./pages/BlogArticle'));
-const NotFound = lazy(() => import('./pages/NotFound'));
-const AdminBackupsPage = lazy(() => import('./pages/AdminBackupsPage'));
+const ServicesPage = lazyWithRetry(() => import('./pages/ServicesPage'));
+const AboutPage = lazyWithRetry(() => import('./pages/AboutPage'));
+const ContactPage = lazyWithRetry(() => import('./pages/ContactPage'));
+const BlogPage = lazyWithRetry(() => import('./pages/BlogPage'));
+const NapCRMLandingPage = lazyWithRetry(() => import('./pages/NapCRMLandingPage'));
+const NapMailLandingPage = lazyWithRetry(() => import('./pages/NapMailLandingPage'));
+const CRMPricingPage = lazyWithRetry(() => import('./pages/CRMPricingPage'));
+const PrivacyPolicy = lazyWithRetry(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazyWithRetry(() => import('./pages/TermsOfService'));
+const CookiePolicy = lazyWithRetry(() => import('./pages/CookiePolicy'));
+const SecurityPolicy = lazyWithRetry(() => import('./pages/SecurityPolicy'));
+const FAQPage = lazyWithRetry(() => import('./pages/FAQPage'));
+const CityLandingPage = lazyWithRetry(() => import('./pages/seo/CityLandingPage'));
+const IndustryLandingPage = lazyWithRetry(() => import('./pages/IndustryLandingPage'));
+const CustomWebDevelopment = lazyWithRetry(() => import('./pages/services/CustomWebDevelopment'));
+const MobileAppDevelopment = lazyWithRetry(() => import('./pages/services/MobileAppDevelopment'));
+const AiMachineLearning = lazyWithRetry(() => import('./pages/services/AiMachineLearning'));
+const CloudSolutions = lazyWithRetry(() => import('./pages/services/CloudSolutions'));
+const EcommerceDevelopment = lazyWithRetry(() => import('./pages/services/EcommerceDevelopment'));
+const AiTrends2026 = lazyWithRetry(() => import('./pages/blog/AiTrends2026'));
+const ReactVsFlutter = lazyWithRetry(() => import('./pages/blog/ReactVsFlutter'));
+const CostOfCustomCrm = lazyWithRetry(() => import('./pages/blog/CostOfCustomCrm'));
+const MonolithToMicroservices = lazyWithRetry(() => import('./pages/blog/MonolithToMicroservices'));
+const PwaBenefits = lazyWithRetry(() => import('./pages/blog/PwaBenefits'));
+const BlogArticle = lazyWithRetry(() => import('./pages/BlogArticle'));
+const AdminBackupsPage = lazyWithRetry(() => import('./pages/AdminBackupsPage'));
 
 // CSS-based scroll reveal - replaces framer-motion whileInView wrappers
 function ScrollReveal({ children, className = '' }) {

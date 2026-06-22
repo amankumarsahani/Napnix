@@ -6,6 +6,7 @@ const ScrollToTop = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        sessionStorage.removeItem('napnix-chunk-reload');
     }, [pathname]);
 
     return null;
