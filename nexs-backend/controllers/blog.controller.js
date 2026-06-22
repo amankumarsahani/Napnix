@@ -9,6 +9,7 @@ const BlogController = {
                 category: req.query.category,
                 featured: req.query.featured === 'true' ? true : undefined,
                 search: req.query.search,
+                tag: req.query.tag,
                 page: req.query.page || 1,
                 limit: req.query.limit || 10,
                 status: req.user ? (req.query.status || 'all') : 'published' // Admin sees all by default
