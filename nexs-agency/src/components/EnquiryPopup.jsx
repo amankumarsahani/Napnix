@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { inquiryAPI } from '../services/api';
+import { trackLead } from '../utils/fbpixel';
 import { getRecaptchaToken } from '../utils/recaptcha';
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { RiArrowRightLine, RiCloseLine, RiLoader4Line, RiShieldCheckLine, RiStarLine, RiTimeLine } from 'react-icons/ri';
@@ -150,9 +151,12 @@ const EnquiryPopup = memo(function EnquiryPopup() {
                 captchaToken
             });
 
+            // Meta Pixel conversion: enquiry popup lead
+            trackLead({ content_name: 'enquiry_popup' });
+
             setSubmitStatus({
                 type: 'success',
-                message: '🎉 Thank you! We\'ll get back to you within 24 hours.'
+                message: 'Thank you! Your free consultation request is in. Our team will reach out within 24 hours.'
             });
 
             // Close after success
@@ -182,22 +186,6 @@ const EnquiryPopup = memo(function EnquiryPopup() {
             aria-modal="true"
             aria-labelledby="modal-title-enquiry"
         >
-            {/* Animated particles/sparkles */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {[...Array(20)].map((_, i) => (
-                    <div
-                        key={i}
-                        className="absolute w-1 h-1 bg-blue-400 rounded-full animate-pulse"
-                        style={{
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                            animationDelay: `${Math.random() * 2}s`,
-                            animationDuration: `${2 + Math.random() * 3}s`
-                        }}
-                    />
-                ))}
-            </div>
-
             {/* Popup Card */}
             <div
                 className={`relative w-full max-w-lg transform transition-all duration-500 ${isClosing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}
@@ -223,18 +211,18 @@ const EnquiryPopup = memo(function EnquiryPopup() {
 
                     {/* Header */}
                     <div className="relative px-6 pt-8 pb-4 text-center">
-                        <div className="inline-flex items-center bg-[#2563EB]/20 border border-[#2563EB]/30 text-[#2563EB] text-xs font-semibold px-4 py-1.5 rounded-full mb-4">
+                        <div className="inline-flex items-center bg-[#2563EB]/15 border border-[#2563EB]/30 text-blue-200 text-xs font-semibold px-4 py-1.5 rounded-full mb-4">
                             <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-                            Limited Time Offer
+                            Free Consultation — Limited Slots This Week
                         </div>
-                        <h2 id="modal-title-enquiry" className="text-2xl md:text-3xl font-bold text-white mb-2">
-                            Let's Build Something
-                            <span className="block text-[#2563EB] mt-1">
-                                Amazing Together! ✨
+                        <h2 id="modal-title-enquiry" className="text-2xl md:text-3xl font-bold text-white mb-2 leading-tight">
+                            Book a Free Demo
+                            <span className="block text-[#60A5FA] mt-1">
+                                Get Free Consultation Today
                             </span>
                         </h2>
                         <p className="text-slate-400 text-sm">
-                            Get a free consultation and project estimate
+                            Talk to our team about your project — no cost, no commitment. Grab this opportunity to get a tailored plan and estimate within 24 hours.
                         </p>
                     </div>
 
@@ -321,7 +309,7 @@ const EnquiryPopup = memo(function EnquiryPopup() {
                                         </>
                                     ) : (
                                         <>
-                                            Get Free Consultation
+                                            Book My Free Demo
                                             <RiArrowRightLine className="ml-2 group-hover:translate-x-1 transition-transform" />
                                         </>
                                     )}
@@ -343,7 +331,7 @@ const EnquiryPopup = memo(function EnquiryPopup() {
                             </div>
                             <div className="flex items-center">
                                 <RiStarLine className="mr-1 text-yellow-400" />
-                                10+ Projects
+                                No commitment
                             </div>
                         </div>
                     </div>

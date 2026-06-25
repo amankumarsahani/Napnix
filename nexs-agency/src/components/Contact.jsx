@@ -1,6 +1,7 @@
 // TODO: Replace console.error with Sentry or proper error tracking
 import { useState, useRef, useEffect, memo } from 'react';
 import { inquiryAPI } from '../services/api';
+import { trackLead } from '../utils/fbpixel';
 import { siteConfig } from '../constants/siteConfig';
 import {
   RiBuildingLine,
@@ -61,6 +62,9 @@ const Contact = memo(function Contact() {
         company: formData.company,
         message: buildInquiryMessage(formData.intent, formData.message)
       });
+
+      // Meta Pixel conversion: contact form lead
+      trackLead({ content_name: 'contact_form' });
 
       setSubmitStatus({
         type: 'success',
