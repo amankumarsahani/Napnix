@@ -2,5 +2,8 @@ http://napnix.in/* https://napnix.in/:splat 301
 http://www.napnix.in/* https://napnix.in/:splat 301
 https://www.napnix.in/* https://napnix.in/:splat 301
 
-# React Router fallback for direct visits to client-side routes.
+# Missing hashed bundles must 404 — not index.html (prevents stale SPA chunk loads after deploy)
+/assets/* 404
+
+# React Router fallback for direct visits to client-side routes
 /* /index.html 200

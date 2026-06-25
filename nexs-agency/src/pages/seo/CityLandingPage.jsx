@@ -207,15 +207,12 @@ const CityLandingPage = () => {
     const { city } = useParams();
     const data = cityData[city];
 
-    if (!data) {
-        return <NotFound />;
-    }
-
-    // Live Clock State
     const [time, setTime] = useState('');
     const [greeting, setGreeting] = useState('');
 
     useEffect(() => {
+        if (!data?.timezone) return;
+
         const updateTime = () => {
             const now = new Date();
             const timeOptions = {
@@ -228,7 +225,6 @@ const CityLandingPage = () => {
             const formatter = new Intl.DateTimeFormat('en-US', timeOptions);
             setTime(formatter.format(now));
 
-            // Set greeting based on hour in that timezone
             const hour = parseInt(new Intl.DateTimeFormat('en-US', { ...timeOptions, hour: 'numeric', hour12: false }).format(now));
 
             if (hour < 12) setGreeting('Good Morning');
@@ -239,11 +235,14 @@ const CityLandingPage = () => {
         updateTime();
         const interval = setInterval(updateTime, 1000);
         return () => clearInterval(interval);
-    }, [data.timezone]);
+    }, [data?.timezone]);
 
     const { scrollYProgress } = useScroll();
-
     const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
+
+    if (!data) {
+        return <NotFound />;
+    }
 
     const pageUrl = `${SITE_URL}/software-development-company/${city}`;
 

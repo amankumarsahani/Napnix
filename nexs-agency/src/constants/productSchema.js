@@ -39,12 +39,15 @@ export const DIGITAL_SHIPPING_DETAILS = {
     },
 };
 
-/** 14-day free trial aligns with published NapCRM/NapMail policy. */
+/** 14-day free trial — cancel via support; digital SaaS delivery. */
 export const SAAS_RETURN_POLICY = {
     '@type': 'MerchantReturnPolicy',
     applicableCountry: GLOBAL_COUNTRIES,
     returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
     merchantReturnDays: 14,
+    returnMethod: 'https://schema.org/ReturnByMail',
+    returnFees: 'https://schema.org/FreeReturn',
+    refundType: 'https://schema.org/FullRefund',
 };
 
 export const FREE_SERVICE_RETURN_POLICY = {
@@ -61,6 +64,11 @@ export function enrichOffer(offer, { saas = true } = {}) {
     };
 }
 
+/**
+ * SaaS pricing plan for ItemList / offer markup.
+ * Uses SoftwareApplication (not Product) — avoids Google Product snippet
+ * requirements for aggregateRating/review on subscription software.
+ */
 export function buildSaasProduct({
     name,
     description,
@@ -68,12 +76,15 @@ export function buildSaasProduct({
     sku,
     priceINR,
     offerUrl,
+    operatingSystem = 'Web, Android, iOS',
 }) {
     return {
-        '@type': 'Product',
+        '@type': 'SoftwareApplication',
         name,
         description,
         image: PRODUCT_IMAGE,
+        applicationCategory: 'BusinessApplication',
+        operatingSystem,
         brand: NAPNIX_BRAND,
         sku,
         url,

@@ -20,6 +20,18 @@ class ErrorBoundaryInner extends Component {
 
     componentDidCatch(error, errorInfo) {
         console.error('ErrorBoundary caught:', error, errorInfo);
+
+        const message = error?.message || '';
+        const isChunkError =
+            message.includes('Failed to fetch dynamically imported module') ||
+            message.includes('Importing a module script failed') ||
+            message.includes('error loading dynamically imported module') ||
+            error?.name === 'ChunkLoadError';
+
+        if (isChunkError && sessionStorage.getItem('napnix-chunk-reload') !== '1') {
+            sessionStorage.setItem('napnix-chunk-reload', '1');
+            window.location.reload();
+        }
     }
 
     render() {

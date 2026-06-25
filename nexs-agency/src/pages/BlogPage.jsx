@@ -17,13 +17,44 @@ const FADE_IN_SMOOTH = { duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] };
 
 const POSTS_PER_PAGE = 6;
 
+function transformBlog(blog) {
+    return {
+        id: blog.id,
+        title: blog.title,
+        excerpt: blog.excerpt,
+        category: blog.category,
+        author: blog.author,
+        date: new Date(blog.createdAt).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        }),
+        readTime: blog.readTime || '5 min read',
+        viewCount: blog.viewCount || 0,
+        image: blog.imageUrl,
+        imageAlt: blog.imageAlt || blog.title,
+        featured: blog.featured,
+        slug: blog.slug,
+        tags: blog.tags || []
+    };
+}
+
+function buildBlogParams(page, { category, search, tag }) {
+    const params = { page, limit: POSTS_PER_PAGE };
+    if (category && category !== 'All') params.category = category;
+    if (search.trim()) params.search = search.trim();
+    if (tag) params.tag = tag;
+    return params;
+}
+
 const BlogPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [activeCategory, setActiveCategory] = useState('All');
     const [activeTag, setActiveTag] = useState(searchParams.get('tag') || '');
     const [searchQuery, setSearchQuery] = useState('');
-    const [allPosts, setAllPosts] = useState([]);
-    const [displayedPosts, setDisplayedPosts] = useState([]);
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [posts, setPosts] = useState([]);
+    const [featuredPost, setFeaturedPost] = useState(null);
     const [categories, setCategories] = useState(['All']);
     const [allTags, setAllTags] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -31,93 +62,81 @@ const BlogPage = () => {
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
     const loaderRef = useRef(null);
+    const loadIdRef = useRef(0);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setDebouncedSearch(searchQuery), 400);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
 
     useEffect(() => {
         let cancelled = false;
 
-        const loadBlogs = async () => {
+        const loadMeta = async () => {
             try {
-                setLoading(true);
-                const [response, tagsResponse] = await Promise.all([
-                    blogAPI.getAll(),
-                    blogAPI.getTags().catch(() => ({ data: { tags: [] } }))
+                const [tagsResponse, featuredResponse] = await Promise.all([
+                    blogAPI.getTags().catch(() => ({ data: { tags: [] } })),
+                    blogAPI.getAll({ featured: true, limit: 1 }),
                 ]);
                 if (cancelled) return;
-                const blogs = response.data.blogs || [];
-                const apiCategories = response.data.categories || [];
                 setAllTags(tagsResponse.data?.tags || []);
-
-                const transformedPosts = blogs.map(blog => ({
-                    id: blog.id,
-                    title: blog.title,
-                    excerpt: blog.excerpt,
-                    category: blog.category,
-                    author: blog.author,
-                    date: new Date(blog.createdAt).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                    }),
-                    readTime: blog.readTime || '5 min read',
-                    viewCount: blog.viewCount || 0,
-                    image: blog.imageUrl,
-                    imageAlt: blog.imageAlt || blog.title,
-                    featured: blog.featured,
-                    slug: blog.slug,
-                    tags: blog.tags || []
-                }));
-
-                setAllPosts(transformedPosts);
-                setCategories(['All', ...apiCategories]);
-                setDisplayedPosts(transformedPosts.slice(0, POSTS_PER_PAGE));
-                setHasMore(transformedPosts.length > POSTS_PER_PAGE);
+                const featured = featuredResponse.data?.blogs?.[0];
+                setFeaturedPost(featured ? transformBlog(featured) : null);
             } catch (error) {
-                if (!cancelled) console.error('Error loading blogs:', error);
-            } finally {
-                if (!cancelled) setLoading(false);
+                if (!cancelled) console.error('Error loading blog metadata:', error);
             }
         };
 
-        loadBlogs();
+        loadMeta();
         return () => { cancelled = true; };
     }, []);
 
-    // Filter posts based on category and search
-    const getFilteredPosts = useCallback(() => {
-        return allPosts.filter(post => {
-            const matchesCategory = activeCategory === 'All' || post.category === activeCategory;
-            const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                (post.excerpt || '').toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesTag = !activeTag || (post.tags && post.tags.some(t => t.toLowerCase() === activeTag.toLowerCase()));
-            return matchesCategory && matchesSearch && matchesTag;
-        });
-    }, [allPosts, activeCategory, searchQuery, activeTag]);
+    const fetchPosts = useCallback(async (pageNum, reset) => {
+        const loadId = ++loadIdRef.current;
+        if (reset) setLoading(true);
+        else setLoadingMore(true);
 
-    // Reset displayed posts when filter changes
+        try {
+            const response = await blogAPI.getAll(
+                buildBlogParams(pageNum, {
+                    category: activeCategory,
+                    search: debouncedSearch,
+                    tag: activeTag,
+                })
+            );
+            if (loadId !== loadIdRef.current) return;
+
+            const blogs = (response.data.blogs || []).map(transformBlog);
+            const pagination = response.data.pagination;
+
+            if (response.data.categories?.length) {
+                setCategories(['All', ...response.data.categories]);
+            }
+
+            setPosts((prev) => (reset ? blogs : [...prev, ...blogs]));
+            setPage(pageNum);
+            setHasMore(pageNum < (pagination?.pages ?? 1));
+        } catch (error) {
+            if (loadId !== loadIdRef.current) return;
+            console.error('Error loading blogs:', error);
+            if (reset) setPosts([]);
+            setHasMore(false);
+        } finally {
+            if (loadId === loadIdRef.current) {
+                setLoading(false);
+                setLoadingMore(false);
+            }
+        }
+    }, [activeCategory, debouncedSearch, activeTag]);
+
     useEffect(() => {
-        const filtered = getFilteredPosts();
-        setDisplayedPosts(filtered.slice(0, POSTS_PER_PAGE));
-        setPage(1);
-        setHasMore(filtered.length > POSTS_PER_PAGE);
-    }, [activeCategory, searchQuery, activeTag, getFilteredPosts]);
+        fetchPosts(1, true);
+    }, [fetchPosts]);
 
-    // Load more posts
     const loadMorePosts = useCallback(() => {
-        if (loadingMore || !hasMore) return;
-
-        setLoadingMore(true);
-        const filtered = getFilteredPosts();
-        const nextPage = page + 1;
-        const start = 0;
-        const end = nextPage * POSTS_PER_PAGE;
-
-        setTimeout(() => {
-            setDisplayedPosts(filtered.slice(start, end));
-            setPage(nextPage);
-            setHasMore(end < filtered.length);
-            setLoadingMore(false);
-        }, 300); // Small delay for smooth UX
-    }, [page, loadingMore, hasMore, getFilteredPosts]);
+        if (loadingMore || !hasMore || loading) return;
+        fetchPosts(page + 1, false);
+    }, [loadingMore, hasMore, loading, page, fetchPosts]);
 
     // Intersection Observer for infinite scroll
     useEffect(() => {
@@ -137,8 +156,7 @@ const BlogPage = () => {
         return () => observer.disconnect();
     }, [hasMore, loadingMore, loading, loadMorePosts]);
 
-    const featuredPost = allPosts.find(p => p.featured);
-    const nonFeaturedDisplayed = displayedPosts.filter(p => !p.featured);
+    const nonFeaturedDisplayed = posts.filter(p => !p.featured);
 
     if (loading) {
         return (
@@ -371,7 +389,7 @@ const BlogPage = () => {
                     )}
                     {!hasMore && nonFeaturedDisplayed.length > 0 && (
                         <p className="text-slate-500 text-sm font-medium">
-                            You've reached the end • {nonFeaturedDisplayed.length} articles shown
+                            You&apos;ve reached the end
                         </p>
                     )}
                     {nonFeaturedDisplayed.length === 0 && !loading && (

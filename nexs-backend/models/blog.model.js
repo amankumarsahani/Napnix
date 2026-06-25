@@ -31,6 +31,11 @@ const BlogModel = {
             params.push(searchTerm, searchTerm);
         }
 
+        if (filters.tag) {
+            query += ' AND JSON_CONTAINS(tags, ?, "$")';
+            params.push(JSON.stringify(filters.tag));
+        }
+
         query += ' ORDER BY created_at DESC';
 
         const limit = parseInt(filters.limit) || 10;
@@ -63,6 +68,11 @@ const BlogModel = {
             query += ' AND (title LIKE ? OR excerpt LIKE ?)';
             const searchTerm = `%${filters.search}%`;
             params.push(searchTerm, searchTerm);
+        }
+
+        if (filters.tag) {
+            query += ' AND JSON_CONTAINS(tags, ?, "$")';
+            params.push(JSON.stringify(filters.tag));
         }
 
         const [rows] = await pool.query(query, params);
