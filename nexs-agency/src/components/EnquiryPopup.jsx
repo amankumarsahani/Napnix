@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { inquiryAPI } from '../services/api';
-import { trackLead } from '../utils/fbpixel';
+import { trackLead, getMetaContext } from '../utils/fbpixel';
 import { getRecaptchaToken } from '../utils/recaptcha';
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { RiArrowRightLine, RiCloseLine, RiLoader4Line, RiShieldCheckLine, RiStarLine, RiTimeLine } from 'react-icons/ri';
@@ -146,13 +146,20 @@ const EnquiryPopup = memo(function EnquiryPopup() {
                 return;
             }
 
+            // Shared Meta context for browser<->server (CAPI) deduplication.
+            const meta = getMetaContext();
+
             await inquiryAPI.submit({
                 ...formData,
-                captchaToken
+                captchaToken,
+                eventId: meta.eventId,
+                fbp: meta.fbp,
+                fbc: meta.fbc,
+                sourceUrl: meta.sourceUrl
             });
 
-            // Meta Pixel conversion: enquiry popup lead
-            trackLead({ content_name: 'enquiry_popup' });
+            // Meta Pixel conversion: enquiry popup lead (shares eventId with server)
+            trackLead({ content_name: 'enquiry_popup' }, meta.eventId);
 
             setSubmitStatus({
                 type: 'success',

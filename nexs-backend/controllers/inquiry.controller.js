@@ -2,6 +2,7 @@ const InquiryModel = require('../models/inquiry.model');
 const emailService = require('../services/email.service');
 const AssignmentService = require('../services/assignment.service');
 const WorkflowEngine = require('../services/workflowEngine');
+const metaCapi = require('../services/metaCapi.service');
 
 class InquiryController {
     // Get all inquiries (filtered by role)
@@ -69,7 +70,7 @@ class InquiryController {
     // Create inquiry (public endpoint for contact form)
     async createInquiry(req, res) {
         try {
-            const { name, email, phone, company, message } = req.body;
+            const { name, email, phone, company, message, eventId, fbp, fbc, sourceUrl } = req.body;
 
             // Validation
             if (!name || !email || !message) {
@@ -111,6 +112,28 @@ class InquiryController {
                 assignedTo,
                 entity_type: 'inquiry'
             }).catch(err => console.error('Workflow trigger failed:', err));
+
+            // Meta Conversions API (server-side Lead). Deduplicated with the
+            // browser pixel via the shared eventId. Non-blocking, never throws.
+            const [firstName, ...restName] = String(name).trim().split(/\s+/);
+            const clientIp = (req.headers['x-forwarded-for'] || '').split(',')[0].trim()
+                || req.socket?.remoteAddress;
+            metaCapi.sendEvent({
+                eventName: 'Lead',
+                eventId,
+                eventSourceUrl: sourceUrl,
+                user: {
+                    email,
+                    phone,
+                    firstName,
+                    lastName: restName.join(' '),
+                    ip: clientIp,
+                    userAgent: req.headers['user-agent'],
+                    fbp,
+                    fbc,
+                },
+                customData: { content_name: 'contact_form' },
+            }).catch(err => console.error('Meta CAPI Lead failed:', err));
 
             res.status(201).json({
                 success: true,

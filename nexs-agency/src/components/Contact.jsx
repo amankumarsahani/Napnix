@@ -1,7 +1,7 @@
 // TODO: Replace console.error with Sentry or proper error tracking
 import { useState, useRef, useEffect, memo } from 'react';
 import { inquiryAPI } from '../services/api';
-import { trackLead } from '../utils/fbpixel';
+import { trackLead, getMetaContext } from '../utils/fbpixel';
 import { siteConfig } from '../constants/siteConfig';
 import {
   RiBuildingLine,
@@ -55,16 +55,23 @@ const Contact = memo(function Contact() {
     setSubmitStatus({ type: '', message: '' });
 
     try {
+      // Shared Meta context for browser<->server (CAPI) deduplication.
+      const meta = getMetaContext();
+
       await inquiryAPI.submit({
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
         company: formData.company,
-        message: buildInquiryMessage(formData.intent, formData.message)
+        message: buildInquiryMessage(formData.intent, formData.message),
+        eventId: meta.eventId,
+        fbp: meta.fbp,
+        fbc: meta.fbc,
+        sourceUrl: meta.sourceUrl
       });
 
-      // Meta Pixel conversion: contact form lead
-      trackLead({ content_name: 'contact_form' });
+      // Meta Pixel conversion: contact form lead (shares eventId with server)
+      trackLead({ content_name: 'contact_form' }, meta.eventId);
 
       setSubmitStatus({
         type: 'success',
