@@ -274,6 +274,33 @@ class TenantController {
         return true;
     }
 
+    /**
+     * Relaunch a tenant's PM2 process so launch-time args (--industry/--plan)
+     * pick up changes. A plain `pm2 restart` reuses the running process's old
+     * args, so industry/plan changes need a full ecosystem update + delete/start.
+     */
+    async _relaunchTenantForConfigChange(tenant) {
+        if (!tenant || tenant.process_status !== 'running' || !tenant.assigned_port || !tenant.db_name) {
+            return false;
+        }
+
+        const server = tenant.server_id
+            ? await ServerModel.findById(tenant.server_id)
+            : await ServerModel.getBestServer();
+
+        if (!server) {
+            return false;
+        }
+
+        const provisioner = new Provisioner();
+        // Rewrite ecosystem.config.js with fresh args, then delete + start so
+        // the new --industry/--plan take effect (startProcess does delete+start).
+        await provisioner.updateEcosystemConfig(tenant, tenant.assigned_port, server);
+        await provisioner.startProcess(tenant, tenant.assigned_port, server);
+        await TenantModel.updateProcessStatus(tenant.id, 'running');
+        return true;
+    }
+
     async _recordToolEnabled(tenantId, toolSlug, planId) {
         try {
             const [tools] = await pool.query("SELECT id FROM tools WHERE slug = ?", [toolSlug]);
@@ -403,7 +430,7 @@ class TenantController {
             }
 
             // Fix: Sync settings to tenant DB if critical fields changed
-            if (payload.name || payload.email || payload.industry_type) {
+            if (payload.name || payload.email || payload.industry_type || payload.plan_slug) {
                 const freshTenant = await TenantModel.findById(id);
                 if (freshTenant) {
                     const provisioner = new Provisioner();
@@ -418,6 +445,17 @@ class TenantController {
                     provisioner.syncTenantSettings(freshTenant, server).catch(err => {
                         console.error(`[Update Tenant] JSON Settings sync failed: ${err.message}`);
                     });
+
+                    // industry/plan are baked into the PM2 launch args (--industry/--plan)
+                    // and read once at boot. A settings-table sync alone is invisible to
+                    // /api/config, so relaunch the process to apply the new value.
+                    const industryChanged = payload.industry_type && freshTenant.industry_type !== tenant.industry_type;
+                    const planChanged = payload.plan_slug && freshTenant.plan_slug !== tenant.plan_slug;
+                    if (industryChanged || planChanged) {
+                        this._relaunchTenantForConfigChange(freshTenant).catch(err => {
+                            console.error(`[Update Tenant] Process relaunch failed: ${err.message}`);
+                        });
+                    }
                 }
             }
 
