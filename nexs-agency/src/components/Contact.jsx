@@ -123,7 +123,7 @@ const Contact = memo(function Contact() {
     {
       icon: "ri-phone-line",
       title: "Call Us",
-      details: "+91 7009614671, +91 7009108646",
+      details: "+91 6239396615, +91 7009108646",
       description: "24/7 support for active client engagements"
     },
     {

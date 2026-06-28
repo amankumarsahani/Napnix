@@ -94,7 +94,7 @@ const AboutPage = () => {
             "logo": LOGO_URL,
             "description": "Top software development agency delivering web, mobile, AI, cloud, and enterprise solutions to clients globally.",
             "email": siteConfig.email.info,
-            "telephone": "+917009614671, +917009108646",
+            "telephone": "+916239396615, +917009108646",
             "foundingDate": "2020",
             "address": {
                 "@type": "PostalAddress",

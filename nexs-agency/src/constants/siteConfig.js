@@ -21,9 +21,9 @@ export const siteConfig = {
         noreply: 'noreply@napnix.in',
     },
     phone: {
-        primary: '+91 7009614671',
+        primary: '+91 6239396615',
         secondary: '+91 7009108646',
-        tel: '+917009614671',
+        tel: '+916239396615',
     },
     domain: SITE_URL,
     social: [
