@@ -734,7 +734,7 @@ class TenantController {
             if (!tenant) return res.status(404).json({ error: 'Tenant not found' });
 
             const provisioner = new Provisioner();
-            const results = { frontend: null, storefront: null };
+            const results = { frontend: null, storefront: null, api: null };
 
             // Re-attach CRM frontend domain (slug-crm.domain)
             try {
@@ -750,7 +750,26 @@ class TenantController {
                 results.storefront = `error: ${e.message}`;
             }
 
-            const success = results.frontend !== null || results.storefront !== null;
+            // Re-create API host (slug-crm-api.domain): CNAME -> tunnel + tunnel ingress.
+            // Missing here = ERR_NAME_NOT_RESOLVED on the tenant's API calls. Repair-DNS
+            // previously only fixed the Pages domains, leaving the API host broken.
+            if (tenant.assigned_port && tenant.db_name) {
+                try {
+                    const server = tenant.server_id
+                        ? await ServerModel.findById(tenant.server_id)
+                        : await ServerModel.getBestServer();
+                    if (server) {
+                        results.api = await provisioner.addCloudflareRoute(tenant.slug, tenant.assigned_port, server);
+                    } else {
+                        results.api = 'error: no server found for tenant';
+                    }
+                } catch (e) {
+                    // "record already exists" is benign — DNS is present, nothing to repair.
+                    results.api = /already exists/i.test(e.message) ? 'already-exists' : `error: ${e.message}`;
+                }
+            }
+
+            const success = results.frontend !== null || results.storefront !== null || results.api !== null;
             res.json({
                 success,
                 message: success ? 'DNS repair completed' : 'DNS repair attempted but Pages attachment may still be pending',
