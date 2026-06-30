@@ -213,7 +213,7 @@ const Partners = memo(function Partners() {
         </div>
 
         <div className="transition-all duration-1000 delay-900 transform translate-y-0 opacity-100">
-          <div className="bg-[#4F46E5] rounded-2xl p-8 md:p-12 text-center text-white shadow-xl">
+          <div className="bg-[#2563EB] rounded-2xl p-8 md:p-12 text-center text-white shadow-xl">
             <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <RiShakeHandsLine className="text-2xl text-white" />
             </div>
@@ -229,7 +229,7 @@ const Partners = memo(function Partners() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
               <Link
                 to="/contact"
-                className="bg-white text-[#4F46E5] px-8 py-4 rounded-xl font-semibold hover:bg-[#F8FAFC] transition-all duration-300 cursor-pointer"
+                className="bg-white text-[#2563EB] px-8 py-4 rounded-xl font-semibold hover:bg-[#F8FAFC] transition-all duration-300 cursor-pointer"
               >
                 <span className="flex items-center justify-center">
                   Start Your Project

@@ -1,12 +1,12 @@
 # Deploy Nexs-Agency to VPS
-Write-Host "🚀 Starting Deployment to VPS..." -ForegroundColor Green
+Write-Host "[DEPLOY] Starting deployment to VPS..." -ForegroundColor Green
 
 # 1. Build the project
-Write-Host "📦 Building project..." -ForegroundColor Cyan
+Write-Host "[BUILD] Building project..." -ForegroundColor Cyan
 npm run build:prod
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "❌ Build failed!" -ForegroundColor Red
+    Write-Host "[ERROR] Build failed!" -ForegroundColor Red
     exit 1
 }
 
@@ -23,14 +23,14 @@ $Path_ = $env:DEPLOY_PATH
 $SiteUrl = $env:DEPLOY_SITE_URL
 
 if (-not $User -or -not $Host_ -or -not $Path_) {
-    Write-Host "❌ Missing required environment variables: DEPLOY_USER, DEPLOY_HOST, DEPLOY_PATH" -ForegroundColor Red
+    Write-Host "[ERROR] Missing required environment variables: DEPLOY_USER, DEPLOY_HOST, DEPLOY_PATH" -ForegroundColor Red
     exit 1
 }
 
 $Dest = "${User}@${Host_}:${Path_}"
 $ProxyCmd = "cloudflared access ssh --hostname %h"
 
-Write-Host "📤 Uploading files to server..." -ForegroundColor Cyan
+Write-Host "[UPLOAD] Uploading files to server..." -ForegroundColor Cyan
 Write-Host "Target: $Dest" -ForegroundColor Gray
 
 # Using scp with the proxy command
@@ -39,13 +39,13 @@ try {
     scp -r -o ProxyCommand="$ProxyCmd" dist/* $Dest
     
     if ($LASTEXITCODE -eq 0) {
-        Write-Host "✅ Deployment Complete!" -ForegroundColor Green
+        Write-Host "[OK] Deployment complete!" -ForegroundColor Green
         if ($SiteUrl) {
-            Write-Host "🌍 Live at: $SiteUrl" -ForegroundColor Green
+            Write-Host "[LIVE] Live at: $SiteUrl" -ForegroundColor Green
         }
     } else {
-        Write-Host "❌ SCP Upload failed. Check your SSH/Cloudflare connection." -ForegroundColor Red
+        Write-Host "[ERROR] SCP upload failed. Check your SSH/Cloudflare connection." -ForegroundColor Red
     }
 } catch {
-    Write-Host "❌ Error executing SCP: $_" -ForegroundColor Red
+    Write-Host "[ERROR] Error executing SCP: $_" -ForegroundColor Red
 }

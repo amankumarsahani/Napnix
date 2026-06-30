@@ -87,7 +87,7 @@ const PortfolioPage = () => {
             image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&q=80&fm=webp",
             size: "large",
             description: "Custom Magento store with UX redesign resulting in a 45% increase in sales.",
-            metric: "45% Sales ↑",
+            metric: "+45% Sales",
             tags: ["Magento", "UX/UI Design", "E-commerce"]
         },
         {
@@ -107,7 +107,7 @@ const PortfolioPage = () => {
             image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&fm=webp",
             size: "small",
             description: "Custom CRM with AI predictions increasing sales efficiency by 30%.",
-            metric: "30% Efficiency ↑",
+            metric: "+30% Efficiency",
             tags: ["AI/ML", "Python", "React"]
         },
         {
@@ -117,7 +117,7 @@ const PortfolioPage = () => {
             image: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1200&q=80&fm=webp",
             size: "wide",
             description: "City guide app with augmented reality navigation and social features.",
-            metric: "4.8★ Rating",
+            metric: "4.8 / 5 Rating",
             tags: ["Flutter", "ARKit", "Firebase"]
         },
         {
