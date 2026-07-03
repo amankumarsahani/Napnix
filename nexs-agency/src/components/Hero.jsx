@@ -3,11 +3,10 @@ import MagneticButton from './ui/MagneticButton'
 import { RiArrowRightLine, RiCodeSSlashLine } from 'react-icons/ri';
 
 const rotatingTexts = [
-  "AI-Powered Software Solutions",
-  "Web & Mobile App Development",
-  "CRM & ERP Enterprise Solutions",
-  "Cloud-Native Architecture",
-  "E-commerce & Digital Transformation"
+  "Follows Up Automatically",
+  "Captures Every Enquiry",
+  "Scales Your Operations",
+  "Fits How You Actually Work"
 ]
 
 const technologies = [
@@ -66,13 +65,13 @@ const Hero = memo(function Hero() {
             <div className="mx-auto inline-flex max-w-2xl flex-wrap items-center justify-center gap-x-1.5 gap-y-1 rounded-full border border-white/30 bg-white/90 px-3 py-2 text-center text-sm font-semibold text-[#2563EB] backdrop-blur-sm sm:px-4 sm:text-base">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2"></div>
               <RiCodeSSlashLine className="mr-1 text-sm" />
-              Custom Software, NapCRM, AI Automation and SEO
+              NapCRM · Automated Follow-up · Custom Software
             </div>
 
             <div className="space-y-4">
               <h1 className="font-bold text-white leading-tight drop-shadow-lg">
-                <span className="block mb-1 text-2xl sm:text-3xl md:text-4xl lg:text-[3.25rem]">Build Faster With</span>
-                <span className="block mb-1 text-2xl sm:text-3xl md:text-4xl lg:text-[3.25rem]">Revenue-Focused Systems for</span>
+                <span className="block mb-1 text-2xl sm:text-3xl md:text-4xl lg:text-[3.25rem]">Stop Losing Leads.</span>
+                <span className="block mb-1 text-2xl sm:text-3xl md:text-4xl lg:text-[3.25rem]">Build the System That</span>
                 <span className="block relative min-h-[1.2em] text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[5rem]">
                   <span className="relative" aria-live="polite" aria-atomic="true">
                     <span className="text-[#D97706]">
@@ -83,26 +82,26 @@ const Hero = memo(function Hero() {
               </h1>
 
               <p className="mx-auto max-w-3xl text-base font-medium leading-relaxed text-white/90 sm:text-lg lg:text-xl">
-                Napnix helps teams turn research traffic into qualified conversations with
-                <span className="font-bold text-[#D97706]"> custom software, mobile apps, AI workflows, CRM rollouts, and technical SEO</span>.
-                If you already know the problem, we can show you the next best build or conversion step quickly.
+                Napnix builds the operating system behind growing agencies and service businesses —
+                <span className="font-bold text-[#D97706]"> lead capture, automated follow-up, and CRM that fits how you actually work</span>.
+                Off-the-shelf when NapCRM fits, custom-built when it doesn't.
               </p>
             </div>
 
             <div className="mt-6 flex flex-col justify-center gap-3 sm:mt-8 sm:flex-row sm:gap-4">
               <MagneticButton
-                href="/contact?intent=demo"
+                href="/contact?intent=audit"
                 className="bg-[#2563EB] text-white px-8 sm:px-8 lg:px-6 py-4 sm:py-4 lg:py-3 rounded-xl text-base sm:text-lg lg:text-base font-semibold shadow-xl inline-flex items-center justify-center hover:bg-[#1D4ED8] active:scale-95 transition-colors duration-300 group"
               >
-                Book a Discovery Call
+                Book a Revenue-Leak Audit
                 <RiArrowRightLine className="ml-2 text-lg group-hover:translate-x-1 transition-transform duration-300" />
               </MagneticButton>
 
               <MagneticButton
-                href="/services"
+                href="/napcrm"
                 className="bg-white/90 backdrop-blur-sm text-slate-700 border-2 border-white/30 px-8 sm:px-8 lg:px-6 py-4 sm:py-4 lg:py-3 rounded-xl text-base sm:text-lg lg:text-base font-semibold inline-flex items-center justify-center hover:bg-white active:scale-95 transition-all duration-300 group"
               >
-                See Services
+                See NapCRM
               </MagneticButton>
             </div>
 

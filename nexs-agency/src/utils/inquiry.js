@@ -5,6 +5,11 @@ export const inquiryIntentOptions = [
         description: 'See NapCRM or our delivery workflow before deciding.',
     },
     {
+        value: 'audit',
+        label: 'Revenue-Leak Audit',
+        description: 'Find where leads and follow-ups are slipping, and how to fix it.',
+    },
+    {
         value: 'build',
         label: 'Build a product',
         description: 'Launch a custom web app, mobile app, or internal platform.',
