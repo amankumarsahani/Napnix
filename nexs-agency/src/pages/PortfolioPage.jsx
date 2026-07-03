@@ -11,6 +11,7 @@ import { SITE_URL } from '../constants/siteConfig';
 import { withBrandKeywords } from '../constants/seoConfig';
 import { COMPANY_STATS } from '../constants/companyStats';
 import { PORTFOLIO_FALLBACK, ACCENT_GRADIENTS } from '../constants/portfolioFallback';
+import { CASE_STUDY_SLUGS } from '../constants/caseStudies';
 import { portfolioAPI } from '../services/api';
 import { RiArrowRightLine, RiArrowUpLine } from 'react-icons/ri';
 
@@ -23,6 +24,7 @@ const slugify = (str) => String(str).toLowerCase().replace(/—/g, '-').replace(
 const normalize = (p) => ({
     id: p.id,
     title: p.title,
+    slug: p.slug || null,
     category: p.category || 'Web Platform',
     description: p.description || '',
     tags: Array.isArray(p.tags) ? p.tags : [],
@@ -34,6 +36,8 @@ const normalize = (p) => ({
 
 const ProjectCard = ({ project }) => {
     const gradient = ACCENT_GRADIENTS[project.accent] || ACCENT_GRADIENTS.default;
+    const caseSlug = project.slug || slugify(project.title);
+    const hasCase = CASE_STUDY_SLUGS.includes(caseSlug);
     return (
         <motion.div
             layout
@@ -80,6 +84,15 @@ const ProjectCard = ({ project }) => {
                     </div>
                     <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{project.title}</h3>
                     <p className="text-gray-200 line-clamp-3">{project.description}</p>
+                    {hasCase && (
+                        <Link
+                            to={`/portfolio/${caseSlug}`}
+                            className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-900 rounded-full text-sm font-bold hover:bg-[#2563EB] hover:text-white transition-colors w-fit"
+                        >
+                            View Case Study
+                            <RiArrowRightLine />
+                        </Link>
+                    )}
                 </div>
             </div>
         </motion.div>

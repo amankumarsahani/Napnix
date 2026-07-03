@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-
 import { Helmet } from 'react-helmet-async';
 import { SITE_URL } from './constants/siteConfig';
 import { DEFAULT_SITE_KEYWORDS } from './constants/seoConfig';
+import { TESTIMONIALS } from './constants/testimonials';
 import { lazyWithRetry } from './utils/lazyWithRetry';
 import { useAuth } from './context/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
@@ -29,6 +30,8 @@ const ServicesPage = lazyWithRetry(() => import('./pages/ServicesPage'));
 const AboutPage = lazyWithRetry(() => import('./pages/AboutPage'));
 const PortfolioPage = lazyWithRetry(() => import('./pages/PortfolioPage'));
 const AuditPage = lazyWithRetry(() => import('./pages/AuditPage'));
+const ThankYouPage = lazyWithRetry(() => import('./pages/ThankYouPage'));
+const CaseStudyPage = lazyWithRetry(() => import('./pages/CaseStudyPage'));
 const ContactPage = lazyWithRetry(() => import('./pages/ContactPage'));
 const BlogPage = lazyWithRetry(() => import('./pages/BlogPage'));
 const NapCRMLandingPage = lazyWithRetry(() => import('./pages/NapCRMLandingPage'));
@@ -136,6 +139,20 @@ const LandingPage = memo(function LandingPage() {
     })),
   };
 
+  // Real client reviews — machine-readable proof for search and AI discovery.
+  const reviewSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Napnix',
+    url: SITE_URL,
+    review: TESTIMONIALS.map((t) => ({
+      '@type': 'Review',
+      author: { '@type': 'Person', name: t.name },
+      reviewBody: t.text,
+      reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-white w-full overflow-x-hidden">
       <Helmet>
@@ -163,6 +180,7 @@ const LandingPage = memo(function LandingPage() {
         <meta name="twitter:description" content="Stop losing leads. The system behind follow-up, CRM, and operations for agencies and service businesses. Mohali-based, serving clients worldwide." />
         <meta name="twitter:image" content={`${SITE_URL}/og-image.jpg`} />
         <script type="application/ld+json">{JSON.stringify(homeFaqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(reviewSchema)}</script>
       </Helmet>
 
       {/* Hero loads immediately for faster FCP */}
@@ -237,7 +255,8 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/audit" element={<AuditPage />} />
-          <Route path="/portfolio/:slug" element={<Navigate to="/portfolio" replace />} />
+          <Route path="/thank-you" element={<ThankYouPage />} />
+          <Route path="/portfolio/:slug" element={<CaseStudyPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/napcrm" element={<NapCRMLandingPage />} />

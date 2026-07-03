@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { inquiryAPI } from '../services/api';
 import FadeIn from '../components/ui/FadeIn';
 import ReadingProgress from '../components/ui/ReadingProgress';
@@ -15,8 +15,18 @@ import { buildInquiryMessage, getInquiryIntentFromSearch, inquiryIntentOptions }
 
 const FADE_IN_SMOOTH = { duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] };
 
+// Pull UTM / campaign params so the workflow + team can see where a lead came from.
+function getUtmContext(search) {
+    const params = new URLSearchParams(search);
+    const parts = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content']
+        .map((k) => (params.get(k) ? `${k}=${params.get(k)}` : null))
+        .filter(Boolean);
+    return parts.length ? `Campaign source: ${parts.join(', ')}` : '';
+}
+
 const ContactPage = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const initialIntent = getInquiryIntentFromSearch(location.search);
 
 
@@ -59,19 +69,13 @@ const ContactPage = () => {
                 email: formState.email,
                 phone: formState.phone,
                 company: formState.company,
-                message: buildInquiryMessage(formState.intent, formState.message)
+                message: buildInquiryMessage(formState.intent, formState.message, getUtmContext(location.search))
             });
 
             setIsSubmitting(false);
-            setIsSuccess(true);
-            import('canvas-confetti').then(({ default: confetti }) => {
-                confetti({
-                    particleCount: 150,
-                    spread: 70,
-                    origin: { y: 0.6 },
-                    colors: ['#3B82F6', '#8B5CF6', '#10B981']
-                });
-            });
+            // Redirect to a dedicated thank-you page (clean conversion event + next-step guidance).
+            navigate('/thank-you', { state: { intent: formState.intent, name: formState.name } });
+            return;
         } catch (err) {
             console.error('Form submission error:', err);
             setIsSubmitting(false);

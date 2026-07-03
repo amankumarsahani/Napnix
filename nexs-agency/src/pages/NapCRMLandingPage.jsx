@@ -173,6 +173,15 @@ export default function NapCRMLandingPage() {
                     { "@type": "ListItem", "position": 2, "name": "NapCRM", "item": `${SITE_URL}/napcrm` }
                 ]
             })}</script>
+            <script type="application/ld+json">{JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": faqs.map((faq) => ({
+                    "@type": "Question",
+                    "name": faq.q,
+                    "acceptedAnswer": { "@type": "Answer", "text": faq.a }
+                }))
+            })}</script>
 
             <AnimatePresence>
                 {toast.show && (
