@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,170 +7,133 @@ import FadeIn from '../components/ui/FadeIn';
 import Breadcrumbs from '../components/ui/Breadcrumbs';
 import BackToTop from '../components/ui/BackToTop';
 import ReadingProgress from '../components/ui/ReadingProgress';
-import { SITE_URL, siteConfig } from '../constants/siteConfig';
+import { SITE_URL } from '../constants/siteConfig';
 import { withBrandKeywords } from '../constants/seoConfig';
+import { COMPANY_STATS } from '../constants/companyStats';
+import { PORTFOLIO_FALLBACK, ACCENT_GRADIENTS } from '../constants/portfolioFallback';
+import { portfolioAPI } from '../services/api';
 import { RiArrowRightLine, RiArrowUpLine } from 'react-icons/ri';
 
 const FADE_IN_SMOOTH = { duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] };
 
+const slugify = (str) => String(str).toLowerCase().replace(/—/g, '-').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+// The API response is snake→camel mapped by the axios interceptor, so DB
+// `tech_stack` arrives as `techStack`, `image_url` as `imageUrl`, etc.
+const normalize = (p) => ({
+    id: p.id,
+    title: p.title,
+    category: p.category || 'Web Platform',
+    description: p.description || '',
+    tags: Array.isArray(p.tags) ? p.tags : [],
+    accent: p.accent || 'default',
+    size: p.size || 'small',
+    metric: p.metric || null,
+    image: p.imageUrl || p.image || null,
+});
+
 const ProjectCard = ({ project }) => {
+    const gradient = ACCENT_GRADIENTS[project.accent] || ACCENT_GRADIENTS.default;
     return (
-        <Link to={`/portfolio/${project.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="block h-full">
-            <motion.div
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.5 }}
-                className={cn(
-                    "group relative rounded-[2rem] overflow-hidden cursor-pointer h-full",
-                    project.size === 'large' ? 'md:col-span-2 md:row-span-2' :
-                        project.size === 'wide' ? 'md:col-span-2' :
-                            'md:col-span-1'
-                )}
-            >
-                <div className="absolute inset-0 bg-slate-900/30 group-hover:bg-slate-900/60 transition-colors duration-500 z-10" />
-                <img
-                    src={project.image}
-                    alt={project.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover transform group- transition-transform duration-700 ease-out"
-                />
+        <motion.div
+            layout
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.5 }}
+            className={cn(
+                'group relative rounded-[2rem] overflow-hidden h-full',
+                project.size === 'large' ? 'md:col-span-2 md:row-span-2' :
+                    project.size === 'wide' ? 'md:col-span-2' : 'md:col-span-1'
+            )}
+        >
+            {/* Art-directed backdrop: real screenshot if present, else brand gradient */}
+            {project.image ? (
+                <img src={project.image} alt={project.title} loading="lazy"
+                     className="absolute inset-0 w-full h-full object-cover" />
+            ) : (
+                <div className={cn('absolute inset-0 bg-gradient-to-br', gradient)}>
+                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-overlay" />
+                    <span className="absolute -bottom-6 right-4 text-[9rem] font-black text-white/10 leading-none select-none">
+                        {project.title.charAt(0)}
+                    </span>
+                </div>
+            )}
 
-                {/* Metrics Badge */}
-                {project.metric && (
-                    <div className="absolute top-4 right-4 z-30">
-                        <div className="px-4 py-2 bg-green-500 text-white rounded-full text-sm font-bold shadow-lg flex items-center gap-2">
-                            <RiArrowUpLine />
-                            {project.metric}
-                        </div>
-                    </div>
-                )}
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-20 flex flex-col justify-end p-8">
-                    <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                        <div className="flex flex-wrap gap-2 mb-3">
-                            {project.tags.map((tag, i) => (
-                                <span key={i} className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-xs font-medium text-white">
-                                    {tag}
-                                </span>
-                            ))}
-                        </div>
-                        <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{project.title}</h3>
-                        <p className="text-gray-300 line-clamp-2 mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-                            {project.description}
-                        </p>
-
-                        {/* View Case Study Button */}
-                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200">
-                            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-800 rounded-full text-sm font-bold hover:bg-[#2563EB] hover:text-white transition-colors">
-                                View Case Study
-                                <RiArrowRightLine />
-                            </span>
-                        </div>
+            {project.metric && (
+                <div className="absolute top-4 right-4 z-30">
+                    <div className="px-4 py-2 bg-green-500 text-white rounded-full text-sm font-bold shadow-lg flex items-center gap-2">
+                        <RiArrowUpLine />
+                        {project.metric}
                     </div>
                 </div>
-            </motion.div>
-        </Link>
+            )}
+
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-20 flex flex-col justify-end p-8">
+                <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                        {project.tags.map((tag, i) => (
+                            <span key={i} className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-xs font-medium text-white">
+                                {tag}
+                            </span>
+                        ))}
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{project.title}</h3>
+                    <p className="text-gray-200 line-clamp-3">{project.description}</p>
+                </div>
+            </div>
+        </motion.div>
     );
 };
 
 const PortfolioPage = () => {
-
     const [activeFilter, setActiveFilter] = useState('All');
+    const [projects, setProjects] = useState(PORTFOLIO_FALLBACK);
 
-    const projects = [
-        {
-            id: 1,
-            title: "E-commerce Platform (US Retailer)",
-            category: "Web Platform",
-            image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&q=80&fm=webp",
-            size: "large",
-            description: "Custom Magento store with UX redesign resulting in a 45% increase in sales.",
-            metric: "+45% Sales",
-            tags: ["Magento", "UX/UI Design", "E-commerce"]
-        },
-        {
-            id: 2,
-            title: "HealthTech Mobile App (UK)",
-            category: "Mobile App",
-            image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80&fm=webp",
-            size: "small",
-            description: "Flutter-based app with real-time analytics achieving 50k downloads in 2 months.",
-            metric: "50K Downloads",
-            tags: ["Flutter", "Healthcare", "Analytics"]
-        },
-        {
-            id: 3,
-            title: "AI-Powered CRM (Australia)",
-            category: "Dashboard",
-            image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&fm=webp",
-            size: "small",
-            description: "Custom CRM with AI predictions increasing sales efficiency by 30%.",
-            metric: "+30% Efficiency",
-            tags: ["AI/ML", "Python", "React"]
-        },
-        {
-            id: 4,
-            title: "Urban Pulse",
-            category: "Mobile App",
-            image: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1200&q=80&fm=webp",
-            size: "wide",
-            description: "City guide app with augmented reality navigation and social features.",
-            metric: "4.8 / 5 Rating",
-            tags: ["Flutter", "ARKit", "Firebase"]
-        },
-        {
-            id: 5,
-            title: "Crypto Exchange",
-            category: "Web Platform",
-            image: "https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=800&q=80&fm=webp",
-            size: "small",
-            description: "Secure and fast cryptocurrency trading platform with advanced charting.",
-            metric: "$2M+ Volume",
-            tags: ["Vue.js", "WebSockets", "Go"]
-        },
-        {
-            id: 6,
-            title: "EcoEnergy",
-            category: "Dashboard",
-            image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&q=80&fm=webp",
-            size: "small",
-            description: "Smart home energy monitoring dashboard for sustainable living.",
-            metric: "20% Energy Saved",
-            tags: ["React", "IoT", "AWS"]
-        }
-    ];
+    useEffect(() => {
+        let cancelled = false;
+        portfolioAPI.getAll()
+            .then((res) => {
+                const list = res?.data?.projects;
+                if (!cancelled && Array.isArray(list) && list.length) {
+                    setProjects(list.map(normalize));
+                }
+            })
+            .catch(() => { /* keep fallback */ });
+        return () => { cancelled = true; };
+    }, []);
 
-    const filters = ["All", "Web Platform", "Mobile App", "Dashboard"];
+    const filters = useMemo(
+        () => ['All', ...Array.from(new Set(projects.map((p) => p.category)))],
+        [projects]
+    );
 
     const filteredProjects = activeFilter === 'All'
         ? projects
-        : projects.filter(p => p.category === activeFilter);
+        : projects.filter((p) => p.category === activeFilter);
 
-    // Stats
     const stats = [
-        { value: '150+', label: 'Projects Completed' },
-        { value: '95%', label: 'Client Satisfaction' },
-        { value: '12+', label: 'Countries Served' },
-        { value: '5+', label: 'Years Experience' }
+        { value: COMPANY_STATS.projects, label: 'Projects Delivered' },
+        { value: COMPANY_STATS.successRate, label: 'Client Satisfaction' },
+        { value: COMPANY_STATS.countries, label: 'Countries Served' },
+        { value: COMPANY_STATS.years, label: 'Years Experience' },
     ];
 
     return (
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white">
             <Helmet>
-                <title>Portfolio - Custom Software Case Studies | Napnix</title>
-                <meta name="description" content="Explore our portfolio of successful projects including E-commerce platforms, HealthTech apps, and AI-Powered CRM systems. See how Napnix delivers measurable results for global clients." />
-                <meta name="keywords" content={withBrandKeywords('software portfolio, case studies, web development projects, mobile app examples, AI CRM case study, healthtech app development, e-commerce success stories')} />
+                <title>Portfolio - Software & CRM Case Studies | Napnix</title>
+                <meta name="description" content="Explore Napnix's portfolio: fleet booking apps, telecalling CRMs, AI meeting tools, HR dashboards, and multi-tenant NapCRM deployments for manufacturing and legal teams." />
+                <meta name="keywords" content={withBrandKeywords('software portfolio, case studies, mobile app development, CRM deployment, AI automation, telecalling CRM, fleet management app')} />
                 <link rel="canonical" href={`${SITE_URL}/portfolio`} />
-                <meta property="og:title" content="Portfolio - Custom Software Case Studies | Napnix" />
-                <meta property="og:description" content="See how we've helped businesses worldwide with custom E-commerce, Mobile, and AI solutions." />
+                <meta property="og:title" content="Portfolio - Software & CRM Case Studies | Napnix" />
+                <meta property="og:description" content="Real products we've shipped across mobile, web, AI, and CRM." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/portfolio`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Portfolio - Custom Software Case Studies | Napnix" />
-                <meta name="twitter:description" content="See how we've helped businesses worldwide with custom E-commerce, Mobile, and AI solutions." />
+                <meta name="twitter:title" content="Portfolio - Software & CRM Case Studies | Napnix" />
+                <meta name="twitter:description" content="Real products we've shipped across mobile, web, AI, and CRM." />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
@@ -179,57 +142,48 @@ const PortfolioPage = () => {
                 <meta name="twitter:site" content="@napnix" />
                 <meta name="twitter:creator" content="@napnix" />
                 <script type="application/ld+json">{JSON.stringify({
-                    "@context": "https://schema.org",
-                    "@type": "ItemList",
-                    "name": "Napnix Portfolio",
-                    "url": `${SITE_URL}/portfolio`,
-                    "description": "Explore our portfolio of successful projects including E-commerce platforms, HealthTech apps, and AI-Powered CRM systems.",
-                    "numberOfItems": 6,
-                    "itemListElement": [
-                        { "@type": "ListItem", "position": 1, "name": "E-commerce Platform (US Retailer)" },
-                        { "@type": "ListItem", "position": 2, "name": "HealthTech Mobile App (UK)" },
-                        { "@type": "ListItem", "position": 3, "name": "AI-Powered CRM (Australia)" },
-                        { "@type": "ListItem", "position": 4, "name": "Urban Pulse" },
-                        { "@type": "ListItem", "position": 5, "name": "Crypto Exchange" },
-                        { "@type": "ListItem", "position": 6, "name": "EcoEnergy" }
-                    ]
+                    '@context': 'https://schema.org',
+                    '@type': 'ItemList',
+                    name: 'Napnix Portfolio',
+                    url: `${SITE_URL}/portfolio`,
+                    description: 'Products Napnix has designed and shipped across mobile, web, AI, and CRM.',
+                    numberOfItems: projects.length,
+                    itemListElement: projects.map((p, i) => ({ '@type': 'ListItem', position: i + 1, name: p.title })),
                 })}</script>
                 <script type="application/ld+json">{JSON.stringify({
-                    "@context": "https://schema.org",
-                    "@type": "BreadcrumbList",
-                    "itemListElement": [
-                        { "@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL },
-                        { "@type": "ListItem", "position": 2, "name": "Portfolio", "item": `${SITE_URL}/portfolio` }
-                    ]
+                    '@context': 'https://schema.org',
+                    '@type': 'BreadcrumbList',
+                    itemListElement: [
+                        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+                        { '@type': 'ListItem', position: 2, name: 'Portfolio', item: `${SITE_URL}/portfolio` },
+                    ],
                 })}</script>
             </Helmet>
 
-            {/* Scroll Progress Bar */}
             <ReadingProgress />
 
-            {/* Hero Section */}
+            {/* Hero */}
             <section className="relative min-h-[85vh] flex items-center pt-20 overflow-hidden bg-gray-950 text-white">
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=2070&auto=format&fit=crop&fm=webp')] bg-cover bg-center opacity-30 mix-blend-soft-light"></div>
                 <div className="absolute top-0 right-0 w-2/3 h-full bg-gradient-to-l from-slate-900/30 to-transparent"></div>
 
                 <div className="container-custom relative z-10">
                     <FadeIn {...FADE_IN_SMOOTH}>
                         <span className="inline-block py-2 px-4 rounded-full bg-white/10 border border-white/10 backdrop-blur-md text-sm font-medium mb-6">
-                            Selected Works 2023-2024
+                            Selected Work
                         </span>
                         <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-tight mb-8">
-                            We Create <br />
-                            <span className="text-[#D97706]">Digital Legacies.</span>
+                            We Ship <br />
+                            <span className="text-[#D97706]">Real Products.</span>
                         </h1>
-                        <p className="text-xl text-slate-500 max-w-2xl mb-8">
-                            Real results for real businesses. Explore our portfolio of successful projects across web, mobile, and AI.
+                        <p className="text-xl text-slate-400 max-w-2xl mb-8">
+                            A focused set of products we've designed, built, and put into production — across mobile, web, AI, and CRM.
                         </p>
                     </FadeIn>
                 </div>
             </section>
 
-            {/* Stats Bar */}
+            {/* Stats */}
             <section className="relative -mt-16 z-30 px-6 mb-12">
                 <div className="container-custom">
                     <div className="bg-white rounded-2xl shadow-xl p-8 border border-slate-200 grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -246,22 +200,20 @@ const PortfolioPage = () => {
             {/* Filter & Grid */}
             <section className="py-10 bg-[#F8FAFC] min-h-screen">
                 <div className="container-custom">
-                    {/* Breadcrumbs */}
                     <div className="mb-8">
                         <Breadcrumbs />
                     </div>
 
-                    {/* Filters */}
                     <div className="flex flex-wrap gap-4 mb-16 justify-center md:justify-start">
-                        {filters.map(filter => (
+                        {filters.map((filter) => (
                             <button
                                 key={filter}
                                 onClick={() => setActiveFilter(filter)}
                                 className={cn(
-                                    "px-6 py-3 rounded-full text-sm font-bold transition-all duration-300",
+                                    'px-6 py-3 rounded-full text-sm font-bold transition-all duration-300',
                                     activeFilter === filter
-                                        ? "bg-slate-900 text-white shadow-lg scale-105"
-                                        : "bg-white text-slate-600 hover:bg-gray-100 border border-slate-200"
+                                        ? 'bg-slate-900 text-white shadow-lg scale-105'
+                                        : 'bg-white text-slate-600 hover:bg-gray-100 border border-slate-200'
                                 )}
                             >
                                 {filter}
@@ -269,21 +221,17 @@ const PortfolioPage = () => {
                         ))}
                     </div>
 
-                    {/* Masonry Grid */}
-                    <motion.div
-                        layout
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-[400px]"
-                    >
+                    <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-[400px]">
                         <AnimatePresence mode="popLayout">
-                            {filteredProjects.map((project, index) => (
-                                <ProjectCard key={project.id} project={project} index={index} />
+                            {filteredProjects.map((project) => (
+                                <ProjectCard key={project.id ?? slugify(project.title)} project={project} />
                             ))}
                         </AnimatePresence>
                     </motion.div>
                 </div>
             </section>
 
-            {/* CTA Section */}
+            {/* CTA */}
             <section className="py-32 bg-white text-center relative overflow-hidden">
                 <div className="container-custom relative z-10">
                     <FadeIn {...FADE_IN_SMOOTH}>
@@ -299,7 +247,6 @@ const PortfolioPage = () => {
                 </div>
             </section>
 
-            {/* Back to Top */}
             <BackToTop />
         </div>
     );

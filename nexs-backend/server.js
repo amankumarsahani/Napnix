@@ -259,6 +259,9 @@ app.use('/api/billing', require('./routes/billing.routes'));
 // Blog
 app.use('/api/blogs', require('./routes/blog.routes'));
 
+// Portfolio
+app.use('/api/portfolio', require('./routes/portfolio.routes'));
+
 // Expenses
 app.use('/api/expenses', require('./routes/expense.routes'));
 

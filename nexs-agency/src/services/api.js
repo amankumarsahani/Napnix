@@ -135,4 +135,9 @@ export const blogAPI = {
     delete: (id) => api.delete(`/blogs/${id}`)
 };
 
+export const portfolioAPI = {
+    getAll: (params) => cachedGet('/portfolio', { params }),
+    getBySlug: (slug) => cachedGet(`/portfolio/slug/${slug}`)
+};
+
 export default api;

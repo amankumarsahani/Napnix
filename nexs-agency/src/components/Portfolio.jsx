@@ -1,68 +1,46 @@
-import { useState, useMemo, memo } from 'react'
+import { useState, useMemo, useEffect, memo } from 'react'
 import { Link } from 'react-router-dom'
 import { RiArrowRightLine, RiEyeLine } from 'react-icons/ri';
+import { PORTFOLIO_FALLBACK, ACCENT_GRADIENTS } from '../constants/portfolioFallback';
+import { portfolioAPI } from '../services/api';
+
+// Map an API row (snake→camel by the axios interceptor) to the card shape.
+const normalize = (p) => ({
+  title: p.title,
+  slug: p.slug || String(p.title).toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+  category: p.category || 'Web Platform',
+  description: p.description || '',
+  accent: p.accent || 'default',
+  image: p.imageUrl || p.image || null,
+  technologies: p.techStack || p.technologies || [],
+});
 
 const Portfolio = memo(function Portfolio() {
   const [activeCategory, setActiveCategory] = useState("All")
+  const [projects, setProjects] = useState(PORTFOLIO_FALLBACK)
 
-  const projects = [
-    {
-      title: "E-commerce Platform",
-      slug: "ecommerce-platform",
-      category: "Web Development",
-      image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop&fm=webp",
-      description: "Modern e-commerce platform with advanced product filtering and secure payment integration.",
-      technologies: ["React", "Node.js", "MongoDB", "Stripe"]
-    },
-    {
-      title: "Food Delivery App",
-      slug: "food-delivery-app",
-      category: "Mobile Development",
-      image: "https://plus.unsplash.com/premium_photo-1682130100826-913b21060e4e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=400&h=300&fit=crop&fm=webp",
-      description: "Mobile app for food delivery with real-time tracking and multiple payment options.",
-      technologies: ["React Native", "Firebase", "Maps API", "PayPal"]
-    },
-    {
-      title: "Healthcare Dashboard",
-      slug: "healthcare-dashboard",
-      category: "Web Development",
-      image: "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?q=80&w=1106&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=400&h=300&fit=crop&fm=webp",
-      description: "Comprehensive healthcare management system with patient records and appointment scheduling.",
-      technologies: ["Vue.js", "Python", "PostgreSQL", "Docker"]
-    },
-    {
-      title: "Real Estate Portal",
-      slug: "real-estate-portal",
-      category: "Full Stack",
-      image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop&fm=webp",
-      description: "Property listing platform with advanced search filters and virtual tours.",
-      technologies: ["Next.js", "Prisma", "MySQL", "AWS"]
-    },
-    {
-      title: "Fitness Tracker",
-      slug: "fitness-tracker",
-      category: "Mobile Development",
-      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&fm=webp",
-      description: "Mobile fitness app with workout tracking, nutrition planning, and progress analytics.",
-      technologies: ["Flutter", "Dart", "Firebase", "Charts"]
-    },
-    {
-      title: "Inventory Management",
-      slug: "inventory-management",
-      category: "Enterprise",
-      image: "https://images.unsplash.com/photo-1553413077-190dd305871c?w=400&h=300&fit=crop&fm=webp",
-      description: "Enterprise inventory management system with analytics and automated reporting.",
-      technologies: ["Angular", "Java", "Spring", "Oracle"]
-    }
-  ];
+  useEffect(() => {
+    let cancelled = false;
+    portfolioAPI.getAll({ limit: 6 })
+      .then((res) => {
+        const list = res?.data?.projects;
+        if (!cancelled && Array.isArray(list) && list.length) {
+          setProjects(list.map(normalize));
+        }
+      })
+      .catch(() => { /* keep fallback */ });
+    return () => { cancelled = true; };
+  }, []);
 
-  const categories = ["All", "Web Development", "Mobile Development", "Full Stack", "Enterprise"];
+  const categories = useMemo(
+    () => ["All", ...Array.from(new Set(projects.map((p) => p.category)))],
+    [projects]
+  );
 
   const filteredProjects = useMemo(() => activeCategory === "All"
     ? projects
     : projects.filter(project => project.category === activeCategory),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeCategory])
+    [activeCategory, projects])
 
   return (
     <section id="portfolio" className="relative py-12 sm:py-16 lg:py-20 bg-slate-50 overflow-hidden">
@@ -71,13 +49,13 @@ const Portfolio = memo(function Portfolio() {
         <div className="text-left mb-8 sm:mb-12 lg:mb-16 transition-all duration-1000 transform translate-y-0 opacity-100">
           <span className="text-sm font-semibold text-[#2563EB] uppercase tracking-wider">Our Portfolio</span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-800 mb-4 sm:mb-6 mt-4 leading-tight tracking-tight">
-            Showcasing Our
+            Products We've
             <span className="block text-[#2563EB] mt-2">
-              Digital Masterpieces
+              Shipped to Production
             </span>
           </h2>
           <p className="text-base sm:text-lg lg:text-xl text-slate-600 max-w-3xl leading-relaxed">
-            Discover the innovative solutions we've crafted for businesses across various industries
+            A focused set of real products across mobile, web, AI, and CRM — built, deployed, and running.
           </p>
         </div>
 
@@ -101,19 +79,25 @@ const Portfolio = memo(function Portfolio() {
             <div key={index} className="group relative">
               <div className="relative bg-white rounded-2xl overflow-hidden shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
 
-                <div className="relative overflow-hidden">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    loading="lazy"
-                    height={192}
-                    className="w-full h-40 sm:h-48 object-cover transition-transform duration-700 group-hover:-translate-y-2"
-                  />
+                <div className="relative overflow-hidden h-40 sm:h-48">
+                  {project.image ? (
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      loading="lazy"
+                      height={192}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:-translate-y-2"
+                    />
+                  ) : (
+                    <div className={`w-full h-full bg-gradient-to-br ${ACCENT_GRADIENTS[project.accent] || ACCENT_GRADIENTS.default} flex items-center justify-center`}>
+                      <span className="text-6xl font-black text-white/25 select-none">{project.title.charAt(0)}</span>
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
                     <Link
-                      to={`/portfolio/${project.slug}`}
+                      to="/portfolio"
                       className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-all duration-300 shadow-lg text-[#9333EA]"
                     >
                       <RiEyeLine className="text-xl" />

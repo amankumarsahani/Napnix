@@ -4,6 +4,8 @@ export const COMPANY_STATS = {
     clients: '10+',
     successRate: '98%',
     support: '24/7',
+    countries: '4',
+    years: '5+',
 };
 
 export const SUPPORT_LABEL = '24/7 support for active client engagements';
