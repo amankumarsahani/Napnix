@@ -27,6 +27,7 @@ const Contact = lazy(() => import('./components/Contact'));
 // Lazy load pages (route-based splitting - these actually benefit from it)
 const ServicesPage = lazyWithRetry(() => import('./pages/ServicesPage'));
 const AboutPage = lazyWithRetry(() => import('./pages/AboutPage'));
+const PortfolioPage = lazyWithRetry(() => import('./pages/PortfolioPage'));
 const ContactPage = lazyWithRetry(() => import('./pages/ContactPage'));
 const BlogPage = lazyWithRetry(() => import('./pages/BlogPage'));
 const NapCRMLandingPage = lazyWithRetry(() => import('./pages/NapCRMLandingPage'));
@@ -233,8 +234,8 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/portfolio" element={<Navigate to="/" replace />} />
-          <Route path="/portfolio/:slug" element={<Navigate to="/" replace />} />
+          <Route path="/portfolio" element={<PortfolioPage />} />
+          <Route path="/portfolio/:slug" element={<Navigate to="/portfolio" replace />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/napcrm" element={<NapCRMLandingPage />} />
