@@ -25,9 +25,9 @@ const Partners = memo(function Partners() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20 transition-all duration-1000 delay-300 transform translate-y-0 opacity-100">
           {[
-            { icon: "ri-team-line", number: "50+", label: "Technology Partners", bgColor: "bg-[#2563EB]/10", textColor: "text-[#2563EB]" },
-            { icon: "ri-award-line", number: "30+", label: "Certifications", bgColor: "bg-[#D97706]/10", textColor: "text-[#D97706]" },
-            { icon: "ri-cloud-line", number: "12+", label: "Cloud Platforms", bgColor: "bg-emerald-50", textColor: "text-emerald-600" },
+            { icon: "ri-team-line", number: "2", label: "Technology Partners", bgColor: "bg-[#2563EB]/10", textColor: "text-[#2563EB]" },
+            { icon: "ri-award-line", number: "6+", label: "Certifications", bgColor: "bg-[#D97706]/10", textColor: "text-[#D97706]" },
+            { icon: "ri-cloud-line", number: "Any", label: "Cloud Platform", bgColor: "bg-emerald-50", textColor: "text-emerald-600" },
             { icon: "ri-shield-check-line", number: COMPANY_STATS.successRate, label: "Success Rate", bgColor: "bg-orange-50", textColor: "text-orange-600" }
           ].map((stat, index) => (
             <div key={index} className="group text-center">

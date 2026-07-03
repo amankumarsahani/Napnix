@@ -56,6 +56,7 @@ export const industryData = {
       author: 'Rahul Mehta',
       role: 'Founder',
       company: 'BrightPath Consulting',
+      representative: true,
       image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&q=80&fm=webp',
     },
     faqs: [
@@ -125,6 +126,7 @@ export const industryData = {
       author: 'Priya Sharma',
       role: 'Co-founder',
       company: 'UrbanKraft D2C',
+      representative: true,
       image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&q=80&fm=webp',
     },
     faqs: [
@@ -194,6 +196,7 @@ export const industryData = {
       author: 'Vikram Desai',
       role: 'Director',
       company: 'Horizon Realty Group',
+      representative: true,
       image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&h=100&fit=crop&q=80&fm=webp',
     },
     faqs: [
@@ -263,6 +266,7 @@ export const industryData = {
       author: 'Ankit Jain',
       role: 'Managing Partner',
       company: 'Stride Digital Agency',
+      representative: true,
       image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&q=80&fm=webp',
     },
     faqs: [
@@ -328,11 +332,11 @@ export const industryData = {
     ],
     recommendedTier: 'Business',
     testimonial: {
-      quote: 'Attendance tracking and batch management in one place saved us hours of spreadsheet work every week.',
-      author: 'Dr. Meena Krishnan',
-      role: 'Director',
-      company: 'Vidya International School',
-      image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&q=80&fm=webp',
+      quote: 'Admissions, enquiries, and attendance used to be scattered across registers. NapCRM brought it together and the team picked it up quickly.',
+      author: 'Ajeet Yadav',
+      role: 'Manager',
+      company: 'Prabhawati Vidya Peeth',
+      image: '',
     },
     faqs: [
       { q: 'Is this suitable for coaching institutes?', a: 'Yes. NapCRM works for schools, coaching centers, and edtech platforms. Batch management and attendance are designed around how institutes operate.' },
@@ -401,6 +405,7 @@ export const industryData = {
       author: 'Dr. Suresh Patel',
       role: 'Chief Medical Officer',
       company: 'LifeCare Clinics',
+      representative: true,
       image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&h=100&fit=crop&q=80&fm=webp',
     },
     faqs: [
@@ -470,6 +475,7 @@ export const industryData = {
       author: 'Aisha Khan',
       role: 'General Manager',
       company: 'Seaside Heritage Resort',
+      representative: true,
       image: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=100&h=100&fit=crop&q=80&fm=webp',
     },
     faqs: [
@@ -539,6 +545,7 @@ export const industryData = {
       author: 'Deepak Nair',
       role: 'Founder',
       company: 'Wanderlust Holidays',
+      representative: true,
       image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&q=80&fm=webp',
     },
     faqs: [
@@ -608,6 +615,7 @@ export const industryData = {
       author: 'Ravi Kumar',
       role: 'Owner',
       company: 'IronFit Gym Chain',
+      representative: true,
       image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&q=80&fm=webp',
     },
     faqs: [
@@ -673,11 +681,11 @@ export const industryData = {
     ],
     recommendedTier: 'Business',
     testimonial: {
-      quote: 'Missed deadlines are a thing of the past. Case management with time tracking and invoicing in one system is exactly what we needed.',
-      author: 'Adv. Neha Gupta',
-      role: 'Senior Partner',
-      company: 'Gupta & Associates',
-      image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&q=80&fm=webp',
+      quote: 'As an advocate I need clean records and reliable follow-up. Cases, clients, and documents stay organised in one system, so nothing slips through.',
+      author: 'Aman Singh',
+      role: 'Advocate',
+      company: 'Aman Singh Legal',
+      image: '',
     },
     faqs: [
       { q: 'Is client data secure?', a: 'Yes. All data is encrypted. Role-based access and audit logs ensure only authorized team members see case information.' },
@@ -752,11 +760,11 @@ export const industryData = {
     ],
     recommendedTier: 'Enterprise',
     testimonial: {
-      quote: 'We replaced three separate systems — ERP, quality tracking, and invoicing — with NapCRM. The batch traceability alone paid for itself.',
-      author: 'Rajesh Agarwal',
+      quote: 'We run inventory, orders, and our lead pipeline on NapCRM now. It replaced a pile of spreadsheets and gave the whole team the same view of the business.',
+      author: 'Rahul Verma',
       role: 'Managing Director',
-      company: 'PrecisionTech Industries',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&q=80&fm=webp',
+      company: 'Verma Industries',
+      image: '',
     },
     faqs: [
       { q: 'How many modules does manufacturing include?', a: '26+ modules covering production, scheduling, inventory, quality (basic and advanced), MRP, equipment, invoicing, IoT, and analytics.' },
@@ -821,11 +829,11 @@ export const industryData = {
     ],
     recommendedTier: 'Business',
     testimonial: {
-      quote: 'Clients stopped calling to ask "where is my shipment?" — the WhatsApp tracking updates handle it automatically now.',
-      author: 'Sanjay Mittal',
-      role: 'Operations Head',
-      company: 'SwiftFreight Logistics',
-      image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&q=80&fm=webp',
+      quote: 'Napnix built our app and management dashboard end to end — bookings, driver tracking, and dispatch in real time. They stayed involved after launch.',
+      author: 'Parminder Singh',
+      role: 'Owner',
+      company: 'Taxiologists',
+      image: '',
     },
     faqs: [
       { q: 'Can clients track shipments in real-time?', a: 'Yes. Shipment status updates are available in real-time via the logistics dashboard and automated WhatsApp notifications.' },
@@ -894,6 +902,7 @@ export const industryData = {
       author: 'Chef Arjun Reddy',
       role: 'Owner',
       company: 'Spice Route Kitchen',
+      representative: true,
       image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&q=80&fm=webp',
     },
     faqs: [
@@ -963,6 +972,7 @@ export const industryData = {
       author: 'Pooja Nair',
       role: 'Founder',
       company: 'Glow Studio Salon',
+      representative: true,
       image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&q=80&fm=webp',
     },
     faqs: [

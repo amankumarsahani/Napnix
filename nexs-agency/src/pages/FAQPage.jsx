@@ -25,7 +25,7 @@ const FAQPage = () => {
         },
         {
             question: "Do you serve clients globally?",
-            answer: "Yes, we work with clients worldwide. Our team serves businesses in India, USA, UK, Canada, Australia, UAE, and many other countries. We have experience working across different time zones and cultural contexts.",
+            answer: "Yes. We're based in Mohali, India, and serve clients worldwide — with active clients across India, the UK, Australia, and Canada. We work comfortably across different time zones and cultural contexts.",
             category: "General"
         },
         {

@@ -466,20 +466,27 @@ export default function IndustryLandingPage() {
                                 <blockquote className="text-2xl md:text-3xl font-medium text-slate-900 leading-relaxed mb-10">
                                     &ldquo;{data.testimonial.quote}&rdquo;
                                 </blockquote>
-                                <div className="flex items-center gap-4">
-                                    {data.testimonial.image && (
-                                        <img
-                                            src={data.testimonial.image}
-                                            alt={data.testimonial.author}
-                                            loading="lazy"
-                                            className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-md"
-                                        />
-                                    )}
-                                    <div className="flex flex-col gap-0.5">
-                                        <span className="font-bold text-slate-900">{data.testimonial.author}</span>
-                                        <span className="text-sm text-slate-500">{data.testimonial.role}, {data.testimonial.company}</span>
+                                {data.testimonial.representative ? (
+                                    <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                                        <span className={`w-2 h-2 rounded-full ${colors.bg}`} />
+                                        Representative use case
+                                    </span>
+                                ) : (
+                                    <div className="flex items-center gap-4">
+                                        {data.testimonial.image && (
+                                            <img
+                                                src={data.testimonial.image}
+                                                alt={data.testimonial.author}
+                                                loading="lazy"
+                                                className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-md"
+                                            />
+                                        )}
+                                        <div className="flex flex-col gap-0.5">
+                                            <span className="font-bold text-slate-900">{data.testimonial.author}</span>
+                                            <span className="text-sm text-slate-500">{data.testimonial.role}, {data.testimonial.company}</span>
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </FadeIn>
                     </div>

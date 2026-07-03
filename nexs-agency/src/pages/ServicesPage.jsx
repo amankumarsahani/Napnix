@@ -175,8 +175,8 @@ const ServicesPage = () => {
     const stats = [
         { label: "Projects Delivered", value: COMPANY_STATS.projects },
         { label: "Client Retention", value: COMPANY_STATS.successRate },
-        { label: "Years Experience", value: "5+" },
-        { label: "Global Clients", value: "12+" }
+        { label: "Years Experience", value: COMPANY_STATS.years },
+        { label: "Countries Served", value: COMPANY_STATS.countries }
     ];
 
     return (
