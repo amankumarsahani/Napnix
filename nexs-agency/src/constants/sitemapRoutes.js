@@ -53,6 +53,7 @@ export function getSitemapEntries() {
         { path: '/services', priority: '0.9', changefreq: 'weekly' },
         { path: '/about', priority: '0.8', changefreq: 'monthly' },
         { path: '/portfolio', priority: '0.8', changefreq: 'weekly' },
+        { path: '/audit', priority: '0.9', changefreq: 'monthly' },
         { path: '/contact', priority: '0.8', changefreq: 'monthly' },
         { path: '/blog', priority: '0.8', changefreq: 'daily' },
         { path: '/faq', priority: '0.8', changefreq: 'weekly' },

@@ -28,6 +28,7 @@ const Contact = lazy(() => import('./components/Contact'));
 const ServicesPage = lazyWithRetry(() => import('./pages/ServicesPage'));
 const AboutPage = lazyWithRetry(() => import('./pages/AboutPage'));
 const PortfolioPage = lazyWithRetry(() => import('./pages/PortfolioPage'));
+const AuditPage = lazyWithRetry(() => import('./pages/AuditPage'));
 const ContactPage = lazyWithRetry(() => import('./pages/ContactPage'));
 const BlogPage = lazyWithRetry(() => import('./pages/BlogPage'));
 const NapCRMLandingPage = lazyWithRetry(() => import('./pages/NapCRMLandingPage'));
@@ -138,14 +139,14 @@ const LandingPage = memo(function LandingPage() {
   return (
     <div className="min-h-screen bg-white w-full overflow-x-hidden">
       <Helmet>
-        <title>Napnix | Custom Software Development | Web, Mobile, CRM & AI</title>
-        <meta name="description" content="Napnix builds custom web apps, mobile apps, CRM systems, AI workflows, and cloud platforms for startups and enterprises worldwide. Based in Mohali, serving India, USA, UK, UAE, and beyond." />
+        <title>Napnix | CRM, Lead Follow-up & Custom Software for Service Businesses</title>
+        <meta name="description" content="Napnix builds the system behind your growth — lead capture, automated follow-up, and CRM for agencies and service businesses. Custom software when you need it. Based in Mohali, serving clients worldwide." />
         <meta name="keywords" content={DEFAULT_SITE_KEYWORDS} />
         <link rel="canonical" href={`${SITE_URL}/`} />
 
         {/* Open Graph */}
-        <meta property="og:title" content="Napnix | Custom Software Development | Web, Mobile, CRM & AI" />
-        <meta property="og:description" content="Custom web apps, mobile apps, CRM systems, AI workflows, and cloud platforms for startups and enterprises. Mohali-based team serving global clients." />
+        <meta property="og:title" content="Napnix | CRM, Lead Follow-up & Custom Software for Service Businesses" />
+        <meta property="og:description" content="Stop losing leads. Napnix builds the system behind follow-up, CRM, and operations for agencies and service businesses. Mohali-based, serving clients worldwide." />
         <meta property="og:url" content={`${SITE_URL}/`} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
@@ -158,8 +159,8 @@ const LandingPage = memo(function LandingPage() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@napnix" />
         <meta name="twitter:creator" content="@napnix" />
-        <meta name="twitter:title" content="Napnix | Custom Software Development | Web, Mobile, CRM & AI" />
-        <meta name="twitter:description" content="Custom web apps, mobile apps, CRM systems, AI workflows, and cloud platforms for startups and enterprises worldwide." />
+        <meta name="twitter:title" content="Napnix | CRM, Lead Follow-up & Custom Software for Service Businesses" />
+        <meta name="twitter:description" content="Stop losing leads. The system behind follow-up, CRM, and operations for agencies and service businesses. Mohali-based, serving clients worldwide." />
         <meta name="twitter:image" content={`${SITE_URL}/og-image.jpg`} />
         <script type="application/ld+json">{JSON.stringify(homeFaqSchema)}</script>
       </Helmet>
@@ -235,6 +236,7 @@ function App() {
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
+          <Route path="/audit" element={<AuditPage />} />
           <Route path="/portfolio/:slug" element={<Navigate to="/portfolio" replace />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/blog" element={<BlogPage />} />
