@@ -6,7 +6,7 @@ const TermsOfService = () => (
     <div className="pt-24 pb-16 bg-white min-h-screen">
         <Helmet>
             <title>Terms of Service | Napnix</title>
-            <meta name="description" content="Terms and conditions for using the Napnix website, NapCRM, NapMail, and custom software development services." />
+            <meta name="description" content="Terms and conditions for using the Napnix website, NapCRM, and custom software development services." />
             <link rel="canonical" href={`${SITE_URL}/terms`} />
             <meta name="robots" content="index, follow" />
             <meta property="og:title" content="Terms of Service | Napnix" />
@@ -28,7 +28,7 @@ const TermsOfService = () => (
                 <section className="mb-12">
                     <h2 className="text-2xl font-bold text-slate-800 mb-4">1. Agreement</h2>
                     <p className="mb-4">
-                        These Terms of Service (&ldquo;Terms&rdquo;) govern your use of napnix.in and related services operated by Napnix, including NapCRM, NapMail, and custom software development engagements. By accessing our website or using our services, you agree to these Terms and our <Link to="/privacy-policy" className="text-[#2563EB] hover:underline">Privacy Policy</Link>.
+                        These Terms of Service (&ldquo;Terms&rdquo;) govern your use of napnix.in and related services operated by Napnix, including NapCRM and custom software development engagements. By accessing our website or using our services, you agree to these Terms and our <Link to="/privacy-policy" className="text-[#2563EB] hover:underline">Privacy Policy</Link>.
                     </p>
                 </section>
 
@@ -53,7 +53,7 @@ const TermsOfService = () => (
                 <section className="mb-12">
                     <h2 className="text-2xl font-bold text-slate-800 mb-4">4. Accounts &amp; Subscriptions</h2>
                     <p className="mb-4">
-                        Product accounts (NapCRM, NapMail) require accurate registration information. You are responsible for safeguarding credentials and activity under your account. Subscription fees, billing cycles, trials, and cancellation terms are specified on the relevant pricing page and checkout flow.
+                        Product accounts (NapCRM) require accurate registration information. You are responsible for safeguarding credentials and activity under your account. Subscription fees, billing cycles, trials, and cancellation terms are specified on the relevant pricing page and checkout flow.
                     </p>
                 </section>
 

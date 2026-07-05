@@ -20,7 +20,7 @@ const milestones = [
     {
         year: '2022',
         title: 'Product Foundations',
-        description: 'Began building internal CRM and email tooling that later became NapCRM and NapMail.',
+        description: 'Began building the internal CRM tooling that later became NapCRM.',
         icon: 'ri-stack-line',
         color: 'emerald'
     },

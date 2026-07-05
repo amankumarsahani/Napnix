@@ -74,7 +74,7 @@ export const crmFeatures = {
         { name: 'Payment Gateway', starter: true, growth: true, business: true, enterprise: true },
     ],
     marketing: [
-        { name: 'Email Campaigns', starter: '500/mo', growth: '5,000/mo', business: '25,000/mo', enterprise: 'Unlimited' },
+        { name: 'Email Follow-ups', starter: '500/mo', growth: '5,000/mo', business: '25,000/mo', enterprise: 'Unlimited' },
         { name: 'WhatsApp Integration', starter: false, growth: true, business: true, enterprise: true },
         { name: 'Automation Workflows', starter: '3', growth: '10', business: '50', enterprise: 'Unlimited' },
         { name: 'Landing Pages', starter: false, growth: '5', business: '25', enterprise: 'Unlimited' },

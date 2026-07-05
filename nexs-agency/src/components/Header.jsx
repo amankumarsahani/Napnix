@@ -37,10 +37,7 @@ const navItems = [
     { label: 'Services', path: '/napcrm/industries/services' },
     { label: 'General', path: '/napcrm/industries/general' },
   ]},
-  { label: 'NapMail', path: '/napmail', children: [
-    { label: 'Overview', path: '/napmail' },
-    { label: 'Pricing', path: '/napmail#pricing' },
-  ]},
+  { label: 'Products', path: '/products' },
   { label: 'About', path: '/about' },
   { label: 'Blog', path: '/blog' },
   { label: 'FAQ', path: '/faq' },

@@ -30,7 +30,7 @@ const Footer = memo(function Footer() {
       { name: 'Contact', href: '/contact' },
       { name: 'Blog', href: '/blog' },
       { name: 'NapCRM', href: '/napcrm' },
-      { name: 'NapMail', href: '/napmail' }
+      { name: 'Products', href: '/products' }
     ]
   };
 

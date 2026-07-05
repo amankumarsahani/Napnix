@@ -39,7 +39,7 @@ const Testimonials = memo(function Testimonials() {
             What Our Clients Say
           </h2>
           <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-            Feedback on Napnix delivery, NapCRM, and NapMail from teams we work with.
+            Feedback on Napnix delivery and NapCRM from teams we work with.
           </p>
         </div>
 

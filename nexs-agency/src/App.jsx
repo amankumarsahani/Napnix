@@ -35,7 +35,7 @@ const CaseStudyPage = lazyWithRetry(() => import('./pages/CaseStudyPage'));
 const ContactPage = lazyWithRetry(() => import('./pages/ContactPage'));
 const BlogPage = lazyWithRetry(() => import('./pages/BlogPage'));
 const NapCRMLandingPage = lazyWithRetry(() => import('./pages/NapCRMLandingPage'));
-const NapMailLandingPage = lazyWithRetry(() => import('./pages/NapMailLandingPage'));
+const ProductsPage = lazyWithRetry(() => import('./pages/ProductsPage'));
 const CRMPricingPage = lazyWithRetry(() => import('./pages/CRMPricingPage'));
 const PrivacyPolicy = lazyWithRetry(() => import('./pages/PrivacyPolicy'));
 const TermsOfService = lazyWithRetry(() => import('./pages/TermsOfService'));
@@ -145,6 +145,14 @@ const LandingPage = memo(function LandingPage() {
     '@type': 'Organization',
     name: 'Napnix',
     url: SITE_URL,
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '5',
+      bestRating: '5',
+      worstRating: '1',
+      ratingCount: String(TESTIMONIALS.length),
+      reviewCount: String(TESTIMONIALS.length),
+    },
     review: TESTIMONIALS.map((t) => ({
       '@type': 'Review',
       author: { '@type': 'Person', name: t.name },
@@ -262,11 +270,12 @@ function App() {
           <Route path="/napcrm" element={<NapCRMLandingPage />} />
           <Route path="/napcrm/pricing" element={<CRMPricingPage />} />
           <Route path="/napcrm/industries/:industry" element={<IndustryLandingPage />} />
-          <Route path="/napmail" element={<NapMailLandingPage />} />
+          <Route path="/products" element={<ProductsPage />} />
+          <Route path="/napmail" element={<Navigate to="/products" replace />} />
           <Route path="/nexcrm" element={<Navigate to="/napcrm" replace />} />
           <Route path="/nexcrm/pricing" element={<Navigate to="/napcrm/pricing" replace />} />
           <Route path="/nexcrm/industries/:industry" element={<RedirectNexCRMIndustry />} />
-          <Route path="/nexmail" element={<Navigate to="/napmail" replace />} />
+          <Route path="/nexmail" element={<Navigate to="/products" replace />} />
           <Route path="/admin/backups" element={<ProtectedRoute><AdminBackupsPage /></ProtectedRoute>} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />

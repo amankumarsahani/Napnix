@@ -62,7 +62,7 @@ export function getSitemapEntries() {
         { path: '/faq', priority: '0.8', changefreq: 'weekly' },
         { path: '/napcrm', priority: '0.9', changefreq: 'weekly' },
         { path: '/napcrm/pricing', priority: '0.9', changefreq: 'weekly' },
-        { path: '/napmail', priority: '0.9', changefreq: 'weekly' },
+        { path: '/products', priority: '0.8', changefreq: 'weekly' },
         { path: '/privacy-policy', priority: '0.4', changefreq: 'yearly' },
         { path: '/terms', priority: '0.4', changefreq: 'yearly' },
         { path: '/cookie-policy', priority: '0.3', changefreq: 'yearly' },

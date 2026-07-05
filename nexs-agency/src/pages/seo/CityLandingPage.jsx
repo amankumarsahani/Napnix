@@ -171,7 +171,7 @@ const cityData = {
             reasons: [
                 { title: 'Local HQ Advantage', desc: 'On-the-ground team in Sector 67 with direct access to founders and engineers.', icon: 'ri-building-2-line' },
                 { title: 'Tricity Coverage', desc: 'Serving Mohali, Chandigarh, Panchkula, and Zirakpur with fast turnaround.', icon: 'ri-map-pin-line' },
-                { title: 'Product + Services', desc: 'Custom builds plus NapCRM and NapMail products for faster go-to-market.', icon: 'ri-stack-line' },
+                { title: 'Product + Services', desc: 'Custom builds plus our NapCRM platform for faster go-to-market.', icon: 'ri-stack-line' },
                 { title: 'Global Delivery', desc: 'Local presence with experience shipping software for US, UK, and UAE clients.', icon: 'ri-global-line' }
             ]
         }

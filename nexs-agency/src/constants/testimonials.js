@@ -29,10 +29,10 @@ export const TESTIMONIALS = [
         initials: "PS",
     },
     {
-        text: "I use the system to run marketing — campaigns, lead capture, and follow-up automation all connect. Fewer tools, less manual work, and I can actually see which efforts are bringing in leads.",
+        text: "I run lead capture and follow-up on NapCRM — every enquiry lands in one pipeline and nothing gets forgotten. Fewer tools, less manual work, and I can actually see which efforts are bringing in leads.",
         name: "Aman Singh",
         position: "Marketing Lead",
-        project: "NapCRM + NapMail",
+        project: "NapCRM",
         initials: "AS",
     },
 ];

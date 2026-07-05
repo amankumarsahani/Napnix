@@ -6,7 +6,7 @@ const SecurityPolicy = () => (
     <div className="pt-24 pb-16 bg-white min-h-screen">
         <Helmet>
             <title>Security Policy | Napnix</title>
-            <meta name="description" content="How Napnix protects client data, applications, and infrastructure. Security practices for our website, NapCRM, and NapMail products." />
+            <meta name="description" content="How Napnix protects client data, applications, and infrastructure. Security practices for our website and NapCRM product." />
             <link rel="canonical" href={`${SITE_URL}/security`} />
             <meta name="robots" content="index, follow" />
             <meta property="og:title" content="Security Policy | Napnix" />
@@ -26,7 +26,7 @@ const SecurityPolicy = () => (
                 <section className="mb-12">
                     <h2 className="text-2xl font-bold text-slate-800 mb-4">1. Our Commitment</h2>
                     <p className="mb-4">
-                        Napnix builds software for businesses that depend on reliable, secure systems. This policy describes the security measures we apply to our website, client projects, and products (NapCRM, NapMail).
+                        Napnix builds software for businesses that depend on reliable, secure systems. This policy describes the security measures we apply to our website, client projects, and products (NapCRM).
                     </p>
                 </section>
 

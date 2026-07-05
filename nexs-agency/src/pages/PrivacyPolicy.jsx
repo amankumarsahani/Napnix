@@ -28,7 +28,7 @@ const PrivacyPolicy = () => (
                 <section className="mb-12">
                     <h2 className="text-2xl font-bold text-slate-800 mb-4">1. Introduction</h2>
                     <p className="mb-4">
-                        Napnix (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) operates napnix.in and related products including NapCRM and NapMail. This policy explains what personal data we collect, why we collect it, how long we keep it, and your rights. By using our website or services, you acknowledge this policy.
+                        Napnix (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) operates napnix.in and related products including NapCRM. This policy explains what personal data we collect, why we collect it, how long we keep it, and your rights. By using our website or services, you acknowledge this policy.
                     </p>
                     <p className="mb-4">
                         For cookie-specific information, see our <Link to="/cookie-policy" className="text-[#2563EB] hover:underline">Cookie Policy</Link>. For security practices, see our <Link to="/security" className="text-[#2563EB] hover:underline">Security Policy</Link>.
@@ -41,7 +41,7 @@ const PrivacyPolicy = () => (
                         <li><strong>Identity &amp; contact data</strong> — name, email, phone, company name submitted via forms or support channels.</li>
                         <li><strong>Project &amp; inquiry data</strong> — messages, intent (sales, demo, support), and product interest you provide.</li>
                         <li><strong>Technical data</strong> — IP address, browser type, device information, pages visited, referral source, and timestamps (via analytics and server logs).</li>
-                        <li><strong>Product usage data</strong> — for NapCRM/NapMail accounts: login activity, configuration settings, and usage metrics necessary to operate the service.</li>
+                        <li><strong>Product usage data</strong> — for NapCRM accounts: login activity, configuration settings, and usage metrics necessary to operate the service.</li>
                         <li><strong>Payment data</strong> — billing handled by payment processors (e.g. Razorpay); we do not store full card numbers on our servers.</li>
                     </ul>
                 </section>

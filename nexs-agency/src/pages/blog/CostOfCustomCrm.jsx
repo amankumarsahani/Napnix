@@ -129,7 +129,7 @@ const CostOfCustomCrm = () => {
 
                     <h2>Cost Breakdown Factors</h2>
                     <ol>
-                        <li><strong>Feature Set:</strong> A simple database is cheap. AI-driven lead scoring and automated email marketing increase costs significantly.</li>
+                        <li><strong>Feature Set:</strong> A simple database is cheap. AI-driven lead scoring and automated follow-up workflows increase costs significantly.</li>
                         <li><strong>Tech Stack:</strong> Using modern frameworks like Next.js and Node.js (which we recommend) is cost-effective compared to legacy Java/Enterprise stacks.</li>
                         <li><strong>Integrations:</strong> Connecting to Gmail, Outlook, Stripe, or QuickBooks adds 10-20% to the budget per major integration.</li>
                         <li><strong>Data Migration:</strong> Moving terabytes of legacy data from Excel or an old system is often 15% of the total budget.</li>
