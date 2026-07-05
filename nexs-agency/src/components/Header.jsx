@@ -18,10 +18,11 @@ const navItems = [
       { label: 'E-commerce', path: '/services/ecommerce-development' },
     ]
   },
-  { label: 'NapCRM', path: '/napcrm', children: [
-    { label: 'Overview', path: '/napcrm' },
-    { label: 'Pricing', path: '/napcrm/pricing' },
-    { type: 'divider', label: 'Industries' },
+  { label: 'Products', path: '/products', children: [
+    { label: 'All Products', path: '/products' },
+    { label: 'NapCRM Overview', path: '/napcrm' },
+    { label: 'NapCRM Pricing', path: '/napcrm/pricing' },
+    { type: 'divider', label: 'NapCRM Industries' },
     { label: 'E-commerce', path: '/napcrm/industries/ecommerce' },
     { label: 'Real Estate', path: '/napcrm/industries/realestate' },
     { label: 'Healthcare', path: '/napcrm/industries/healthcare' },
@@ -37,7 +38,6 @@ const navItems = [
     { label: 'Services', path: '/napcrm/industries/services' },
     { label: 'General', path: '/napcrm/industries/general' },
   ]},
-  { label: 'Products', path: '/products' },
   { label: 'About', path: '/about' },
   { label: 'Blog', path: '/blog' },
   { label: 'FAQ', path: '/faq' },
