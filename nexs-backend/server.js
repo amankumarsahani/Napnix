@@ -262,6 +262,9 @@ app.use('/api/blogs', require('./routes/blog.routes'));
 // Portfolio
 app.use('/api/portfolio', require('./routes/portfolio.routes'));
 
+// Case Studies
+app.use('/api/case-studies', require('./routes/caseStudy.routes'));
+
 // Expenses
 app.use('/api/expenses', require('./routes/expense.routes'));
 

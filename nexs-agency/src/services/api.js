@@ -140,4 +140,9 @@ export const portfolioAPI = {
     getBySlug: (slug) => cachedGet(`/portfolio/slug/${slug}`)
 };
 
+export const caseStudiesAPI = {
+    getAll: (params) => cachedGet('/case-studies', { params }),
+    getBySlug: (slug) => cachedGet(`/case-studies/slug/${slug}`)
+};
+
 export default api;

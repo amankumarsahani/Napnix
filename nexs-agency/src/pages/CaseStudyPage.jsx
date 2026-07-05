@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import FadeIn from '../components/ui/FadeIn';
@@ -8,6 +9,7 @@ import { SITE_URL } from '../constants/siteConfig';
 import { withBrandKeywords } from '../constants/seoConfig';
 import { ACCENT_GRADIENTS } from '../constants/portfolioFallback';
 import { CASE_STUDIES } from '../constants/caseStudies';
+import { caseStudiesAPI } from '../services/api';
 import { RiArrowRightLine, RiCheckLine, RiCloseLine, RiArrowRightSLine, RiDoubleQuotesL } from 'react-icons/ri';
 
 const Section = ({ eyebrow, title, children }) => (
@@ -22,9 +24,34 @@ const Section = ({ eyebrow, title, children }) => (
 
 const CaseStudyPage = () => {
     const { slug } = useParams();
-    const cs = CASE_STUDIES[slug];
+    const fallback = CASE_STUDIES[slug] || null;
+    // Render the built-in copy instantly (good for SEO); refine from the API.
+    const [cs, setCs] = useState(fallback);
+    const [loading, setLoading] = useState(!fallback);
 
-    // Unknown slug → back to the portfolio grid.
+    useEffect(() => {
+        let active = true;
+        const next = CASE_STUDIES[slug] || null;
+        setCs(next);
+        setLoading(!next);
+        caseStudiesAPI.getBySlug(slug)
+            .then((res) => {
+                if (active && res?.caseStudy) setCs(res.caseStudy);
+            })
+            .catch(() => { /* keep fallback */ })
+            .finally(() => { if (active) setLoading(false); });
+        return () => { active = false; };
+    }, [slug]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-white">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#2563EB]" />
+            </div>
+        );
+    }
+
+    // Unknown slug (no fallback and none from the API) → back to the portfolio grid.
     if (!cs) return <Navigate to="/portfolio" replace />;
 
     const gradient = ACCENT_GRADIENTS[cs.accent] || ACCENT_GRADIENTS.default;
