@@ -64,8 +64,16 @@ const runMigrations = async () => {
                     console.log(`✅ ${file} completed successfully.`);
                     migrationCount++;
                 } else {
-                    // SQL migration — split and execute
-                    const sql = fs.readFileSync(filePath, 'utf8');
+                    // SQL migration — split and execute.
+                    // Strip full-line `--` comments FIRST: the naive split(';') below
+                    // otherwise breaks on a semicolon inside a comment, leaving the
+                    // comment tail glued to the next statement (ER_PARSE_ERROR).
+                    // Only whole-line comments are removed, so string/JSON values are untouched.
+                    const rawSql = fs.readFileSync(filePath, 'utf8');
+                    const sql = rawSql
+                        .split('\n')
+                        .filter(line => !line.trim().startsWith('--'))
+                        .join('\n');
                     const statements = sql
                         .split(';')
                         .map(s => s.trim())

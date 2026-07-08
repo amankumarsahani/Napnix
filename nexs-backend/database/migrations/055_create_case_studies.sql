@@ -1,5 +1,5 @@
 -- Case studies — managed from the admin panel, served to the agency /portfolio/:slug pages.
--- slug matches a portfolio_projects.slug; only projects with a case study get a detail page.
+-- slug matches a portfolio_projects.slug — only projects with a case study get a detail page.
 CREATE TABLE IF NOT EXISTS case_studies (
     id            INT AUTO_INCREMENT PRIMARY KEY,
     slug          VARCHAR(255) NOT NULL UNIQUE,
