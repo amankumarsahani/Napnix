@@ -4,6 +4,20 @@
  */
 
 const db = require('../config/database');
+const { decryptSecret, encryptSecret } = require('../services/secretStore');
+
+const AI_PROVIDER_SETTING_KEYS = new Set([
+    'openai_api_key',
+    'gemini_api_key',
+    'groq_api_key',
+    'grok_api_key'
+]);
+
+function maskApiKey(value) {
+    if (!value) return '****';
+    if (value.length > 8) return `${value.substring(0, 4)}...${value.substring(value.length - 4)}`;
+    return '****';
+}
 
 // Get all system settings (Admin only)
 exports.getSettings = async (req, res) => {
@@ -15,9 +29,12 @@ exports.getSettings = async (req, res) => {
         settings.forEach(s => {
             // Mask sensitive data like API keys and SMTP passwords
             if ((s.setting_key.includes('_api_key') || s.setting_key === 'smtp_password') && s.setting_value) {
-                const val = s.setting_value;
-                if (val.length > 8 && s.setting_key.includes('_api_key')) {
-                    settingsMap[s.setting_key] = `${val.substring(0, 4)}...${val.substring(val.length - 4)}`;
+                if (s.setting_key.includes('_api_key')) {
+                    try {
+                        settingsMap[s.setting_key] = maskApiKey(decryptSecret(s.setting_value));
+                    } catch {
+                        settingsMap[s.setting_key] = 'configured';
+                    }
                 } else {
                     settingsMap[s.setting_key] = '****';
                 }
@@ -91,12 +108,13 @@ exports.updateSettings = async (req, res) => {
                 // Skip masked values — don't overwrite with placeholder
                 if (key.includes('_api_key') && value && value.includes('...')) continue;
                 if (key === 'smtp_password' && value === '****') continue;
+                const valueToStore = AI_PROVIDER_SETTING_KEYS.has(key) && value ? encryptSecret(value) : value;
 
                 await connection.query(
                     `INSERT INTO settings (setting_key, setting_value) 
                      VALUES (?, ?) 
                      ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)`,
-                    [key, value]
+                    [key, valueToStore]
                 );
             }
 
@@ -170,7 +188,7 @@ exports.testAIConnection = async (req, res) => {
             if (!setting) {
                 return res.status(404).json({ success: false, error: 'API Key not found in settings' });
             }
-            finalApiKey = setting.setting_value;
+            finalApiKey = decryptSecret(setting.setting_value);
         }
 
         const axios = require('axios');

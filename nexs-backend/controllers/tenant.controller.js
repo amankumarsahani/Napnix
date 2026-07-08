@@ -430,7 +430,7 @@ class TenantController {
             }
 
             // Fix: Sync settings to tenant DB if critical fields changed
-            if (payload.name || payload.email || payload.industry_type || payload.plan_slug) {
+            if (payload.name || payload.email || payload.industry_type || payload.plan_id !== undefined) {
                 const freshTenant = await TenantModel.findById(id);
                 if (freshTenant) {
                     const provisioner = new Provisioner();
@@ -450,7 +450,10 @@ class TenantController {
                     // and read once at boot. A settings-table sync alone is invisible to
                     // /api/config, so relaunch the process to apply the new value.
                     const industryChanged = payload.industry_type && freshTenant.industry_type !== tenant.industry_type;
-                    const planChanged = payload.plan_slug && freshTenant.plan_slug !== tenant.plan_slug;
+                    const planChanged = payload.plan_id !== undefined && (
+                        Number(freshTenant.plan_id || 0) !== Number(tenant.plan_id || 0)
+                        || freshTenant.plan_slug !== tenant.plan_slug
+                    );
                     if (industryChanged || planChanged) {
                         this._relaunchTenantForConfigChange(freshTenant).catch(err => {
                             console.error(`[Update Tenant] Process relaunch failed: ${err.message}`);

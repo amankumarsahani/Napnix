@@ -5,6 +5,7 @@
 
 const axios = require('axios');
 const db = require('../config/database');
+const { decryptSecret } = require('./secretStore');
 
 class AIService {
     constructor() {
@@ -35,17 +36,31 @@ class AIService {
             settings.forEach(s => settingsMap[s.setting_key] = s.setting_value);
 
             const config = {};
-            if (settingsMap.openai_api_key) {
-                config.openai = settingsMap.openai_api_key;
+            const assignKey = (provider, settingKey) => {
+                if (!settingsMap[settingKey]) return;
+                try {
+                    config[provider] = decryptSecret(settingsMap[settingKey]);
+                } catch (err) {
+                    console.warn(`[AIService] skipped unreadable ${settingKey}:`, err.message);
+                }
+            };
+
+            assignKey('openai', 'openai_api_key');
+            assignKey('gemini', 'gemini_api_key');
+            assignKey('groq', 'groq_api_key');
+            assignKey('grok', 'grok_api_key');
+
+            if (process.env.OPENAI_API_KEY && !config.openai) {
+                config.openai = process.env.OPENAI_API_KEY;
             }
-            if (settingsMap.gemini_api_key) {
-                config.gemini = settingsMap.gemini_api_key;
+            if (process.env.GEMINI_API_KEY && !config.gemini) {
+                config.gemini = process.env.GEMINI_API_KEY;
             }
-            if (settingsMap.groq_api_key) {
-                config.groq = settingsMap.groq_api_key;
+            if (process.env.GROQ_API_KEY && !config.groq) {
+                config.groq = process.env.GROQ_API_KEY;
             }
-            if (settingsMap.grok_api_key) {
-                config.grok = settingsMap.grok_api_key;
+            if (process.env.GROK_API_KEY && !config.grok) {
+                config.grok = process.env.GROK_API_KEY;
             }
 
             // Fallback for primary/legacy logic if only environment keys exist

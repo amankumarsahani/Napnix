@@ -32,6 +32,10 @@ const validateEnv = () => {
         console.warn('   Please use a strong, random secret in production.\n');
     }
 
+    if (!process.env.AI_SETTINGS_SECRET) {
+        warnings.push('AI_SETTINGS_SECRET (tenant AI keys fall back to JWT_SECRET encryption material)');
+    }
+
     // Cloudflare (required for tenant provisioning)
     if (!process.env.CLOUDFLARE_API_TOKEN) {
         warnings.push('CLOUDFLARE_API_TOKEN (required for tenant provisioning)');
