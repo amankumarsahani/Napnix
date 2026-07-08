@@ -1524,13 +1524,81 @@ EOFNODE`;
     }
 
     /**
-     * Update Cloudflare tunnel config
+     * Publish a tunnel ingress rule to the Cloudflare edge (remotely-managed tunnel).
+     *
+     * The tunnel on this account is dashboard/remotely-managed ("cloudflared" type):
+     * cloudflared pulls its ingress from Cloudflare, so editing the on-server
+     * config.yml has NO effect. The route must be written through the tunnel
+     * configurations API. Requires the API token to have Account → Cloudflare
+     * Tunnel → Edit permission.
+     */
+    async upsertRemoteTunnelIngress(tunnelId, hostname, service) {
+        if (!this.cfAccountId) throw new Error('CLOUDFLARE_ACCOUNT_ID is not configured');
+        const base = `https://api.cloudflare.com/client/v4/accounts/${this.cfAccountId}/cfd_tunnel/${tunnelId}/configurations`;
+        const headers = {
+            'Authorization': `Bearer ${this.cfApiToken}`,
+            'Content-Type': 'application/json'
+        };
+
+        const getRes = await fetch(base, { headers });
+        const getData = await getRes.json();
+        if (!getData.success) {
+            const msg = getData.errors?.[0]?.message || 'unknown error';
+            throw new Error(`fetch tunnel config failed: ${msg}`);
+        }
+
+        const config = (getData.result && getData.result.config) || {};
+        const ingress = Array.isArray(config.ingress) ? config.ingress : [];
+
+        if (ingress.some(rule => rule.hostname === hostname)) {
+            console.log(`[Provisioner] Remote tunnel already routes ${hostname} — skipping`);
+            return;
+        }
+
+        // Insert before the catch-all (the ingress entry without a hostname).
+        const catchAllIndex = ingress.findIndex(rule => !rule.hostname);
+        const newRule = { hostname, service };
+        if (catchAllIndex === -1) ingress.push(newRule);
+        else ingress.splice(catchAllIndex, 0, newRule);
+
+        const putRes = await fetch(base, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify({ config: { ...config, ingress } })
+        });
+        const putData = await putRes.json();
+        if (!putData.success) {
+            const msg = putData.errors?.[0]?.message || 'unknown error';
+            throw new Error(`publish tunnel config failed: ${msg}`);
+        }
+    }
+
+    /**
+     * Update Cloudflare tunnel config.
+     *
+     * Primary path: publish to the remote (dashboard-managed) tunnel via API.
+     * Fallback: legacy on-server config.yml edit — only meaningful for a
+     * locally-managed tunnel; a remotely-managed tunnel ignores it.
      */
     async updateTunnelConfig(slug, port, server, customDomain = null) {
+        const hostname = customDomain || `${slug}-crm-api.${this.cfDomain}`;
+        const service = `http://localhost:${port}`;
+        const tunnelId = server.cloudflare_tunnel_id || process.env.CLOUDFLARE_TUNNEL_ID;
+
+        // Preferred: write the route to the Cloudflare edge (works for the
+        // remotely-managed tunnel this account uses).
+        if (this.cfAccountId && tunnelId) {
+            try {
+                await this.upsertRemoteTunnelIngress(tunnelId, hostname, service);
+                console.log(`[Provisioner] Remote tunnel ingress published: ${hostname} -> ${service}`);
+                return;
+            } catch (error) {
+                console.error(`[Provisioner] Remote tunnel ingress update failed (${error.message}). Falling back to on-server config.yml (only effective for a locally-managed tunnel).`);
+            }
+        }
+
         try {
             const configPath = this.getServerTunnelConfigPath(server);
-            const hostname = customDomain || `${slug}-crm-api.${this.cfDomain}`;
-            const service = `http://localhost:${port}`;
 
             // Read current config from target server
             const { stdout: currentConfig } = await this.executeOnServer(server, `cat ${configPath}`);
