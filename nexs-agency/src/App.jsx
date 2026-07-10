@@ -41,6 +41,7 @@ const PrivacyPolicy = lazyWithRetry(() => import('./pages/PrivacyPolicy'));
 const TermsOfService = lazyWithRetry(() => import('./pages/TermsOfService'));
 const CookiePolicy = lazyWithRetry(() => import('./pages/CookiePolicy'));
 const SecurityPolicy = lazyWithRetry(() => import('./pages/SecurityPolicy'));
+const DataDeletion = lazyWithRetry(() => import('./pages/DataDeletion'));
 const FAQPage = lazyWithRetry(() => import('./pages/FAQPage'));
 const CityLandingPage = lazyWithRetry(() => import('./pages/seo/CityLandingPage'));
 const IndustryLandingPage = lazyWithRetry(() => import('./pages/IndustryLandingPage'));
@@ -280,6 +281,7 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/cookie-policy" element={<CookiePolicy />} />
+          <Route path="/data-deletion" element={<DataDeletion />} />
           <Route path="/security" element={<SecurityPolicy />} />
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/software-development-company/:city" element={<CityLandingPage />} />

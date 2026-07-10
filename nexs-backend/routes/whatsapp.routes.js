@@ -363,6 +363,27 @@ router.put('/internal/meta-credentials', async (req, res) => {
     }
 });
 
+// PUT /api/admin/whatsapp/internal/phone-registry — tenant registers its phone_number_id
+// so the single central Meta webhook (one Meta App for every tenant) knows where to
+// forward inbound messages for that number.
+router.put('/internal/phone-registry', async (req, res) => {
+    const { phoneNumberId, tenantSlug, tenantApiUrl } = req.body;
+    if (!phoneNumberId || !tenantSlug || !tenantApiUrl) {
+        return res.status(400).json({ error: 'phoneNumberId, tenantSlug, tenantApiUrl required' });
+    }
+    try {
+        await pool.query(
+            `INSERT INTO whatsapp_phone_registry (meta_phone_id, tenant_slug, tenant_api_url)
+             VALUES (?, ?, ?)
+             ON DUPLICATE KEY UPDATE tenant_slug = VALUES(tenant_slug), tenant_api_url = VALUES(tenant_api_url)`,
+            [phoneNumberId, tenantSlug, tenantApiUrl]
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // ── Conversations (Napnix accounts) ──────────────────────
 
 // GET /api/admin/whatsapp/accounts/:id/conversations

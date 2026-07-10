@@ -12,6 +12,7 @@ const Provisioner = require('../services/provisioner');
 const { pool } = require('../config/database');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+const axios = require('axios');
 
 class WebhookController {
     /**
@@ -639,6 +640,104 @@ class WebhookController {
 
         const workflowEngine = require('../services/workflowEngine');
         await workflowEngine.trigger('stripe_subscription_cancelled', 'tenant', tenantId, { subscription });
+    }
+
+    /**
+     * WhatsApp Cloud API (Meta) — one-time subscription verification handshake.
+     * Meta calls this with hub.mode/hub.verify_token/hub.challenge when the
+     * webhook URL is registered in the Meta App dashboard.
+     */
+    verifyWhatsAppMetaWebhook(req, res) {
+        const mode = req.query['hub.mode'];
+        const token = req.query['hub.verify_token'];
+        const challenge = req.query['hub.challenge'];
+
+        if (mode === 'subscribe' && token && token === process.env.META_WEBHOOK_VERIFY_TOKEN) {
+            return res.status(200).send(challenge);
+        }
+        return res.sendStatus(403);
+    }
+
+    /**
+     * WhatsApp Cloud API (Meta) — inbound message delivery.
+     * One Meta App hosts every tenant's WhatsApp Business number, so this is the
+     * single central receiver. It resolves phone_number_id -> tenant via
+     * whatsapp_phone_registry, then forwards each message to that tenant's own
+     * nexcrm-backend /api/whatsapp/incoming so it lands in the tenant's own DB.
+     * Meta requires a fast 200 regardless of downstream outcome or it retries
+     * aggressively, so we ack immediately and process after.
+     */
+    async handleWhatsAppMetaWebhook(req, res) {
+        res.status(200).json({ received: true });
+
+        try {
+            const rawBody = req.body; // Buffer (express.raw)
+            const appSecret = process.env.META_APP_SECRET;
+
+            if (appSecret) {
+                const signature = req.headers['x-hub-signature-256'] || '';
+                const expected = 'sha256=' + crypto.createHmac('sha256', appSecret).update(rawBody).digest('hex');
+                const sigBuf = Buffer.from(signature);
+                const expBuf = Buffer.from(expected);
+                if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) {
+                    console.error('[Webhook] WhatsApp Meta: signature mismatch, dropping payload');
+                    return;
+                }
+            } else {
+                console.warn('[Webhook] WhatsApp Meta: META_APP_SECRET not set, skipping signature verification');
+            }
+
+            const payload = JSON.parse(rawBody.toString('utf8'));
+
+            for (const entry of payload.entry || []) {
+                for (const change of entry.changes || []) {
+                    const value = change.value || {};
+                    const phoneNumberId = value.metadata?.phone_number_id;
+                    const messages = value.messages || [];
+                    if (!phoneNumberId || !messages.length) continue;
+
+                    const [regRows] = await pool.query(
+                        `SELECT tenant_api_url FROM whatsapp_phone_registry WHERE meta_phone_id = ?`,
+                        [phoneNumberId]
+                    );
+                    if (!regRows.length) {
+                        console.warn(`[Webhook] WhatsApp Meta: no tenant registered for phone_number_id ${phoneNumberId}`);
+                        continue;
+                    }
+                    const tenantApiUrl = regRows[0].tenant_api_url;
+
+                    const contactNameByWaId = {};
+                    for (const c of value.contacts || []) {
+                        contactNameByWaId[c.wa_id] = c.profile?.name || null;
+                    }
+
+                    for (const msg of messages) {
+                        const text = msg.text?.body
+                            || msg.button?.text
+                            || msg.interactive?.button_reply?.title
+                            || msg.interactive?.list_reply?.title
+                            || '';
+                        const mediaType = msg.type && msg.type !== 'text' ? msg.type : 'text';
+
+                        try {
+                            await axios.post(`${tenantApiUrl}/api/whatsapp/incoming`, {
+                                metaPhoneId: phoneNumberId,
+                                from: msg.from,
+                                fromName: contactNameByWaId[msg.from] || null,
+                                text,
+                                mediaType,
+                                messageId: msg.id,
+                                timestamp: Number(msg.timestamp) || Math.floor(Date.now() / 1000)
+                            }, { timeout: 10000 });
+                        } catch (err) {
+                            console.error(`[Webhook] Failed to forward WhatsApp message to tenant ${tenantApiUrl}:`, err.message);
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('[Webhook] WhatsApp Meta processing error:', error);
+        }
     }
 }
 
