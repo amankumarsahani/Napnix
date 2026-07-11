@@ -67,13 +67,13 @@ const AboutPage = () => {
   return (
     <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white overflow-hidden">
       <Helmet>
-        <title>About Napnix – Global Software Agency</title>
-        <meta name="description" content="Discover Napnix, a software development agency delivering web, mobile, AI, cloud, and enterprise solutions globally. Founded in 2020, serving startups and enterprises across India, North America, Europe, and Asia-Pacific." />
-        <meta name="keywords" content={withBrandKeywords('global software agency, international software solutions, AI software development, about napnix, software company india, tech experts usa uk, digital transformation partners')} />
+        <title>About Napnix — CRM & Lead Follow-Up Systems for Service Businesses</title>
+        <meta name="description" content="Napnix helps service businesses fix lead capture, follow-up, CRM, and operations systems. Founded in 2020, based in Mohali, serving clients globally." />
+        <meta name="keywords" content={withBrandKeywords('about napnix, crm agency, lead follow up systems, revenue leak audit, software company india')} />
         <link rel="canonical" href={`${SITE_URL}/about`} />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-        <meta property="og:title" content="About Napnix – Global Software Agency" />
-        <meta property="og:description" content="Top software development agency delivering web, mobile, AI, cloud, and enterprise solutions to clients globally." />
+        <meta property="og:title" content="About Napnix — CRM & Lead Follow-Up Systems for Service Businesses" />
+        <meta property="og:description" content="We help service businesses fix lead capture, follow-up, CRM, and operations systems." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`${SITE_URL}/about`} />
         <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
@@ -82,8 +82,8 @@ const AboutPage = () => {
         <meta property="og:site_name" content="Napnix" />
         <meta property="og:locale" content="en_IN" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="About Napnix – Global Software Agency" />
-        <meta name="twitter:description" content="Top software development agency delivering web, mobile, AI, cloud, and enterprise solutions to clients globally." />
+        <meta name="twitter:title" content="About Napnix — CRM & Lead Follow-Up Systems for Service Businesses" />
+        <meta name="twitter:description" content="We help service businesses fix lead capture, follow-up, CRM, and operations systems." />
         <meta name="twitter:site" content="@napnix" />
         <meta name="twitter:creator" content="@napnix" />
         <script type="application/ld+json">{JSON.stringify({
@@ -92,7 +92,7 @@ const AboutPage = () => {
             "name": "Napnix",
             "url": SITE_URL,
             "logo": LOGO_URL,
-            "description": "Top software development agency delivering web, mobile, AI, cloud, and enterprise solutions to clients globally.",
+            "description": "Napnix helps service businesses fix lead capture, follow-up, CRM, and operations systems.",
             "email": siteConfig.email.info,
             "telephone": "+916239396615, +917009108646",
             "foundingDate": "2020",

@@ -101,13 +101,13 @@ const ContactPage = () => {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white overflow-hidden">
             <Helmet>
-                <title>Contact Napnix - Hire Experts in Mohali, London, NYC & Dubai</title>
-                <meta name="description" content="Ready to innovate? Contact Napnix. We have a physical presence in Mohali (India) and serve clients globally in London, New York, Dubai, Toronto, and Sydney. Hire top-tier software developers today." />
-                <meta name="keywords" content={withBrandKeywords('contact software company, hire developers mohali, software agency london, tech partners new york, dubai software company, global software team')} />
+                <title>Contact Napnix — Book a Revenue-Leak Audit</title>
+                <meta name="description" content="Talk to Napnix about fixing lead capture, follow-up, and CRM for your service business. Based in Mohali, India — serving clients globally." />
+                <meta name="keywords" content={withBrandKeywords('contact napnix, hire crm developers mohali, book revenue leak audit, lead follow up consultation')} />
                 <link rel="canonical" href={`${SITE_URL}/contact`} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-                <meta property="og:title" content="Contact Napnix - Global Reach, Local Presence" />
-                <meta property="og:description" content="Connect with our global team. Offices in Mohali, serving the world." />
+                <meta property="og:title" content="Contact Napnix — Book a Revenue-Leak Audit" />
+                <meta property="og:description" content="Talk to Napnix about fixing lead capture, follow-up, and CRM for your service business." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/contact`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
@@ -116,8 +116,8 @@ const ContactPage = () => {
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Contact Napnix - Global Reach, Local Presence" />
-                <meta name="twitter:description" content="Connect with our global team. Offices in Mohali, serving the world." />
+                <meta name="twitter:title" content="Contact Napnix — Book a Revenue-Leak Audit" />
+                <meta name="twitter:description" content="Talk to Napnix about fixing lead capture, follow-up, and CRM for your service business." />
                 <meta name="twitter:site" content="@napnix" />
                 <meta name="twitter:creator" content="@napnix" />
                 <script type="application/ld+json">{JSON.stringify({
