@@ -121,7 +121,7 @@ const About = memo(function About() {
           <div className="lg:col-span-5 relative group">
             <div className="relative bg-white rounded-2xl p-6 shadow-xl border border-slate-200">
               <img
-                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop&q=80&fm=webp"
+                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop&q=50&fm=webp"
                 alt="Our professional team at work"
                 loading="lazy"
                 className="rounded-xl shadow-lg object-cover w-full h-80"

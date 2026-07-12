@@ -47,8 +47,8 @@ const Hero = memo(function Hero() {
     <section id="home" className="relative flex min-h-screen flex-col overflow-hidden">
       <div className="absolute inset-0">
         <img
-          src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1920&auto=format&fit=crop&fm=webp"
-          srcSet="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=640&fm=webp 640w, https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1024&fm=webp 1024w, https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1920&fm=webp 1920w"
+          src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=40&w=1920&auto=format&fit=crop&fm=webp"
+          srcSet="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=40&w=640&fm=webp 640w, https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=40&w=1024&fm=webp 1024w, https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=40&w=1920&fm=webp 1920w"
           sizes="100vw"
           alt="Team of developers collaborating at a modern workspace with multiple screens"
           fetchPriority="high"
