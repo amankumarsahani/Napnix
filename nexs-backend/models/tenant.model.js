@@ -111,6 +111,7 @@ class TenantModel {
             phone,
             logo_url,
             industry_type = 'general',
+            academic_mode = null,
             plan_id = 1,
             server_id = 1,
             status = 'trial',
@@ -118,6 +119,9 @@ class TenantModel {
             trial_ends_at = null,
             custom_domain = null
         } = tenantData;
+
+        // Only the `school` industry uses academic_mode; ignore it everywhere else.
+        const academicMode = industry_type === 'school' ? (academic_mode || 'school') : null;
 
         let trialEndsAt = null;
         if (status === 'trial') {
@@ -130,9 +134,9 @@ class TenantModel {
         }
 
         const [result] = await pool.query(`
-            INSERT INTO tenants (name, slug, subdomain, email, phone, logo_url, industry_type, plan_id, status, trial_ends_at, server_id, custom_domain)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [name, slug, subdomain || slug, email, phone, logo_url, industry_type, plan_id, status, trialEndsAt, server_id, custom_domain]);
+            INSERT INTO tenants (name, slug, subdomain, email, phone, logo_url, industry_type, academic_mode, plan_id, status, trial_ends_at, server_id, custom_domain)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [name, slug, subdomain || slug, email, phone, logo_url, industry_type, academicMode, plan_id, status, trialEndsAt, server_id, custom_domain]);
 
         return result.insertId;
     }
@@ -142,7 +146,7 @@ class TenantModel {
      */
     static async update(id, tenantData) {
         const allowedFields = [
-            'name', 'email', 'phone', 'logo_url', 'industry_type',
+            'name', 'email', 'phone', 'logo_url', 'industry_type', 'academic_mode',
             'plan_id', 'status', 'custom_features', 'server_id',
             'custom_domain', 'custom_domain_crm', 'custom_domain_storefront',
             'custom_domain_api', 'custom_domain_verified', 'custom_domain_dns_record_id',

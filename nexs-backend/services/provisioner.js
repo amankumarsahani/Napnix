@@ -122,11 +122,17 @@ class Provisioner {
         const dbSlug = tenant.slug.replace(/-/g, '_');
         const dbPass = server.db_password || this.dbPass;
 
+        const industry = tenant.industry_type || 'general';
+        // Only the `school` industry reads this. 'college' turns on semesters, subject
+        // credits, SGPA/CGPA and the backlog register on the same schema.
+        const academicMode = industry === 'school' ? (tenant.academic_mode || 'school') : null;
+        const academicArg = academicMode ? ` --academic-mode ${academicMode}` : '';
+
         return {
             name: processName,
             cwd: backendPath,
             script: 'server.js',
-            args: `--port ${port} --db nexcrm_${dbSlug} --industry ${tenant.industry_type || 'general'} --plan ${tenant.plan_slug || 'starter'}`,
+            args: `--port ${port} --db nexcrm_${dbSlug} --industry ${industry} --plan ${tenant.plan_slug || 'starter'}${academicArg}`,
             env: {
                 PORT: port,
                 DB_HOST: server.db_host || this.dbHost,
@@ -136,8 +142,9 @@ class Provisioner {
                 DB_PASSWORD: dbPass,
                 TENANT_ID: tenant.id,
                 TENANT_SLUG: tenant.slug,
-                INDUSTRY_TYPE: tenant.industry_type || 'general',
-                PLAN_SLUG: tenant.plan_slug || 'starter'
+                INDUSTRY_TYPE: industry,
+                PLAN_SLUG: tenant.plan_slug || 'starter',
+                ...(academicMode ? { ACADEMIC_MODE: academicMode } : {})
             }
         };
     }
@@ -372,10 +379,32 @@ EOFNODE`;
     }
 
     /**
+     * Where an industry's DDL lives, in priority order.
+     *
+     * Canonical (new industries, starting with `school`):
+     *   <nexcrm-backend>/database/migrations/<industry>/sql/*.sql
+     * That same folder is executed by nexcrm-backend's own migration runner via thin .js
+     * wrappers, so a newly provisioned tenant and an existing migrated tenant get a byte-
+     * identical schema. One file, one schema.
+     *
+     * Legacy (every pre-existing industry): nexs-backend/database/migrations/industry/<industry>/*.sql
+     * kept as a fallback so nothing regresses. New industries should not add files there.
+     */
+    getIndustrySqlDirs(industryType, server) {
+        const backendPath = this.getServerBackendPath(server);
+
+        return [
+            path.join(backendPath, 'database', 'migrations', industryType, 'sql'),
+            path.join(this.migrationsPath, 'industry', industryType)
+        ];
+    }
+
+    /**
      * Run migrations on tenant database
      */
     async runMigrations(dbName, industryType = 'general', server = { is_primary: true }) {
         const schemaFile = path.join(this.migrationsPath, 'nexcrm_base_schema.sql');
+        const hasIndustry = industryType && industryType !== 'general';
 
         if (server.is_primary) {
             const tenantPool = require('mysql2/promise').createPool({
@@ -391,30 +420,57 @@ EOFNODE`;
                 const sql = await fs.readFile(schemaFile, 'utf8');
                 await tenantPool.query(sql);
 
-                if (industryType && industryType !== 'general') {
-                    const industryMigrationsPath = path.join(this.migrationsPath, 'industry', industryType);
-                    try {
-                        const files = await fs.readdir(industryMigrationsPath);
-                        const sqlFiles = files.filter(f => f.endsWith('.sql')).sort();
-                        for (const file of sqlFiles) {
-                            const sql = await fs.readFile(path.join(industryMigrationsPath, file), 'utf8');
-                            await tenantPool.query(sql);
+                if (hasIndustry) {
+                    // First directory that actually has .sql files wins. Never both — running
+                    // canonical and legacy DDL over the same DB is how schemas drift.
+                    for (const dir of this.getIndustrySqlDirs(industryType, server)) {
+                        let sqlFiles = [];
+                        try {
+                            const files = await fs.readdir(dir);
+                            sqlFiles = files.filter(f => f.endsWith('.sql')).sort();
+                        } catch (e) {
+                            continue; // directory does not exist
                         }
-                    } catch (e) { /* ignore if no dir */ }
+
+                        if (sqlFiles.length === 0) continue;
+
+                        console.log(`[Provisioner] Industry DDL: ${dir} (${sqlFiles.length} files)`);
+                        for (const file of sqlFiles) {
+                            const industrySql = await fs.readFile(path.join(dir, file), 'utf8');
+                            await tenantPool.query(industrySql);
+                        }
+                        break;
+                    }
                 }
             } finally {
                 await tenantPool.end();
             }
         } else {
             const remotePath = this.getServerBackendPath(server);
-            const migrationPath = path.join(remotePath, 'database/migrations');
             const mysqlPrefix = this.buildMysqlCliPrefix(server);
 
-            const cmd = `${mysqlPrefix} ${this.quoteShellArg(dbName)} < ${this.quoteShellArg(path.join(migrationPath, 'nexcrm_base_schema.sql'))}`;
+            // Base schema is read from the remote box's own checkout, as before.
+            const remoteMigrations = path.join(remotePath, 'database/migrations');
+            const baseSchema = path.join(remoteMigrations, 'nexcrm_base_schema.sql');
+            const cmd = `${mysqlPrefix} ${this.quoteShellArg(dbName)} < ${this.quoteShellArg(baseSchema)}`;
             await this.executeOnServer(server, cmd);
 
-            if (industryType && industryType !== 'general') {
-                const industryCmd = `for f in ${path.join(migrationPath, 'industry', industryType)}/*.sql; do ${mysqlPrefix} ${this.quoteShellArg(dbName)} < "$f"; done`;
+            if (hasIndustry) {
+                // Same precedence as the primary path, resolved shell-side: canonical dir on the
+                // remote nexcrm-backend checkout, else the legacy industry dir.
+                const canonicalDir = path.posix.join(
+                    remotePath.replace(/\\/g, '/'), 'database', 'migrations', industryType, 'sql'
+                );
+                const legacyDir = path.posix.join(
+                    remotePath.replace(/\\/g, '/'), 'database', 'migrations', 'industry', industryType
+                );
+
+                const industryCmd =
+                    `DIR=""; ` +
+                    `if ls ${canonicalDir}/*.sql >/dev/null 2>&1; then DIR=${canonicalDir}; ` +
+                    `elif ls ${legacyDir}/*.sql >/dev/null 2>&1; then DIR=${legacyDir}; fi; ` +
+                    `if [ -n "$DIR" ]; then for f in $DIR/*.sql; do ${mysqlPrefix} ${this.quoteShellArg(dbName)} < "$f"; done; fi`;
+
                 await this.executeOnServer(server, industryCmd);
             }
         }

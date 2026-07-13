@@ -119,10 +119,26 @@ class BackupAccountController {
      */
     exchangeGoogleOauthCode = async (req, res) => {
         try {
-            const { client_id, client_secret, code, redirect_uri } = req.body;
+            const { account_id, client_id, client_secret, code, redirect_uri } = req.body;
             const google = this.getGoogleApis();
 
-            if (!client_id || !client_secret || !code || !redirect_uri) {
+            let effectiveClientId = client_id;
+            let effectiveClientSecret = client_secret;
+
+            if ((!effectiveClientId || !effectiveClientSecret) && account_id) {
+                const existingAccount = await BackupAccountModel.findById(account_id, { includeSecrets: true });
+                if (!existingAccount) {
+                    return res.status(404).json({
+                        success: false,
+                        message: 'Backup account not found'
+                    });
+                }
+
+                effectiveClientId = effectiveClientId || existingAccount.oauth_client_id || '';
+                effectiveClientSecret = effectiveClientSecret || existingAccount.oauth_client_secret || '';
+            }
+
+            if (!effectiveClientId || !effectiveClientSecret || !code || !redirect_uri) {
                 return res.status(400).json({
                     success: false,
                     message: 'client_id, client_secret, code, and redirect_uri are required'
@@ -130,8 +146,8 @@ class BackupAccountController {
             }
 
             const oauth2Client = new google.auth.OAuth2(
-                client_id,
-                client_secret,
+                effectiveClientId,
+                effectiveClientSecret,
                 redirect_uri
             );
 

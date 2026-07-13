@@ -163,6 +163,8 @@ export default function AdminBackupsPage() {
         activeServers: servers.filter((server) => server.is_active).length
     }), [accounts, servers]);
 
+    const hasStoredOauthClientSecret = Boolean(editingId && editingAccountMeta?.oauth_client_secret_configured);
+
     const resetForm = () => {
         setEditingId(null);
         setEditingAccountMeta(null);
@@ -306,7 +308,10 @@ export default function AdminBackupsPage() {
             setOauthConnecting(true);
 
             try {
-                if (!form.oauth_client_secret && !pending.form.oauth_client_secret) {
+                const clientSecret = form.oauth_client_secret || pending.form.oauth_client_secret || '';
+                const canReuseStoredSecret = Boolean(pending.editingId);
+
+                if (!clientSecret && !canReuseStoredSecret) {
                     setForm((prev) => ({
                         ...prev,
                         ...pending.form
@@ -319,8 +324,8 @@ export default function AdminBackupsPage() {
                     return;
                 }
 
-                const clientSecret = form.oauth_client_secret || pending.form.oauth_client_secret;
                 const response = await adminAPI.exchangeGoogleOauthCode({
+                    account_id: pending.editingId || undefined,
                     client_id: pending.form.oauth_client_id,
                     client_secret: clientSecret,
                     code,
@@ -461,8 +466,13 @@ export default function AdminBackupsPage() {
             return;
         }
 
-        if (!form.oauth_client_id.trim() || !form.oauth_client_secret.trim()) {
-            setMessage('OAuth client ID and client secret are required before connecting Google Drive.', 'error');
+        if (!form.oauth_client_id.trim()) {
+            setMessage('OAuth client ID is required before connecting Google Drive.', 'error');
+            return;
+        }
+
+        if (!form.oauth_client_secret.trim() && !hasStoredOauthClientSecret) {
+            setMessage('OAuth client secret is required before connecting Google Drive.', 'error');
             return;
         }
 
@@ -700,7 +710,7 @@ export default function AdminBackupsPage() {
                                                 <label className="mb-2 block text-sm font-medium text-slate-700">OAuth client secret</label>
                                                 <input name="oauth_client_secret" value={form.oauth_client_secret} onChange={handleChange} className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#2563EB] focus:ring-4 focus:ring-blue-100" required={!editingId && !editingAccountMeta?.oauth_client_secret_configured} />
                                                 {editingId && editingAccountMeta?.oauth_client_secret_configured ? (
-                                                    <p className="mt-2 text-xs text-slate-500">Leave blank to keep the currently stored OAuth client secret.</p>
+                                                    <p className="mt-2 text-xs text-slate-500">Leave blank to keep the currently stored OAuth client secret and reuse it during reconnect.</p>
                                                 ) : null}
                                             </div>
                                         </div>
