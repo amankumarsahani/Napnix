@@ -246,6 +246,11 @@ EOFNODE`;
             await this.runMigrations(dbName, industry_type, server);
             console.log(`[Provisioner] Migrations complete (industry: ${industry_type})`);
 
+            // 3b. Seed industry master data. A school with no academic session cannot have a
+            // class, so it cannot have a student, so every screen is an empty state. Seeding
+            // is what makes the tenant usable on day one.
+            await this.seedIndustryMasters(dbName, industry_type, tenant.academic_mode, server);
+
             // 4. Create admin user in tenant DB
             const adminPassword = await this.createTenantAdmin(dbName, email, name, server);
             console.log(`[Provisioner] Admin user created`);
@@ -473,6 +478,54 @@ EOFNODE`;
 
                 await this.executeOnServer(server, industryCmd);
             }
+        }
+    }
+
+    /**
+     * Seed an industry's master data straight after migrations.
+     *
+     * The seed lives in nexcrm-backend (`database/seeds/<industry>.js`) because that is the
+     * repo that owns the tenant schema. Keeping a second copy here is how the schema and the
+     * seed drift apart. Seeding is best-effort: a tenant that provisions with an empty
+     * academic setup is recoverable (the admin fills it in), so a seed failure must not
+     * abort a provision that has already created the database and the DNS.
+     */
+    async seedIndustryMasters(dbName, industryType, academicMode, server = { is_primary: true }) {
+        if (industryType !== 'school') {
+            return; // other industries seed nothing yet
+        }
+
+        const mode = academicMode || 'school';
+        const backendPath = this.getServerBackendPath(server);
+
+        try {
+            if (server.is_primary) {
+                const seedPath = path.join(backendPath, 'database', 'seeds', 'school.js');
+                // eslint-disable-next-line import/no-dynamic-require, global-require
+                const { seedSchool } = require(seedPath);
+
+                const connection = await require('mysql2/promise').createConnection({
+                    host: server.db_host || this.dbHost,
+                    port: this.getServerDbPort(server),
+                    user: server.db_user || this.dbUser,
+                    password: server.db_password || this.dbPass,
+                    database: dbName,
+                });
+
+                try {
+                    const result = await seedSchool(connection, mode);
+                    console.log(`[Provisioner] School masters seeded (${mode}):`, JSON.stringify(result.created));
+                } finally {
+                    await connection.end();
+                }
+            } else {
+                const cmd = `cd ${this.quoteShellArg(backendPath)} && node database/seeds/school.js `
+                    + `--db ${this.quoteShellArg(dbName)} --mode ${this.quoteShellArg(mode)}`;
+                await this.executeOnServer(server, cmd);
+                console.log(`[Provisioner] School masters seeded on remote (${mode})`);
+            }
+        } catch (error) {
+            console.warn(`[Provisioner] School seeding failed (tenant is still usable, admin must set up manually): ${error.message}`);
         }
     }
 
