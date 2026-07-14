@@ -9,6 +9,7 @@
 
 const { exec } = require('child_process');
 const { promisify } = require('util');
+const crypto = require('crypto');
 const execAsync = promisify(exec);
 const fs = require('fs').promises; // Keep fs.promises for async operations
 const path = require('path');
@@ -17,6 +18,28 @@ const { pool } = require('../config/database');
 const TenantModel = require('../models/tenant.model');
 const ServerModel = require('../models/server.model'); // Added ServerModel
 const EmailService = require('./email.service');
+
+function deriveTenantJwtSecret(rootSecret, tenantSlug) {
+    if (!rootSecret || String(rootSecret).length < 32) {
+        throw new Error('JWT_SECRET must be at least 32 characters before provisioning tenants');
+    }
+
+    const normalizedSlug = String(tenantSlug || '')
+        .trim()
+        .toLowerCase()
+        .replace(/^nexcrm_/, '')
+        .replace(/_/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
+
+    if (!normalizedSlug) {
+        throw new Error('Tenant slug is required to derive a tenant signing secret');
+    }
+
+    return crypto
+        .createHmac('sha256', String(rootSecret))
+        .update(`napcrm:tenant:${normalizedSlug}:v1`)
+        .digest('base64url');
+}
 
 class Provisioner {
     constructor() {
@@ -121,6 +144,7 @@ class Provisioner {
         const backendPath = this.getServerBackendPath(server);
         const dbSlug = tenant.slug.replace(/-/g, '_');
         const dbPass = server.db_password || this.dbPass;
+        const tenantJwtSecret = deriveTenantJwtSecret(process.env.JWT_SECRET, tenant.slug);
 
         const industry = tenant.industry_type || 'general';
         // Only the `school` industry reads this. 'college' turns on semesters, subject
@@ -142,6 +166,8 @@ class Provisioner {
                 DB_PASSWORD: dbPass,
                 TENANT_ID: tenant.id,
                 TENANT_SLUG: tenant.slug,
+                JWT_SECRET: tenantJwtSecret,
+                TENANT_JWT_SECRET: tenantJwtSecret,
                 INDUSTRY_TYPE: industry,
                 PLAN_SLUG: tenant.plan_slug || 'starter',
                 ...(academicMode ? { ACADEMIC_MODE: academicMode } : {})
@@ -902,7 +928,11 @@ EOFNODE`;
             const alreadyExists = data.errors?.some(e => e.code === 8000018);
             if (alreadyExists) {
                 console.log(`[Provisioner] Pages domain ${domain} already attached to ${this.cfPagesProject}`);
-                await this.waitForPagesDomainActive(this.cfAccountId, this.cfPagesProject, domain);
+                const active = await this.waitForPagesDomainActive(this.cfAccountId, this.cfPagesProject, domain);
+                if (!active) {
+                    console.warn(`[Provisioner] Pages domain ${domain} is attached but not active yet — DNS creation skipped`);
+                    return false;
+                }
                 return true;
             }
 
@@ -1096,7 +1126,11 @@ EOFNODE`;
             const alreadyExists = data.errors?.some(e => e.code === 8000018);
             if (alreadyExists) {
                 console.log(`[Provisioner] Pages domain ${domain} already attached to ${projectName}`);
-                await this.waitForPagesDomainActive(accountId, projectName, domain);
+                const active = await this.waitForPagesDomainActive(accountId, projectName, domain);
+                if (!active) {
+                    console.warn(`[Provisioner] Pages domain ${domain} is attached but not active yet — DNS creation skipped`);
+                    return false;
+                }
                 return true;
             }
 
@@ -1161,6 +1195,7 @@ EOFNODE`;
             const dbPort = this.getServerDbPort(server);
 
             const dbName = `nexcrm_${slug.replace(/-/g, '_')}`;
+            const tenantJwtSecret = deriveTenantJwtSecret(process.env.JWT_SECRET, slug);
 
             // Build env block — passed via PM2 JSON config so credentials are reliable
             // regardless of what .env file exists in nexcrm-backend directory
@@ -1171,7 +1206,8 @@ EOFNODE`;
                 DB_NAME: dbName,
                 DB_USER: dbUser,
                 DB_PASSWORD: dbPass,
-                JWT_SECRET: process.env.JWT_SECRET || '',
+                JWT_SECRET: tenantJwtSecret,
+                TENANT_JWT_SECRET: tenantJwtSecret,
                 TENANT_SLUG: slug,
                 INDUSTRY_TYPE: tenant.industry_type || 'general',
                 PLAN_SLUG: tenant.plan_slug || 'starter',
