@@ -19,6 +19,7 @@ const { query, pool } = require('../config/database');
 const { auth, isSalesOperator } = require('../middleware/auth');
 const { supportIngestRateLimit } = require('../middleware/rateLimit');
 const { normalizeSlug, deriveSupportSecret, safeEqual } = require('../utils/supportSecret');
+const notifier = require('../services/supportNotifier');
 
 const MAX_SUBJECT = 255;
 const MAX_MESSAGE = 10000;
@@ -122,6 +123,7 @@ router.post('/ingest/tickets', supportIngestRateLimit, async (req, res) => {
         await conn.commit();
 
         const [[ticket]] = await conn.query(`SELECT * FROM support_tickets WHERE id = ?`, [id]);
+        notifier.notifyNewTicket(ticket, cleanMessage);
         res.status(201).json({ success: true, data: ticket });
     } catch (error) {
         await conn.rollback();
@@ -208,6 +210,7 @@ router.post('/ingest/tickets/:id/messages', supportIngestRateLimit, async (req, 
               WHERE id = ?`,
             [nextStatus, ticket.id]
         );
+        notifier.notifyTenantReply({ ...ticket, status: nextStatus }, message.trim());
         res.status(201).json({ success: true });
     } catch (error) {
         console.error('[Support] ingest reply error:', error);
@@ -311,6 +314,8 @@ router.post('/admin/tickets/:id/messages', async (req, res) => {
                 `UPDATE support_tickets SET last_message_at = NOW(), last_message_by = 'agency', status = ? WHERE id = ?`,
                 [nextStatus, ticket.id]
             );
+            // Notify the customer who opened the ticket (internal notes never leave the agency).
+            notifier.notifyAgencyReply({ ...ticket, status: nextStatus }, message.trim());
         }
         res.status(201).json({ success: true });
     } catch (error) {
