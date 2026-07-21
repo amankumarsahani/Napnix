@@ -18,6 +18,7 @@ const { pool } = require('../config/database');
 const TenantModel = require('../models/tenant.model');
 const ServerModel = require('../models/server.model'); // Added ServerModel
 const EmailService = require('./email.service');
+const { deriveSupportSecret } = require('../utils/supportSecret');
 
 function deriveTenantJwtSecret(rootSecret, tenantSlug) {
     if (!rootSecret || String(rootSecret).length < 32) {
@@ -145,6 +146,8 @@ class Provisioner {
         const dbSlug = tenant.slug.replace(/-/g, '_');
         const dbPass = server.db_password || this.dbPass;
         const tenantJwtSecret = deriveTenantJwtSecret(process.env.JWT_SECRET, tenant.slug);
+        // Per-tenant support secret so no shared key lives on tenant servers.
+        const supportSecret = deriveSupportSecret(tenant.slug);
 
         const industry = tenant.industry_type || 'general';
         // Only the `school` industry reads this. 'college' turns on semesters, subject
@@ -170,6 +173,10 @@ class Provisioner {
                 TENANT_JWT_SECRET: tenantJwtSecret,
                 INDUSTRY_TYPE: industry,
                 PLAN_SLUG: tenant.plan_slug || 'starter',
+                // Support desk: tenant CRM forwards tickets back to this master API,
+                // authenticating with its own derived secret (never a shared key).
+                NEXS_BACKEND_URL: process.env.NEXS_BACKEND_URL || 'http://localhost:5000',
+                SUPPORT_TENANT_SECRET: supportSecret,
                 ...(academicMode ? { ACADEMIC_MODE: academicMode } : {})
             }
         };
@@ -1196,6 +1203,7 @@ EOFNODE`;
 
             const dbName = `nexcrm_${slug.replace(/-/g, '_')}`;
             const tenantJwtSecret = deriveTenantJwtSecret(process.env.JWT_SECRET, slug);
+            const supportSecret = deriveSupportSecret(slug);
 
             // Build env block — passed via PM2 JSON config so credentials are reliable
             // regardless of what .env file exists in nexcrm-backend directory
@@ -1218,7 +1226,9 @@ EOFNODE`;
                 SMTP_PASS: process.env.SMTP_PASS || '',
                 SMTP_FROM: process.env.SMTP_FROM || '',
                 FRONTEND_URL: process.env.NEXCRM_FRONTEND_URL || '',
-                STOREFRONT_URL: `https://${slug}.${this.cfDomain || 'napnix.in'}`
+                STOREFRONT_URL: `https://${slug}.${this.cfDomain || 'napnix.in'}`,
+                NEXS_BACKEND_URL: process.env.NEXS_BACKEND_URL || 'http://localhost:5000',
+                SUPPORT_TENANT_SECRET: supportSecret
             };
 
             // Write a temporary PM2 JSON config to inject env block reliably

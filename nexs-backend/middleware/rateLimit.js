@@ -50,8 +50,25 @@ const authRateLimit = rateLimit({
     validate: { xForwardedForHeader: false, default: true }
 });
 
+/**
+ * Support ingest limiter.
+ * Colocated tenant backends share the master's IP, so key by the verified tenant slug
+ * (set by the support serviceAuth) and fall back to IP. Caps ticket/reply spam from any
+ * single tenant to 40 writes per 15 minutes.
+ */
+const supportIngestRateLimit = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 40,
+    message: { error: 'Too many support requests. Please slow down.', retryAfter: 15 },
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => req.verifiedSlug || req.headers['x-tenant-slug'] || req.ip,
+    validate: { xForwardedForHeader: false, default: true }
+});
+
 module.exports = {
     inquiryRateLimit,
     generalRateLimit,
-    authRateLimit
+    authRateLimit,
+    supportIngestRateLimit
 };

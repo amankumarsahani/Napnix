@@ -268,6 +268,9 @@ app.use('/api/case-studies', require('./routes/caseStudy.routes'));
 // Expenses
 app.use('/api/expenses', require('./routes/expense.routes'));
 
+// Support desk (tenant ingest + agency inbox)
+app.use('/api/support', require('./routes/support.routes'));
+
 // Start email worker (after routes are set up)
 const emailWorker = require('./workers/emailWorker');
 emailWorker.start(30000); // Process queue every 30 seconds
