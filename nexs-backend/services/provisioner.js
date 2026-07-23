@@ -297,6 +297,12 @@ EOFNODE`;
             await this.seedInitialSettings(dbName, tenant, server);
             console.log(`[Provisioner] Initial settings seeded`);
 
+            // 5b. Provision default SES-backed mailbox addresses (support@/sales@/notifications@
+            // <slug>.mail.napnix.in). No per-tenant AWS/DNS work needed — the parent mail
+            // domain is verified once in SES, so any address under it just works.
+            await this.createDefaultEmailAddresses(dbName, slug, server);
+            console.log(`[Provisioner] Default email addresses created`);
+
             // 5. Update tenant record with process info and admin password
             const processName = `tenant-${slug}`;
             await TenantModel.updateProcessInfo(id, {
@@ -713,6 +719,56 @@ EOFNODE`;
             } catch (error) {
                 console.warn(`[Provisioner] Could not seed settings remotely on ${server.name}: ${error.message}`);
             }
+        }
+    }
+
+    /**
+     * Create the tenant's default SES-backed mailbox identities.
+     *
+     * Best-effort like seedIndustryMasters — a tenant that provisions without these
+     * rows is still usable (admin can add addresses later from Settings), so a
+     * failure here must not abort a provision that has already created the DB, DNS,
+     * and PM2 process.
+     */
+    async createDefaultEmailAddresses(dbName, slug, server = { is_primary: true }) {
+        const mailDomain = process.env.SES_MAIL_DOMAIN || 'mail.napnix.in';
+        const addresses = [
+            { address: `support@${slug}.${mailDomain}`, type: 'support', label: 'Support' },
+            { address: `sales@${slug}.${mailDomain}`, type: 'sales', label: 'Sales' },
+            { address: `notifications@${slug}.${mailDomain}`, type: 'notifications', label: 'Notifications' }
+        ];
+
+        try {
+            if (server.is_primary) {
+                const tenantPool = require('mysql2/promise').createPool({
+                    host: server.db_host || this.dbHost,
+                    port: this.getServerDbPort(server),
+                    user: server.db_user || this.dbUser,
+                    password: server.db_password || this.dbPass,
+                    database: dbName
+                });
+
+                try {
+                    for (const [index, addr] of addresses.entries()) {
+                        await tenantPool.query(
+                            `INSERT IGNORE INTO email_addresses (address, address_type, label, is_default)
+                             VALUES (?, ?, ?, ?)`,
+                            [addr.address, addr.type, addr.label, index === 0 ? 1 : 0]
+                        );
+                    }
+                } finally {
+                    await tenantPool.end();
+                }
+            } else {
+                for (const [index, addr] of addresses.entries()) {
+                    const sql = `INSERT IGNORE INTO email_addresses (address, address_type, label, is_default) `
+                        + `VALUES ('${addr.address}', '${addr.type}', '${addr.label}', ${index === 0 ? 1 : 0})`;
+                    const cmd = `${this.buildMysqlCliPrefix(server)} ${this.quoteShellArg(dbName)} -e ${this.quoteShellArg(sql)}`;
+                    await this.executeOnServer(server, cmd);
+                }
+            }
+        } catch (error) {
+            console.warn(`[Provisioner] Could not create default email addresses for ${slug}: ${error.message}`);
         }
     }
 

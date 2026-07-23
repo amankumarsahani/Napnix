@@ -82,6 +82,11 @@ app.use(helmet({
 // raw/json parsing continues to work for signature verification.
 app.use('/api/webhooks', webhookRoutes);
 
+// Centralized Google OAuth (Sheets today, Gmail later). Mounted at /oauth, not
+// /api — this is a browser redirect flow (Google's redirect_uri is exact-match
+// so it must live on this stable domain), not an authenticated API call.
+app.use('/oauth', require('./routes/oauth.routes'));
+
 app.use(express.json({ limit: '100mb' })); // Parse JSON bodies with increased limit
 app.use(express.urlencoded({ limit: '100mb', extended: true })); // Parse URL-encoded bodies with increased limit
 
