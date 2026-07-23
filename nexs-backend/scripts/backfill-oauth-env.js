@@ -29,7 +29,11 @@ const slugArg = args.find((a) => !a.startsWith('--'));
 const oauthEnv = {
     GOOGLE_OAUTH_CLIENT_ID: process.env.GOOGLE_OAUTH_CLIENT_ID || '',
     GOOGLE_OAUTH_CLIENT_SECRET: process.env.GOOGLE_OAUTH_CLIENT_SECRET || '',
-    INTERNAL_OAUTH_KEY: process.env.INTERNAL_OAUTH_KEY || ''
+    INTERNAL_OAUTH_KEY: process.env.INTERNAL_OAUTH_KEY || '',
+    // Baked in at provision time from nexs-backend's own env — tenants provisioned
+    // before NEXS_BACKEND_URL was set on this server got the 'localhost:5000'
+    // fallback from provisioner.js frozen into their PM2 env. Re-push the real value.
+    NEXS_BACKEND_URL: process.env.NEXS_BACKEND_URL || process.env.API_URL || 'http://localhost:5000'
 };
 
 const missing = Object.entries(oauthEnv).filter(([, v]) => !v).map(([k]) => k);

@@ -22,7 +22,12 @@ const { google } = require('googleapis');
 
 const REDIRECT_URI = process.env.GOOGLE_OAUTH_REDIRECT_URI || `${process.env.API_URL || 'https://api.napnix.in'}/oauth/google/callback`;
 const SCOPES = [
-    'https://www.googleapis.com/auth/spreadsheets.readonly',
+    // drive.file (not drive.readonly): lets the tenant backend list/create only
+    // files the user picks or that we create ourselves — not their whole Drive.
+    'https://www.googleapis.com/auth/drive.file',
+    // spreadsheets (not .readonly): creating a new sheet + writing its header row
+    // is a write op. Also covers the read-only polling the worker already does.
+    'https://www.googleapis.com/auth/spreadsheets',
     'https://www.googleapis.com/auth/userinfo.email' // so we can label the connection with the connected account
 ];
 const INTERNAL_OAUTH_KEY = process.env.INTERNAL_OAUTH_KEY;

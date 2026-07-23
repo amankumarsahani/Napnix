@@ -175,7 +175,7 @@ class Provisioner {
                 PLAN_SLUG: tenant.plan_slug || 'starter',
                 // Support desk: tenant CRM forwards tickets back to this master API,
                 // authenticating with its own derived secret (never a shared key).
-                NEXS_BACKEND_URL: process.env.NEXS_BACKEND_URL || 'http://localhost:5000',
+                NEXS_BACKEND_URL: process.env.NEXS_BACKEND_URL || process.env.API_URL || 'http://localhost:5000',
                 SUPPORT_TENANT_SECRET: supportSecret,
                 ...(academicMode ? { ACADEMIC_MODE: academicMode } : {})
             }
@@ -1283,7 +1283,7 @@ EOFNODE`;
                 SMTP_FROM: process.env.SMTP_FROM || '',
                 FRONTEND_URL: process.env.NEXCRM_FRONTEND_URL || '',
                 STOREFRONT_URL: `https://${slug}.${this.cfDomain || 'napnix.in'}`,
-                NEXS_BACKEND_URL: process.env.NEXS_BACKEND_URL || 'http://localhost:5000',
+                NEXS_BACKEND_URL: process.env.NEXS_BACKEND_URL || process.env.API_URL || 'http://localhost:5000',
                 SUPPORT_TENANT_SECRET: supportSecret,
                 // Lead Sources (Google Sheets) — same OAuth app + handoff secret
                 // as nexs-backend's own .env, so every tenant can complete the
