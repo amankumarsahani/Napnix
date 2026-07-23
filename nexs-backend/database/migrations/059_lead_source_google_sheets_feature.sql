@@ -6,6 +6,12 @@
 -- enabled_features). Real tenants read plans.enabled_features from this DB
 -- (see featureConfig.js createFeatureConfig()), so the flag has to land here
 -- too or the Lead Sources page 403s for every live tenant on those plans.
+--
+-- NOTE: this turned out to be a no-op in production — the live `plans` table
+-- uses slugs starter/professional/enterprise, not growth/business (see
+-- 060_lead_source_google_sheets_feature_fix.sql for the corrected version).
+-- Left as-is (already executed and tracked in the `migrations` table) rather
+-- than rewritten, so this file matches what actually ran.
 
 UPDATE plans
 SET enabled_features = JSON_ARRAY_APPEND(enabled_features, '$', 'lead_source_google_sheets')
