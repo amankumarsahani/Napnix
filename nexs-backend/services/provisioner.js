@@ -1284,7 +1284,13 @@ EOFNODE`;
                 FRONTEND_URL: process.env.NEXCRM_FRONTEND_URL || '',
                 STOREFRONT_URL: `https://${slug}.${this.cfDomain || 'napnix.in'}`,
                 NEXS_BACKEND_URL: process.env.NEXS_BACKEND_URL || 'http://localhost:5000',
-                SUPPORT_TENANT_SECRET: supportSecret
+                SUPPORT_TENANT_SECRET: supportSecret,
+                // Lead Sources (Google Sheets) — same OAuth app + handoff secret
+                // as nexs-backend's own .env, so every tenant can complete the
+                // centralized Google OAuth flow without per-tenant setup.
+                GOOGLE_OAUTH_CLIENT_ID: process.env.GOOGLE_OAUTH_CLIENT_ID || '',
+                GOOGLE_OAUTH_CLIENT_SECRET: process.env.GOOGLE_OAUTH_CLIENT_SECRET || '',
+                INTERNAL_OAUTH_KEY: process.env.INTERNAL_OAUTH_KEY || ''
             };
 
             // Write a temporary PM2 JSON config to inject env block reliably
