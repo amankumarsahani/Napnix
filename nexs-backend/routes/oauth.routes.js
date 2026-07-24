@@ -73,7 +73,9 @@ router.get('/google/start', (req, res) => {
 
     // flow travels inside the signed state (set by the tenant connect-url builder).
     // Default to the sheets flow for backward compatibility with lead-sources.
-    const decoded = jwt.decode(state) || {};
+    // Strip exp/iat from the decoded claims — the incoming state was signed with
+    // its own expiry, and re-signing with expiresIn while exp is present throws.
+    const { exp, iat, ...decoded } = jwt.decode(state) || {};
     const isMailbox = decoded.flow === 'mailbox_gmail';
 
     const client = buildOAuthClient();
@@ -174,8 +176,9 @@ router.get('/microsoft/start', async (req, res) => {
     catch { return res.status(400).send('Invalid or expired state'); }
 
     try {
+        const { exp, iat, ...decoded } = jwt.decode(state) || {};
         const embeddedState = jwt.sign(
-            { ...(jwt.decode(state) || {}), tenant_api_url, return_to: return_to || tenant_api_url },
+            { ...decoded, tenant_api_url, return_to: return_to || tenant_api_url },
             process.env.JWT_SECRET,
             { expiresIn: '10m' }
         );
