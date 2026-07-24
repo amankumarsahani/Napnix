@@ -138,7 +138,7 @@ router.get('/google/callback', async (req, res) => {
         await axios.post(
             `${tenant_api_url}${tokenPath}`,
             tokenBody,
-            { headers: { 'X-Internal-Key': INTERNAL_OAUTH_KEY }, timeout: 10000 }
+            { headers: { 'X-Internal-Key': INTERNAL_OAUTH_KEY }, timeout: 30000 }
         );
 
         res.redirect(`${return_to || tenant_api_url}?${successKey}=success`);
@@ -227,7 +227,7 @@ router.get('/microsoft/callback', async (req, res) => {
         await axios.post(
             `${tenant_api_url}/api/mailbox/oauth/token`,
             { connectionId, provider: 'microsoft', refreshToken, email, displayName },
-            { headers: { 'X-Internal-Key': INTERNAL_OAUTH_KEY }, timeout: 10000 }
+            { headers: { 'X-Internal-Key': INTERNAL_OAUTH_KEY }, timeout: 30000 }
         );
 
         res.redirect(`${return_to || tenant_api_url}?mailbox_connect=success`);
