@@ -243,6 +243,148 @@ router.get('/microsoft/callback', async (req, res) => {
  * relay to the tenant backend is to serialize the app's in-memory token cache
  * right after the code exchange and read the RefreshToken entry.
  */
+/* ------------------------------------------------------------------ */
+/* Generic OAuth2 — everything that isn't Google or Microsoft           */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Provider-agnostic authorization-code flow. Google and Microsoft keep their
+ * own endpoints above because each has SDK-specific quirks (msal's token cache,
+ * Google's prompt=consent); every other provider is plain OAuth2, so adding one
+ * is a registry entry rather than two new routes.
+ *
+ * Credentials come from env per provider, so a provider with no client
+ * configured simply reports that instead of half-completing a flow.
+ */
+const OAUTH2_PROVIDERS = {
+    slack: {
+        name: 'Slack',
+        authUrl: 'https://slack.com/oauth/v2/authorize',
+        tokenUrl: 'https://slack.com/api/oauth.v2.access',
+        scopes: ['chat:write', 'channels:read'],
+        clientIdEnv: 'SLACK_CLIENT_ID',
+        clientSecretEnv: 'SLACK_CLIENT_SECRET'
+    },
+    quickbooks: {
+        name: 'QuickBooks',
+        authUrl: 'https://appcenter.intuit.com/connect/oauth2',
+        tokenUrl: 'https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer',
+        scopes: ['com.intuit.quickbooks.accounting'],
+        clientIdEnv: 'QUICKBOOKS_CLIENT_ID',
+        clientSecretEnv: 'QUICKBOOKS_CLIENT_SECRET'
+    },
+    zoho_books: {
+        name: 'Zoho Books',
+        authUrl: 'https://accounts.zoho.in/oauth/v2/auth',
+        tokenUrl: 'https://accounts.zoho.in/oauth/v2/token',
+        scopes: ['ZohoBooks.fullaccess.all'],
+        clientIdEnv: 'ZOHO_CLIENT_ID',
+        clientSecretEnv: 'ZOHO_CLIENT_SECRET',
+        extraAuthParams: { access_type: 'offline' }
+    }
+};
+
+function oauth2RedirectUri(provider) {
+    const base = process.env.API_URL || 'https://api.napnix.in';
+    return `${base}/oauth/oauth2/${provider}/callback`;
+}
+
+// GET /oauth/oauth2/:provider/start?state=<jwt>&tenant_api_url=<url>&return_to=<url>
+router.get('/oauth2/:provider/start', (req, res) => {
+    const cfg = OAUTH2_PROVIDERS[req.params.provider];
+    if (!cfg) return res.status(404).send('Unknown OAuth2 provider');
+
+    const clientId = process.env[cfg.clientIdEnv];
+    if (!clientId || !process.env[cfg.clientSecretEnv]) {
+        return res.status(503).send(`${cfg.name} is not configured on this server (${cfg.clientIdEnv} / ${cfg.clientSecretEnv})`);
+    }
+
+    const { state, tenant_api_url, return_to } = req.query;
+    if (!state || !tenant_api_url) return res.status(400).send('Missing state or tenant_api_url');
+
+    try { jwt.verify(state, process.env.JWT_SECRET); }
+    catch { return res.status(400).send('Invalid or expired state'); }
+
+    const { exp, iat, ...decoded } = jwt.decode(state) || {};
+    const embeddedState = jwt.sign(
+        { ...decoded, provider: req.params.provider, tenant_api_url, return_to: return_to || tenant_api_url },
+        process.env.JWT_SECRET,
+        { expiresIn: '10m' }
+    );
+
+    const params = new URLSearchParams({
+        client_id: clientId,
+        redirect_uri: oauth2RedirectUri(req.params.provider),
+        response_type: 'code',
+        scope: cfg.scopes.join(cfg.scopeSeparator || ' '),
+        state: embeddedState,
+        ...(cfg.extraAuthParams || {})
+    });
+
+    res.redirect(`${cfg.authUrl}?${params}`);
+});
+
+// GET /oauth/oauth2/:provider/callback?code=...&state=...
+router.get('/oauth2/:provider/callback', async (req, res) => {
+    const cfg = OAUTH2_PROVIDERS[req.params.provider];
+    if (!cfg) return res.status(404).send('Unknown OAuth2 provider');
+
+    const { code, state, error } = req.query;
+
+    let payload;
+    try { payload = jwt.verify(state, process.env.JWT_SECRET); }
+    catch { return res.status(400).send('Invalid or expired OAuth state'); }
+
+    const { connectorKey, tenant_api_url, return_to } = payload;
+    const failRedirect = `${return_to || tenant_api_url}?connector_connect=failed`;
+    if (error || !code) return res.redirect(failRedirect);
+
+    try {
+        const body = new URLSearchParams({
+            grant_type: 'authorization_code',
+            code,
+            redirect_uri: oauth2RedirectUri(req.params.provider),
+            client_id: process.env[cfg.clientIdEnv],
+            client_secret: process.env[cfg.clientSecretEnv]
+        });
+
+        const tokenRes = await axios.post(cfg.tokenUrl, body.toString(), {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded', Accept: 'application/json' },
+            timeout: 15000
+        });
+
+        // Slack returns {ok:false,error} with HTTP 200 rather than a 4xx.
+        if (tokenRes.data?.ok === false) {
+            console.error(`[oauth2] ${req.params.provider} token error:`, tokenRes.data.error);
+            return res.redirect(failRedirect);
+        }
+
+        const d = tokenRes.data || {};
+        const accessToken = d.access_token || d.authed_user?.access_token;
+        if (!accessToken) return res.redirect(`${failRedirect}&reason=no_access_token`);
+
+        await axios.post(
+            `${tenant_api_url}/api/connectors/oauth/token`,
+            {
+                connectorKey,
+                label: cfg.name,
+                tokens: {
+                    access_token: accessToken,
+                    refresh_token: d.refresh_token || null,
+                    expires_at: d.expires_in ? new Date(Date.now() + d.expires_in * 1000).toISOString() : null,
+                    account: d.team?.name || d.account || null
+                }
+            },
+            { headers: { 'X-Internal-Key': INTERNAL_OAUTH_KEY }, timeout: 30000 }
+        );
+
+        res.redirect(`${return_to || tenant_api_url}?connector_connect=success`);
+    } catch (err) {
+        console.error(`[oauth2] ${req.params.provider} callback failed:`, err.response?.data || err.message);
+        res.redirect(failRedirect);
+    }
+});
+
 function extractRefreshToken(app) {
     try {
         const cache = JSON.parse(app.getTokenCache().serialize());
