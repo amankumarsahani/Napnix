@@ -1464,6 +1464,15 @@ EOFNODE`;
                 ? (tenant.academic_mode || 'school')
                 : null;
             const academicArg = academicMode ? ` --academic-mode ${academicMode}` : '';
+            const configuredFrontendOrigin = tenant.custom_domain_crm
+                || tenant.custom_domain
+                || process.env.NEXCRM_FRONTEND_URL
+                || '';
+            const tenantFrontendUrl = configuredFrontendOrigin
+                ? (/^https?:\/\//i.test(configuredFrontendOrigin)
+                    ? configuredFrontendOrigin
+                    : `https://${configuredFrontendOrigin}`)
+                : '';
 
             // Build env block — passed via PM2 JSON config so credentials are reliable
             // regardless of what .env file exists in nexcrm-backend directory
@@ -1488,7 +1497,10 @@ EOFNODE`;
                 SMTP_USER: process.env.SMTP_USER || '',
                 SMTP_PASS: process.env.SMTP_PASS || '',
                 SMTP_FROM: process.env.SMTP_FROM || '',
-                FRONTEND_URL: process.env.NEXCRM_FRONTEND_URL || '',
+                // Custom CRM domains must be allowlisted by the tenant API's
+                // authenticated CORS middleware. Fall back to the platform-wide
+                // URL for tenants that do not have a custom CRM domain.
+                FRONTEND_URL: tenantFrontendUrl,
                 STOREFRONT_URL: `https://${slug}.${this.cfDomain || 'napnix.in'}`,
                 NEXS_BACKEND_URL: process.env.NEXS_BACKEND_URL || process.env.API_URL || 'http://localhost:5000',
                 SUPPORT_TENANT_SECRET: supportSecret,
