@@ -7,6 +7,7 @@ const DocumentTemplateModel = require('../models/document-template.model');
 const pdfService = require('../services/pdf.service');
 const emailService = require('../services/email.service');
 const workflowEngine = require('../services/workflowEngine');
+const { pushPlanConfig } = require('../services/planConfigSync');
 const { pool } = require('../config/database');
 const mysql = require('mysql2/promise');
 const { execFile } = require('child_process');
@@ -544,10 +545,24 @@ class TenantController {
                         Number(freshTenant.plan_id || 0) !== Number(tenant.plan_id || 0)
                         || freshTenant.plan_slug !== tenant.plan_slug
                     );
-                    if (industryChanged || planChanged) {
+                    if (industryChanged) {
+                        // Industry decides which route modules got mounted at boot
+                        // (see nexcrm-backend/server.js canAccessModule calls) — that
+                        // can only change on a real relaunch.
                         module.exports._relaunchTenantForConfigChange(freshTenant).catch(err => {
                             console.error(`[Update Tenant] Process relaunch failed: ${err.message}`);
                         });
+                    } else if (planChanged) {
+                        // Plan-only change: push the new entitlements live instead of
+                        // restarting a paying customer's session. Falls back to a
+                        // relaunch if the tenant process isn't reachable (e.g. it was
+                        // stopped) — pushPlanConfig no-ops safely in that case and the
+                        // process will pick up the right plan on its own next boot.
+                        if (freshTenant.plan_id) {
+                            PlanModel.findById(freshTenant.plan_id)
+                                .then(plan => plan && pushPlanConfig(freshTenant, plan))
+                                .catch(err => console.error(`[Update Tenant] Plan config push failed: ${err.message}`));
+                        }
                     }
                 }
             }
@@ -829,14 +844,31 @@ class TenantController {
 
             // Then attempt Cloudflare Pages attachment (non-blocking for DB save)
             let result = { success: false, results: {} };
+            const provisioner = new Provisioner();
             try {
-                const provisioner = new Provisioner();
                 result = await provisioner.setupCustomDomain(tenant, { crm, storefront });
                 // Update verification status based on Cloudflare result
                 await TenantModel.update(id, { custom_domain_verified: result.success });
             } catch (cfError) {
                 console.warn('Cloudflare domain setup failed (domains saved to DB):', cfError.message);
                 // Don't throw — domains are saved, Cloudflare can be retried
+            }
+
+            // The tenant's nexcrm-backend process only allowlists FRONTEND_URL for
+            // CORS at the env it was started with — a new custom_domain_crm saved
+            // above never reaches the running process without a restart, so the
+            // dashboard would be permanently CORS-blocked on this new domain until
+            // someone happened to bounce the process manually.
+            if (crm && tenant.server_id) {
+                try {
+                    const server = await ServerModel.findById(tenant.server_id);
+                    const refreshedTenant = await TenantModel.findById(id);
+                    if (server && refreshedTenant && refreshedTenant.assigned_port) {
+                        await provisioner.startProcess(refreshedTenant, refreshedTenant.assigned_port, server);
+                    }
+                } catch (restartError) {
+                    console.warn('Tenant process restart after custom domain save failed:', restartError.message);
+                }
             }
 
             res.json({

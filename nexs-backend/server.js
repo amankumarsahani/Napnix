@@ -332,6 +332,10 @@ workflowWorker.start(60000); // Check every 60 seconds
 const backupWorker = require('./workers/backupWorker');
 backupWorker.start(60000); // Check every minute
 
+// Start plan lifecycle worker (trial reminders + expired-trial suspension)
+const planLifecycleWorker = require('./workers/planLifecycleWorker');
+planLifecycleWorker.start(60000); // Debounced to once/day internally
+
 // 404 Handler
 app.use((req, res) => {
     res.status(404).json({

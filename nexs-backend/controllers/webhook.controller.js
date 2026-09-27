@@ -6,9 +6,11 @@
 const RazorpayService = require('../services/razorpay.service');
 const StripeService = require('../services/stripe.service');
 const TenantModel = require('../models/tenant.model');
+const PlanModel = require('../models/plan.model');
 const UserModel = require('../models/user.model');
 const ClientModel = require('../models/client.model');
 const Provisioner = require('../services/provisioner');
+const { pushPlanConfig } = require('../services/planConfigSync');
 const { pool } = require('../config/database');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
@@ -155,6 +157,12 @@ class WebhookController {
             } catch (error) {
                 console.error('[Webhook] Failed to start tenant process:', error);
             }
+        } else if (tenant && planId) {
+            // Process was already running (e.g. a mid-cycle upgrade, not a
+            // reactivation) — push the new plan's entitlements so they apply
+            // without waiting for a manual restart. See services/planConfigSync.js.
+            const plan = await PlanModel.findById(planId);
+            if (plan) await pushPlanConfig(tenant, plan);
         }
 
         return subscriptionId;
@@ -455,7 +463,11 @@ class WebhookController {
         const planId = session.metadata?.plan_id;
 
         if (!tenantId) return;
-        await TenantModel.update(tenantId, { status: 'active' });
+        // `planId` was read from metadata but never written to the tenant row —
+        // a Stripe checkout that carried an upgrade would mark the tenant
+        // active without ever changing its actual plan. Apply it here, same as
+        // the Razorpay path in activateTenantAccess().
+        await TenantModel.update(tenantId, planId ? { status: 'active', plan_id: planId } : { status: 'active' });
 
         // Record Payment
         try {
@@ -481,6 +493,16 @@ class WebhookController {
 
         const workflowEngine = require('../services/workflowEngine');
         await workflowEngine.trigger('stripe_payment_received', 'tenant', tenantId, { session });
+
+        if (planId) {
+            const tenant = await TenantModel.findById(tenantId);
+            // Only push live — if the process isn't running, it'll boot with
+            // the right plan_slug via the join in TenantModel.findById anyway.
+            if (tenant?.process_status === 'running') {
+                const plan = await PlanModel.findById(planId);
+                if (plan) await pushPlanConfig(tenant, plan);
+            }
+        }
 
         // Auto-create client from Stripe session
         const email = session.customer_details?.email || session.customer_email;

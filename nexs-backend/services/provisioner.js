@@ -500,6 +500,20 @@ EOFNODE`;
                 console.warn(`[Provisioner] Could not send welcome email:`, emailError.message);
             }
 
+            // 10.1 Generate mandatory storefront legal/compliance pages (Terms,
+            // Privacy Policy, Refund Policy, Cookie Policy, DPDP Act 2023 notice).
+            // Required for every tenant regardless of industry — see CLAUDE.md
+            // "Tenant Legal & Compliance". Non-fatal: a tenant admin can still
+            // trigger this later, and the backfill script covers any tenant this
+            // step fails for.
+            try {
+                const { generateAndPushLegalDocs } = require('./legalDocsGenerator');
+                await generateAndPushLegalDocs({ name, slug, industry_type, email, custom_domain: null });
+                console.log(`[Provisioner] Legal/compliance pages generated for ${slug}`);
+            } catch (legalError) {
+                console.warn(`[Provisioner] Could not generate legal docs for ${slug}:`, legalError.message);
+            }
+
             const completedAt = new Date();
             const completedTenant = await TenantModel.findById(id);
             const completionUpdate = {
