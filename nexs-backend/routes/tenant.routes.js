@@ -49,6 +49,7 @@ router.post('/:id/restart', tenantController.restartTenant);
 
 // Trial Management
 router.post('/:id/end-trial', tenantController.endTrialAndRequestPayment);
+router.post('/:id/unsuspend', tenantController.unsuspendTenant);
 
 // Payment Management
 router.post('/:id/send-payment-link', tenantController.sendPaymentLink);

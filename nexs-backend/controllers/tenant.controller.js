@@ -1147,6 +1147,44 @@ class TenantController {
     }
 
     /**
+     * Unsuspend a tenant: admin manually reactivates a suspended tenant
+     * (e.g. an expired trial, or a customer who paid outside the automated
+     * flow) without going through the full markPaid billing-record path.
+     *
+     * Sets status='active' (not 'trial') deliberately — planLifecycleWorker
+     * only auto-suspends tenants with status='trial' whose trial_ends_at has
+     * passed, so 'active' keeps this tenant from being immediately
+     * re-suspended by that worker on its next tick if trial_ends_at is still
+     * in the past.
+     */
+    async unsuspendTenant(req, res) {
+        try {
+            const { id } = req.params;
+            const tenant = await TenantModel.findById(id);
+            if (!tenant) {
+                return res.status(404).json({ error: 'Tenant not found' });
+            }
+
+            await TenantModel.update(id, { status: 'active' });
+
+            const refreshedTenant = await TenantModel.findById(id);
+            const started = await module.exports._startTenantIfProvisioned(refreshedTenant);
+            if (!started && refreshedTenant.process_status !== 'running') {
+                console.warn(`[Unsuspend] Tenant ${refreshedTenant.slug} marked active but process did not start (status: ${refreshedTenant.process_status})`);
+            }
+
+            res.json({
+                success: true,
+                message: 'Tenant unsuspended',
+                data: await TenantModel.findById(id)
+            });
+        } catch (error) {
+            console.error('Unsuspend tenant error:', error);
+            res.status(500).json({ error: 'Failed to unsuspend tenant' });
+        }
+    }
+
+    /**
      * Send Payment Link via email without suspending
      */
     async sendPaymentLink(req, res) {
