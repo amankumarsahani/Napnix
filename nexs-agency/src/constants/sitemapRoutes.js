@@ -1,4 +1,11 @@
-/** Static routes for sitemap generation. Dynamic blog slugs from API are not included. */
+/** Static routes for sitemap generation. Dynamic blog slugs from API are not included.
+ *
+ * lastmod must reflect when a page's content actually changed. Stamping every
+ * entry with the build date tells crawlers the whole site changed on every
+ * deploy, which devalues the signal. Bump CONTENT_UPDATED when you ship a
+ * content change, or give an individual entry its own lastmod.
+ */
+const CONTENT_UPDATED = '2026-09-27';
 
 export const CITY_SLUGS = [
     'mohali',
@@ -46,8 +53,6 @@ export const BLOG_PATHS = [
 
 /** @returns {{ path: string, priority: string, changefreq: string }[]} */
 export function getSitemapEntries() {
-    const today = new Date().toISOString().slice(0, 10);
-
     const core = [
         { path: '/', priority: '1.0', changefreq: 'weekly' },
         { path: '/services', priority: '0.9', changefreq: 'weekly' },
@@ -94,7 +99,7 @@ export function getSitemapEntries() {
     }));
 
     return [...core, ...cities, ...industries, ...services, ...blogs].map((entry) => ({
+        lastmod: CONTENT_UPDATED,
         ...entry,
-        lastmod: today,
     }));
 }

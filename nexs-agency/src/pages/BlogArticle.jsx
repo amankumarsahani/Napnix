@@ -14,6 +14,7 @@ import BackToTop from '../components/ui/BackToTop';
 import TableOfContents, { addIdsToHeadings } from '../components/ui/TableOfContents';
 import { SITE_URL, LOGO_URL } from '../constants/siteConfig';
 import { withBrandKeywords } from '../constants/seoConfig';
+import { blogRobotsDirective } from '../constants/blogIndexing';
 import { RiTimeLine, RiEyeLine } from 'react-icons/ri';
 
 const BlogArticle = () => {
@@ -143,7 +144,7 @@ const BlogArticle = () => {
                 <meta name="twitter:title" content={`${blog.title} | Napnix Insights`} />
                 <meta name="twitter:description" content={metaDesc} />
                 <meta name="twitter:image" content={ogImage} />
-                <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+                <meta name="robots" content={blogRobotsDirective(blog.slug)} />
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta property="og:image:width" content="1200" />
