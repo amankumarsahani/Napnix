@@ -134,6 +134,10 @@ export default function CRMPricingPage() {
                     <div className="flex items-center justify-center gap-4 mb-8">
                         <span className={`text-sm font-medium ${!isYearly ? 'text-slate-900' : 'text-slate-500'}`}>Monthly</span>
                         <button
+                            type="button"
+                            role="switch"
+                            aria-checked={isYearly}
+                            aria-label="Toggle yearly billing"
                             onClick={() => setIsYearly(!isYearly)}
                             className={`relative w-14 h-7 rounded-full transition-colors ${isYearly ? 'bg-blue-600' : 'bg-slate-300'}`}
                         >

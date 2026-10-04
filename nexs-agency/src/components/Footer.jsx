@@ -42,7 +42,7 @@ const Footer = memo(function Footer() {
         <div className="py-16">
           <div className="grid lg:grid-cols-4 gap-8">
             <div className="lg:col-span-1">
-              <Link to="/" className="mb-4 inline-flex items-center">
+              <Link to="/" aria-label="Napnix home" className="mb-4 inline-flex items-center">
                 <img
                   src={siteConfig.logoDark}
                   alt={siteConfig.logoAlt}

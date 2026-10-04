@@ -241,10 +241,10 @@ const Blog = memo(function Blog() {
 
                       {/* Interactive Read More */}
                       <div className="flex items-center space-x-2">
-                        <button className="group/like w-9 h-9 rounded-xl bg-[#F8FAFC] hover:bg-red-50 flex items-center justify-center transition-all duration-300 ">
+                        <button type="button" aria-label="Like this article" className="group/like w-9 h-9 rounded-xl bg-[#F8FAFC] hover:bg-red-50 flex items-center justify-center transition-all duration-300 ">
                           <RiHeartLine className="text-slate-400 group-hover/like:text-red-500 transition-colors" />
                         </button>
-                        <button className="group/share w-9 h-9 rounded-xl bg-[#F8FAFC] hover:bg-[#F8FAFC] flex items-center justify-center transition-all duration-300 ">
+                        <button type="button" aria-label="Share this article" className="group/share w-9 h-9 rounded-xl bg-[#F8FAFC] hover:bg-[#F8FAFC] flex items-center justify-center transition-all duration-300 ">
                           <RiShareLine className="text-slate-400 group-hover/share:text-[#2563EB] transition-colors" />
                         </button>
                       </div>

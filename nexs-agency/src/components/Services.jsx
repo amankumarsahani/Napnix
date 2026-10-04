@@ -55,7 +55,7 @@ const ServiceCard = memo(function ServiceCard({ service, index }) {
         ))}
       </ul>
 
-      <Link to={service.link} className="relative z-10 inline-flex items-center text-sm font-bold text-[#2563EB] hover:opacity-80 transition-opacity duration-300">
+      <Link to={service.link} aria-label={`Learn more about ${service.title}`} className="relative z-10 inline-flex items-center text-sm font-bold text-[#2563EB] hover:opacity-80 transition-opacity duration-300">
         Learn More
         <RiArrowRightLine className="ml-1 text-[#2563EB]" />
       </Link>

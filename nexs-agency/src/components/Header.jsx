@@ -103,7 +103,7 @@ const Header = memo(function Header() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <Link to="/" className="group flex items-center">
+            <Link to="/" aria-label="Napnix home" className="group flex items-center">
               <img
                 src={siteConfig.logo}
                 alt={siteConfig.logoAlt}

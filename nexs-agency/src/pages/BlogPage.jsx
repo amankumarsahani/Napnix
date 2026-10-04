@@ -238,9 +238,9 @@ const BlogPage = () => {
                             <span className="inline-block px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-full mb-6 shadow-lg shadow-lg">
                                 Featured Article
                             </span>
-                            <h1 className="text-5xl md:text-7xl font-bold font-serif text-white mb-6 max-w-5xl leading-tight group-hover:text-blue-400 transition-colors duration-300">
+                            <h2 className="text-5xl md:text-7xl font-bold font-serif text-white mb-6 max-w-5xl leading-tight group-hover:text-blue-400 transition-colors duration-300">
                                 {featuredPost.title}
-                            </h1>
+                            </h2>
                             <p className="text-xl text-gray-300 mb-8 max-w-2xl line-clamp-2 leading-relaxed">
                                 {featuredPost.excerpt}
                             </p>
@@ -271,7 +271,7 @@ const BlogPage = () => {
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
                     <div className="w-full md:w-auto">
                         <FadeIn {...FADE_IN_SMOOTH}>
-                            <h2 className="text-4xl font-bold mb-8">Latest Insights</h2>
+                            <h1 className="text-4xl font-bold mb-8">Insights &amp; Tech Articles</h1>
                             <div className="flex flex-wrap gap-3">
                                 {categories.map(cat => (
                                     <button

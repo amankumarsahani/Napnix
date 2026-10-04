@@ -180,9 +180,9 @@ const Technologies = memo(function Technologies() {
                         </div>
 
                         {/* Tech Name */}
-                        <h4 className="text-xs sm:text-sm font-semibold text-slate-600 text-center leading-tight group-hover:text-slate-800 transition-colors duration-300">
+                        <h3 className="text-xs sm:text-sm font-semibold text-slate-600 text-center leading-tight group-hover:text-slate-800 transition-colors duration-300">
                           {tech.name}
-                        </h4>
+                        </h3>
                       </div>
 
                       {/* Subtle Corner Dots */}
