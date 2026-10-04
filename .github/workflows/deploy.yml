@@ -38,6 +38,11 @@ jobs:
           cd nexs-agency
           npm ci
       
+      - name: Install Chromium for prerendering
+        run: |
+          cd nexs-agency
+          npx playwright install --with-deps chromium --only-shell
+
       - name: Build production bundle
         run: |
           cd nexs-agency
