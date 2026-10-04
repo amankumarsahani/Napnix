@@ -8,7 +8,6 @@ import FadeIn from '../components/ui/FadeIn';
 import ReadingProgress from '../components/ui/ReadingProgress';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
 import { getLocalBusinessOffers } from '../constants/schemaOffers';
-import { withBrandKeywords } from '../constants/seoConfig';
 import Icon from '../components/ui/Icon';
 import { RiCheckLine, RiErrorWarningLine, RiLoader4Line, RiMailSendLine, RiMapPinLine, RiPhoneLine, RiSendPlaneFill } from 'react-icons/ri';
 import { buildInquiryMessage, getInquiryIntentFromSearch, inquiryIntentOptions } from '../utils/inquiry';
@@ -118,7 +117,6 @@ const ContactPage = () => {
             <Helmet>
                 <title>Contact Napnix — Book a Revenue-Leak Audit</title>
                 <meta name="description" content="Talk to Napnix about fixing lead capture, follow-up, and CRM for your service business. Based in Mohali, India — serving clients globally." />
-                <meta name="keywords" content={withBrandKeywords('contact napnix, hire crm developers mohali, book revenue leak audit, lead follow up consultation')} />
                 <link rel="canonical" href={`${SITE_URL}/contact`} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <meta property="og:title" content="Contact Napnix — Book a Revenue-Leak Audit" />

@@ -2,7 +2,6 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import RelatedServices from '../../components/seo/RelatedServices';
 import { SITE_URL, LOGO_URL } from '../../constants/siteConfig';
-import { withBrandKeywords } from '../../constants/seoConfig';
 
 const PwaBenefits = () => {
 
@@ -40,7 +39,6 @@ const PwaBenefits = () => {
                 <meta name="twitter:title" content="Benefits of Progressive Web Apps (PWA) | Napnix Web Dev" />
                 <meta name="twitter:description" content="Progressive Web Apps (PWAs) offer the best of web and mobile. Learn how they boost conversion rates and cut development costs." />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-                <meta name="keywords" content={withBrandKeywords('progressive web app benefits, PWA vs native app, PWA development India, progressive web application advantages, offline web app, mobile web app, PWA for business')} />
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta property="og:image:width" content="1200" />

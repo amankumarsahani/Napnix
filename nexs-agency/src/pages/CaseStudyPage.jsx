@@ -6,7 +6,6 @@ import Breadcrumbs from '../components/ui/Breadcrumbs';
 import BackToTop from '../components/ui/BackToTop';
 import ReadingProgress from '../components/ui/ReadingProgress';
 import { SITE_URL } from '../constants/siteConfig';
-import { withBrandKeywords } from '../constants/seoConfig';
 import { ACCENT_GRADIENTS } from '../constants/portfolioFallback';
 import { CASE_STUDIES } from '../constants/caseStudies';
 import { caseStudiesAPI } from '../services/api';
@@ -70,7 +69,6 @@ const CaseStudyPage = () => {
             <Helmet>
                 <title>{cs.title} — Case Study | Napnix</title>
                 <meta name="description" content={cs.summary} />
-                <meta name="keywords" content={withBrandKeywords(`${cs.title} case study, ${cs.category}, CRM implementation, custom software case study`)} />
                 <link rel="canonical" href={`${SITE_URL}/portfolio/${cs.slug}`} />
                 <meta property="og:title" content={`${cs.title} — Case Study | Napnix`} />
                 <meta property="og:description" content={cs.summary} />

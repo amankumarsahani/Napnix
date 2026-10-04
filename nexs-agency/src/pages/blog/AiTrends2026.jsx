@@ -2,7 +2,6 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import RelatedServices from '../../components/seo/RelatedServices';
 import { SITE_URL, LOGO_URL } from '../../constants/siteConfig';
-import { withBrandKeywords } from '../../constants/seoConfig';
 
 const AiTrends2026 = () => {
 
@@ -40,7 +39,6 @@ const AiTrends2026 = () => {
                 <meta name="twitter:title" content="Top 10 AI Trends Shaping Business in 2026 | Napnix Insights" />
                 <meta name="twitter:description" content="Discover the top AI trends for 2026 including Generative AI, Predictive Analytics, and Autonomous Agents." />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-                <meta name="keywords" content={withBrandKeywords('AI trends 2026, artificial intelligence business, AI adoption India, machine learning trends, AI automation, generative AI business, enterprise AI solutions')} />
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta property="og:image:width" content="1200" />

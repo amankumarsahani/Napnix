@@ -2,7 +2,6 @@ import { lazy, memo, Suspense, useEffect, useRef } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { SITE_URL } from './constants/siteConfig';
-import { DEFAULT_SITE_KEYWORDS } from './constants/seoConfig';
 import { TESTIMONIALS } from './constants/testimonials';
 import { lazyWithRetry } from './utils/lazyWithRetry';
 import { useAuth } from './context/AuthContext';
@@ -167,7 +166,6 @@ const LandingPage = memo(function LandingPage() {
       <Helmet>
         <title>Napnix | CRM, Lead Follow-up & Custom Software for Service Businesses</title>
         <meta name="description" content="Napnix builds the system behind your growth — lead capture, automated follow-up, and CRM for agencies and service businesses. Custom software when you need it. Based in Mohali, serving clients worldwide." />
-        <meta name="keywords" content={DEFAULT_SITE_KEYWORDS} />
         <link rel="canonical" href={`${SITE_URL}/`} />
 
         {/* Open Graph */}

@@ -3,7 +3,6 @@ import { CheckIcon } from '../components/ui/Icons';
 import { crmTiers, crmFeatures } from '../constants/crmPricing';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
 import { buildSaasProduct, enrichOffer, slugifyProductName } from '../constants/productSchema';
-import { withBrandKeywords } from '../constants/seoConfig';
 import FeatureValue from '../components/crm/FeatureValue';
 import useCRMPricing from '../hooks/useCRMPricing';
 import useCurrency from '../hooks/useCurrency';
@@ -41,7 +40,6 @@ export default function CRMPricingPage() {
             <Helmet>
                 <title>NapCRM Pricing - Plans from $49/mo | Starter, Growth, Business, Enterprise</title>
                 <meta name="description" content="Compare NapCRM pricing plans. Starter $49/mo, Growth $79/mo, Business $99/mo, Enterprise custom. Save 15% with yearly billing. Book a 20-minute demo on any plan." />
-                <meta name="keywords" content={withBrandKeywords('NapCRM pricing, CRM pricing India, affordable CRM plans, CRM software cost, business CRM pricing, agency CRM plans')} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/napcrm/pricing`} />
                 <meta property="og:site_name" content="Napnix" />

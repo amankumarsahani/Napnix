@@ -5,7 +5,6 @@ import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { nexmailTiers, nexmailFeatures } from '../constants/napmailPricing';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
 import { buildAggregateSaasOffers, buildSoftwareApplicationSchema } from '../constants/productSchema';
-import { withBrandKeywords } from '../constants/seoConfig';
 import { CheckIcon, XIcon } from '../components/ui/Icons';
 import FeatureValue from '../components/crm/FeatureValue';
 import FadeIn from '../components/ui/FadeIn';
@@ -188,7 +187,6 @@ export default function NapMailLandingPage() {
             <Helmet>
                 <title>NapMail - Email Marketing Engine by Napnix | SMTP Rotation, Anti-Spam, Automations</title>
                 <meta name="description" content="NapMail is an enterprise email marketing engine with smart SMTP rotation, anti-spam scoring, domain throttling, visual automations, and NapCRM integration. Free plan available." />
-                <meta name="keywords" content={withBrandKeywords('email marketing tool India, SMTP rotation, anti-spam email, email automation, NapMail, Mailchimp alternative India, Brevo alternative, email deliverability')} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/napmail`} />
                 <meta property="og:site_name" content="Napnix" />

@@ -13,7 +13,7 @@ import AuthorBio from '../components/ui/AuthorBio';
 import BackToTop from '../components/ui/BackToTop';
 import TableOfContents, { addIdsToHeadings } from '../components/ui/TableOfContents';
 import { SITE_URL, LOGO_URL } from '../constants/siteConfig';
-import { withBrandKeywords, BRAND_KEYWORDS } from '../constants/seoConfig';
+import { withBrandKeywords } from '../constants/seoConfig';
 import { RiTimeLine, RiEyeLine } from 'react-icons/ri';
 
 const BlogArticle = () => {
@@ -133,7 +133,6 @@ const BlogArticle = () => {
             <Helmet>
                 <title>{blog.title} | Napnix Insights</title>
                 <meta name="description" content={metaDesc} />
-                <meta name="keywords" content={withBrandKeywords(blog.metaKeywords || blog.category || BRAND_KEYWORDS)} />
                 <link rel="canonical" href={articleUrl} />
                 <meta property="og:title" content={`${blog.title} | Napnix Insights`} />
                 <meta property="og:description" content={metaDesc} />

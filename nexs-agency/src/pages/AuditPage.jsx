@@ -5,7 +5,6 @@ import Breadcrumbs from '../components/ui/Breadcrumbs';
 import BackToTop from '../components/ui/BackToTop';
 import ReadingProgress from '../components/ui/ReadingProgress';
 import { SITE_URL } from '../constants/siteConfig';
-import { withBrandKeywords } from '../constants/seoConfig';
 import {
     RiArrowRightLine, RiCheckLine, RiSearchEyeLine, RiTimerFlashLine,
     RiRepeatLine, RiDatabase2Line, RiExchangeLine, RiBarChartBoxLine,
@@ -64,7 +63,6 @@ const AuditPage = () => {
             <Helmet>
                 <title>Revenue-Leak Audit — Find Where You're Losing Leads | Napnix</title>
                 <meta name="description" content="A free 20-minute Revenue-Leak Audit for agencies and service businesses. See exactly where enquiries, follow-ups, and handoffs are breaking — and the fastest way to fix them." />
-                <meta name="keywords" content={withBrandKeywords('revenue leak audit, lead follow-up audit, CRM audit, lead management for service businesses, enquiry management, sales pipeline automation')} />
                 <link rel="canonical" href={`${SITE_URL}/audit`} />
                 <meta property="og:title" content="Revenue-Leak Audit — Find Where You're Losing Leads | Napnix" />
                 <meta property="og:description" content="Free 20-minute diagnostic: see where leads and follow-ups leak, and how to fix it fast." />

@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { crmTiers, crmFeatures } from '../constants/crmPricing';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
 import { buildAggregateSaasOffers, buildSoftwareApplicationSchema } from '../constants/productSchema';
-import { withBrandKeywords } from '../constants/seoConfig';
 import { CheckIcon, XIcon } from '../components/ui/Icons';
 import FeatureValue from '../components/crm/FeatureValue';
 import useCRMPricing from '../hooks/useCRMPricing';
@@ -138,7 +137,6 @@ export default function NapCRMLandingPage() {
             <Helmet>
                 <title>NapCRM - All-in-One CRM for Agencies &amp; Businesses | Napnix</title>
                 <meta name="description" content="NapCRM is the complete operating system for modern agencies. Integrated lead management, e-commerce, invoicing, team chat, and client portals — starting at $49/month." />
-                <meta name="keywords" content={withBrandKeywords('CRM for agencies India, NapCRM, all-in-one CRM software, agency management platform, lead management CRM, business CRM India, client portal CRM')} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/napcrm`} />
                 <meta property="og:site_name" content="Napnix" />

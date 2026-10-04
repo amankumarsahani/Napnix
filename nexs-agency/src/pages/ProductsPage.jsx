@@ -4,7 +4,6 @@ import FadeIn from '../components/ui/FadeIn';
 import Breadcrumbs from '../components/ui/Breadcrumbs';
 import BackToTop from '../components/ui/BackToTop';
 import { SITE_URL } from '../constants/siteConfig';
-import { withBrandKeywords } from '../constants/seoConfig';
 import {
     RiArrowRightLine, RiCheckLine, RiCustomerService2Line,
     RiFlashlightLine, RiShieldCheckLine, RiStackLine,
@@ -62,7 +61,6 @@ export default function ProductsPage() {
             <Helmet>
                 <title>Products — NapCRM by Napnix | CRM & Software for Service Businesses</title>
                 <meta name="description" content="Explore Napnix products. NapCRM is a CRM built for agencies and service businesses — lead capture, automated follow-up, and industry workflows in one system." />
-                <meta name="keywords" content={withBrandKeywords('Napnix products, NapCRM, CRM for service businesses, lead management software India')} />
                 <link rel="canonical" href={`${SITE_URL}/products`} />
                 <meta property="og:title" content="Products by Napnix — NapCRM" />
                 <meta property="og:description" content="NapCRM: lead capture, automated follow-up, and industry workflows in one system for agencies and service businesses." />

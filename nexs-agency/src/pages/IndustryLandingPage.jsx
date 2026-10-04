@@ -6,7 +6,6 @@ import { crmTiers } from '../constants/crmPricing';
 import { industryData, industryList } from '../constants/industryData';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
 import { buildAggregateSaasOffers, buildSoftwareApplicationSchema } from '../constants/productSchema';
-import { withBrandKeywords } from '../constants/seoConfig';
 import FadeIn from '../components/ui/FadeIn';
 import Icon from '../components/ui/Icon';
 import useCRMPricing from '../hooks/useCRMPricing';
@@ -94,7 +93,6 @@ export default function IndustryLandingPage() {
             <Helmet>
                 <title>{data.seo.title}</title>
                 <meta name="description" content={data.seo.description} />
-                {data.seo.keywords && <meta name="keywords" content={withBrandKeywords(data.seo.keywords)} />}
                 <link rel="canonical" href={pageUrl} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
 

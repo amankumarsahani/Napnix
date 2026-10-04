@@ -7,7 +7,6 @@ import FadeIn from '../../components/ui/FadeIn';
 import ReadingProgress from '../../components/ui/ReadingProgress';
 import { SITE_URL, siteConfig } from '../../constants/siteConfig';
 import { getLocalBusinessOffers } from '../../constants/schemaOffers';
-import { withBrandKeywords } from '../../constants/seoConfig';
 import Icon from '../../components/ui/Icon';
 import { RiArrowRightLine, RiBriefcase4Line, RiCheckLine, RiGlobalLine, RiMapPinLine, RiShieldCheckLine, RiTimeLine } from 'react-icons/ri';
 
@@ -284,7 +283,6 @@ const CityLandingPage = () => {
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/software-development-company/${city}`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
-                <meta name="keywords" content={withBrandKeywords(`software development company ${data.city}, web development ${data.city}, mobile app development ${data.city}, IT company ${data.city}, Napnix ${data.city}, Napix ${data.city}, ${data.country} software services`)} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />

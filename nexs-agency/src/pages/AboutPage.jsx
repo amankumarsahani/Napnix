@@ -13,7 +13,6 @@ import TrustBadges from '../components/ui/TrustBadges';
 import FadeIn from '../components/ui/FadeIn';
 import ReadingProgress from '../components/ui/ReadingProgress';
 import { SITE_URL, LOGO_URL, siteConfig } from '../constants/siteConfig';
-import { withBrandKeywords } from '../constants/seoConfig';
 import Icon from '../components/ui/Icon';
 import { COMPANY_STATS } from '../constants/companyStats';
 import { RiArrowRightLine } from 'react-icons/ri';
@@ -69,7 +68,6 @@ const AboutPage = () => {
       <Helmet>
         <title>About Napnix — CRM & Lead Follow-Up Systems for Service Businesses</title>
         <meta name="description" content="Napnix helps service businesses fix lead capture, follow-up, CRM, and operations systems. Founded in 2020, based in Mohali, serving clients globally." />
-        <meta name="keywords" content={withBrandKeywords('about napnix, crm agency, lead follow up systems, revenue leak audit, software company india')} />
         <link rel="canonical" href={`${SITE_URL}/about`} />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
         <meta property="og:title" content="About Napnix — CRM & Lead Follow-Up Systems for Service Businesses" />

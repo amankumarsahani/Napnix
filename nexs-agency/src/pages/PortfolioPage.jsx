@@ -8,7 +8,6 @@ import Breadcrumbs from '../components/ui/Breadcrumbs';
 import BackToTop from '../components/ui/BackToTop';
 import ReadingProgress from '../components/ui/ReadingProgress';
 import { SITE_URL } from '../constants/siteConfig';
-import { withBrandKeywords } from '../constants/seoConfig';
 import { COMPANY_STATS } from '../constants/companyStats';
 import { PORTFOLIO_FALLBACK, ACCENT_GRADIENTS } from '../constants/portfolioFallback';
 import { CASE_STUDY_SLUGS } from '../constants/caseStudies';
@@ -137,7 +136,6 @@ const PortfolioPage = () => {
             <Helmet>
                 <title>Portfolio - Software & CRM Case Studies | Napnix</title>
                 <meta name="description" content="Explore Napnix's portfolio: fleet booking apps, telecalling CRMs, AI meeting tools, HR dashboards, and multi-tenant NapCRM deployments for manufacturing and legal teams." />
-                <meta name="keywords" content={withBrandKeywords('software portfolio, case studies, mobile app development, CRM deployment, AI automation, telecalling CRM, fleet management app')} />
                 <link rel="canonical" href={`${SITE_URL}/portfolio`} />
                 <meta property="og:title" content="Portfolio - Software & CRM Case Studies | Napnix" />
                 <meta property="og:description" content="Real products we've shipped across mobile, web, AI, and CRM." />

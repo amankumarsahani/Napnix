@@ -8,7 +8,6 @@ import FadeIn from './ui/FadeIn';
 import ReadingProgress from './ui/ReadingProgress';
 import { siteConfig, SITE_URL } from '../constants/siteConfig';
 import { enrichOffer } from '../constants/productSchema';
-import { withBrandKeywords } from '../constants/seoConfig';
 import Icon from './ui/Icon';
 import { RiArrowRightLine, RiCheckLine } from 'react-icons/ri';
 
@@ -157,7 +156,6 @@ export default function ServicePageTemplate({ data }) {
             <Helmet>
                 <title>{seo.title}</title>
                 <meta name="description" content={seo.description} />
-                {seo.keywords && <meta name="keywords" content={withBrandKeywords(seo.keywords)} />}
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}${seo.canonicalPath}`} />
                 <meta property="og:title" content={seo.ogTitle || seo.title} />
