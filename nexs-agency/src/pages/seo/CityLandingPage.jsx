@@ -525,7 +525,7 @@ const CityLandingPage = () => {
                                         <Icon name={reason.icon} />
                                     </div>
                                     <div>
-                                        <h4 className="text-xl font-bold text-slate-900 mb-3">{reason.title}</h4>
+                                        <h3 className="text-xl font-bold text-slate-900 mb-3">{reason.title}</h3>
                                         <p className="text-slate-600 leading-relaxed group-hover:text-slate-700 transition-colors">
                                             {reason.desc}
                                         </p>

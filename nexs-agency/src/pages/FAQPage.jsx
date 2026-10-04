@@ -258,9 +258,9 @@ const FAQPage = () => {
                                                         {faq.category}
                                                     </span>
                                                 </div>
-                                                <h3 className="text-lg font-bold text-slate-800 pr-8">
+                                                <h2 className="text-lg font-bold text-slate-800 pr-8">
                                                     {faq.question}
-                                                </h3>
+                                                </h2>
                                             </div>
                                             <RiArrowDownSLine className={`text-2xl text-slate-400 transition-transform duration-300 ${expandedIndex === index ? 'rotate-180' : ''}`} />
                                         </button>

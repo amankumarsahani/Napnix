@@ -175,7 +175,7 @@ export default function CRMPricingPage() {
                                     </div>
                                 )}
 
-                                <h3 className="text-xl font-bold text-slate-900 mb-1">{tier.name}</h3>
+                                <h2 className="text-xl font-bold text-slate-900 mb-1">{tier.name}</h2>
                                 <p className="text-sm text-slate-500 mb-4">{tier.description}</p>
 
                                 <div className="mb-6">

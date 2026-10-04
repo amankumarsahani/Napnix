@@ -81,7 +81,7 @@ const ProjectCard = ({ project }) => {
                             </span>
                         ))}
                     </div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{project.title}</h3>
+                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">{project.title}</h2>
                     <p className="text-gray-200 line-clamp-3">{project.description}</p>
                     {hasCase && (
                         <Link
