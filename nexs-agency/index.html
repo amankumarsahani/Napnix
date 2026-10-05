@@ -144,10 +144,12 @@
        If the hero image ever stops being the LCP element, re-measure before
        adding these back. -->
 
-  <!-- Keep imagesrcset byte-identical to srcSet in src/components/Hero.jsx, or
-       the hero is fetched twice. See SEO-HEAD-NOTES.md §5. -->
+  <!-- Hero preload. Must stay byte-identical to the srcSet in
+       src/components/Hero.jsx or the browser fetches a fourth, unused variant —
+       which is exactly what the q=80/q=40 mismatch did before. Self-hosted now,
+       so this is a same-origin fetch on the already-open connection. -->
   <link rel="preload" as="image"
-    imagesrcset="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=40&w=640&fm=webp 640w, https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=40&w=1024&fm=webp 1024w, https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=40&w=1920&fm=webp 1920w"
+    imagesrcset="/assets/hero/home-hero-640.avif 640w, /assets/hero/home-hero-1024.avif 1024w, /assets/hero/home-hero-1920.avif 1920w"
     imagesizes="100vw"
     fetchpriority="high">
 

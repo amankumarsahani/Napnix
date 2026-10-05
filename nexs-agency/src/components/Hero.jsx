@@ -46,9 +46,16 @@ const Hero = memo(function Hero() {
   return (
     <section id="home" className="relative flex min-h-screen flex-col overflow-hidden">
       <div className="absolute inset-0">
+        {/* Self-hosted hero. This is the LCP element on the most important page and
+            it was coming from images.unsplash.com — a separate DNS lookup, TLS
+            handshake and connection before the largest paint could even start.
+            Same origin as the document now, so it reuses the existing connection.
+            AVIF at three widths (30/52/113 KB), downloaded from the same Unsplash
+            source at q=40; the Unsplash licence permits this. Keep the preload in
+            index.html byte-identical to the srcSet below. */}
         <img
-          src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=40&w=1920&auto=format&fit=crop&fm=webp"
-          srcSet="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=40&w=640&fm=webp 640w, https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=40&w=1024&fm=webp 1024w, https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=40&w=1920&fm=webp 1920w"
+          src="/assets/hero/home-hero-1920.avif"
+          srcSet="/assets/hero/home-hero-640.avif 640w, /assets/hero/home-hero-1024.avif 1024w, /assets/hero/home-hero-1920.avif 1920w"
           sizes="100vw"
           alt="Team of developers collaborating at a modern workspace with multiple screens"
           fetchPriority="high"
