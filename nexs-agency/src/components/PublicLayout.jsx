@@ -27,7 +27,12 @@ const PublicLayout = () => {
             <SiteSchema />
             <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:bg-white focus:px-4 focus:py-2 focus:text-black focus:rounded focus:shadow-lg">Skip to content</a>
             <Header />
-            <main id="main-content">
+            {/* min-height holds the footer in place while the lazy route
+                content resolves. Without it the Suspense fallback is far
+                shorter than real content, so the footer sits high and then
+                jumps down — measured at 0.400 CLS on /napcrm and
+                /napcrm/pricing under mobile throttling. */}
+            <main id="main-content" className="min-h-[100vh]">
                 <Suspense fallback={<PageLoader />} key={location.pathname}>
                     <Outlet />
                 </Suspense>
