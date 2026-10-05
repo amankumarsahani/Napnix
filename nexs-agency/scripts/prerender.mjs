@@ -142,7 +142,16 @@ for (const route of routes) {
     // the shell's own script set is what actually keeps the output clean,
     // while preserving the shell's gtag loader and the app's module script.
     await page.evaluate((shell) => {
+      const root = document.getElementById('root');
       for (const el of [...document.querySelectorAll('script')]) {
+        // Anything React rendered lives inside #root — including the
+        // application/ld+json blocks from SiteSchema and each page's Helmet.
+        // Stripping those removed the structured data from every prerendered
+        // page (4 blocks down to 1) and broke hydration, because the client
+        // renders a <script> the prerendered markup no longer had.
+        // Third-party loaders inject into <head>, so scoping the sweep to
+        // outside #root removes them and nothing else.
+        if (root && root.contains(el)) continue;
         const src = el.getAttribute('src');
         const keep = src ? shell.srcs.includes(src) : shell.inline.includes(el.textContent.trim());
         if (!keep) el.remove();
