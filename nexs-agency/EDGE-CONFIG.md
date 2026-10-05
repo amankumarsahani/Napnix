@@ -1,53 +1,45 @@
-# Edge configuration — redirects, headers, real 404s
+# nginx configuration — redirects, headers, real 404s
 
-Three audit findings cannot be fixed in this repo. `public/_redirects` and
-`public/_headers` already contain the right rules, but they are Netlify /
-Cloudflare Pages conventions and neither GitHub Pages nor nginx reads them.
+napnix.in is served by **nginx on the VPS**, from
+`/var/www/html/Napnix/nexs-agency/dist`. Cloudflare sits in front as a proxy
+(admin access is through a cloudflared tunnel, `admin@ssh.napnix.in`).
+
+Deployment is `nexs-backend/deploy-webhook.js` on port 9000: a GitHub push
+webhook triggers `git pull`, then `npm install` and `npm run build:prod` inside
+`nexs-agency`. There is no Cloudflare Pages project and no GitHub Pages
+involvement — the old `.github/workflows/deploy.yml` published to GitHub Pages,
+which never served this domain, and has been deleted.
+
+## Why three findings stayed open
+
+`public/_redirects` and `public/_headers` hold the correct rules, but they are
+Netlify / Cloudflare Pages conventions. **nginx does not read either file.**
 They ship into `dist/` and sit in the webroot doing nothing.
 
-| Finding | Declared in repo | Production today |
+The clean proof: `_redirects` asks for `/assets/* 404`, and production returns
+200 with the HTML shell for `/assets/missing-abc123.js`. That is nginx
+`try_files` falling through to index.html.
+
+| Finding | Declared in repo | Production |
 |---|---|---|
-| C3 redirects | `http://*` and `www` → apex, 301 | all four origins return 200, no redirect |
-| C4 headers | HSTS, nosniff, Referrer-Policy, Permissions-Policy | all six absent |
-| C5 real 404s | `/assets/* 404` | `/assets/missing-abc123.js` returns 200 + HTML |
+| C3 redirects | `http://*` and `www` → apex, 301 | all four origins return 200 |
+| C4 headers | HSTS, nosniff, Referrer-Policy, Permissions-Policy | all absent |
+| C5 real 404s | `/assets/* 404` | 200 + HTML |
+| M5 cache | — | ~360 KiB re-fetched |
 
-That last row is the clean proof the file never executes: the repo explicitly
-asks for a 404 on that path and production serves the SPA shell with a 200.
-
-## First: establish which origin actually serves napnix.in
-
-The repo contains two deployment paths and it is not clear which one is live.
-
-- `.github/workflows/deploy.yml` — builds `nexs-agency` on push to `master`
-  and publishes to **GitHub Pages** via `actions/deploy-pages@v4`
-- `deploy-prod.ps1` — builds and SCPs `dist/*` to a **VPS** at `/var/www/html/`
-
-Cloudflare fronts the domain and strips origin headers, so this cannot be
-settled from outside. The observed behaviour points at nginx rather than
-GitHub Pages:
-
-- `/assets/missing-abc123.js` returns **200 with the HTML shell**. GitHub Pages
-  returns a real 404 for a missing asset; serving index.html for *any* path is
-  nginx `try_files $uri $uri/ /index.html`.
-- No `etag` on responses. GitHub Pages always sends one.
-- `content-type: text/html` with no charset. GitHub Pages sends
-  `text/html; charset=utf-8`.
-
-Confirm before applying anything below — `curl -I` against the origin directly,
-bypassing Cloudflare, settles it in one command.
+Delete both files once the config below is live; leaving them implies rules are
+active when they are not.
 
 ---
 
-## If the origin is nginx (VPS)
-
-Everything is fixed in the server block. This is also where the SPA fallback
-currently turns every unknown path into a 200.
+## The server block
 
 ```nginx
 server {
     listen 443 ssl http2;
     server_name napnix.in;
-    root /var/www/html;
+    root /var/www/html/Napnix/nexs-agency/dist;
+    index index.html;
 
     # C4 — security headers
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
@@ -56,25 +48,29 @@ server {
     add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
     add_header X-Frame-Options "SAMEORIGIN" always;
 
-    # M5 — hashed bundles are immutable; everything else revalidates
+    # Serve the .gz / .br that vite-plugin-compression2 and prerender.mjs write,
+    # instead of recompressing on every request.
+    gzip_static on;
+    # brotli_static on;   # only if nginx was built with ngx_brotli
+
+    # M5 — hashed bundles never change; C5 — a missing one must 404 rather than
+    # fall through to index.html, or a client holding a stale chunk reference
+    # receives HTML and fails to parse it.
     location /assets/ {
-        # C5 — a missing bundle must 404, never fall through to index.html,
-        # or a client holding a stale chunk reference gets HTML and fails to parse it
         try_files $uri =404;
         add_header Cache-Control "public, max-age=31536000, immutable" always;
     }
 
-    location = /index.html {
-        add_header Cache-Control "no-cache" always;
-    }
+    location = /index.html { add_header Cache-Control "no-cache" always; }
+    location = /sitemap.xml { add_header Cache-Control "public, max-age=3600" always; }
 
-    # Prerendered routes are real directories: /napcrm/index.html etc.
-    # $uri/ must come before the fallback so they are served as static files.
+    # Prerendered routes are real directories: dist/napcrm/index.html and so on.
+    # $uri/ is what serves them, so it must come before the fallback. Unmatched
+    # paths go to 404.html with a 404 status, not to index.html with a 200.
     location / {
-        try_files $uri $uri/ /404.html;
+        try_files $uri $uri/ =404;
     }
 
-    # C5 — unknown paths get the shell with a 404 status, not a 200
     error_page 404 /404.html;
     location = /404.html {
         internal;
@@ -82,9 +78,8 @@ server {
     }
 }
 
-# C3 — single canonical origin
+# C3 — one canonical origin
 server {
-    listen 80;
     listen 443 ssl http2;
     server_name www.napnix.in;
     return 301 https://napnix.in$request_uri;
@@ -92,60 +87,51 @@ server {
 
 server {
     listen 80;
-    server_name napnix.in;
+    server_name napnix.in www.napnix.in;
     return 301 https://napnix.in$request_uri;
 }
 ```
 
-Note the ordering in `location /`: `try_files $uri $uri/` is what lets the
-prerendered `dist/<route>/index.html` files be served directly. Falling back to
-`/404.html` instead of `/index.html` is the change that turns soft 404s into
-real ones — the prerendered routes no longer need a catch-all, because each one
-exists on disk.
+The `try_files $uri $uri/ =404` line is the one that changes behaviour most.
+Before prerendering, every unknown path had to fall through to `index.html` for
+client-side routing to work, which is what made soft 404s unavoidable. Now that
+49 routes exist on disk as real files, the fallback is only needed for routes
+that are not prerendered — currently just `/blog`, which depends on the API at
+build time. If you would rather keep client-side routing for any URL, use
+`try_files $uri $uri/ /404.html;` instead: same 404 status, but the SPA shell
+still boots and can route.
 
-## If the origin is GitHub Pages
+## Deploying it
 
-GitHub Pages cannot set response headers or redirect, so C3 and C4 move to
-Cloudflare. It does return a real 404 for unknown paths once `404.html` exists,
-which `copy-404.mjs` already produces — so C5 may resolve on its own.
+```bash
+ssh -o ProxyCommand="cloudflared access ssh --hostname %h" admin@ssh.napnix.in
 
-**C3 — Rules → Redirect Rules**, one rule:
-
-```
-Expression:  (http.host eq "www.napnix.in")
-Then:        Dynamic redirect
-URL:         concat("https://napnix.in", http.request.uri.path)
-Status:      301
-Preserve query string: on
+sudo nano /etc/nginx/sites-available/napnix.in     # paste the block
+sudo nginx -t                                      # must pass before reloading
+sudo systemctl reload nginx
 ```
 
-For `http://` → `https://`, do not write a rule: enable
-**SSL/TLS → Edge Certificates → Always Use HTTPS**.
+## The prerender browser
 
-**C4 — Rules → Transform Rules → Modify Response Header**, one rule matching
-`true` (all requests), setting static values:
+`build:prod` ends with `scripts/prerender.mjs`, which needs a headless Chromium.
+Without it the chain exits non-zero **after** vite has already overwritten
+`dist/`, so nginx serves a fresh shell with no prerendered routes and the
+webhook reports a failed deploy. That is what has been happening on every push.
 
+`deploy-webhook.js` now installs it before building, but the first run still
+needs the browser present:
+
+```bash
+cd /var/www/html/Napnix/nexs-agency
+npx playwright install --with-deps chromium --only-shell
 ```
-Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-X-Content-Type-Options:    nosniff
-Referrer-Policy:           strict-origin-when-cross-origin
-Permissions-Policy:        camera=(), microphone=(), geolocation=()
-X-Frame-Options:           SAMEORIGIN
-```
 
-Enable HSTS only once you are sure every subdomain serves HTTPS; `preload` is
-hard to reverse.
-
-## Either way
-
-Delete `public/_redirects` and `public/_headers` once the real configuration is
-in place. Leaving them implies the rules are active when they are not — that
-misreading is what left these three findings open while the repo looked correct.
+`--with-deps` needs sudo on a fresh box for the shared libraries.
 
 ## Verifying
 
 ```bash
-# C3 — each should answer 301 to https://napnix.in/...
+# C3 — each should answer 301
 for u in http://napnix.in https://www.napnix.in http://www.napnix.in; do
   curl -sS -o /dev/null -w "$u -> %{http_code} %{redirect_url}\n" "$u"
 done
@@ -156,4 +142,12 @@ curl -sSI https://napnix.in | grep -iE 'strict-transport|x-content-type|referrer
 # C5 — expect 404, not 200
 curl -sS -o /dev/null -w "%{http_code}\n" https://napnix.in/nope-12345
 curl -sS -o /dev/null -w "%{http_code}\n" https://napnix.in/assets/missing-abc123.js
+
+# C2 — expect thousands of characters, and the route's own canonical
+curl -sS https://napnix.in/napcrm | grep -o 'rel="canonical" href="[^"]*"'
+curl -sS https://napnix.in/napcrm | wc -c      # ~180KB prerendered, not ~12.5KB
 ```
+
+The last pair is the real test. Until `/napcrm` returns its own canonical and
+six-figure byte count, prerendering is not reaching production regardless of
+what the build logs say.

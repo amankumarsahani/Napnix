@@ -258,6 +258,17 @@ const server = http.createServer((req, res) => {
                         'Frontend npm install'
                     );
 
+                    // build:prod ends with scripts/prerender.mjs, which drives a
+                    // headless Chromium over the sitemap routes. Without the browser
+                    // present the chain exits non-zero AFTER vite has already
+                    // overwritten dist/, so nginx serves a freshly built shell with no
+                    // prerendered routes and the deploy reports failure. Installing is
+                    // a no-op once the browser is cached.
+                    await runCommand(
+                        `cd ${REPO_PATH}/nexs-agency && npx playwright install chromium --only-shell`,
+                        'Prerender browser'
+                    );
+
                     await runCommand(
                         `cd ${REPO_PATH}/nexs-agency && VITE_API_URL=https://api.napnix.in/api VITE_ENV=production npm run build:prod`,
                         'Frontend build'
