@@ -10,7 +10,7 @@ export const industryData = {
       badge: { text: 'All-Purpose CRM', icon: 'ri-building-line' },
       title: 'The CRM That Adapts to Any Business',
       subtitle: 'Manage leads, close deals, and automate communications from a single dashboard — built for teams that need a CRM without the bloat.',
-      image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=1600&fm=webp',
+      image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=60&w=1280&fm=webp',
     },
     stats: [
       { value: '9+', label: 'Core Modules' },
@@ -80,7 +80,7 @@ export const industryData = {
       badge: { text: 'E-Commerce CRM', icon: 'ri-shopping-cart-2-line' },
       title: 'Sell More. Manage Smarter. Grow Faster.',
       subtitle: 'CRM built for online stores — manage products, orders, inventory, shipping, returns, and customer relationships from one dashboard.',
-      image: 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=1600&fm=webp',
+      image: 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=60&w=1280&fm=webp',
     },
     stats: [
       { value: '10+', label: 'E-Commerce Modules' },
@@ -150,7 +150,7 @@ export const industryData = {
       badge: { text: 'Real Estate CRM', icon: 'ri-home-smile-line' },
       title: 'Track Every Property. Close Every Deal.',
       subtitle: 'CRM for brokers, developers, and agencies — manage properties, listings, site visits, transactions, and agent teams from a single platform.',
-      image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1600&fm=webp',
+      image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=60&w=1280&fm=webp',
     },
     stats: [
       { value: '8+', label: 'Real Estate Modules' },
@@ -220,7 +220,7 @@ export const industryData = {
       badge: { text: 'Services CRM', icon: 'ri-briefcase-line' },
       title: 'Book Appointments. Manage Clients. Grow Revenue.',
       subtitle: 'CRM for consultants, agencies, and service professionals — manage bookings, schedules, service packages, and client relationships in one place.',
-      image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&q=80&w=1600&fm=webp',
+      image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&q=60&w=1280&fm=webp',
     },
     stats: [
       { value: '10+', label: 'Service Modules' },
@@ -290,7 +290,7 @@ export const industryData = {
       badge: { text: 'Education CRM', icon: 'ri-graduation-cap-line' },
       title: 'Manage Courses. Track Students. Grow Enrollments.',
       subtitle: 'CRM for schools, coaching institutes, and edtech platforms — manage courses, batches, student records, attendance, and grades in one system.',
-      image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=1600&fm=webp',
+      image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=60&w=1280&fm=webp',
     },
     stats: [
       { value: '5+', label: 'Education Modules' },
@@ -359,7 +359,7 @@ export const industryData = {
       badge: { text: 'Healthcare CRM', icon: 'ri-heart-pulse-line' },
       title: 'Better Patient Management. Better Outcomes.',
       subtitle: 'CRM for hospitals, clinics, and wellness centers — manage patients, appointments, prescriptions, lab results, billing, and medical records.',
-      image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=1600&fm=webp',
+      image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=60&w=1280&fm=webp',
     },
     stats: [
       { value: '10+', label: 'Healthcare Modules' },
@@ -429,7 +429,7 @@ export const industryData = {
       badge: { text: 'Hospitality CRM', icon: 'ri-hotel-line' },
       title: 'Manage Rooms. Delight Guests. Run Smooth Operations.',
       subtitle: 'CRM for hotels, resorts, and vacation properties — manage reservations, room inventory, guest profiles, housekeeping, and tour packages.',
-      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1600&fm=webp',
+      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=60&w=1280&fm=webp',
     },
     stats: [
       { value: '7+', label: 'Hospitality Modules' },
@@ -499,7 +499,7 @@ export const industryData = {
       badge: { text: 'Travel CRM', icon: 'ri-flight-takeoff-line' },
       title: 'Manage Tours. Book Travelers. Grow Your Agency.',
       subtitle: 'CRM for travel agencies, tour operators, and DMCs — manage packages, itineraries, bookings, agents, and traveler profiles from one platform.',
-      image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&q=80&w=1600&fm=webp',
+      image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&q=60&w=1280&fm=webp',
     },
     stats: [
       { value: '11+', label: 'Travel Modules' },
@@ -569,7 +569,7 @@ export const industryData = {
       badge: { text: 'Fitness CRM', icon: 'ri-boxing-line' },
       title: 'Manage Members. Run Classes. Grow Your Gym.',
       subtitle: 'CRM for gyms, yoga studios, and fitness centers — manage memberships, class schedules, trainers, workouts, subscriptions, and equipment.',
-      image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=1600&fm=webp',
+      image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=60&w=1280&fm=webp',
     },
     stats: [
       { value: '10+', label: 'Fitness Modules' },
@@ -639,7 +639,7 @@ export const industryData = {
       badge: { text: 'Legal CRM', icon: 'ri-scales-3-line' },
       title: 'Manage Cases. Track Deadlines. Bill Accurately.',
       subtitle: 'CRM for law firms, advocates, and legal consultants — manage cases, court dates, client files, time tracking, invoicing, and task assignments.',
-      image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=1600&fm=webp',
+      image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=60&w=1280&fm=webp',
     },
     stats: [
       { value: '8+', label: 'Legal Modules' },
@@ -708,7 +708,7 @@ export const industryData = {
       badge: { text: 'Manufacturing CRM', icon: 'ri-settings-3-line' },
       title: 'From Raw Material to Finished Product — All in One.',
       subtitle: 'The most comprehensive manufacturing CRM available — 26+ modules for production, inventory, quality, MRP, equipment, invoicing, and advanced analytics.',
-      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1600&fm=webp',
+      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=60&w=1280&fm=webp',
     },
     stats: [
       { value: '26+', label: 'Manufacturing Modules' },
@@ -787,7 +787,7 @@ export const industryData = {
       badge: { text: 'Logistics CRM', icon: 'ri-truck-line' },
       title: 'Track Shipments. Manage Fleets. Serve Clients.',
       subtitle: 'CRM for logistics companies, freight forwarders, and courier services — manage shipments, tracking, vehicles, drivers, warehouses, and routes.',
-      image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=1600&fm=webp',
+      image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=60&w=1280&fm=webp',
     },
     stats: [
       { value: '9+', label: 'Logistics Modules' },
@@ -856,7 +856,7 @@ export const industryData = {
       badge: { text: 'Restaurant CRM', icon: 'ri-restaurant-2-line' },
       title: 'Manage Orders. Run Your Kitchen. Know Your Diners.',
       subtitle: 'CRM for restaurants, cafes, and cloud kitchens — manage menus, orders, tables, kitchen operations, inventory, staff scheduling, and customer data.',
-      image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1600&fm=webp',
+      image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=60&w=1280&fm=webp',
     },
     stats: [
       { value: '11+', label: 'Restaurant Modules' },
@@ -926,7 +926,7 @@ export const industryData = {
       badge: { text: 'Salon CRM', icon: 'ri-scissors-line' },
       title: 'Book Appointments. Manage Staff. Showcase Your Work.',
       subtitle: 'CRM for salons, spas, and beauty studios — manage bookings, services, staff, packages, products, customer profiles, and a portfolio gallery.',
-      image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&q=80&w=1600&fm=webp',
+      image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&q=60&w=1280&fm=webp',
     },
     stats: [
       { value: '9+', label: 'Salon Modules' },

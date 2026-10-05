@@ -9,7 +9,7 @@ const data = {
         gradient: 'from-[#2563EB] to-[#1D4ED8]',
         paragraph: 'From native iOS/Android to high-performance cross-platform solutions, we build mobile experiences that drive engagement and retention.',
         ctaText: 'Discuss Your App',
-        bgImage: 'https://images.unsplash.com/photo-1551650975-87deedd944c3',
+        bgImage: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=1280&q=60&fm=webp&auto=format&fit=crop',
         bgImageAlt: 'Mobile Development Background',
     },
     overview: {

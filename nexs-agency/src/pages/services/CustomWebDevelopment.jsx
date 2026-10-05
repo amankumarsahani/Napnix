@@ -9,7 +9,7 @@ const data = {
         gradient: 'from-[#2563EB] to-[#1D4ED8]',
         paragraph: 'We define the digital standard for your business with robust, secure, and high-performance web solutions tailored to your unique goals.',
         ctaText: 'Start Project',
-        bgImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa',
+        bgImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1280&q=60&fm=webp&auto=format&fit=crop',
         bgImageAlt: 'Background',
     },
     overview: {
@@ -23,12 +23,12 @@ const data = {
         ],
         bento: {
             largeImage: {
-                src: 'https://images.unsplash.com/photo-1555099962-4199c345e5dd?q=80&w=2070&auto=format&fit=crop&fm=webp',
+                src: 'https://images.unsplash.com/photo-1555099962-4199c345e5dd?q=60&w=1280&auto=format&fit=crop&fm=webp',
                 alt: 'Coding Interface',
                 label: 'Code Excellence',
             },
             smallImage: {
-                src: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop&fm=webp',
+                src: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=60&w=1280&auto=format&fit=crop&fm=webp',
                 alt: 'Analytics Dashboard',
             },
             stat: { value: '99%', label: 'Uptime Guarantee' },

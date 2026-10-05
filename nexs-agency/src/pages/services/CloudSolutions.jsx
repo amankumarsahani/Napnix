@@ -9,7 +9,7 @@ const data = {
         gradient: 'from-[#2563EB] to-[#1D4ED8]',
         paragraph: 'Build, deploy, and manage your applications with the speed and reliability of modern cloud infrastructure.',
         ctaText: 'Plan Your Migration',
-        bgImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa',
+        bgImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1280&q=60&fm=webp&auto=format&fit=crop',
         bgImageAlt: 'Background',
     },
     overview: {

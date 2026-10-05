@@ -196,7 +196,7 @@ export default function NapCRMLandingPage() {
             </AnimatePresence>
 
             {/* Hero Section */}
-            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-[url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2600&q=80&fm=webp')] bg-cover bg-center">
+            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-[url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1280&q=60&fm=webp')] bg-cover bg-center">
                 <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-0"></div>
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-[#2563EB]/10 to-transparent rounded-full blur-3xl opacity-60 pointer-events-none z-0" />
 
@@ -284,7 +284,7 @@ export default function NapCRMLandingPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 auto-rows-[340px]">
                         <FadeIn y={30} delay={0} className="md:col-span-2 md:row-span-1 rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:border-slate-200 transition-all group overflow-hidden relative">
-                            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=2600&q=80&fm=webp')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105"></div>
+                            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1280&q=60&fm=webp')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105"></div>
                             <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent"></div>
                             <div className="relative z-10 p-10 h-full flex flex-col justify-center max-w-md">
                                 <div className="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-lg"><RiDashboard3Line /></div>

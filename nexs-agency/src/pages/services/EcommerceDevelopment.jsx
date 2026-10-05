@@ -9,7 +9,7 @@ const data = {
         gradient: 'from-[#2563EB] to-[#1D4ED8]',
         paragraph: 'We build data-driven e-commerce experiences that turn visitors into loyal customers. From headless storefronts to complex marketplaces.',
         ctaText: 'Start Selling',
-        bgImage: 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d',
+        bgImage: 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?w=1280&q=60&fm=webp&auto=format&fit=crop',
         bgImageAlt: 'Ecommerce Background',
     },
     overview: {
