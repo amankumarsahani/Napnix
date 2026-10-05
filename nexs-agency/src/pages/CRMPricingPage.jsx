@@ -438,6 +438,7 @@ export default function CRMPricingPage() {
                                             id="crm-name"
                                             type="text"
                                             name="name"
+                                            autoComplete="name"
                                             required
                                             minLength={2}
                                             maxLength={100}
@@ -450,6 +451,7 @@ export default function CRMPricingPage() {
                                         <input
                                             id="crm-email"
                                             type="email"
+                                            autoComplete="email"
                                             name="email"
                                             required
                                             className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] outline-none transition-colors"
@@ -464,6 +466,7 @@ export default function CRMPricingPage() {
                                         <input
                                             id="crm-phone"
                                             type="tel"
+                                            autoComplete="tel"
                                             name="phone"
                                             className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] outline-none transition-colors"
                                             placeholder="+91 98765 43210"

@@ -348,6 +348,7 @@ const ContactPage = () => {
                                                 id="contact-name"
                                                 type="text"
                                                 name="name"
+                                                autoComplete="name"
                                                 value={formState.name}
                                                 onChange={handleChange}
                                                 required
@@ -363,6 +364,7 @@ const ContactPage = () => {
                                             <input
                                                 id="contact-email"
                                                 type="email"
+                                                autoComplete="email"
                                                 name="email"
                                                 value={formState.email}
                                                 onChange={handleChange}
@@ -378,6 +380,7 @@ const ContactPage = () => {
                                                 <input
                                                     id="contact-phone"
                                                     type="tel"
+                                                    autoComplete="tel"
                                                     name="phone"
                                                     value={formState.phone}
                                                     onChange={handleChange}

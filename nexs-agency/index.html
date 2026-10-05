@@ -180,6 +180,10 @@
   <!-- AI discovery -->
   <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs.txt site summary" />
   <link rel="license" href="/license.xml" />
+  <!-- Markdown alternate. prerender.mjs writes a .md sibling for every route;
+       this is what makes it discoverable. A convention rather than a ratified
+       standard, shipped because the content utility for AI crawlers is real. -->
+  <link rel="alternate" type="text/markdown" href="/index.md" />
 
   <!-- Structured data: #localbusiness ONLY. Organization + WebSite come from
        src/components/seo/SiteSchema.jsx. Do not declare them here too — see

@@ -1,58 +1,56 @@
 /* TEAM */
   Company: Napnix
-  Location: Worldwide
+  Location: Balongi, Sahibzada Ajit Singh Nagar (Mohali), Punjab, India
   Website: https://napnix.in/
   Contact: info@napnix.in
+  Founded: 2025
 
 /* SITE */
-  Last update: 2024/01/01
+  Last update: 2026/10/05
   Language: English
   Doctype: HTML5
-  IDE: VS Code, Claude Code
   Framework: React 18, Vite
   Styling: Tailwind CSS
   Icons: Remix Icon
-  Fonts: Google Fonts
-  
+  Fonts: Inter, Outfit, DM Serif Display (Google Fonts)
+  Rendering: Static prerender of every sitemap route at build time, then
+             client-side routing
+
 /* TECHNOLOGIES USED */
-  Frontend: React, JavaScript ES6+, HTML5, CSS3, Tailwind CSS
-  Build: Vite, Node.js
-  Performance: Code splitting, lazy loading, image optimization
-  SEO: Semantic HTML, structured data, meta tags
-  Accessibility: WCAG 2.1 AA compliance
-  PWA: Service workers, web app manifest
-  
+  Frontend: React, JavaScript ES2020+, HTML5, Tailwind CSS
+  Build: Vite, Node.js, Playwright (prerender)
+  Hosting: nginx on a VPS, Cloudflare in front
+  Performance: route-level code splitting, prerendered HTML, inlined critical
+               CSS, deferred analytics
+  SEO: semantic HTML, JSON-LD structured data, per-route canonical and meta
+
+/* FOR MACHINES */
+  llms.txt: https://napnix.in/llms.txt
+  llms-full.txt: https://napnix.in/llms-full.txt
+  Markdown: every page has a .md sibling, e.g. https://napnix.in/napcrm/pricing.md
+  Licensing: https://napnix.in/license.xml
+  robots.txt names the AI crawlers that are allowed and blocked explicitly.
+
 /* FEATURES */
-  - Responsive design (mobile-first)
-  - Progressive Web App (PWA)
-  - SEO optimized
-  - Accessibility compliant
-  - Fast loading (Core Web Vitals optimized)
-  - Modern JavaScript (ES2022+)
-  - Component-based architecture
-  - Dark/Light theme support
-  
+  - Responsive, mobile-first
+  - Prerendered HTML, so the content is readable without JavaScript
+  - Core Web Vitals monitored (mobile LCP is still above the 2.5s target)
+
+/* NOT CLAIMED */
+  This file previously asserted several things that were not true, which is
+  worse than saying nothing. For the record:
+  - No service worker is registered, so this is not a Progressive Web App.
+    The web app manifest exists; a manifest alone is not a PWA.
+  - WCAG 2.1 AA conformance has not been formally audited. Automated checks
+    (Lighthouse accessibility) pass at 100, which is not the same thing.
+  - There is no dark/light theme toggle.
+  - "Last update 2024/01/01" predated the company.
+
 /* CREDITS */
-  Design inspiration: Modern web trends, Material Design, Apple HIG
-  Images: Unsplash, custom illustrations
-  
+  Images: Unsplash
+
 /* THANKS */
-  To the open source community and all the amazing developers
-  who make the web a better place!
+  To the open source community, and to everyone who maintains the tools this
+  site is built on.
 
-                                 _.-.
-                               ,'/ o \`.
-                             ,'  \___/  `.
-                           ,'             `.
-                         ,'      NAPNIX    `.
-                       ,'        SOLUTION     `.
-                     ,'                         `.
-                   ,'             ^               `.
-                 ,'              / \                `.
-               ,'              /____ \                `.
-             ,'              /        \                 `.
-           ,'              /            \                  `.
-         ,'              /                \                   `.
-       '                                                        `
-
-                /* Built with care and lots of coffee */
+                /* Built in Mohali. */

@@ -167,6 +167,100 @@ function inlineStylesheet(html, route) {
 
 const dedupedTags = [];
 const fontResets = [];
+const markdownWritten = [];
+
+/**
+ * Serialise a rendered route's main content as Markdown.
+ *
+ * Runs in the page so it can read the settled DOM. Deliberately narrow: it
+ * walks block-level elements in document order and emits headings, paragraphs,
+ * lists, tables and links. Navigation, header, footer and anything
+ * aria-hidden is skipped, because repeating the nav on all 54 files would be
+ * most of the bytes and none of the value.
+ */
+async function extractMarkdown(page, route) {
+  const body = await page.evaluate(() => {
+    const SKIP = new Set(['NAV', 'HEADER', 'FOOTER', 'SCRIPT', 'STYLE', 'NOSCRIPT', 'SVG', 'BUTTON', 'FORM']);
+    const root = document.getElementById('root');
+    if (!root) return '';
+
+    const inline = (el) => {
+      let s = '';
+      for (const n of el.childNodes) {
+        if (n.nodeType === 3) s += n.textContent.replace(/\s+/g, ' ');
+        else if (n.nodeType === 1) {
+          if (SKIP.has(n.tagName) || n.getAttribute('aria-hidden') === 'true') continue;
+          const t = inline(n).trim();
+          if (!t) continue;
+          if (n.tagName === 'A' && n.getAttribute('href')) {
+            const href = n.getAttribute('href');
+            s += href.startsWith('#') ? t : `[${t}](${href.startsWith('/') ? 'https://napnix.in' + href : href})`;
+          } else if (n.tagName === 'STRONG' || n.tagName === 'B') s += `**${t}**`;
+          else if (n.tagName === 'EM' || n.tagName === 'I') s += `_${t}_`;
+          else if (n.tagName === 'CODE') s += `\`${t}\``;
+          else s += t;
+          s += ' ';
+        }
+      }
+      return s.replace(/\s+/g, ' ');
+    };
+
+    const out = [];
+    const seen = new Set();
+    const walk = (el) => {
+      for (const child of el.children) {
+        if (SKIP.has(child.tagName) || child.getAttribute('aria-hidden') === 'true') continue;
+        const tag = child.tagName;
+        if (/^H[1-4]$/.test(tag)) {
+          const t = inline(child).trim();
+          // +1 so the page's own <h1> becomes "##": the document already opens
+          // with an H1 built from the page title, and two H1s in one Markdown
+          // file is ambiguous for anything parsing the structure.
+          if (t && !seen.has('h:' + t)) { seen.add('h:' + t); out.push('#'.repeat(Math.min(6, +tag[1] + 1)) + ' ' + t); }
+        } else if (tag === 'P') {
+          const t = inline(child).trim();
+          if (t.length > 1 && !seen.has('p:' + t)) { seen.add('p:' + t); out.push(t); }
+        } else if (tag === 'UL' || tag === 'OL') {
+          const items = [...child.children]
+            .filter((li) => li.tagName === 'LI')
+            .map((li, i) => (tag === 'OL' ? `${i + 1}. ` : '- ') + inline(li).trim())
+            .filter((l) => l.length > 3);
+          if (items.length) out.push(items.join('\n'));
+        } else if (tag === 'TABLE') {
+          const rows = [...child.querySelectorAll('tr')].map((tr) =>
+            [...tr.children].map((c) => inline(c).trim().replace(/\|/g, '\\|')));
+          if (rows.length > 1) {
+            const head = rows[0];
+            out.push(
+              '| ' + head.join(' | ') + ' |\n|' + head.map(() => '---').join('|') + '|\n'
+              + rows.slice(1).map((r) => '| ' + r.join(' | ') + ' |').join('\n'));
+          }
+        } else {
+          walk(child);
+        }
+      }
+    };
+    walk(root);
+    return out.join('\n\n');
+  });
+
+  if (!body || body.length < 200) return null;
+
+  // inline() appends a space after each element, which leaves " ," and " ." and
+  // the occasional double space. Tidy rather than complicate the walker.
+  const tidy = body
+    .replace(/[ \t]+([,.;:!?])/g, '$1')
+    .replace(/[ \t]{2,}/g, ' ')
+    .replace(/ +$/gm, '')
+    .replace(/\n{3,}/g, '\n\n');
+
+  const title = await page.title();
+  const desc = await page.evaluate(() =>
+    document.querySelector('meta[name="description"]')?.getAttribute('content') || '');
+  const url = `https://napnix.in${route === '/' ? '/' : route}`;
+
+  return `# ${title}\n\n> ${desc}\n\nSource: ${url}\n\n---\n\n${tidy}\n`;
+}
 
 for (const route of routes) {
   try {
@@ -315,6 +409,35 @@ for (const route of routes) {
     mkdirSync(dirname(out), { recursive: true });
     writeFileSync(out, html, 'utf8');
 
+    // Write a Markdown sibling for every route.
+    //
+    // robots.txt explicitly invites GPTBot, ClaudeBot, PerplexityBot and
+    // OAI-SearchBot, and then hands them ~290 KB of HTML per page in which the
+    // article is a small fraction of the bytes. Markdown is a few KB of the same
+    // content with the structure intact, which is materially easier for a model
+    // to parse and quote accurately. The agent-readiness audit also looks for
+    // `.md` siblings, `rel="alternate" type="text/markdown"` and
+    // `Accept: text/markdown` negotiation.
+    //
+    // Honest framing: Markdown delivery is a convention, not a ratified
+    // standard, and no crawler is documented as requiring it. It is shipped here
+    // because the content utility is real, not because a spec demands it. The
+    // `<link rel="alternate">` in index.html is what makes it discoverable; the
+    // nginx rule in deploy/nginx-napnix.conf serves the right content type and
+    // handles `Accept:` negotiation.
+    const markdown = await extractMarkdown(page, route);
+    if (markdown) {
+      const mdOut = route === '/' ? join(DIST, 'index.md') : join(DIST, `${route.replace(/^\//, '')}.md`);
+      mkdirSync(dirname(mdOut), { recursive: true });
+      writeFileSync(mdOut, markdown, 'utf8');
+      const mdBuf = Buffer.from(markdown, 'utf8');
+      writeFileSync(`${mdOut}.gz`, gzipSync(mdBuf, { level: 9 }));
+      writeFileSync(`${mdOut}.br`, brotliCompressSync(mdBuf, {
+        params: { [zlibConstants.BROTLI_PARAM_QUALITY]: 11 },
+      }));
+      markdownWritten.push([route, markdown.length]);
+    }
+
     // vite-plugin-compression2 pre-compresses during `vite build`, which runs
     // BEFORE this script. Overwriting index.html alone leaves index.html.gz and
     // index.html.br holding the pre-prerender shell, and a host that serves
@@ -349,6 +472,10 @@ for (const [route, n] of dedupedTags) {
 console.log(`prerender: inlined the app stylesheet into ${inlinedCount} page(s)`);
 for (const [route, why] of inlineMisses) {
   console.log(`prerender: CSS INLINE MISS ${route.padEnd(33)} ${why}`);
+}
+if (markdownWritten.length) {
+  const kb = markdownWritten.reduce((n, [, len]) => n + len, 0) / 1024;
+  console.log(`prerender: wrote ${markdownWritten.length} Markdown sibling(s), ${kb.toFixed(0)} KB total`);
 }
 if (fontResets.length) {
   const total = fontResets.reduce((sum, [, n]) => sum + n, 0);
