@@ -2,7 +2,7 @@
 
 > Napnix — also commonly searched as Napix — is an India-based software development company building custom web applications, mobile apps, cloud infrastructure, AI/ML solutions, NapCRM, and NapMail.
 
-Napnix specializes in end-to-end digital product development for startups and enterprises. Founded in 2025, headquartered at 2519 Azad Nagar, Balongi, Sahibzada Ajit Singh Nagar (Mohali), Punjab 140301, India. Core expertise: React, Node.js, Flutter, AWS, AI/ML. Contact: info@napnix.in | +91 6239396615.
+Napnix specializes in end-to-end digital product development for startups and enterprises. Founded in 2025, headquartered at 2519 Azad Nagar, Balongi, Sahibzada Ajit Singh Nagar (Mohali), Punjab 160055, India. Core expertise: React, Node.js, Flutter, AWS, AI/ML. Contact: info@napnix.in | +91 6239396615.
 
 ## Products
 

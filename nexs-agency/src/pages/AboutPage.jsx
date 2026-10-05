@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 import officeImg from '../assets/office_collaboration.jpg';
 
 // Import Components
-import Timeline from '../components/Timeline';
 import Breadcrumbs from '../components/ui/Breadcrumbs';
 import BackToTop from '../components/ui/BackToTop';
 import TrustBadges from '../components/ui/TrustBadges';
@@ -202,8 +201,17 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Timeline */}
-      <Timeline />
+      {/*
+        Timeline removed. components/Timeline.jsx claims 2020 Founded, 2021
+        First Client Projects, 2022 Product Foundations, 2023 NapCRM Launch and
+        2024 Growing Delivery. The Clutch profile — the listing carrying our
+        only verified client review — gives a 2025 founding, and the domain was
+        registered 2026-05-25, so those years predate the company and
+        contradicted the foundingDate in our own schema.
+
+        The component is left in place. Restore <Timeline /> once its entries
+        carry real dates.
+      */}
 
       {/* Values - Grid Layout */}
       <section className="py-32 bg-[#F8FAFC] relative">

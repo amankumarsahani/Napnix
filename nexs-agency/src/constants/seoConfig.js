@@ -55,7 +55,7 @@ export function organizationSchema() {
             streetAddress: '2519, Azad Nagar, Balongi',
             addressLocality: 'Mohali',
             addressRegion: 'Punjab',
-            postalCode: '140301',
+            postalCode: '160055',
             addressCountry: 'IN',
         },
     };
