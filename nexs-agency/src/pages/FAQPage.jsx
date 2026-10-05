@@ -71,6 +71,21 @@ const FAQPage = () => {
             question: "Can you help with SEO-friendly websites?",
             answer: "Yes, all websites we build are SEO optimized from the ground up. This includes semantic HTML, fast page load times, mobile responsiveness, proper meta tags, structured data markup, and adherence to Google's Core Web Vitals guidelines.",
             category: "Technical"
+        },
+        {
+            question: "What does a project cost, roughly?",
+            answer: "A focused internal tool or portal usually starts around ₹4,00,000. A multi-tenant SaaS platform with billing, roles and an admin surface is typically ₹15,00,000 and up. NapCRM, if a configured CRM fits instead of a build, starts at ₹4,165 per month. The variable that moves a build estimate most is the number of distinct user roles, because each one multiplies both the permission logic and the testing surface. We give a written figure after a scoping call rather than a range over email.",
+            category: "Pricing"
+        },
+        {
+            question: "Who owns the code and the infrastructure?",
+            answer: "You do, from the first commit. The repository sits in your organisation and the cloud resources run in your own account, not ours. At handover you receive the code, the infrastructure definitions, environment documentation and a runbook for routine operational tasks. There is no proprietary runtime or licence that would stop another team picking the work up, and we do not require a retainer to keep the system running.",
+            category: "Process"
+        },
+        {
+            question: "Do you work with businesses outside India?",
+            answer: "Yes. The team is in Mohali, Punjab, and we work with clients across India, the UK, the US, the UAE, Canada and Australia. Delivery is remote, with meetings scheduled in your working hours: the Mohali day overlaps the morning in the UK and the EU, and the evening in Australia and Singapore. For North American clients we usually hold a fixed early-morning or late-evening slot rather than rotating it. We bill in INR, USD or EUR.",
+            category: "General"
         }
     ];
 
@@ -109,7 +124,7 @@ const FAQPage = () => {
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white overflow-hidden">
             <Helmet>
                 <title>FAQ - Frequently Asked Questions | Napnix</title>
-                <meta name="description" content="Get answers to common questions about Napnix' software development services, technologies, project timelines, support, and more. Learn about our web, mobile, AI, and cloud solutions." />
+                <meta name="description" content="Answers on Napnix software development: services, technologies, project timelines and support across web, mobile, AI and cloud work." />
                 <link rel="canonical" href={`${SITE_URL}/faq`} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <meta property="og:title" content="Frequently Asked Questions | Napnix" />
@@ -248,6 +263,9 @@ const FAQPage = () => {
                                         <button
                                             onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
                                             className="w-full p-6 text-left flex items-start gap-4 hover:bg-[#F8FAFC] transition-colors"
+                                            id={`faq-question-${index}`}
+                                            aria-expanded={expandedIndex === index}
+                                            aria-controls={`faq-answer-${index}`}
                                         >
                                             <span className="flex-shrink-0 w-8 h-8 rounded-lg bg-[#2563EB]/10 text-[#2563EB] flex items-center justify-center font-bold text-sm">
                                                 Q
@@ -265,15 +283,36 @@ const FAQPage = () => {
                                             <RiArrowDownSLine className={`text-2xl text-slate-400 transition-transform duration-300 ${expandedIndex === index ? 'rotate-180' : ''}`} />
                                         </button>
 
-                                        <AnimatePresence>
-                                            {expandedIndex === index && (
-                                                <motion.div
-                                                    initial={{ height: 0, opacity: 0 }}
-                                                    animate={{ height: 'auto', opacity: 1 }}
-                                                    exit={{ height: 0, opacity: 0 }}
-                                                    transition={{ duration: 0.3 }}
-                                                    className="overflow-hidden"
-                                                >
+                                        {/* The answer stays mounted whether or not the row is
+                                            expanded, and collapses by animating height to 0.
+
+                                            It used to be wrapped in AnimatePresence and rendered
+                                            only when `expandedIndex === index`, so an unopened
+                                            answer was not in the DOM at all. Since the prerender
+                                            never clicks anything, none of the eleven answers
+                                            reached the served HTML — the page shipped 352 visible
+                                            words while carrying FAQPage markup that asserted
+                                            eleven acceptedAnswer strings appearing nowhere on it.
+                                            That is a structured-data mismatch, and it also meant
+                                            ~350 words of genuinely useful copy were invisible to
+                                            every crawler.
+
+                                            Collapsed-but-present is the normal accordion pattern
+                                            and is indexed normally. aria-expanded on the button
+                                            plus role="region" here keeps it operable for screen
+                                            readers and agents. */}
+                                        <motion.div
+                                            initial={false}
+                                            animate={{
+                                                height: expandedIndex === index ? 'auto' : 0,
+                                                opacity: expandedIndex === index ? 1 : 0,
+                                            }}
+                                            transition={{ duration: 0.3 }}
+                                            className="overflow-hidden"
+                                            id={`faq-answer-${index}`}
+                                            role="region"
+                                            aria-labelledby={`faq-question-${index}`}
+                                        >
                                                     <div className="px-6 pb-6 pl-[4.5rem]">
                                                         <p className="text-slate-600 leading-relaxed mb-4">
                                                             {faq.answer}
@@ -307,9 +346,7 @@ const FAQPage = () => {
                                                             )}
                                                         </div>
                                                     </div>
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
+                                        </motion.div>
                                     </motion.div>
                                 ))
                             )}

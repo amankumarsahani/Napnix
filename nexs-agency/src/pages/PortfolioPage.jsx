@@ -135,7 +135,7 @@ const PortfolioPage = () => {
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white">
             <Helmet>
                 <title>Portfolio - Software & CRM Case Studies | Napnix</title>
-                <meta name="description" content="Explore Napnix's portfolio: fleet booking apps, telecalling CRMs, AI meeting tools, HR dashboards, and multi-tenant NapCRM deployments for manufacturing and legal teams." />
+                <meta name="description" content="Napnix work: fleet booking apps, telecalling CRMs, AI meeting tools, HR dashboards and multi-tenant NapCRM for manufacturing and legal teams." />
                 <link rel="canonical" href={`${SITE_URL}/portfolio`} />
                 <meta property="og:title" content="Portfolio - Software & CRM Case Studies | Napnix" />
                 <meta property="og:description" content="Real products we've shipped across mobile, web, AI, and CRM." />

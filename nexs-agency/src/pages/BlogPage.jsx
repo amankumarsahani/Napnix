@@ -10,6 +10,9 @@ import CuratedGuides from '../components/seo/CuratedGuides';
 import Breadcrumbs from '../components/ui/Breadcrumbs';
 import BackToTop from '../components/ui/BackToTop';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
+// Posts here come from blogAPI, so an image URL may not carry a w= parameter.
+// cardImage leaves such URLs untouched, so this is safe for both sources.
+import { cardImage, cardImageSrcSet } from '../constants/blogPosts';
 import Icon from '../components/ui/Icon';
 import { RiArrowRightLine, RiArticleLine, RiCalendarLine, RiSearchLine, RiShareCircleLine, RiTimeLine, RiEyeLine } from 'react-icons/ri';
 
@@ -345,11 +348,16 @@ const BlogPage = () => {
                                     className="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group border border-slate-200 flex flex-col h-full hover:-translate-y-2"
                                 >
                                     <div className="relative h-64 overflow-hidden">
+                                        {/* Card-sized variants, not the 1200x630 og:image. */}
                                         <img
-                                            src={post.image}
+                                            src={cardImage(post.image, 600)}
+                                            srcSet={cardImageSrcSet(post.image)}
+                                            sizes="(max-width: 768px) 100vw, 400px"
                                             alt={post.imageAlt || post.title}
                                             className="w-full h-full object-cover transition-transform duration-700 group-"
                                             loading="lazy"
+                                            width="600"
+                                            height="315"
                                         />
                                         <div className="absolute top-4 left-4">
                                             <span className="px-3 py-1 bg-white/90 backdrop-blur-md text-slate-800 text-xs font-bold rounded-full shadow-sm">

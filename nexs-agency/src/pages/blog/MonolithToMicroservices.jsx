@@ -36,7 +36,7 @@ const SOURCES = [
 const MonolithToMicroservices = () => {
     const post = getPost(SLUG);
     const url = `${SITE_URL}/blog/${SLUG}`;
-    const metaTitle = 'Monolith to Microservices: A Step-by-Step Migration Guide | Napnix';
+    const metaTitle = 'Monolith to Microservices: A Migration Guide';
 
     return (
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white pt-20">
@@ -193,6 +193,89 @@ const MonolithToMicroservices = () => {
                             ],
                         ]}
                     />
+
+                    <h2>What does a migration cost, and how long does it take?</h2>
+
+                    <AnswerBlock question="How long does a monolith-to-microservices migration take?">
+                        <p>
+                            For a mid-sized application, expect 9&ndash;18 months of incremental work
+                            running alongside normal delivery, not a dedicated project. Teams that
+                            plan a big-bang rewrite in a quarter almost always end up running both
+                            systems for a year anyway — with none of the safety the incremental route
+                            provides.
+                        </p>
+                    </AnswerBlock>
+
+                    <p>
+                        The cost of a migration is rarely in writing the new services. It is in
+                        running two architectures at once, and that overlap is the line most plans
+                        omit. While the strangler fig is in progress you pay for duplicated
+                        infrastructure, data kept consistent across both sides, and engineers holding
+                        two mental models of the same system. Budget for that period explicitly
+                        rather than treating it as a transition cost that will somehow not arrive.
+                    </p>
+
+                    <p>
+                        There is also a permanent operational cost on the far side, and it is the one
+                        that catches teams out. Microservices need things a monolith did not:
+                        distributed tracing, centralised logging, service discovery, per-service CI
+                        pipelines and someone on call who understands the topology. If you do not
+                        already have that platform capability, you are funding two projects — the
+                        migration and the platform underneath it.
+                    </p>
+
+                    <p>
+                        A rough shape for a mid-sized application:
+                    </p>
+
+                    <ul>
+                        <li>
+                            <strong>Months 1&ndash;2:</strong> instrumentation and seams. Add tracing
+                            and logging to the monolith first, because you cannot safely extract what
+                            you cannot observe.
+                        </li>
+                        <li>
+                            <strong>Months 3&ndash;6:</strong> extract two or three services at the
+                            edges — notifications, reporting, file processing. Low coupling, real
+                            learning, and reversible if the approach is wrong.
+                        </li>
+                        <li>
+                            <strong>Months 6&ndash;12:</strong> the hard middle. Services that share
+                            the database with the monolith. This is where most migrations stall, and
+                            where the data model decisions get made.
+                        </li>
+                        <li>
+                            <strong>Ongoing:</strong> stop when the pain that justified the migration
+                            is gone. A permanently partial migration is a legitimate end state, and a
+                            far better outcome than a complete one nobody needed.
+                        </li>
+                    </ul>
+
+                    <p>
+                        That last point is the one worth taking away. The goal was never to eliminate
+                        the monolith; it was to stop it blocking delivery. If extracting three
+                        services achieves that, extracting twelve is cost without benefit.
+                    </p>
+
+                    <p>
+                        It is worth being blunt about the failure mode, because it is common and
+                        expensive: a team adopts microservices to fix a delivery problem that was
+                        actually a testing problem or an ownership problem, and arrives at a
+                        distributed system with the original bottleneck intact plus a great deal
+                        more operational surface. If releases are slow because the test suite takes
+                        two hours, faster tests are a far cheaper fix than a new architecture.
+                        Diagnose the constraint before you change the topology.
+                    </p>
+
+                    <p>
+                        For the infrastructure side of this — assessing the cost baseline first, and
+                        deciding rehost versus refactor per workload rather than for the whole
+                        estate — see our{' '}
+                        <Link to="/services/cloud-solutions">cloud solutions</Link> page, or{' '}
+                        <Link to="/contact">talk to us</Link> about where your delivery is actually
+                        blocked. We would rather tell you the constraint is your test suite than sell
+                        you an architecture programme you do not need.
+                    </p>
 
                     <h2>The bottom line</h2>
                     <p>

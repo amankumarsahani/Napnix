@@ -142,12 +142,12 @@ const LandingPage = memo(function LandingPage() {
   return (
     <div className="min-h-screen bg-white w-full overflow-x-hidden">
       <Helmet>
-        <title>Napnix | CRM, Lead Follow-up & Custom Software for Service Businesses</title>
-        <meta name="description" content="Napnix builds the system behind your growth — lead capture, automated follow-up, and CRM for agencies and service businesses. Custom software when you need it. Based in Mohali, serving clients worldwide." />
+        <title>Napnix | CRM & Lead Follow-Up for Service Businesses</title>
+        <meta name="description" content="Napnix builds the system behind your growth: lead capture, automated follow-up and CRM for service businesses, plus custom software. Based in Mohali." />
         <link rel="canonical" href={`${SITE_URL}/`} />
 
         {/* Open Graph */}
-        <meta property="og:title" content="Napnix | CRM, Lead Follow-up & Custom Software for Service Businesses" />
+        <meta property="og:title" content="Napnix | CRM & Lead Follow-Up for Service Businesses" />
         <meta property="og:description" content="Stop losing leads. Napnix builds the system behind follow-up, CRM, and operations for agencies and service businesses. Mohali-based, serving clients worldwide." />
         <meta property="og:url" content={`${SITE_URL}/`} />
         <meta property="og:type" content="website" />
@@ -161,7 +161,7 @@ const LandingPage = memo(function LandingPage() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@napnix" />
         <meta name="twitter:creator" content="@napnix" />
-        <meta name="twitter:title" content="Napnix | CRM, Lead Follow-up & Custom Software for Service Businesses" />
+        <meta name="twitter:title" content="Napnix | CRM & Lead Follow-Up for Service Businesses" />
         <meta name="twitter:description" content="Stop losing leads. The system behind follow-up, CRM, and operations for agencies and service businesses. Mohali-based, serving clients worldwide." />
         <meta name="twitter:image" content={`${SITE_URL}/og-image.jpg`} />
         <script type="application/ld+json">{JSON.stringify(homeFaqSchema)}</script>

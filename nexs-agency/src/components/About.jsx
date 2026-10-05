@@ -1,13 +1,41 @@
-import { useState, useEffect, useRef, memo } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef, memo } from 'react'
 import Icon from './ui/Icon';
-import { COMPANY_STATS } from '../constants/companyStats';
+import { COMPANY_STATS, FOUNDED_YEAR } from '../constants/companyStats';
 
+/**
+ * Count up to `target`, but render `target` whenever the animation is not
+ * running.
+ *
+ * This used to initialise at 0 and only move once `shouldAnimate` flipped.
+ * `shouldAnimate` comes from an IntersectionObserver on a section well below
+ * the fold, and the prerender pass never scrolls, so the observer never fired
+ * and every prerendered page shipped the literal text
+ * "0+ Projects Completed  0+ Happy Clients  0 Industry CRM Editions" directly
+ * under the heading "Our achievements speak volumes". Crawlers, AI crawlers and
+ * anyone with JavaScript disabled read the zeros, which is worse than showing
+ * no figure at all.
+ *
+ * Starting at `target` means the real number is in the static HTML. The reset
+ * to 0 happens in a layout effect, so it is committed before the browser
+ * paints and a sighted visitor still sees the full count-up rather than a
+ * flash of the final value. Visitors who ask for reduced motion keep the
+ * static number.
+ */
 const useCountUp = (target, duration = 2000, shouldAnimate = false) => {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(target)
   const rafRef = useRef(null)
 
-  useEffect(() => {
+  // Keep the rendered value honest if the target itself changes.
+  useEffect(() => { if (!shouldAnimate) setCount(target) }, [target, shouldAnimate])
+
+  useLayoutEffect(() => {
     if (!shouldAnimate) return
+
+    const reduceMotion = typeof window !== 'undefined'
+      && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    if (reduceMotion) { setCount(target); return }
+
+    setCount(0)
 
     const startTime = performance.now()
     const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4)
@@ -15,8 +43,7 @@ const useCountUp = (target, duration = 2000, shouldAnimate = false) => {
     const animate = (now) => {
       const elapsed = now - startTime
       const progress = Math.min(elapsed / duration, 1)
-      const easedProgress = easeOutQuart(progress)
-      setCount(Math.round(target * easedProgress))
+      setCount(Math.round(target * easeOutQuart(progress)))
 
       if (progress < 1) {
         rafRef.current = requestAnimationFrame(animate)
@@ -127,10 +154,14 @@ const About = memo(function About() {
                 className="rounded-xl shadow-lg object-cover w-full h-80"
               />
 
+              {/* Was a hardcoded "5+ Years Experience" against a 2025 founding
+                  date. Showing the industry-edition count instead: it is the
+                  length of INDUSTRY_SLUGS in sitemapRoutes.js, every one has a
+                  live page, so a reader can verify it by clicking. */}
               <div className="absolute -bottom-4 -right-4 bg-white rounded-xl p-4 shadow-xl border border-slate-200">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-[#2563EB]">5+</div>
-                  <div className="text-xs text-slate-600 font-medium">Years Experience</div>
+                  <div className="text-2xl font-bold text-[#2563EB]">{COMPANY_STATS.industries}</div>
+                  <div className="text-xs text-slate-600 font-medium">Industry CRM Editions</div>
                 </div>
               </div>
 
@@ -148,7 +179,12 @@ const About = memo(function About() {
               <h3 className="text-3xl font-bold text-slate-800 mb-6">Who We Are</h3>
               <div className="space-y-4 text-lg text-slate-600 leading-relaxed">
                 <p>
-                  With over 5 years of experience in software delivery, Napnix helps startups and growing
+                  {/* Was "With over 5 years of experience in software delivery", against a
+                      2025 founding date in Organization.foundingDate, llms.txt and the /about
+                      body. Tenure is the one claim here a reader can check in seconds, so
+                      overstating it undermines everything next to it. Founding year is stated
+                      instead, and the delivery claim now rests on named clients. */}
+                  Founded in {FOUNDED_YEAR}, Napnix helps startups and growing
                   businesses ship <strong>custom web platforms, CRM systems, AI workflows, and modern product experiences</strong>
                   with a focus on speed, clarity, and long-term maintainability.
                 </p>

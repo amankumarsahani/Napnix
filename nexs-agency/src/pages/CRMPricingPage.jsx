@@ -38,13 +38,13 @@ export default function CRMPricingPage() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
             <Helmet>
-                <title>NapCRM Pricing - Plans from $49/mo | Starter, Growth, Business, Enterprise</title>
-                <meta name="description" content="Compare NapCRM pricing plans. Starter $49/mo, Growth $79/mo, Business $99/mo, Enterprise custom. Save 15% with yearly billing. Book a 20-minute demo on any plan." />
+                <title>NapCRM Pricing — Plans from ₹4,165/mo</title>
+                <meta name="description" content="Compare NapCRM plans: Starter ₹4,165/mo ($49), Growth ₹6,715 ($79), Business ₹8,415 ($99), Enterprise custom. Save 15% yearly. Book a 20-minute demo." />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/napcrm/pricing`} />
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
-                <meta property="og:title" content="NapCRM Pricing - Plans from $49/mo" />
+                <meta property="og:title" content="NapCRM Pricing — Plans from ₹4,165/mo" />
                 <meta property="og:description" content="Compare NapCRM pricing plans. Starter, Growth, Business, Enterprise. Save 15% yearly. Book a 20-minute demo." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/napcrm/pricing`} />
@@ -54,8 +54,8 @@ export default function CRMPricingPage() {
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:site" content="@napnix" />
                 <meta name="twitter:creator" content="@napnix" />
-                <meta name="twitter:title" content="NapCRM Pricing - Plans from $49/mo" />
-                <meta name="twitter:description" content="Starter $49/mo, Growth $79/mo, Business $99/mo. Save 15% yearly. Book a 20-minute demo." />
+                <meta name="twitter:title" content="NapCRM Pricing — Plans from ₹4,165/mo" />
+                <meta name="twitter:description" content="Starter ₹4,165/mo, Growth ₹6,715, Business ₹8,415. Save 15% yearly. Book a 20-minute demo." />
             </Helmet>
             <script type="application/ld+json">{JSON.stringify({
                 "@context": "https://schema.org",
@@ -455,10 +455,18 @@ export default function CRMPricingPage() {
                                         className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] outline-none transition-colors"
                                     >
                                         <option value="">Select a plan</option>
-                                        <option value="Starter">Starter - $49/mo</option>
-<option value="Growth">Growth - $79/mo</option>
-                                <option value="Business">Business - $99/mo</option>
-                                <option value="Enterprise">Enterprise - Custom</option>
+                                        {/* Priced from crmTiers in the visitor's selected currency,
+                                            so this dropdown cannot disagree with the cards above it.
+                                            These were hardcoded "$49/mo", "$79/mo", "$99/mo", which
+                                            showed dollars to a visitor reading rupee prices a few
+                                            hundred pixels higher up. */}
+                                        {crmTiers.map((tier) => (
+                                            <option key={tier.name} value={tier.name}>
+                                                {tier.isCustom
+                                                    ? `${tier.name} - Custom`
+                                                    : `${tier.name} - ${symbol}${formatPrice(isYearly ? tier.price.yearly[currency] : tier.price.monthly[currency])}/mo`}
+                                            </option>
+                                        ))}
                                     </select>
                                 </div>
 

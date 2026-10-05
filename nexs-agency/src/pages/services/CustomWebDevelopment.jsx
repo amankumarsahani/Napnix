@@ -64,6 +64,50 @@ const data = {
             color: 'cyan',
         },
     ],
+    engagement: {
+        h2: 'How a web build runs',
+        intro: "Most custom web projects fail on scope and handover, not on code. The sequence below is the one we use on every engagement, and the deliverables at each step are yours whether or not the project continues past it.",
+        phases: [
+            {
+                title: 'Scoping, 1 to 2 weeks',
+                body: 'We map the workflows the application has to support and write them down as user stories with acceptance criteria. This is where most of the cost is decided, so it happens before any code. You leave with a written scope, a build estimate in INR, and a prioritised list of what is in the first release and what is deliberately deferred.',
+            },
+            {
+                title: 'Architecture and data model',
+                body: 'We design the schema and the API surface first, because retrofitting a data model after launch is the single most expensive change in a web project. You get an ER diagram, the API contract, and a decision record for the trade-offs we made on storage, caching and authentication.',
+            },
+            {
+                title: 'Build in two-week increments',
+                body: 'Work ships to a staging URL every fortnight with a short demo. You can use the application while it is being built rather than reviewing screenshots, which is how scope problems surface early enough to be cheap to fix.',
+            },
+            {
+                title: 'Hardening and launch',
+                body: 'Before go-live: load testing against expected concurrency, an accessibility pass, Core Web Vitals measurement on real devices, automated backups, and error tracking wired to an inbox you control. We deploy behind a CDN with CI/CD so later releases do not need us to be available.',
+            },
+            {
+                title: 'Handover',
+                body: 'You receive the repository, the infrastructure in your own cloud account, environment documentation, and a runbook for the common operational tasks. Nothing is locked to us. If you want ongoing work we quote it separately rather than assuming a retainer.',
+            },
+        ],
+        questions: [
+            {
+                q: 'How much does a custom web application cost?',
+                a: 'A focused internal tool or portal typically runs from about ₹4,00,000. A multi-tenant SaaS platform with billing, roles and an admin surface is usually ₹15,00,000 and up. The variable that moves the number most is the number of distinct user roles, because each one multiplies the permission logic and the testing surface. We give a written estimate after scoping, not before.',
+            },
+            {
+                q: 'Should we build custom or use an off-the-shelf product?',
+                a: 'Buy when your process is close to an industry standard, because you are then paying for someone else to maintain it. Build when the process is the thing that differentiates you, or when the licensing cost of a product scales with seats faster than your revenue does. We will say so if a product fits better than a build, and we have told clients to buy.',
+            },
+            {
+                q: 'What happens if we need to change direction mid-build?',
+                a: 'Two-week increments exist for this. Re-prioritising the backlog between increments costs nothing. Changing the data model or the authentication approach after launch is the expensive case, which is why those decisions are made and written down in the architecture phase.',
+            },
+            {
+                q: 'Who owns the code?',
+                a: 'You do, from the first commit. The repository sits in your organisation and the infrastructure runs in your cloud account. There is no proprietary runtime or licence that stops another team picking the project up.',
+            },
+        ],
+    },
     capabilitiesSection: { label: 'Technical Expertise', title: 'Full-Stack Excellence' },
     bottomSection: { title: 'More Solutions', currentService: 'Custom Web Development' },
     cta: {

@@ -24,13 +24,25 @@ const Footer = memo(function Footer() {
       { name: 'Web Dev in Toronto', href: '/software-development-company/toronto' },
       { name: 'Web Dev in Bangalore', href: '/software-development-company/bangalore' }
     ],
+    /* Products has its own group so /napmail and /napcrm/pricing are reachable
+       from every page. Both products previously appeared only as a single
+       "NapCRM" entry under Company, which left /napmail with no inbound
+       internal link anywhere on the site — reachable only via the sitemap. */
+    Products: [
+      { name: 'NapCRM', href: '/napcrm' },
+      { name: 'NapCRM Pricing', href: '/napcrm/pricing' },
+      { name: 'NapMail', href: '/napmail' },
+      { name: 'All Products', href: '/products' }
+    ],
     Company: [
       { name: 'About Us', href: '/about' },
       { name: 'FAQ', href: '/faq' },
       { name: 'Contact', href: '/contact' },
       { name: 'Blog', href: '/blog' },
-      { name: 'NapCRM', href: '/napcrm' },
-      { name: 'Products', href: '/products' }
+      { name: 'Case Studies', href: '/portfolio' },
+      /* The Revenue-Leak Audit is the site's main lead magnet and was the other
+         orphaned page. */
+      { name: 'Revenue-Leak Audit', href: '/audit' }
     ]
   };
 

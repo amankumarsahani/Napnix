@@ -8,60 +8,40 @@ export const NAPNIX_BRAND = {
     alternateName: 'Napix',
 };
 
-const GLOBAL_COUNTRIES = ['IN', 'US', 'GB', 'AE', 'CA', 'AU'];
+export const GLOBAL_COUNTRIES = ['IN', 'US', 'GB', 'AE', 'CA', 'AU'];
 
-/** Instant digital delivery — satisfies Google Product offer shippingDetails. */
-export const DIGITAL_SHIPPING_DETAILS = {
-    '@type': 'OfferShippingDetails',
-    shippingRate: {
-        '@type': 'MonetaryAmount',
-        value: '0',
-        currency: 'INR',
-    },
-    deliveryTime: {
-        '@type': 'ShippingDeliveryTime',
-        handlingTime: {
-            '@type': 'QuantitativeValue',
-            minValue: 0,
-            maxValue: 1,
-            unitCode: 'DAY',
-        },
-        transitTime: {
-            '@type': 'QuantitativeValue',
-            minValue: 0,
-            maxValue: 0,
-            unitCode: 'DAY',
-        },
-    },
-    shippingDestination: {
-        '@type': 'DefinedRegion',
-        addressCountry: GLOBAL_COUNTRIES,
-    },
-};
-
-/** 14-day free trial — cancel via support; digital SaaS delivery. */
-export const SAAS_RETURN_POLICY = {
-    '@type': 'MerchantReturnPolicy',
-    applicableCountry: GLOBAL_COUNTRIES,
-    returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
-    merchantReturnDays: 14,
-    returnMethod: 'https://schema.org/ReturnByMail',
-    returnFees: 'https://schema.org/FreeReturn',
-    refundType: 'https://schema.org/FullRefund',
-};
-
-export const FREE_SERVICE_RETURN_POLICY = {
-    '@type': 'MerchantReturnPolicy',
-    applicableCountry: GLOBAL_COUNTRIES,
-    returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
-};
-
-export function enrichOffer(offer, { saas = true } = {}) {
-    return {
-        ...offer,
-        shippingDetails: DIGITAL_SHIPPING_DETAILS,
-        hasMerchantReturnPolicy: saas ? SAAS_RETURN_POLICY : FREE_SERVICE_RETURN_POLICY,
-    };
+/**
+ * Offers carry no return policy and no shipping details.
+ *
+ * What used to be here, on every NapCRM and service offer sitewide:
+ *
+ *   hasMerchantReturnPolicy: MerchantReturnFiniteReturnWindow,
+ *                            merchantReturnDays: 14,
+ *                            returnMethod: ReturnByMail,
+ *                            returnFees: FreeReturn,
+ *                            refundType: FullRefund
+ *   shippingDetails:         OfferShippingDetails, ₹0, 0-1 day handling
+ *
+ * Three problems with that:
+ *
+ * 1. No such policy exists. The words "refund", "free trial", "14-day" and
+ *    "money back" appear nowhere in the Terms, the pricing page, the FAQ or the
+ *    NapCRM page. The only "refund" text on the site describes a NapCRM
+ *    *feature* for e-commerce clients handling their own customers' returns.
+ *    Structured data must describe content on the page; asserting a refund
+ *    entitlement the business has not published is both a policy violation and
+ *    a commitment a customer could reasonably try to enforce.
+ * 2. ReturnByMail is meaningless for software. There is nothing to post back.
+ * 3. Neither property is required here. These offers hang off
+ *    SoftwareApplication and Service, not Product, so Google asks for
+ *    shippingDetails and hasMerchantReturnPolicy on neither.
+ *
+ * Omitting a property asserts nothing, which is the accurate state. If a real
+ * refund or trial policy is published, add it back here AND put it in visible
+ * copy on the pricing page — the markup has to match what a reader can see.
+ */
+export function enrichOffer(offer) {
+    return { ...offer };
 }
 
 /**

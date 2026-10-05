@@ -321,6 +321,57 @@ export default function ServicePageTemplate({ data }) {
                 </div>
             </section>
 
+            {/*
+                Engagement detail — optional, rendered only when a service
+                supplies `data.engagement`.
+
+                Every service child page sat at 460-485 words of mostly
+                feature-list copy, against the 800-word floor these commercial
+                pages are measured on, and none of them answered the questions a
+                buyer actually arrives with: how the work is sequenced, what
+                they receive, what it depends on. The phases and questions below
+                are plain prose in the served HTML, which is also the form an
+                answer engine can quote.
+            */}
+            {data.engagement && (
+                <section className="py-24 bg-white">
+                    <div className="container-custom max-w-4xl">
+                        <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-6">
+                            {data.engagement.h2}
+                        </h2>
+                        <p className="text-lg text-slate-600 leading-relaxed mb-12">
+                            {data.engagement.intro}
+                        </p>
+
+                        <ol className="space-y-8 mb-16">
+                            {data.engagement.phases.map((phase, i) => (
+                                <li key={phase.title} className="flex gap-5">
+                                    <span className="flex-shrink-0 w-9 h-9 rounded-xl bg-[#2563EB]/10 text-[#2563EB] flex items-center justify-center font-bold text-sm">
+                                        {i + 1}
+                                    </span>
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-slate-800 mb-2">{phase.title}</h3>
+                                        <p className="text-slate-600 leading-relaxed">{phase.body}</p>
+                                    </div>
+                                </li>
+                            ))}
+                        </ol>
+
+                        <h2 className="text-2xl md:text-3xl font-bold text-slate-800 mb-8">
+                            {data.engagement.questionsTitle || 'Questions buyers ask'}
+                        </h2>
+                        <div className="space-y-7">
+                            {data.engagement.questions.map((item) => (
+                                <div key={item.q}>
+                                    <h3 className="text-lg font-semibold text-slate-800 mb-2">{item.q}</h3>
+                                    <p className="text-slate-600 leading-relaxed">{item.a}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
+
             {/* Bottom Section */}
             <div className="bg-slate-50 pt-20">
                 <div className="container-custom">

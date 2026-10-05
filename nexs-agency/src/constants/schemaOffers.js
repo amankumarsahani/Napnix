@@ -1,5 +1,5 @@
 import { SITE_URL } from './siteConfig';
-import { enrichOffer, FREE_SERVICE_RETURN_POLICY, DIGITAL_SHIPPING_DETAILS } from './productSchema';
+import { enrichOffer } from './productSchema';
 
 /** Satisfies Google LocalBusiness / ProfessionalService rich-result requirement. */
 export const napnixConsultationOffer = enrichOffer({
@@ -67,7 +67,13 @@ export function getLocalBusinessOffers(pageUrl = `${SITE_URL}/contact`) {
     ];
 }
 
-/** Static JSON fragments for index.html (mirrors enrichOffer fields). */
+/**
+ * Static JSON fragments for index.html (mirrors enrichOffer fields).
+ *
+ * shippingDetails and hasMerchantReturnPolicy were removed from these too, so
+ * the static block and the React-rendered offers continue to agree. See the
+ * note on enrichOffer in productSchema.js for why.
+ */
 export const staticConsultationOfferJson = {
     '@type': 'Offer',
     name: 'Free Software Consultation',
@@ -76,8 +82,6 @@ export const staticConsultationOfferJson = {
     price: '0',
     priceCurrency: 'INR',
     availability: 'https://schema.org/InStock',
-    shippingDetails: DIGITAL_SHIPPING_DETAILS,
-    hasMerchantReturnPolicy: FREE_SERVICE_RETURN_POLICY,
 };
 
 export function staticServiceOfferJson(name, serviceUrl) {
@@ -94,7 +98,5 @@ export function staticServiceOfferJson(name, serviceUrl) {
         price: '0',
         priceCurrency: 'INR',
         availability: 'https://schema.org/InStock',
-        shippingDetails: DIGITAL_SHIPPING_DETAILS,
-        hasMerchantReturnPolicy: FREE_SERVICE_RETURN_POLICY,
     };
 }

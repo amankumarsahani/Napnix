@@ -202,6 +202,60 @@ const AiTrends2026 = () => {
                         ]}
                     />
 
+                    <h2>What does this mean for a small or mid-sized business?</h2>
+
+                    <AnswerBlock question="Where should a smaller company start with AI in 2026?">
+                        <p>
+                            Start with the data you already hold and one decision you make
+                            repeatedly. For most service businesses that is lead qualification or
+                            enquiry routing, both of which run on CRM data you already own and both
+                            of which show a measurable result within weeks rather than quarters.
+                        </p>
+                    </AnswerBlock>
+
+                    <p>
+                        Most of the ten shifts above are being driven by organisations with dedicated
+                        platform teams. That does not make them irrelevant to a fifty-person company,
+                        but it does change which ones are actionable this year and which are context
+                        for a later decision.
+                    </p>
+
+                    <p>
+                        Three are genuinely available to a smaller team now. <strong>Retrieval over
+                        your own documents</strong> needs no training, no GPUs and no data science
+                        hire — a general-purpose model plus your own content answers questions your
+                        staff currently answer by hand, and it can cite its sources. <strong>Enquiry
+                        classification and routing</strong> runs on structured CRM data that is
+                        already clean enough to use. <strong>Drafting assistance</strong> for
+                        proposals and replies is tooling rather than a project, and its return shows
+                        up in hours saved the same week.
+                    </p>
+
+                    <p>
+                        Three are worth understanding and deferring. Private and self-hosted models
+                        make sense once API spend is large enough to beat a GPU bill, which for most
+                        SMBs it is not. Edge inference matters when latency or data residency is a
+                        hard requirement rather than a preference. Synthetic data is for teams whose
+                        real data is genuinely unobtainable, not for teams whose data is merely
+                        untidy.
+                    </p>
+
+                    <p>
+                        The governance point, though, applies at every size. If an AI system touches
+                        customer data or makes a decision that affects someone, you need to be able
+                        to say what it used and why it decided that — and India&rsquo;s DPDP Act
+                        obligations do not scale down with headcount. Writing down what the system
+                        does, what data it reads and who is accountable costs a day and is far
+                        cheaper before deployment than after.
+                    </p>
+
+                    <p>
+                        The pattern across all of this is unglamorous: the companies getting value in
+                        2026 are not the ones who adopted the most techniques. They are the ones who
+                        picked one repeated decision, measured what it cost them to get it wrong, and
+                        checked afterwards whether the system actually moved that number.
+                    </p>
+
                     <h2>The bottom line</h2>
                     <p>
                         The companies pulling ahead in 2026 are not the ones with the best model

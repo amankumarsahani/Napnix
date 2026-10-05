@@ -65,9 +65,9 @@ Napnix specialises in end-to-end digital product development for startups and en
 
 - [Why Your Business Needs a PWA (And When It Does Not)](https://napnix.in/blog/why-business-needs-pwa): Progressive Web Apps install, work offline and skip app-store review. They also cannot do everything native can. Where the line actually falls in 2026. (updated 2026-10-05)
 - [Monolith to Microservices: A Step-by-Step Migration Guide](https://napnix.in/blog/monolith-to-microservices): Decomposing a monolith without a rewrite. The strangler-fig sequence we use, in order, with the failure mode that kills most migrations at step four. (updated 2026-10-05)
-- [Cost of Building a Custom CRM in 2026: A Complete Guide](https://napnix.in/blog/cost-of-custom-crm-2026): A custom CRM runs $30,000 to $250,000+ depending on scope. This is the full breakdown by tier, the hidden running costs, and the point where buying beats building. (updated 2026-10-05)
+- [Cost of Building a Custom CRM in 2026: A Complete Guide](https://napnix.in/blog/cost-of-custom-crm-2026): A custom CRM runs $30,000 to $250,000+ by scope. The breakdown by tier, the hidden running costs, and the point where buying beats building. (updated 2026-10-05)
 - [Top 10 AI Trends Shaping Global Business in 2026](https://napnix.in/blog/ai-trends-2026): Agentic AI moved from demo to production in 2026. Here are the ten shifts actually changing how enterprises build software, and what each one costs to adopt. (updated 2026-10-05)
-- [React Native vs. Flutter in 2026: A Decision Guide](https://napnix.in/blog/react-native-vs-flutter): Both ship one codebase to iOS and Android. The real difference is hiring, rendering model and long-term maintenance — compared side by side, with a recommendation. (updated 2026-10-05)
+- [React Native vs. Flutter in 2026: A Decision Guide](https://napnix.in/blog/react-native-vs-flutter): Both ship one codebase to iOS and Android. The real difference is hiring, rendering model and maintenance, compared with a recommendation. (updated 2026-10-05)
 
 ## Optional
 

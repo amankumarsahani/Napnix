@@ -185,8 +185,8 @@ export default function NapMailLandingPage() {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-hidden selection:bg-[#2563EB]/10">
             <Helmet>
-                <title>NapMail - Email Marketing Engine by Napnix | SMTP Rotation, Anti-Spam, Automations</title>
-                <meta name="description" content="NapMail is an enterprise email marketing engine with smart SMTP rotation, anti-spam scoring, domain throttling, visual automations, and NapCRM integration. Free plan available." />
+                <title>NapMail — Email Marketing Engine by Napnix</title>
+                <meta name="description" content="NapMail is an email marketing engine with smart SMTP rotation, anti-spam scoring, domain throttling and visual automations. Free plan available." />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/napmail`} />
                 <meta property="og:site_name" content="Napnix" />

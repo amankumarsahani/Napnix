@@ -161,6 +161,72 @@ const ReactVsFlutter = () => {
                         </p>
                     </div>
 
+                    <h2>What does each cost to maintain?</h2>
+
+                    <AnswerBlock question="Which is cheaper to maintain, React Native or Flutter?">
+                        <p>
+                            Neither is reliably cheaper. React Native costs more in dependency
+                            upkeep, because it leans on community native modules that lag OS
+                            releases. Flutter costs more in team cost, because Dart developers are
+                            scarcer and usually hired specifically for the app rather than shared
+                            with a web team.
+                        </p>
+                    </AnswerBlock>
+
+                    <p>
+                        Maintenance is the part of a cross-platform decision that gets argued about
+                        least and paid for longest. Both frameworks oblige you to absorb two OS
+                        releases a year whether or not the app has changed, and in both cases that
+                        is typically a few days of work. Where they diverge is what causes the
+                        remaining work.
+                    </p>
+
+                    <p>
+                        React Native projects accumulate risk in their dependency tree. A typical app
+                        pulls in community packages for camera, maps, push notifications and secure
+                        storage, and each is maintained by someone with no obligation to you. When
+                        iOS ships a release that breaks one, you wait for a maintainer or patch it
+                        yourself. Pinning versions defers this rather than removing it, and a React
+                        Native upgrade that has been skipped for two years is a genuinely difficult
+                        piece of work.
+                    </p>
+
+                    <p>
+                        Flutter avoids most of that by shipping its own rendering engine and a large
+                        first-party package set, so upgrades tend to be less eventful. The cost moves
+                        to hiring. Dart is used almost exclusively for Flutter, so the developer pool
+                        is smaller and rarely overlaps with your web team. If a Flutter app is the
+                        only Dart in your organisation, it is a silo with a bus factor, and that is a
+                        real operational cost even when the code is healthy.
+                    </p>
+
+                    <p>
+                        For Indian teams there is a practical tilt toward React Native: the local
+                        React hiring pool is deep, so one team can own the web product and the app,
+                        and a developer who leaves is replaceable in weeks rather than months. That
+                        tends to matter more over a three-year horizon than any rendering benchmark.
+                    </p>
+
+                    <p>
+                        One framing that cuts through most of the debate: this is a hiring decision
+                        wearing a technology costume. Both frameworks will ship the app you have in
+                        mind, and both will still be maintained in five years. What differs is
+                        whether the team maintaining it in year three already exists inside your
+                        organisation, or has to be recruited for that codebase specifically. Answer
+                        that honestly and the framework usually picks itself — which is also why
+                        asking two agencies will get you two confident, opposite answers, each
+                        reflecting the team they happen to have.
+                    </p>
+
+                    <p>
+                        If you are weighing this up for a specific product, our{' '}
+                        <Link to="/services/mobile-app-development">mobile app development</Link>{' '}
+                        page sets out how we make the platform call in week one and what it covers,
+                        and the{' '}
+                        <Link to="/blog/cost-of-custom-crm-2026">cost of building custom software</Link>{' '}
+                        guide covers the budgeting side in more detail, including what maintenance actually costs once the first release has shipped and the team has moved on.
+                    </p>
+
                     <h2>The verdict for 2026</h2>
                     <p>Pick <strong>React Native</strong> when:</p>
                     <ul>

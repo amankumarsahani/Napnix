@@ -136,7 +136,7 @@ export const industryData = {
       { q: 'Do you charge per order?', a: 'No. All plans have flat monthly pricing regardless of your order volume.' },
     ],
     seo: {
-      title: 'E-Commerce CRM — Products, Orders & Inventory Management | NapCRM',
+      title: 'E-Commerce CRM — Products, Orders & Inventory',
       description: 'CRM built for online stores. Manage products, orders, inventory, shipping, returns, and vendors. Full e-commerce operations in one dashboard.',
       keywords: 'ecommerce CRM India, online store CRM, order management CRM, inventory management ecommerce, vendor management CRM, product catalog CRM, ecommerce operations',
     },
@@ -206,7 +206,7 @@ export const industryData = {
       { q: 'Can agents access the system?', a: 'Yes. Create agent accounts with appropriate access levels to manage their leads, schedule visits, and update deal status.' },
     ],
     seo: {
-      title: 'Real Estate CRM — Manage Properties, Leads & Agents | NapCRM',
+      title: 'Real Estate CRM — Manage Properties, Leads & Agents',
       description: 'CRM for real estate brokers and developers. Manage properties, track site visits, handle transactions, and coordinate agent teams from one platform.',
       keywords: 'real estate CRM India, property management CRM, broker CRM software, real estate lead management, site visit scheduler, builder CRM, agent management CRM',
     },
@@ -276,7 +276,7 @@ export const industryData = {
       { q: 'Is timesheet tracking included?', a: 'Yes. Log hours per client or service, review time reports, and track staff utilization — included in all plans.' },
     ],
     seo: {
-      title: 'Professional Services CRM — Bookings, Appointments & Client Management | NapCRM',
+      title: 'Professional Services CRM — Bookings & Client Management',
       description: 'CRM for consultants, agencies, and service businesses. Manage appointments, track timesheets, sell packages, and grow your client base.',
       keywords: 'services CRM India, consulting CRM, agency CRM software, appointment booking CRM, service business management, client management CRM, freelancer CRM',
     },
@@ -345,7 +345,7 @@ export const industryData = {
       { q: 'Can I manage multiple branches?', a: 'Yes. Multi-branch support is available on Business and Enterprise plans with branch-wise data isolation and consolidated reporting.' },
     ],
     seo: {
-      title: 'Education CRM — Courses, Students & Attendance Management | NapCRM',
+      title: 'Education CRM — Courses, Students & Attendance',
       description: 'CRM for schools, coaching institutes, and edtech. Manage courses, batches, student records, attendance, and grades from one platform.',
       keywords: 'education CRM India, school management CRM, student management software, edtech CRM, attendance tracking system, coaching institute CRM, batch management software',
     },
@@ -415,7 +415,7 @@ export const industryData = {
       { q: 'How does lab integration work?', a: 'Create lab orders from patient records, record results, and automatically link them to the patient\'s medical history.' },
     ],
     seo: {
-      title: 'Healthcare CRM — Patient Management, Prescriptions & Billing | NapCRM',
+      title: 'Healthcare CRM — Patients, Prescriptions & Billing',
       description: 'CRM for hospitals and clinics. Manage patients, appointments, prescriptions, lab results, and billing. Complete clinical workflow in one platform.',
       keywords: 'healthcare CRM India, hospital CRM software, patient management system, clinic appointment software, prescription management, medical records CRM, healthcare billing',
     },
@@ -485,7 +485,7 @@ export const industryData = {
       { q: 'Is it suitable for multi-property management?', a: 'Yes. Business and Enterprise plans support multi-property management with property-wise dashboards and consolidated reporting.' },
     ],
     seo: {
-      title: 'Hospitality CRM — Hotel Reservations, Rooms & Guest Management | NapCRM',
+      title: 'Hospitality CRM — Reservations, Rooms & Guests',
       description: 'CRM for hotels and resorts. Manage reservations, rooms, guest profiles, housekeeping, and tour packages. Operations-first hospitality management.',
       keywords: 'hotel CRM India, hospitality CRM software, guest management system, resort booking CRM, room management software, housekeeping management, hotel operations CRM',
     },
@@ -555,7 +555,7 @@ export const industryData = {
       { q: 'How does document management work?', a: 'Upload passport copies, visa documents, and insurance per traveler. Documents are linked to profiles and accessible from bookings.' },
     ],
     seo: {
-      title: 'Travel CRM — Tours, Itineraries & Booking Management | NapCRM',
+      title: 'Travel CRM — Tours, Itineraries & Bookings',
       description: 'CRM for travel agencies and tour operators. Manage packages, build itineraries, track bookings, and coordinate agents from one platform.',
       keywords: 'travel agency CRM India, tour operator CRM, itinerary builder, travel booking management, travel agent software, holiday package CRM, tourism CRM',
     },
@@ -625,7 +625,7 @@ export const industryData = {
       { q: 'Does it track gym equipment?', a: 'Yes. Maintain an equipment inventory with purchase dates, maintenance schedules, and status tracking.' },
     ],
     seo: {
-      title: 'Fitness CRM — Gym Membership, Workouts & Class Management | NapCRM',
+      title: 'Fitness CRM — Gym Membership, Workouts & Classes',
       description: 'CRM for gyms and fitness centers. Manage memberships, subscriptions, class schedules, trainers, and workout plans. Built for Indian fitness businesses.',
       keywords: 'gym CRM India, fitness center CRM, gym management software, membership management system, workout tracking CRM, gym billing software, fitness studio CRM',
     },
@@ -694,7 +694,7 @@ export const industryData = {
       { q: 'How does billing work?', a: 'Log time entries per case, set hourly rates per lawyer, and generate itemized invoices. Track payments and outstanding balances.' },
     ],
     seo: {
-      title: 'Legal CRM — Case Management, Time Tracking & Invoicing | NapCRM',
+      title: 'Legal CRM — Case Management, Time Tracking & Invoicing',
       description: 'CRM for law firms and advocates. Manage cases, track court dates, log billable hours, and generate invoices. Built for Indian legal practice.',
       keywords: 'legal CRM India, law firm CRM, case management software, advocate management system, legal billing software, court date tracker, legal practice management',
     },
@@ -773,7 +773,7 @@ export const industryData = {
       { q: 'Does it handle GST invoicing?', a: 'Yes. GST-compliant invoicing with auto-calculation, invoice automation from sales orders, and detailed invoice reports.' },
     ],
     seo: {
-      title: 'Manufacturing CRM — Production, Quality, MRP & Invoicing | NapCRM',
+      title: 'Manufacturing CRM — Production, Quality & MRP',
       description: 'India\'s most comprehensive manufacturing CRM. 26+ modules for production, scheduling, quality control, MRP planning, equipment maintenance, and invoicing.',
       keywords: 'manufacturing CRM India, production management CRM, factory management software, MRP planning CRM, quality control manufacturing, batch tracking system, manufacturing ERP India',
     },
@@ -842,7 +842,7 @@ export const industryData = {
       { q: 'Does it support route planning?', a: 'Yes. Define routes with stops, estimated timings, and distances. Assign routes to vehicles and track progress.' },
     ],
     seo: {
-      title: 'Logistics CRM — Shipment Tracking, Fleet & Warehouse Management | NapCRM',
+      title: 'Logistics CRM — Shipments, Fleet & Warehouse',
       description: 'CRM for logistics and freight companies. Track shipments, manage fleets, coordinate drivers, and operate warehouses. Built for Indian logistics.',
       keywords: 'logistics CRM India, freight management CRM, shipment tracking software, fleet management CRM, transport CRM, warehouse management, supply chain CRM',
     },
@@ -912,7 +912,7 @@ export const industryData = {
       { q: 'Can I track ingredient inventory?', a: 'Yes. Track stock levels, monitor usage, and get alerts when supplies need reordering.' },
     ],
     seo: {
-      title: 'Restaurant CRM — Menu, Orders, Kitchen & Table Management | NapCRM',
+      title: 'Restaurant CRM — Menu, Orders, Kitchen & Tables',
       description: 'CRM for restaurants and cafes. Manage menus, orders, tables, kitchen operations, inventory, and staff scheduling. Built for Indian F&B businesses.',
       keywords: 'restaurant CRM India, cafe management software, restaurant order management, kitchen display system, table reservation system, restaurant inventory, F&B management CRM',
     },
@@ -982,7 +982,7 @@ export const industryData = {
       { q: 'How do packages work?', a: 'Create packages (e.g., "10 haircuts for ₹3000") or combo deals. The system tracks remaining sessions per client with auto-deduction.' },
     ],
     seo: {
-      title: 'Salon CRM — Appointments, Services & Client Management | NapCRM',
+      title: 'Salon CRM — Appointments, Services & Clients',
       description: 'CRM for salons and spas. Manage appointments, track client preferences, sell packages, and showcase your portfolio. Built for Indian beauty businesses.',
       keywords: 'salon CRM India, spa management software, beauty salon CRM, appointment booking salon, salon management system, beauty parlour software, salon marketing tool',
     },

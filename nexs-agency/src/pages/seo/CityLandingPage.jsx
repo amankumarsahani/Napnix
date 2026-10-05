@@ -194,9 +194,9 @@ const cityData = {
         country: 'India',
         timezone: 'Asia/Kolkata',
         title: 'Software Development Company in Mohali | Napnix',
-        description: 'Napnix is a Mohali-based software development company offering custom web, mobile, CRM, AI, and cloud solutions for startups and enterprises in Punjab and beyond.',
+        description: 'Napnix is a Mohali-based software development company building custom web, mobile, CRM, AI and cloud systems for startups and enterprises in Punjab.',
         heroText: 'Your Mohali Technology Partner.',
-        content: 'Headquartered in Balongi, Sahibzada Ajit Singh Nagar, Napnix delivers end-to-end software engineering for Chandigarh Tricity startups, SMEs, and global clients who want reliable delivery from India\'s growing tech corridor.',
+        content: 'Headquartered in Balongi, Sahibzada Ajit Singh Nagar, Napnix delivers end-to-end software engineering for Chandigarh Tricity startups, SMEs, and global clients who want reliable delivery from India\'s growing tech corridor. Balongi sits on the Kharar side of Mohali, about twenty minutes from Sector 82 and the IT City corridor and half an hour from Chandigarh International Airport, so in-person scoping sessions across the Tricity are a short drive rather than a trip. Mohali work splits fairly evenly between two kinds of client: local manufacturers, clinics, schools and legal practices replacing spreadsheets and registers with a configured NapCRM, and Tricity startups who need a product built and shipped. Both get the same team, and for Mohali clients that team is reachable in person — most of our local projects begin with a meeting at your premises rather than a video call, because walking the actual process is faster than describing it.',
         services: ['Custom Web & SaaS Development', 'Mobile App Development', 'NapCRM Implementation', 'AI & Automation', 'Cloud & DevOps'],
         image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 30.7293, lng: 76.6947 },
@@ -306,7 +306,13 @@ const CityLandingPage = () => {
         ? {
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
-            "@id": `${SITE_URL}/#organization`,
+            /* Its own @id, with parentOrganization pointing at the company node.
+               This used to reuse `${SITE_URL}/#organization`, the @id SiteSchema
+               already assigns to the Organization node on every page, so the
+               Mohali page defined two different things under one identifier —
+               the exact conflict that was just removed from index.html. */
+            "@id": `${pageUrl}#localbusiness`,
+            "parentOrganization": { "@id": `${SITE_URL}/#organization` },
             "name": siteConfig.brandName,
             "description": data.description,
             "url": pageUrl,
@@ -335,14 +341,11 @@ const CityLandingPage = () => {
             "description": data.description,
             "url": pageUrl,
             "serviceType": "Custom software development",
-            "provider": {
-                "@type": "Organization",
-                "@id": `${SITE_URL}/#organization`,
-                "name": siteConfig.brandName,
-                "url": SITE_URL,
-                "telephone": siteConfig.phone.tel,
-                "email": siteConfig.email.info
-            },
+            /* A bare @id reference, not a second definition. Restating name,
+               url, telephone and email here created a competing Organization
+               node under the same @id as SiteSchema's; a consumer resolves the
+               reference to the full node instead. */
+            "provider": { "@id": `${SITE_URL}/#organization` },
             "areaServed": {
                 "@type": "City",
                 "name": data.city,

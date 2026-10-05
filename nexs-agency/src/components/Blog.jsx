@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo, memo } from 'react'
 import { Link } from 'react-router-dom'
 import { blogAPI } from '../services/api'
 import { siteConfig } from '../constants/siteConfig'
-import { BLOG_POSTS_BY_RECENCY, formatPostDate } from '../constants/blogPosts'
+import { BLOG_POSTS_BY_RECENCY, formatPostDate, cardImage, cardImageSrcSet } from '../constants/blogPosts'
 import { getAuthor } from '../constants/authors'
 import Icon from './ui/Icon';
 import { RiArrowRightLine, RiCalendarLine, RiHeartLine, RiShareCircleLine, RiShareLine, RiTimeLine } from 'react-icons/ri';
@@ -149,10 +149,15 @@ const Blog = memo(function Blog() {
 
                   {/* Image Section */}
                   <div className="relative overflow-hidden h-52">
+                    {/* Card-sized variants, not the 1200x630 og:image. */}
                     <img
-                      src={post.image}
-                      alt={post.title}
+                      src={cardImage(post.image, 600)}
+                      srcSet={cardImageSrcSet(post.image)}
+                      sizes="(max-width: 768px) 100vw, 400px"
+                      alt={post.imageAlt || post.title}
                       loading="lazy"
+                      width="600"
+                      height="315"
                       className="w-full h-full object-cover group- transition-all duration-700"
                     />
 

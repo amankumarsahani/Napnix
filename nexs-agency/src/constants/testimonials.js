@@ -36,3 +36,26 @@ export const TESTIMONIALS = [
         initials: "AS",
     },
 ];
+
+/**
+ * The client organisations named in TESTIMONIALS above, for the proof strip on
+ * /services.
+ *
+ * Every entry is a real, named business with an attributed testimonial, and
+ * three of the four also have a case study. ClientLogos used to render six
+ * invented companies instead — TechCorp, HealthPlus, EduLearn, FinanceFirst,
+ * RetailMax, LogiFlow — as grey two-letter tiles. With no logo assets behind
+ * them the section rendered as the literal text "TC HP EL FF RM LF" under the
+ * heading "Trusted by Industry Leaders", which is fabricated social proof and
+ * reads as placeholder work to anyone evaluating the company.
+ *
+ * Four named clients stated plainly is weaker-sounding and considerably more
+ * credible, and it gives an answer engine real entities to cite. Add to this
+ * list only when there is a client who has agreed to be named.
+ */
+export const CLIENT_ORGANISATIONS = [
+    { name: 'Taxiologists', sector: 'Taxi & fleet operations', caseStudy: '/portfolio/taxiologists' },
+    { name: 'Verma Industries', sector: 'Manufacturing', caseStudy: '/portfolio/napcrm-manufacturing' },
+    { name: 'Aman Singh Legal', sector: 'Legal practice', caseStudy: '/portfolio/napcrm-legal' },
+    { name: 'Prabhawati Vidya Peeth', sector: 'Education', caseStudy: null },
+];

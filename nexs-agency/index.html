@@ -5,18 +5,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-C0JQD47CHK"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-C0JQD47CHK');
-  </script>
+  <!-- Analytics and the Meta Pixel load from one deferred block further down
+       this file, after the first paint. See the note there. -->
 
   <!-- Primary Meta Tags -->
-  <title>Napnix | CRM, Lead Follow-Up & Custom Software for Service Businesses</title>
-  <meta name="title" content="Napnix | CRM, Lead Follow-Up & Custom Software for Service Businesses" />
+  <title>Napnix | CRM & Lead Follow-Up for Service Businesses</title>
+  <meta name="title" content="Napnix | CRM & Lead Follow-Up for Service Businesses" />
   <meta name="description"
     content="Napnix helps service businesses stop losing leads by fixing lead capture, follow-up, CRM, and operations systems — with NapCRM and custom software built around your workflow." />
   <meta name="author" content="Napnix" />
@@ -25,7 +19,7 @@
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Napnix | CRM, Lead Follow-Up &amp; Custom Software for Service Businesses" />
+  <meta property="og:title" content="Napnix | CRM &amp; Lead Follow-Up for Service Businesses" />
   <meta property="og:description"
     content="We help service businesses stop losing leads by fixing lead capture, follow-up, CRM, and operations systems — with NapCRM and custom software built around your workflow." />
   <meta property="og:image" content="https://napnix.in/og-image.jpg" />
@@ -36,7 +30,7 @@
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Napnix | CRM, Lead Follow-Up &amp; Custom Software for Service Businesses" />
+  <meta name="twitter:title" content="Napnix | CRM &amp; Lead Follow-Up for Service Businesses" />
   <meta name="twitter:description"
     content="We help service businesses stop losing leads by fixing lead capture, follow-up, CRM, and operations systems." />
   <meta name="twitter:image" content="https://napnix.in/og-image.jpg" />
@@ -46,34 +40,54 @@
   <!-- LinkedIn -->
   <meta property="linkedin:owner" content="napnix" />
 
-  <!-- Google Analytics -->
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XZZDQ3BX19"></script>
+  <!-- Analytics + Meta Pixel: one gtag.js load, both GA4 properties, deferred
+       past first paint, and skipped for Playwright/localhost so the prerender
+       does not log 51 pageviews. See SEO-HEAD-NOTES.md §4. -->
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
+    (function () {
+      var GA4_IDS = ['G-C0JQD47CHK', 'G-XZZDQ3BX19'];
+      var META_PIXEL_ID = '2073229720265884';
 
-    gtag('config', 'G-XZZDQ3BX19');
-  </script>
+      var host = location.hostname;
+      var isLocal = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local');
+      if (navigator.webdriver || isLocal) return;
 
-  <!-- Meta Pixel Code -->
-  <script>
-    !function (f, b, e, v, n, t, s) {
-      if (f.fbq) return; n = f.fbq = function () {
-        n.callMethod ?
-          n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-      };
-      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
-      n.queue = []; t = b.createElement(e); t.async = !0;
-      t.src = v; s = b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t, s)
-    }(window, document, 'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '2073229720265884');
-    fbq('track', 'PageView');
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+
+      function load() {
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA4_IDS[0];
+        document.head.appendChild(s);
+
+        window.gtag('js', new Date());
+        GA4_IDS.forEach(function (id) { window.gtag('config', id); });
+
+        /* Meta Pixel, unchanged except for when it runs. */
+        !function (f, b, e, v, n, t, s2) {
+          if (f.fbq) return; n = f.fbq = function () {
+            n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+          };
+          if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+          n.queue = []; t = b.createElement(e); t.async = !0;
+          t.src = v; s2 = b.getElementsByTagName(e)[0];
+          s2.parentNode.insertBefore(t, s2)
+        }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+        window.fbq('init', META_PIXEL_ID);
+        window.fbq('track', 'PageView');
+      }
+
+      function schedule() {
+        if (window.requestIdleCallback) window.requestIdleCallback(load, { timeout: 3000 });
+        else setTimeout(load, 1200);
+      }
+
+      if (document.readyState === 'complete') schedule();
+      else window.addEventListener('load', schedule, { once: true });
+    })();
   </script>
-  <!-- End Meta Pixel Code -->
+  <!-- End analytics -->
 
   <!-- Additional SEO Meta Tags -->
   <meta name="theme-color" content="#2563EB" />
@@ -123,9 +137,12 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=DM+Serif+Display:ital@1&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=DM+Serif+Display:ital@1&display=swap"></noscript>
 
-  <!-- Preload critical hero background -->
-  <link rel="preload"
-    href="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1920&auto=format&fit=crop&fm=webp" as="image">
+  <!-- Keep imagesrcset byte-identical to srcSet in src/components/Hero.jsx, or
+       the hero is fetched twice. See SEO-HEAD-NOTES.md §5. -->
+  <link rel="preload" as="image"
+    imagesrcset="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=40&w=640&fm=webp 640w, https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=40&w=1024&fm=webp 1024w, https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=40&w=1920&fm=webp 1920w"
+    imagesizes="100vw"
+    fetchpriority="high">
 
   <!-- Inline Critical CSS for Loading State -->
   <style>
@@ -163,58 +180,22 @@
   <!-- AI discovery -->
   <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs.txt site summary" />
 
-  <!-- Structured Data -->
+  <!-- Structured data: #localbusiness ONLY. Organization + WebSite come from
+       src/components/seo/SiteSchema.jsx. Do not declare them here too — see
+       SEO-HEAD-NOTES.md §1. -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
-        {
-          "@type": "Organization",
-          "@id": "https://napnix.in/#organization",
-          "name": "Napnix",
-          "alternateName": ["Napix", "Napnix Solutions"],
-          "url": "https://napnix.in",
-          "logo": "https://napnix.in/assets/logos/Napnix_v2_h_l_nobg.png",
-          "email": "info@napnix.in",
-          "telephone": "+91-6239396615",
-          "foundingDate": "2025",
-          "brand": {
-            "@type": "Brand",
-            "name": "Napnix"
-          },
-          "description": "Napnix is a software development company building custom web apps, mobile apps, CRM systems, AI workflows, and cloud platforms for startups and enterprises.",
-          "sameAs": [
-            "https://www.linkedin.com/company/napnix",
-            "https://www.instagram.com/napnixofficial/",
-            "https://github.com/orgs/Napnix-Solutions/repositories"
-          ],
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "2519, Azad Nagar, Balongi",
-            "addressLocality": "Mohali",
-            "addressRegion": "Punjab",
-            "postalCode": "160055",
-            "addressCountry": "IN"
-          }
-        },
-        {
-          "@type": "WebSite",
-          "@id": "https://napnix.in/#website",
-          "url": "https://napnix.in",
-          "name": "Napnix",
-          "alternateName": "Napix",
-          "publisher": { "@id": "https://napnix.in/#organization" },
-          "inLanguage": "en"
-        },
         {
           "@type": "ProfessionalService",
           "@id": "https://napnix.in/#localbusiness",
           "name": "Napnix",
           "image": "https://napnix.in/assets/logos/Napnix_v2_h_l_nobg.png",
           "url": "https://napnix.in",
-          "telephone": "+91-6239396615",
+          "telephone": "+916239396615",
           "email": "info@napnix.in",
-          "priceRange": "$$",
+          "priceRange": "₹₹",
           "parentOrganization": { "@id": "https://napnix.in/#organization" },
           "address": {
             "@type": "PostalAddress",
@@ -305,8 +286,13 @@
 
 <body>
   <noscript>This website requires JavaScript to function. Please enable JavaScript in your browser.</noscript>
-  <!-- Meta Pixel noscript fallback (must live in body) -->
-  <noscript><img height="1" width="1" style="display:none"
+  <!-- Meta Pixel noscript fallback (must live in body).
+       alt="" marks it decorative: it is a 1x1 tracking pixel with nothing to
+       describe, and an explicitly empty alt tells assistive tech to skip it,
+       where a missing attribute makes a screen reader announce the URL. This
+       one image accounted for every "missing alt text" hit in the audit — 51
+       pages, 51 copies of it — so the content images were never the problem. -->
+  <noscript><img height="1" width="1" style="display:none" alt=""
       src="https://www.facebook.com/tr?id=2073229720265884&ev=PageView&noscript=1" /></noscript>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>

@@ -34,35 +34,35 @@ export const BLOG_POSTS = [
         published: '2024-03-15',
         updated: '2026-10-05',
         readTime: '9 min read',
-        image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=80&fm=webp',
+        image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=630&fit=crop&q=75&fm=webp',
         imageAlt: 'Abstract visualisation of a neural network, representing enterprise AI systems',
     },
     {
         slug: 'cost-of-custom-crm-2026',
         title: 'Cost of Building a Custom CRM in 2026: A Complete Guide',
         excerpt:
-            'A custom CRM runs $30,000 to $250,000+ depending on scope. This is the full breakdown by tier, the hidden running costs, and the point where buying beats building.',
+            'A custom CRM runs $30,000 to $250,000+ by scope. The breakdown by tier, the hidden running costs, and the point where buying beats building.',
         category: 'Enterprise Software',
         tags: ['CRM', 'Build vs buy', 'Budgeting', 'Integrations'],
         authorId: 'aman-kumar',
         published: '2024-03-20',
         updated: '2026-10-05',
         readTime: '8 min read',
-        image: 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?w=1200&q=80&fm=webp',
+        image: 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?w=1200&h=630&fit=crop&q=75&fm=webp',
         imageAlt: 'A custom CRM dashboard showing a sales pipeline and reporting widgets',
     },
     {
         slug: 'react-native-vs-flutter',
         title: 'React Native vs. Flutter in 2026: A Decision Guide',
         excerpt:
-            'Both ship one codebase to iOS and Android. The real difference is hiring, rendering model and long-term maintenance — compared side by side, with a recommendation.',
+            'Both ship one codebase to iOS and Android. The real difference is hiring, rendering model and maintenance, compared with a recommendation.',
         category: 'Mobile Development',
         tags: ['React Native', 'Flutter', 'iOS', 'Android'],
         authorId: 'kshitij-bhardwaj',
         published: '2024-03-12',
         updated: '2026-10-05',
         readTime: '9 min read',
-        image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=1200&q=80&fm=webp',
+        image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=1200&h=630&fit=crop&q=75&fm=webp',
         imageAlt: 'Two smartphones side by side running the same application interface',
     },
     {
@@ -76,7 +76,7 @@ export const BLOG_POSTS = [
         published: '2024-03-25',
         updated: '2026-10-05',
         readTime: '7 min read',
-        image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&q=80&fm=webp',
+        image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&h=630&fit=crop&q=75&fm=webp',
         imageAlt: 'Server racks in a data centre, representing distributed service infrastructure',
     },
     {
@@ -90,7 +90,7 @@ export const BLOG_POSTS = [
         published: '2024-03-30',
         updated: '2026-10-05',
         readTime: '6 min read',
-        image: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=1200&q=80&fm=webp',
+        image: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=1200&h=630&fit=crop&q=75&fm=webp',
         imageAlt: 'A web application being used on a phone and a laptop at the same time',
     },
 ];
@@ -117,4 +117,24 @@ export function formatPostDate(iso) {
     return new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-US', {
         year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC',
     });
+}
+
+/**
+ * A card-sized variant of a post's `image`.
+ *
+ * `post.image` is sized for og:image — 1200x630, which the article pages
+ * declare in og:image:width/height. The blog index and the homepage teaser
+ * render the same URL into cards about 400px wide and 208px tall, so every
+ * visitor downloaded a 1200-wide social-preview image per card.
+ *
+ * Unsplash resizes on request, so the card just asks for what it needs. Pass
+ * the width you want; `cardImageSrcSet` builds the 1x/2x candidates.
+ */
+export function cardImage(image, width = 600) {
+    return image.replace(/([?&])w=\d+/, `$1w=${width}`).replace(/([&?])h=\d+/, `$1h=${Math.round(width * 0.525)}`);
+}
+
+/** `srcSet` for a post card, for use with sizes="(max-width: 768px) 100vw, 400px". */
+export function cardImageSrcSet(image) {
+    return [400, 600, 800].map((w) => `${cardImage(image, w)} ${w}w`).join(', ');
 }

@@ -135,7 +135,7 @@ export default function NapCRMLandingPage() {
         <div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-hidden selection:bg-[#2563EB]/10">
             <Helmet>
                 <title>NapCRM - All-in-One CRM for Agencies &amp; Businesses | Napnix</title>
-                <meta name="description" content="NapCRM is the complete operating system for modern agencies. Integrated lead management, e-commerce, invoicing, team chat, and client portals — starting at $49/month." />
+                <meta name="description" content="NapCRM is one system for agency operations: lead management, e-commerce, invoicing, team chat and client portals. Plans from ₹4,165/month." />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/napcrm`} />
                 <meta property="og:site_name" content="Napnix" />

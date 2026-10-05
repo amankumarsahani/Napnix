@@ -62,7 +62,7 @@ const AuditPage = () => {
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white">
             <Helmet>
                 <title>Revenue-Leak Audit — Find Where You're Losing Leads | Napnix</title>
-                <meta name="description" content="A free 20-minute Revenue-Leak Audit for agencies and service businesses. See exactly where enquiries, follow-ups, and handoffs are breaking — and the fastest way to fix them." />
+                <meta name="description" content="A free 20-minute Revenue-Leak Audit for agencies and service businesses. See where enquiries and follow-ups break, and the fastest way to fix them." />
                 <link rel="canonical" href={`${SITE_URL}/audit`} />
                 <meta property="og:title" content="Revenue-Leak Audit — Find Where You're Losing Leads | Napnix" />
                 <meta property="og:description" content="Free 20-minute diagnostic: see where leads and follow-ups leak, and how to fix it fast." />

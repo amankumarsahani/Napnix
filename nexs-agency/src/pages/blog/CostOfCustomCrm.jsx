@@ -161,10 +161,74 @@ const CostOfCustomCrm = () => {
                     </p>
                     <p>
                         For a concrete comparison point, <Link to="/napcrm/pricing">NapCRM</Link>{' '}
-                        starts at $49/month per workspace. Against a $75,000 build plus ~$13,000 a
-                        year of upkeep, a subscription has to run a long time before the custom route
-                        is cheaper on cash alone — which is why the deciding factor is usually fit,
-                        not price.
+                        starts at ₹4,165 per month per workspace ($49). Against a $75,000 build plus
+                        ~$13,000 a year of upkeep, a subscription has to run a long time before the
+                        custom route is cheaper on cash alone — which is why the deciding factor is
+                        usually fit, not price.
+                    </p>
+
+                    <h2>What does a custom CRM cost in India?</h2>
+
+                    <AnswerBlock question="What does a custom CRM cost to build in India?">
+                        <p>
+                            An Indian development team typically builds the same scope for 30&ndash;50% of
+                            a US or UK quote. A focused single-team CRM runs about ₹4,00,000 to
+                            ₹12,00,000, a mid-market build with integrations ₹12,00,000 to
+                            ₹40,00,000, and a multi-tenant platform ₹40,00,000 upward. The scope,
+                            not the rate, still decides most of the final number.
+                        </p>
+                    </AnswerBlock>
+
+                    <p>
+                        The dollar figures above are blended global rates. If you are buying from
+                        India — or comparing an Indian vendor against a Western one — the arithmetic
+                        changes enough to be worth stating separately.
+                    </p>
+
+                    <DataTable
+                        caption="Indicative build cost in INR by scope, Indian development team, 2026."
+                        columns={['Scope', 'Build cost (INR)', 'Typical timeline', 'What it covers']}
+                        rows={[
+                            ['Single-team CRM', '₹4,00,000 – ₹12,00,000', '8–14 weeks', 'One pipeline, one user role, reporting, email and WhatsApp follow-up'],
+                            ['Mid-market', '₹12,00,000 – ₹40,00,000', '4–7 months', 'Multiple roles and permissions, ERP or accounting integration, approval flows'],
+                            ['Multi-tenant platform', '₹40,00,000+', '7–14 months', 'Per-tenant isolation, billing, self-serve onboarding, admin surface'],
+                        ]}
+                    />
+
+                    <p>
+                        Three things specific to buying in India are worth budgeting for, and they
+                        are routinely left out of quotes:
+                    </p>
+
+                    <ul>
+                        <li>
+                            <strong>GST at 18%</strong> on development services. On a ₹20,00,000
+                            build that is ₹3,60,000, and it is recoverable as input credit if you
+                            are registered — but it still has to be funded in the month it is
+                            invoiced.
+                        </li>
+                        <li>
+                            <strong>WhatsApp Business API messaging.</strong> Most Indian CRM work
+                            lives or dies on WhatsApp follow-up rather than email. Meta bills per
+                            conversation, so this is a usage cost that grows with your pipeline, not
+                            a fixed line item. Model it at your expected enquiry volume before
+                            launch.
+                        </li>
+                        <li>
+                            <strong>Payment gateway and e-invoicing.</strong> If the CRM raises
+                            invoices, it needs correct HSN codes and the CGST/SGST versus IGST split,
+                            plus e-invoicing if your turnover crosses the threshold. Retrofitting
+                            compliance is far more expensive than building it in.
+                        </li>
+                    </ul>
+
+                    <p>
+                        The cost that actually surprises people is not the build. It is the gap
+                        between a system going live and the team using it, which is a training and
+                        process problem rather than a software one. Budget two to four weeks of
+                        someone&rsquo;s time for migration, cleanup of the data you are bringing
+                        across, and sitting with the people who will use it daily. Projects that skip
+                        this ship on time and get abandoned within a quarter.
                     </p>
 
                     <div className="bg-orange-50 border-l-4 border-orange-600 p-8 my-8 rounded-r-xl not-prose">
@@ -181,6 +245,21 @@ const CostOfCustomCrm = () => {
                         teams, because eliminating per-seat licences compounds while the build cost is
                         paid once. For a small team on a standard process, it rarely is. Decide on
                         workflow fit and team size first, then price the winner.
+                    </p>
+                    <p>
+                        A worked example makes the crossover concrete. A ten-person team on a
+                        subscription at ₹4,165 a month pays about ₹2,50,000 over five years. The same
+                        team on a ₹8,00,000 build pays that once, plus roughly 15% a year in
+                        maintenance, landing near ₹14,00,000 — so the subscription wins comfortably.
+                        Change the team to sixty seats and the subscription cost scales with it while
+                        the build cost barely moves, and the order reverses well inside three years.
+                        Seat count, not sophistication, is the variable that decides this.
+                    </p>
+                    <p>
+                        So price the option that fits your workflow rather than shopping on headline
+                        cost, and if a configured product covers 80% of what you need, take it and
+                        spend the difference on the integrations and the training. That is where the
+                        return actually sits.
                     </p>
                 </div>
             </article>

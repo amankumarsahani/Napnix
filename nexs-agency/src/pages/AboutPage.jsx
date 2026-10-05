@@ -65,11 +65,15 @@ const AboutPage = () => {
   return (
     <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white overflow-hidden">
       <Helmet>
-        <title>About Napnix — CRM & Lead Follow-Up Systems for Service Businesses</title>
-        <meta name="description" content="Napnix helps service businesses fix lead capture, follow-up, CRM, and operations systems. Founded in 2020, based in Mohali, serving clients globally." />
+        <title>About Napnix — CRM & Lead Follow-Up Systems</title>
+        {/* 2025, matching the "Founded in 2025" line in the body below,
+            Organization.foundingDate, and llms.txt. This tag said 2020 while
+            the body said 2025, so the page contradicted itself in the SERP
+            snippet and on screen at the same time. */}
+        <meta name="description" content="Napnix fixes lead capture, follow-up, CRM and operations for service businesses. Founded 2025, based in Mohali, serving India and overseas." />
         <link rel="canonical" href={`${SITE_URL}/about`} />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-        <meta property="og:title" content="About Napnix — CRM & Lead Follow-Up Systems for Service Businesses" />
+        <meta property="og:title" content="About Napnix — CRM & Lead Follow-Up Systems" />
         <meta property="og:description" content="We help service businesses fix lead capture, follow-up, CRM, and operations systems." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`${SITE_URL}/about`} />
@@ -79,7 +83,7 @@ const AboutPage = () => {
         <meta property="og:site_name" content="Napnix" />
         <meta property="og:locale" content="en_IN" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="About Napnix — CRM & Lead Follow-Up Systems for Service Businesses" />
+        <meta name="twitter:title" content="About Napnix — CRM & Lead Follow-Up Systems" />
         <meta name="twitter:description" content="We help service businesses fix lead capture, follow-up, CRM, and operations systems." />
         <meta name="twitter:site" content="@napnix" />
         <meta name="twitter:creator" content="@napnix" />

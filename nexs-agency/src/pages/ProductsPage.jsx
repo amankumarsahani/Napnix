@@ -59,7 +59,7 @@ export default function ProductsPage() {
     return (
         <div className="min-h-screen bg-white">
             <Helmet>
-                <title>Products — NapCRM by Napnix | CRM & Software for Service Businesses</title>
+                <title>Products — NapCRM & NapMail by Napnix</title>
                 <meta name="description" content="Explore Napnix products. NapCRM is a CRM built for agencies and service businesses — lead capture, automated follow-up, and industry workflows in one system." />
                 <link rel="canonical" href={`${SITE_URL}/products`} />
                 <meta property="og:title" content="Products by Napnix — NapCRM" />

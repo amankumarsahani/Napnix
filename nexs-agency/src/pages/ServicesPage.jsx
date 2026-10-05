@@ -309,6 +309,73 @@ const ServicesPage = () => {
                 </div>
             </section>
 
+            {/*
+                Choosing between the five service lines.
+
+                The page listed the services and the process but never answered
+                the question a visitor actually arrives with, which is which one
+                they need. It also sat at 666 words against the 800-word floor
+                for a service page. These two blocks are plain prose in the
+                served HTML, which is also the form an answer engine can quote
+                when someone asks an AI assistant the same question.
+            */}
+            <section className="py-20 bg-white">
+                <div className="container-custom max-w-4xl">
+                    <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-6">
+                        Which service do you actually need?
+                    </h2>
+                    <p className="text-lg text-slate-600 leading-relaxed mb-10">
+                        Most enquiries arrive describing a symptom rather than a service — leads
+                        going cold, a spreadsheet that has outgrown itself, an app that needs
+                        rebuilding. Here is how those map onto the five lines above, including the
+                        cases where the answer is to buy something configured rather than build.
+                    </p>
+
+                    <div className="space-y-7">
+                        {[
+                            {
+                                h: 'Enquiries are arriving but not converting',
+                                p: 'This is usually a follow-up and ownership problem, not a software one. A configured CRM fixes it faster and cheaper than a build: NapCRM covers lead capture, assignment, automated follow-up and reporting from ₹4,165 a month. Start with the free Revenue-Leak Audit, which maps where enquiries are actually being lost before anyone writes code.',
+                                to: '/audit', cta: 'Book a Revenue-Leak Audit',
+                            },
+                            {
+                                h: 'A spreadsheet or manual process has outgrown itself',
+                                p: 'If the process is close to an industry standard, a configured CRM with the right industry edition will cover it. If the process is the thing that differentiates you, or if the licence cost of a product scales with seats faster than your revenue, custom web development is the right call. We will say which applies after scoping, and we have told clients to buy rather than build.',
+                                to: '/services/custom-web-development', cta: 'Custom web development',
+                            },
+                            {
+                                h: 'Your customers or field staff need to be on a phone',
+                                p: 'Mobile app development, with the platform decision made in week one — React Native, Flutter or fully native is a consequence of whether the app needs heavy camera, Bluetooth or background-location work, not a preference. Offline behaviour is designed up front rather than discovered, which matters for Indian field use on patchy mobile data.',
+                                to: '/services/mobile-app-development', cta: 'Mobile app development',
+                            },
+                            {
+                                h: 'You are selling online, or want to',
+                                p: 'E-commerce development, where the build is rarely what decides whether the store works. Payments, logistics and the GST setup are, and in India that means UPI-first checkout, rates configured per HSN code, pin-code-level COD availability and stock that cannot disagree with your ERP. We recommend a hosted platform when it fits, even though it is the smaller project.',
+                                to: '/services/ecommerce-development', cta: 'E-commerce development',
+                            },
+                            {
+                                h: 'Hosting costs or deploys are the bottleneck',
+                                p: 'Cloud solutions, assessed against a cost baseline first so there is something to measure the result against afterwards. Rehost, replatform or refactor is decided per workload rather than for the whole estate: the stable internal app nobody is changing gets left alone, and the service blocking every release is the one worth refactoring.',
+                                to: '/services/cloud-solutions', cta: 'Cloud solutions',
+                            },
+                            {
+                                h: 'You want to use the data you already hold',
+                                p: 'AI and machine learning, starting with a feasibility check rather than a model. A surprising share of requests are better served by a report or a rules engine, and we will tell you when that is the case. Where a model is warranted, the most productive starting point is usually the CRM data you already have, because it is structured and already yours.',
+                                to: '/services/ai-machine-learning', cta: 'AI & machine learning',
+                            },
+                        ].map((item) => (
+                            <div key={item.h}>
+                                <h3 className="text-xl font-semibold text-slate-800 mb-2">{item.h}</h3>
+                                <p className="text-slate-600 leading-relaxed mb-2">{item.p}</p>
+                                <Link to={item.to} className="text-[#2563EB] font-medium hover:underline">
+                                    {item.cta} &rarr;
+                                </Link>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
             {/* Process Section */}
             <ProcessSection />
 

@@ -121,6 +121,7 @@ const written = [];
 const skipped = [];
 const failed = [];
 const dedupedTags = [];
+const fontResets = [];
 
 for (const route of routes) {
   try {
@@ -200,6 +201,24 @@ for (const route of routes) {
     });
     if (deduped.length) dedupedTags.push([route, deduped.length]);
 
+    // index.html loads the Google Fonts stylesheet non-blockingly with the
+    // media="print" + onload="this.media='all'" trick. By the time we serialise,
+    // that onload has already fired in this browser, so the DOM holds
+    // media="all" — and writing that out bakes a render-blocking stylesheet into
+    // every static page, which is the opposite of what the trick is for. PSI put
+    // the cost of the two blocking font requests at ~880ms.
+    // Reset it to the pre-onload state so the shipped HTML keeps the behaviour
+    // index.html asked for. The <noscript> fallback is untouched: it is
+    // correctly nested and only applies when JS is off.
+    const fontsReset = await page.evaluate(() => {
+      let n = 0;
+      for (const el of document.querySelectorAll('link[rel="stylesheet"][onload]')) {
+        if (el.media !== 'print') { el.media = 'print'; n++; }
+      }
+      return n;
+    });
+    if (fontsReset) fontResets.push([route, fontsReset]);
+
     const html = '<!doctype html>\n' + await page.evaluate(() => document.documentElement.outerHTML);
 
     // The whole point is that the static response carries the right canonical.
@@ -246,6 +265,10 @@ for (const [route, text] of skipped) {
 }
 for (const [route, n] of dedupedTags) {
   console.log(`prerender: dedupe ${route.padEnd(37)} dropped ${n} duplicate head tag(s)`);
+}
+if (fontResets.length) {
+  const total = fontResets.reduce((sum, [, n]) => sum + n, 0);
+  console.log(`prerender: restored media="print" on ${total} font stylesheet link(s) across ${fontResets.length} route(s)`);
 }
 for (const [route, err] of failed) {
   console.log(`prerender: FAIL ${route.padEnd(39)} ${err}`);
