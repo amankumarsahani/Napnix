@@ -26,6 +26,11 @@ const cityData = {
         image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 51.5074, lng: -0.1278 },
         color: 'blue',
+        collaboration: {
+            offset: 'UTC+0 in winter, UTC+1 in summer — 4h30m to 5h30m behind IST',
+            overlap: 'Your 09:00 to 12:30 is our 14:30 to 18:00. A London morning stand-up lands in our afternoon, so anything raised before lunch gets worked the same day.',
+            handover: 'Work shipped overnight IST is waiting when London opens.',
+        },
         stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: "Why London Enterprises Choose Napnix",
@@ -49,6 +54,11 @@ const cityData = {
         image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 40.7128, lng: -74.0060 },
         color: 'indigo',
+        collaboration: {
+            offset: 'UTC-5 — 10h30m behind IST',
+            overlap: 'A standard day gives almost none, so we hold 18:00 to 20:30 IST for East Coast calls: your 08:30 to 11:00. Everything else runs asynchronously.',
+            handover: 'You review at the start of your day what we built during ours — a full cycle every 24 hours rather than a shared afternoon.',
+        },
         stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: "Why NYC Businesses Partner with Napnix",
@@ -72,6 +82,11 @@ const cityData = {
         image: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 12.9716, lng: 77.5946 },
         color: 'orange',
+        collaboration: {
+            offset: 'Same timezone — IST throughout',
+            overlap: 'Full working day, no scheduling overhead, and a two-and-a-half hour flight from Chandigarh when something needs doing in person.',
+            handover: 'None needed. Same hours, same calendar, same public holidays.',
+        },
         stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: "Why Bangalore Startups Choose Napnix",
@@ -95,6 +110,11 @@ const cityData = {
         image: 'https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 25.2048, lng: 55.2708 },
         color: 'emerald',
+        collaboration: {
+            offset: 'UTC+4 — 1h30m behind IST',
+            overlap: 'Your 09:00 to 16:30 sits inside our working day. Of every market we serve, this is the closest to working in one office.',
+            handover: 'Rarely required; most work happens in real time. Note the Friday–Saturday weekend against our Saturday–Sunday.',
+        },
         stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: "Why Dubai Enterprises Trust Napnix",
@@ -118,6 +138,11 @@ const cityData = {
         image: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: -33.8688, lng: 151.2093 },
         color: 'cyan',
+        collaboration: {
+            offset: 'UTC+10, UTC+11 in daylight saving — 4h30m to 5h30m ahead of IST',
+            overlap: 'Your afternoon is our morning: 13:30 to 18:00 AEST maps to 09:00 to 13:30 IST. Afternoon calls in Sydney reach us at the start of our day.',
+            handover: 'You close, we build, you open to finished work. The gap runs in your favour.',
+        },
         stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: "Why Sydney Businesses Choose Napnix",
@@ -141,6 +166,11 @@ const cityData = {
         image: 'https://images.unsplash.com/photo-1517090504332-eac35b2cc8ab?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 43.65107, lng: -79.347015 },
         color: 'red',
+        collaboration: {
+            offset: 'UTC-5 — 10h30m behind IST',
+            overlap: 'We hold 18:00 to 20:30 IST for Eastern calls: your 08:30 to 11:00. The rest of the day runs asynchronously.',
+            handover: 'A full build cycle completes while Toronto sleeps, ready for review each morning.',
+        },
         stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: "Why Toronto Innovators Partner with Napnix",
@@ -162,8 +192,13 @@ const cityData = {
         content: 'Headquartered in Balongi, Sahibzada Ajit Singh Nagar, Napnix delivers end-to-end software engineering for Chandigarh Tricity startups, SMEs, and global clients who want reliable delivery from India\'s growing tech corridor.',
         services: ['Custom Web & SaaS Development', 'Mobile App Development', 'NapCRM Implementation', 'AI & Automation', 'Cloud & DevOps'],
         image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&q=80&w=1200&fm=webp',
-        coordinates: { lat: 30.6954, lng: 76.7289 },
+        coordinates: { lat: 30.7293, lng: 76.6947 },
         color: 'blue',
+        collaboration: {
+            offset: 'Same city — our office is in Balongi, SAS Nagar',
+            overlap: 'Whole working day, and we will come to you. Most Mohali clients meet us in person during scoping.',
+            handover: 'Not applicable. We are local.',
+        },
         stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: 'Why Mohali Businesses Choose Napnix',
@@ -187,6 +222,11 @@ const cityData = {
         image: 'https://images.unsplash.com/photo-1587477592983-9ef9a1554714?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 30.7333, lng: 76.7794 },
         color: 'emerald',
+        collaboration: {
+            offset: 'Same timezone — our office is a short drive away in Balongi',
+            overlap: 'Whole working day, with in-person meetings practical at short notice across the Tricity.',
+            handover: 'Not applicable. We are twenty minutes away.',
+        },
         stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: 'Why Chandigarh Teams Work with Napnix',
@@ -506,6 +546,38 @@ const CityLandingPage = () => {
                     </div>
                 </div>
             </section>
+
+            {/* Working across the timezone gap — the question every offshore
+                buyer asks first, answered with the real overlap rather than a
+                generic "we work in your timezone" claim. Genuinely different
+                for each city, which also gives these pages the distinct
+                content they were missing. */}
+            {data.collaboration && (
+                <section className="py-20 bg-slate-50">
+                    <div className="container-custom">
+                        <div className="max-w-4xl">
+                            <span className="text-[#2563EB] font-bold tracking-widest uppercase text-sm">How we work together</span>
+                            <h2 className="text-3xl md:text-4xl font-bold mt-2 mb-10 text-slate-900">
+                                Working with {data.city} from India
+                            </h2>
+                            <dl className="grid md:grid-cols-3 gap-8">
+                                <div>
+                                    <dt className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-2">Time difference</dt>
+                                    <dd className="text-slate-700 leading-relaxed">{data.collaboration.offset}</dd>
+                                </div>
+                                <div>
+                                    <dt className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-2">Hours we share</dt>
+                                    <dd className="text-slate-700 leading-relaxed">{data.collaboration.overlap}</dd>
+                                </div>
+                                <div>
+                                    <dt className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-2">Handover</dt>
+                                    <dd className="text-slate-700 leading-relaxed">{data.collaboration.handover}</dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                </section>
+            )}
 
             {/* Why Us Grid */}
             <section className="py-24 bg-white relative overflow-hidden">
