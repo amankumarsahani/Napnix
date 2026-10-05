@@ -41,5 +41,10 @@ export const siteConfig = {
         'https://github.com/orgs/Napnix-Solutions/repositories',
         'https://www.linkedin.com/company/napnix',
         'https://www.instagram.com/napnixofficial/',
+        // sameAs is how Google ties the site to the entity it already knows.
+        // The Maps listing and the Clutch profile both carry our NAP, so
+        // naming them here makes the three sources corroborate each other.
+        'https://maps.app.goo.gl/PE2VhcvNJjEAGgCu9',
+        'https://clutch.co/profile/napnix',
     ],
 };
