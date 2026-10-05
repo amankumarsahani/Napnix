@@ -104,12 +104,8 @@
   <link rel="manifest" href="/site.webmanifest" />
 
   <!-- DNS Prefetch & Preconnect for faster resource loading -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
-  <link rel="dns-prefetch" href="//fonts.googleapis.com">
-  <link rel="dns-prefetch" href="//fonts.gstatic.com">
   <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
   <link rel="dns-prefetch" href="//images.unsplash.com">
 
@@ -132,10 +128,21 @@
   }
   </script>
 
-  <!-- Google Fonts - Non-blocking load -->
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=DM+Serif+Display:ital@1&display=swap" as="style" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=DM+Serif+Display:ital@1&display=swap" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=DM+Serif+Display:ital@1&display=swap"></noscript>
+  <!-- Fonts are self-hosted. @font-face lives in src/fonts.css and is inlined
+       with the rest of the CSS by scripts/prerender.mjs, so the first paint needs
+       no third-party origin at all. The preconnects to fonts.googleapis.com and
+       fonts.gstatic.com are gone with it. See src/fonts.css for the variable-font
+       detail and the licence position. -->
+
+  <!-- NO font preloads, deliberately.
+       Preloading inter-var + outfit-var (79 KB) was measured at 4x CPU /
+       1.6 Mbps as FCP 4520ms vs 4104ms without, and LCP 4564 vs 4152 — a
+       416ms regression, because the fonts competed with the hero image for
+       bandwidth during the critical window. font-display: swap means text
+       paints immediately in the fallback face regardless, so the preload was
+       buying a slightly earlier swap at the cost of the largest paint.
+       If the hero image ever stops being the LCP element, re-measure before
+       adding these back. -->
 
   <!-- Keep imagesrcset byte-identical to srcSet in src/components/Hero.jsx, or
        the hero is fetched twice. See SEO-HEAD-NOTES.md §5. -->
