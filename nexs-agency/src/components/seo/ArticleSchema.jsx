@@ -23,11 +23,19 @@ export default function ArticleSchema({ slug }) {
 
     const person = {
         '@type': 'Person',
+        // @id and url both point at the author page. Without a url the entity
+        // terminated at the byline and nothing could corroborate it; with one,
+        // every post by this author resolves to the same Person rather than
+        // looking like a fresh, unknown name each time.
+        '@id': `${SITE_URL}/authors/${author.id}#person`,
+        url: `${SITE_URL}/authors/${author.id}`,
         name: author.name,
         jobTitle: author.jobTitle,
         description: author.bio,
         knowsAbout: author.knowsAbout,
-        worksFor: { '@type': 'Organization', name: siteConfig.brandName, url: SITE_URL },
+        // A bare @id reference, so the one Organization node defined by
+        // SiteSchema is reused rather than a competing copy declared here.
+        worksFor: { '@id': `${SITE_URL}/#organization` },
         // Only emitted once a real personal profile exists. A Person.sameAs
         // pointing at the company page would merge the author into the org.
         ...(author.profiles.length ? { sameAs: author.profiles } : {}),

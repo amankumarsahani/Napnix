@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { getAuthor } from '../../constants/authors';
 import { getPost, formatPostDate } from '../../constants/blogPosts';
 
@@ -39,7 +40,11 @@ export default function ArticleHeader({ slug, accent = 'blue' }) {
                         >
                             {author.name.charAt(0)}
                         </span>
-                        <span>{author.name}</span>
+                        {/* Linked so the byline reaches the author page, which is what
+                            gives the Person entity a resolvable url. */}
+                        <Link to={`/authors/${author.id}`} className="hover:text-[#2563EB] transition-colors">
+                            {author.name}
+                        </Link>
                         <span className="text-slate-400">· {author.jobTitle}</span>
                     </span>
                     <span aria-hidden="true">•</span>

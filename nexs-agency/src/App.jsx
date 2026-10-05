@@ -44,6 +44,7 @@ const DataDeletion = lazyWithRetry(() => import('./pages/DataDeletion'));
 const FAQPage = lazyWithRetry(() => import('./pages/FAQPage'));
 const CityLandingPage = lazyWithRetry(() => import('./pages/seo/CityLandingPage'));
 const AlternativePage = lazyWithRetry(() => import('./pages/AlternativePage'));
+const AuthorPage = lazyWithRetry(() => import('./pages/AuthorPage'));
 const IndustryLandingPage = lazyWithRetry(() => import('./pages/IndustryLandingPage'));
 const CustomWebDevelopment = lazyWithRetry(() => import('./pages/services/CustomWebDevelopment'));
 const MobileAppDevelopment = lazyWithRetry(() => import('./pages/services/MobileAppDevelopment'));
@@ -248,6 +249,8 @@ function App() {
           <Route path="/napcrm/pricing" element={<CRMPricingPage />} />
           {/* Comparison page type — see src/constants/alternatives.js for why. */}
           <Route path="/alternatives/:competitor" element={<AlternativePage />} />
+          {/* Author pages give each Person node a resolvable url — see AuthorPage.jsx. */}
+          <Route path="/authors/:authorId" element={<AuthorPage />} />
           <Route path="/napcrm/industries/:industry" element={<IndustryLandingPage />} />
           <Route path="/products" element={<ProductsPage />} />
           {/* NapMailLandingPage was written but never routed, so /napmail bounced

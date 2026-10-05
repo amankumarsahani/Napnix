@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { AUTHORS } from '../constants/authors';
 import { motion } from 'framer-motion';
 
 // Import Assets
@@ -201,6 +202,56 @@ const AboutPage = () => {
                 </p>
               </FadeIn>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/*
+        The people behind the work.
+
+        The E-E-A-T assessment scored Authoritativeness at 28/100, and a large
+        part of that was that no founder or team member was named anywhere on
+        the site — the blog had bylines, /about did not. Naming them here, and
+        linking to their author pages, is the cheapest Experience and Expertise
+        signal available and it costs nothing in claims: everything shown comes
+        from constants/authors.js, which is limited to what the repository
+        actually evidences.
+      */}
+      <section className="py-24 bg-white">
+        <div className="container-custom max-w-4xl">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4">Who you will work with</h2>
+          <p className="text-lg text-slate-600 mb-12 max-w-2xl">
+            Napnix is a small team, which means the people who scope your project are the
+            people who build it. No account layer in between.
+          </p>
+
+          <div className="grid sm:grid-cols-2 gap-6">
+            {Object.values(AUTHORS).map((person) => (
+              <div
+                key={person.id}
+                className="p-6 rounded-2xl bg-[#F8FAFC] border border-slate-200"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <span
+                    aria-hidden="true"
+                    className="w-12 h-12 flex-shrink-0 rounded-xl bg-[#2563EB] text-white flex items-center justify-center text-lg font-bold"
+                  >
+                    {person.name.charAt(0)}
+                  </span>
+                  <div>
+                    <h3 className="text-lg font-semibold text-slate-800">{person.name}</h3>
+                    <p className="text-sm text-slate-500">{person.jobTitle}</p>
+                  </div>
+                </div>
+                <p className="text-slate-600 text-sm leading-relaxed mb-4">{person.bio}</p>
+                <Link
+                  to={`/authors/${person.id}`}
+                  className="text-sm font-medium text-[#2563EB] hover:underline"
+                >
+                  Articles by {person.name.split(' ')[0]} &rarr;
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
       </section>

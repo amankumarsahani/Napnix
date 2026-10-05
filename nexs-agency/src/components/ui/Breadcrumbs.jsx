@@ -22,6 +22,9 @@ const routeNames = {
     'ecommerce-development': 'E-commerce Development',
     'software-development-company': 'Software Development',
     'alternatives': 'Alternatives',
+    'authors': 'Authors',
+    'aman-kumar': 'Aman Kumar',
+    'kshitij-bhardwaj': 'Kshitij Bhardwaj',
     'hubspot': 'HubSpot Alternative',
     'zoho-crm': 'Zoho CRM Alternative',
     'salesforce': 'Salesforce Alternative'

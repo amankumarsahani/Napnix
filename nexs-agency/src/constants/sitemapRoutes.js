@@ -7,6 +7,7 @@
  */
 import { BLOG_POSTS } from './blogPosts.js';
 import { ALTERNATIVE_SLUGS } from './alternatives.js';
+import { AUTHORS } from './authors.js';
 
 const CONTENT_UPDATED = '2026-10-05';
 
@@ -92,6 +93,14 @@ export function getSitemapEntries() {
         changefreq: 'monthly',
     }));
 
+    /* One page per named author. Lower priority than commercial pages — these
+       exist to give Person.url an entity to resolve to, not to rank. */
+    const authors = Object.keys(AUTHORS).map((id) => ({
+        path: `/authors/${id}`,
+        priority: '0.5',
+        changefreq: 'monthly',
+    }));
+
     const industries = INDUSTRY_SLUGS.map((slug) => ({
         path: `/napcrm/industries/${slug}`,
         priority: '0.8',
@@ -111,7 +120,7 @@ export function getSitemapEntries() {
         lastmod: post.updated,
     }));
 
-    return [...core, ...cities, ...alternatives, ...industries, ...services, ...blogs].map((entry) => ({
+    return [...core, ...cities, ...alternatives, ...authors, ...industries, ...services, ...blogs].map((entry) => ({
         lastmod: CONTENT_UPDATED,
         ...entry,
     }));
