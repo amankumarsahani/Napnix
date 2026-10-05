@@ -38,7 +38,9 @@ import { join, dirname, extname } from 'node:path';
 import { chromium } from 'playwright';
 import { getSitemapEntries } from '../src/constants/sitemapRoutes.js';
 
-const DIST = join(process.cwd(), 'dist');
+// BUILD_OUT_DIR lets build:prod assemble everything in a staging directory and
+// swap it into place at the end — see scripts/swap-dist.mjs for why.
+const DIST = join(process.cwd(), process.env.BUILD_OUT_DIR || 'dist');
 const PORT = 4178;
 // Visible text a route must produce to be worth writing. The lowest genuine
 // page is /faq at ~1700; a blog index that rendered no posts sits near 1050,
