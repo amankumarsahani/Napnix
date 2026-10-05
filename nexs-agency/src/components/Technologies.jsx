@@ -107,7 +107,7 @@ const Technologies = memo(function Technologies() {
             </span>
           </h2>
           <p className="text-base sm:text-lg lg:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0">
-            We leverage cutting-edge technologies and industry best practices to build scalable solutions
+            We work in React, Next.js, Node.js, Flutter and AWS, following industry best practices to build scalable solutions
           </p>
         </div>
 
@@ -203,7 +203,7 @@ const Technologies = memo(function Technologies() {
                   <RiCodeLine className="text-2xl text-white" />
                 </div>
                 <h3 className="text-lg font-bold text-slate-800 mb-2">Modern Stack</h3>
-                <p className="text-sm text-slate-600">Latest versions and cutting-edge technologies</p>
+                <p className="text-sm text-slate-600">Current stable releases, upgraded on a regular cadence</p>
               </div>
 
               <div className="text-center p-6 bg-white rounded-2xl border border-slate-200 shadow-lg">

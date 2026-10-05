@@ -121,7 +121,7 @@ const Blog = memo(function Blog() {
             </span>
           </h2>
           <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-            Stay ahead with expert insights, cutting-edge trends, and practical tips from our development team
+            Expert insights, emerging trends, and practical tips from our development team
           </p>
         </div>
 

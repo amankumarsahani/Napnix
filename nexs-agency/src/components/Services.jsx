@@ -68,7 +68,7 @@ const services = [
   {
     icon: "ri-code-line",
     title: "Web Development",
-    description: "Modern, responsive websites built with cutting-edge technologies and industry best practices for optimal performance.",
+    description: "Modern, responsive websites built with React, Next.js and Node.js, following industry best practices for optimal performance.",
     features: ["React & Next.js", "Node.js & Python", "Mobile-First Design", "Performance Optimization"],
     link: "/services/custom-web-development"
   },
@@ -157,7 +157,7 @@ const Services = memo(function Services() {
           </h2>
 
           <p className="text-base sm:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0">
-            From innovative web development to cutting-edge mobile apps, we deliver
+            From web development to cross-platform mobile apps, we deliver
             <span className="font-semibold text-[#2563EB]"> end-to-end solutions</span> that transform
             your business and drive sustainable growth in the digital landscape.
           </p>

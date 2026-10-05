@@ -54,7 +54,7 @@ const cityData = {
             title: "Why NYC Businesses Partner with Napnix",
             reasons: [
                 { title: "Enterprise Grade", desc: "Security and stability for high-stakes industries.", icon: "ri-building-4-line" },
-                { title: "Cutting-Edge Stack", desc: "React, Next.js, and GenAI to keep you ahead of the curve.", icon: "ri-stack-line" },
+                { title: "Modern Stack", desc: "React, Next.js, and GenAI to keep you ahead of the curve.", icon: "ri-stack-line" },
                 { title: "Agile Speed", desc: "Bi-weekly sprints designed for fast-paced NYC startups.", icon: "ri-arrow-right-up-line" },
                 { title: "Hybrid Delivery", desc: "Onshore management with offshore execution excellence.", icon: "ri-earth-line" }
             ]
@@ -440,7 +440,7 @@ const CityLandingPage = () => {
                                 Delivering Excellence in <span className="text-[#2563EB]">{data.city}</span>.
                             </h2>
                             <p className="text-lg text-slate-600 leading-relaxed mb-8">
-                                {data.content} As your local technology partner, we bridge the gap between complex business requirements and cutting-edge digital solutions.
+                                {data.content} As your local technology partner, we bridge the gap between complex business requirements and working softwares.
                             </p>
 
                             <div className="bg-white p-8 rounded-3xl shadow-lg border border-slate-100 relative overflow-hidden">

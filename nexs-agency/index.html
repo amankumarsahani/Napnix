@@ -99,6 +99,25 @@
   <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
   <link rel="dns-prefetch" href="//images.unsplash.com">
 
+  <!-- Speculation Rules: prerender the paths GA4 shows people actually go to.
+       /napcrm/pricing is the strongest commercial page on the site (6 of 64
+       organic sessions, second only to the homepage). "moderate" eagerness
+       fires on hover/pointerdown rather than eagerly, so this costs nothing
+       for visitors who never head that way. Browsers without support ignore
+       the block entirely. -->
+  <script type="speculationrules">
+  {
+    "prerender": [{
+      "where": { "href_matches": ["/napcrm", "/napcrm/pricing", "/contact"] },
+      "eagerness": "moderate"
+    }],
+    "prefetch": [{
+      "where": { "href_matches": ["/services", "/products", "/about", "/portfolio", "/faq"] },
+      "eagerness": "moderate"
+    }]
+  }
+  </script>
+
   <!-- Google Fonts - Non-blocking load -->
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=DM+Serif+Display:ital@1&display=swap" as="style" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=DM+Serif+Display:ital@1&display=swap" media="print" onload="this.media='all'">

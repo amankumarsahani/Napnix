@@ -55,7 +55,7 @@ const features = [
   { icon: "ri-flashlight-line", title: "Agile Development", description: "Fast, iterative development approach for rapid delivery" },
   { icon: "ri-shield-check-line", title: "Quality Assurance", description: "Rigorous testing and quality control processes" },
   { icon: "ri-arrow-right-up-line", title: "Scalable Solutions", description: "Future-proof architecture that grows with your business" },
-  { icon: "ri-lightbulb-line", title: "Innovation Focus", description: "Cutting-edge technologies and creative problem solving" }
+  { icon: "ri-lightbulb-line", title: "Innovation Focus", description: "Current tooling and creative problem solving" }
 ];
 
 const About = memo(function About() {
@@ -154,7 +154,7 @@ const About = memo(function About() {
                 </p>
                 <p>
                   Our expert team specializes in <strong>React, Next.js, Node.js, and cloud-native architectures</strong>,
-                  combining cutting-edge technology with agile methodologies to deliver
+                  combining a modern stack with agile methodologies to deliver
                   <strong>scalable, secure, and performance-optimized applications</strong> that drive real business results.
                 </p>
               </div>
