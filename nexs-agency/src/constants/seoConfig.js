@@ -42,7 +42,7 @@ export function organizationSchema() {
         logo: LOGO_URL,
         email: siteConfig.email.primary,
         telephone: siteConfig.phone.tel,
-        foundingDate: '2020',
+        foundingDate: '2025',
         description:
             'Napnix is a software development company building custom web apps, mobile apps, CRM systems, AI workflows, and cloud platforms.',
         brand: {
@@ -52,10 +52,10 @@ export function organizationSchema() {
         sameAs: siteConfig.socialUrls,
         address: {
             '@type': 'PostalAddress',
-            streetAddress: 'IT Park, Sector 67',
+            streetAddress: '2519, Azad Nagar, Balongi',
             addressLocality: 'Mohali',
             addressRegion: 'Punjab',
-            postalCode: '160062',
+            postalCode: '140301',
             addressCountry: 'IN',
         },
     };

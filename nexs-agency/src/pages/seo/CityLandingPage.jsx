@@ -159,7 +159,7 @@ const cityData = {
         title: 'Software Development Company in Mohali | Napnix',
         description: 'Napnix is a Mohali-based software development company offering custom web, mobile, CRM, AI, and cloud solutions for startups and enterprises in Punjab and beyond.',
         heroText: 'Your Mohali Technology Partner.',
-        content: 'Headquartered in IT Park, Sector 67, Mohali, Napnix delivers end-to-end software engineering for Chandigarh Tricity startups, SMEs, and global clients who want reliable delivery from India\'s growing tech corridor.',
+        content: 'Headquartered in Balongi, Sahibzada Ajit Singh Nagar, Napnix delivers end-to-end software engineering for Chandigarh Tricity startups, SMEs, and global clients who want reliable delivery from India\'s growing tech corridor.',
         services: ['Custom Web & SaaS Development', 'Mobile App Development', 'NapCRM Implementation', 'AI & Automation', 'Cloud & DevOps'],
         image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 30.6954, lng: 76.7289 },
@@ -168,7 +168,7 @@ const cityData = {
         whyUs: {
             title: 'Why Mohali Businesses Choose Napnix',
             reasons: [
-                { title: 'Local HQ Advantage', desc: 'On-the-ground team in Sector 67 with direct access to founders and engineers.', icon: 'ri-building-2-line' },
+                { title: 'Local HQ Advantage', desc: 'On-the-ground team in Balongi with direct access to founders and engineers.', icon: 'ri-building-2-line' },
                 { title: 'Tricity Coverage', desc: 'Serving Mohali, Chandigarh, Panchkula, and Zirakpur with fast turnaround.', icon: 'ri-map-pin-line' },
                 { title: 'Product + Services', desc: 'Custom builds plus our NapCRM platform for faster go-to-market.', icon: 'ri-stack-line' },
                 { title: 'Global Delivery', desc: 'Local presence with experience shipping software for US, UK, and UAE clients.', icon: 'ri-global-line' }
@@ -191,7 +191,7 @@ const cityData = {
         whyUs: {
             title: 'Why Chandigarh Teams Work with Napnix',
             reasons: [
-                { title: 'Nearby Mohali HQ', desc: 'Fast collaboration from our Sector 67 office, minutes from Chandigarh.', icon: 'ri-car-line' },
+                { title: 'Nearby Mohali HQ', desc: 'Fast collaboration from our Balongi office, a short drive from Chandigarh.', icon: 'ri-car-line' },
                 { title: 'Industry CRM Expertise', desc: 'Pre-built NapCRM workflows for healthcare, education, real estate, and more.', icon: 'ri-briefcase-line' },
                 { title: 'Startup Friendly', desc: 'Flexible engagement models for MVPs, scale-ups, and enterprise rollouts.', icon: 'ri-rocket-line' },
                 { title: 'Secure Delivery', desc: 'Enterprise-grade security, QA, and post-launch support built in.', icon: 'ri-shield-check-line' }

@@ -97,7 +97,7 @@ const AboutPage = () => {
                 { "@type": "ContactPoint", "telephone": siteConfig.phone.tel, "contactType": "sales", "areaServed": "IN", "availableLanguage": ["en", "hi"] },
                 { "@type": "ContactPoint", "telephone": siteConfig.phone.telSecondary, "contactType": "customer support", "areaServed": "IN", "availableLanguage": ["en", "hi"] }
             ],
-            "foundingDate": "2020",
+            "foundingDate": "2025",
             "address": {
                 "@type": "PostalAddress",
                 "addressLocality": "Mohali",
@@ -187,7 +187,7 @@ const AboutPage = () => {
               <FadeIn {...FADE_IN_SMOOTH}>
                 <h2 className="text-4xl md:text-5xl font-bold mb-6">The Origin Story</h2>
                 <p className="text-xl text-slate-600 leading-relaxed">
-                  Founded in 2020, Napnix began as a collective of passionate engineers and designers tired of the status quo. We saw a gap in the market for a development partner that truly understood both the <strong>technical</strong> and <strong>business</strong> aspects of building digital products.
+                  Founded in 2025, Napnix began as a collective of passionate engineers and designers tired of the status quo. We saw a gap in the market for a development partner that truly understood both the <strong>technical</strong> and <strong>business</strong> aspects of building digital products.
                 </p>
               </FadeIn>
 
