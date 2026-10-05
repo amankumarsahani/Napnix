@@ -252,7 +252,7 @@ const CityLandingPage = () => {
         "name": `Napnix - ${data.city}`,
         "description": data.description,
         "url": pageUrl,
-        "telephone": "+91-6239396615",
+        "telephone": siteConfig.phone.tel,
         "email": siteConfig.email.info,
         "areaServed": data.city,
         "address": {

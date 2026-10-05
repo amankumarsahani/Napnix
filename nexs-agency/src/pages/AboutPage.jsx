@@ -92,7 +92,11 @@ const AboutPage = () => {
             "logo": LOGO_URL,
             "description": "Napnix helps service businesses fix lead capture, follow-up, CRM, and operations systems.",
             "email": siteConfig.email.info,
-            "telephone": "+916239396615, +917009108646",
+            "telephone": siteConfig.phone.tel,
+            "contactPoint": [
+                { "@type": "ContactPoint", "telephone": siteConfig.phone.tel, "contactType": "sales", "areaServed": "IN", "availableLanguage": ["en", "hi"] },
+                { "@type": "ContactPoint", "telephone": siteConfig.phone.telSecondary, "contactType": "customer support", "areaServed": "IN", "availableLanguage": ["en", "hi"] }
+            ],
             "foundingDate": "2020",
             "address": {
                 "@type": "PostalAddress",

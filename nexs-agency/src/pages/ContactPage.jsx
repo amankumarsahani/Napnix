@@ -139,7 +139,11 @@ const ContactPage = () => {
                     "name": "Napnix",
                     "url": SITE_URL,
                     "email": siteConfig.email.info,
-                    "telephone": "+916239396615, +917009108646",
+                    "telephone": siteConfig.phone.tel,
+                    "contactPoint": [
+                        { "@type": "ContactPoint", "telephone": siteConfig.phone.tel, "contactType": "sales", "areaServed": "IN", "availableLanguage": ["en", "hi"] },
+                        { "@type": "ContactPoint", "telephone": siteConfig.phone.telSecondary, "contactType": "customer support", "areaServed": "IN", "availableLanguage": ["en", "hi"] }
+                    ],
                     "image": `${SITE_URL}/og-image.jpg`,
                     "address": {
                         "@type": "PostalAddress",
@@ -252,7 +256,7 @@ const ContactPage = () => {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-xl mb-1">Call Us</h3>
-                                        <p className="text-blue-100 opacity-80">+91 6239396615</p>
+                                        <p className="text-blue-100 opacity-80">{siteConfig.phone.primary}</p>
                                         <p className="text-blue-100 opacity-80">24/7 support for active clients</p>
                                         <p className="text-blue-100 opacity-80 text-sm mt-1">New enquiries typically answered within 24 hours</p>
                                     </div>

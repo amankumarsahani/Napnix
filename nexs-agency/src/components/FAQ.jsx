@@ -1,4 +1,5 @@
 import { useState, memo } from 'react'
+import { siteConfig } from '../constants/siteConfig';
 import { RiArrowDownSLine, RiArrowRightLine, RiPhoneLine, RiQuestionLine, RiThumbUpLine } from 'react-icons/ri';
 
 const FAQ = memo(function FAQ() {
@@ -175,7 +176,7 @@ const FAQ = memo(function FAQ() {
                   </span>
                 </a>
                 <a
-                  href="tel:+916239396615"
+                  href={`tel:${siteConfig.phone.tel}`}
                   className="group relative bg-white text-[#2563EB] px-8 py-4 rounded-2xl font-semibold hover:shadow-xl transition-all duration-300 cursor-pointer whitespace-nowrap"
                 >
                   <span className="flex items-center justify-center">

@@ -154,7 +154,7 @@ export function buildSoftwareApplicationSchema({
             '@type': 'Organization',
             name: 'Napnix',
             url: SITE_URL,
-            telephone: siteConfig.phone.primary,
+            telephone: siteConfig.phone.tel,
             email: siteConfig.email.primary,
         },
         ...extra,

@@ -21,9 +21,15 @@ export const siteConfig = {
         noreply: 'noreply@napnix.in',
     },
     phone: {
+        // Display form, for anything a human reads.
         primary: '+91 6239396615',
         secondary: '+91 7009108646',
+        // E.164, for tel: links AND every schema.org telephone value.
+        // Structured data previously carried three spellings of this same
+        // number (+916239396615, +91-6239396615, +91 6239396615) across four
+        // files, and two of them packed both numbers into one field.
         tel: '+916239396615',
+        telSecondary: '+917009108646',
     },
     domain: SITE_URL,
     social: [

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, memo } from 'react'
+import { siteConfig } from '../constants/siteConfig';
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import MagneticButton from './ui/MagneticButton'
@@ -280,7 +281,7 @@ const Services = memo(function Services() {
                 <RiArrowRightLine className="ml-2 text-lg group-hover:translate-x-1 transition-transform duration-300" />
               </MagneticButton>
 
-              <a href="tel:+916239396615" className="group bg-white/15 text-white border-2 border-white/30 px-8 py-4 rounded-xl font-bold hover:bg-white/25 hover:border-white/50 transition-all duration-300 inline-flex items-center justify-center text-base">
+              <a href={`tel:${siteConfig.phone.tel}`} className="group bg-white/15 text-white border-2 border-white/30 px-8 py-4 rounded-xl font-bold hover:bg-white/25 hover:border-white/50 transition-all duration-300 inline-flex items-center justify-center text-base">
                 <RiPhoneLine className="mr-2 text-lg" />
                 Schedule Call
               </a>
