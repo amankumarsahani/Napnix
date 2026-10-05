@@ -1,0 +1,33 @@
+# URLs to push to IndexNow after a deploy that changed them.
+# One per line. Lines starting with # are ignored.
+#
+# IndexNow reaches Bing, Yandex, Seznam and Naver — not Google. For Google the
+# sitemap plus Search Console is the mechanism. Bing matters here because it
+# backs Bing Copilot and ChatGPT Search, both of which robots.txt invites.
+#
+# Keep this to pages that actually changed. Submitting the whole site on every
+# deploy is the pattern that gets a host rate-limited.
+
+# New commercial pages
+https://napnix.in/services/crm-development
+https://napnix.in/alternatives/hubspot
+https://napnix.in/alternatives/zoho-crm
+https://napnix.in/alternatives/salesforce
+
+# The linkable asset
+https://napnix.in/tools/crm-cost-calculator
+
+# New content
+https://napnix.in/blog/whatsapp-lead-follow-up
+https://napnix.in/authors/aman-kumar
+https://napnix.in/authors/kshitij-bhardwaj
+
+# Materially rewritten
+https://napnix.in/
+https://napnix.in/napcrm/pricing
+https://napnix.in/services
+https://napnix.in/faq
+https://napnix.in/about
+https://napnix.in/software-development-company/mohali
+https://napnix.in/software-development-company/chandigarh
+https://napnix.in/blog/cost-of-custom-crm-2026
