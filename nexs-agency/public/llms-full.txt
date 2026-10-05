@@ -1,205 +1,112 @@
 # Napnix — Full Reference
 
-> Napnix is an India-based software development company building custom web applications, mobile apps, cloud infrastructure, AI/ML solutions, NapCRM — an industry-specific CRM platform starting at ₹999/month, and NapMail — an email marketing engine with SMTP rotation and anti-spam scoring.
+> Napnix is an India-based software development company building custom web applications, mobile apps, cloud infrastructure and AI/ML solutions. It publishes two products: NapCRM, an industry-specific CRM platform from $49/month (₹4,165), and NapMail, an email marketing engine with SMTP rotation and anti-spam scoring.
 
-## Company Overview
+All prices below are generated from the same source as the pricing pages and the Offer structured data, so they cannot disagree with them. Generated 2026-10-05.
 
-Napnix is a technology company headquartered at 2519 Azad Nagar, Balongi, Sahibzada Ajit Singh Nagar (Mohali), Punjab 160055, India. Founded in 2025, we build scalable digital products for businesses ranging from startups to enterprises.
+## Company Facts
 
-**Contact Information:**
-- Email: info@napnix.in
-- Sales: sales@napnix.in
-- Support: info@napnix.in
-- Phone: +91 6239396615
-- Website: https://napnix.in
-- LinkedIn: https://www.linkedin.com/company/napnix
-- GitHub: https://github.com/orgs/Napnix-Solutions/repositories
-- Instagram: https://www.instagram.com/napnixofficial/
+- Legal/brand name: Napnix (also searched as Napix)
+- Founded: 2025
+- Headquarters: 2519 Azad Nagar, Balongi, Sahibzada Ajit Singh Nagar (Mohali), Punjab 160055, India
+- Email: info@napnix.in · Phone: +91 6239396615
+- Core stack: React, Next.js, Node.js, Python, Flutter, React Native, AWS
 
-**Core Technology Stack:**
-- Frontend: React, Next.js, Vue.js, Tailwind CSS
-- Mobile: Flutter, React Native
-- Backend: Node.js, Express, Python, Django
-- Cloud: AWS, Azure, Google Cloud Platform
-- AI/ML: TensorFlow, PyTorch, OpenAI, custom models
-- Databases: PostgreSQL, MongoDB, Redis, Elasticsearch
+## NapCRM
 
----
+NapCRM is a multi-tenant, industry-specific CRM platform. Each tenant gets isolated data, configurable modules and industry-specific workflows, covering lead management, customer records, e-commerce, invoicing, automation and multi-channel communication.
 
-## NapMail — Email Marketing Engine
+### NapCRM Pricing
 
-NapMail is an email marketing platform built for deliverability. It uses smart SMTP rotation, anti-spam scoring, and per-domain throttling to ensure emails land in inboxes.
-
-### NapMail Pricing Plans
-
-| Plan | Monthly Price | Yearly Price (per month) | Contacts | Emails/Month | Templates | Lists | Automations | SMTP Accounts |
+| Plan | Monthly (USD) | Monthly (INR) | Yearly (INR, per month) | Leads | Customers | Products | Team members | Storage |
 |---|---|---|---|---|---|---|---|---|
-| Free | ₹0 | ₹0 | 1,000 | 5,000 | 10 | 5 | 2 | 1 |
-| Growth | ₹699 | ₹594 | 5,000 | 25,000 | 25 | 15 | 5 | 2 |
-| Pro | ₹1,999 | ₹1,699 | 25,000 | 100,000 | 100 | Unlimited | Unlimited | 5 |
-| Business | ₹4,999 | ₹4,249 | 100,000 | 500,000 | Unlimited | Unlimited | Unlimited | 10 |
-| Enterprise | Custom | Custom | Unlimited | Unlimited | Unlimited | Unlimited | Unlimited | Unlimited |
+| Starter | $49 | ₹4,165 | ₹3,570 | 500 | 200 | 50 | 2 | 1 GB |
+| Growth | $79 | ₹6,715 | ₹5,695 | 2,000 | 1,000 | 500 | 5 | 5 GB |
+| Business | $99 | ₹8,415 | ₹7,140 | 10,000 | 5,000 | 2,000 | 15 | 25 GB |
+| Enterprise | Custom | Custom | Custom | Unlimited | Unlimited | Unlimited | Unlimited | Custom |
 
-### NapMail Key Features
+Pricing page: https://napnix.in/napcrm/pricing
 
-- **Drag & Drop Email Builder**: 18 block types, mobile preview, undo/redo, template versioning, custom HTML editor.
-- **Smart SMTP Rotation**: Weighted multi-account rotation with reputation tracking and auto-disable. Add unlimited SMTP accounts (Gmail, Amazon SES, Postmark, SendGrid, or any SMTP provider).
-- **Anti-Spam Engine**: 50+ spam checks on every email before sending — trigger words, subject analysis, HTML structure, image-to-text ratio, CAN-SPAM/GDPR compliance. Score below 20/100 blocks sending.
-- **Domain Throttling**: Per-provider sending limits (Gmail 80/hr, Yahoo 60/hr, Outlook 100/hr) with human-like variable delays to protect sender reputation.
-- **Visual Automation Builder**: Node-based flow builder with 9 triggers, 11 actions, conditional branching, webhook integrations, and pre-built automation recipes.
-- **Campaign Analytics**: Open rates, click maps, delivery funnels, engagement heatmaps, campaign leaderboards, and CSV export.
-- **Contact Scoring**: Automatic 0-100 engagement scores based on opens, clicks, recency, and bounce history.
-- **NapCRM Integration**: Native sync — contacts auto-imported from NapCRM leads and customers. Segment by CRM source, tags, and custom fields.
-- **Deliverability Tools**: SPF/DKIM/DMARC verification, warmup mode, bounce handling, suppression lists, and reputation monitoring with auto-disable.
-- **A/B Testing**: Subject line, content, and send time testing (Pro plan and above).
+### NapCRM Industry Editions
 
-### NapMail vs Competitors
+NapCRM ships 14 industry editions: Small Business, E-commerce, Real Estate, Service Businesses, Education, Healthcare, Hospitality, Travel, Fitness, Legal, Manufacturing, Logistics, Restaurants, Salons & Spas.
 
-NapMail differentiators over Mailchimp and Brevo:
-- Bring Your Own SMTP (BYOS) — no vendor lock-in
-- Smart SMTP account rotation with reputation weighting
-- Built-in spam score checker before sending
-- Domain-level throttling for Gmail, Yahoo, Outlook
-- Adaptive human-like send delays
-- Native NapCRM integration
-- Free tier: 1,000 contacts (vs Mailchimp 500 / Brevo 300 emails/day)
+## NapMail
 
----
+NapMail is an email marketing platform built for deliverability. It uses smart SMTP rotation, anti-spam scoring, and per-domain throttling to improve inbox placement, and integrates with NapCRM.
 
-## NapCRM — Industry-Specific CRM Platform
+### NapMail Pricing
 
-NapCRM is a multi-tenant CRM platform designed for specific industries. Each tenant gets isolated data, customized modules, and industry-specific workflows.
+| Plan | Monthly (USD) | Monthly (INR) | Yearly (INR, per month) | Contacts | Emails/month |
+|---|---|---|---|---|---|
+| Free | $0 | ₹0 | ₹0 | 1,000 | 5,000 |
+| Growth | $8 | ₹699 | ₹594 | 5,000 | 25,000 |
+| Pro | $24 | ₹1,999 | ₹1,699 | 25,000 | 100,000 |
+| Business | $59 | ₹4,999 | ₹4,249 | 100,000 | 500,000 |
+| Enterprise | Custom | Custom | Custom | Unlimited | Unlimited |
 
-### Pricing Plans
+Product page: https://napnix.in/napmail
 
-| Plan | Monthly Price | Yearly Price (per month) | Leads | Customers | Products | Team Members | Storage |
-|---|---|---|---|---|---|---|---|
-| Starter | ₹999 | ₹849 | 500 | 200 | 50 | 3 | 1 GB |
-| Growth | ₹2,499 | ₹2,124 | 2,000 | 1,000 | 200 | 10 | 5 GB |
-| Business | ₹5,999 | ₹5,099 | 10,000 | 5,000 | 1,000 | 25 | 20 GB |
-| Enterprise | Custom | Custom | Unlimited | Unlimited | Unlimited | Unlimited | Unlimited |
-
-All plans include a 14-day free trial.
-
-### Core CRM Features (Available in All Plans)
-
-- **Lead Management**: Capture, score, assign, and track leads through customizable pipelines.
-- **Contact Management**: Centralized contact database with interaction history, notes, and custom fields.
-- **Deal Pipeline**: Visual kanban-style deal tracking with stage management and win/loss analytics.
-- **Task Automation**: Automated workflows triggered by lead actions, deal stage changes, or time-based rules.
-- **Reporting & Analytics**: Dashboard with KPIs, conversion funnels, revenue forecasting, and exportable reports.
-
-### E-commerce Features (Growth Plan and Above)
-
-- Product catalog management with variants, pricing, and inventory sync
-- Order management and fulfillment tracking
-- Abandoned cart recovery with automated email sequences
-- Customer segmentation based on purchase history
-- Storefront integration with Shopify, WooCommerce, and custom stores
-- Payment gateway integration (Razorpay, Stripe, PayPal)
-- Inventory alerts and stock management
-
-### Communication Features (All Plans)
-
-- Email campaigns with templates and scheduling
-- WhatsApp Business API integration for messaging
-- SMS campaigns and notifications
-- In-app chat and customer messaging
-- Call logging and recording integration
-- Multi-channel inbox for unified communication
-- Automated follow-up sequences
-- Customer feedback and survey tools
-
-### Automation Features (Business Plan and Above)
-
-- Workflow builder with drag-and-drop visual editor
-- AI-powered lead scoring based on behavioral signals
-- Predictive analytics for deal forecasting and churn prediction
-
-### Support Features
-
-- Email support (all plans)
-- Priority support (Growth and above)
-- Dedicated account manager (Business and above)
-- Custom training sessions (Enterprise)
-- 99.9% uptime SLA (Enterprise)
-
-### Industry-Specific Solutions
-
-**E-commerce CRM**: Abandoned cart recovery, product catalog sync, order lifecycle management, customer lifetime value tracking, RFM segmentation, delivery partner integration.
-
-**Real Estate CRM**: Property listing management with photos and virtual tours, automated lead scoring based on property preferences, site visit scheduling with calendar sync, document management for agreements and contracts, broker commission tracking, project inventory management.
-
-**Healthcare CRM**: Patient management with medical history, appointment scheduling with automated reminders, HIPAA-compliant secure communication, treatment plan tracking, prescription management, insurance and billing integration.
-
-**Education CRM**: Student enrollment pipeline from inquiry to admission, course and curriculum management, parent-teacher communication portal, fee tracking with payment reminders, attendance management, Examination and grade management.
-
-**Hospitality CRM**: Reservation and booking management, guest preference profiles, room inventory and housekeeping coordination, loyalty program management, online review monitoring and response, event and banquet management.
-
-**Restaurant CRM**: Table reservation with floor plan management, digital menu management, Online ordering and delivery integration, Customer loyalty and rewards programs, Kitchen order management, Inventory and supplier management.
-
-**Salon & Spa CRM**: Online appointment booking with stylist selection, Staff scheduling and availability management, Membership and package management, Product inventory for retail, Treatment history and preference tracking, Automated birthday and anniversary reminders.
-
-**Fitness CRM**: Member registration and management, Class and session scheduling, Trainer assignment and performance tracking, Attendance tracking with check-in, Membership renewal and payment automation, Diet and workout plan management.
-
-**Travel CRM**: Itinerary building and management, Booking workflows for flights, hotels, and activities, Traveler profile management, Supplier and vendor coordination, Group tour management, Visa and document tracking.
-
-**Legal CRM**: Case management with timeline tracking, Client intake and conflict checking, Document management with version control, Time tracking and billing, Court date and deadline management, Matter-specific communication threads.
-
-**Manufacturing CRM**: Order and production tracking, Raw material and finished goods inventory, Supplier relationship management, Quality control checkpoints, Purchase order automation, Production scheduling and capacity planning.
-
-**Logistics CRM**: Shipment tracking with real-time updates, Fleet management and maintenance scheduling, Route optimization, Warehouse and inventory management, Proof of delivery and documentation, Customer portal for tracking.
-
-**Service Businesses CRM**: Project management with milestones, Client communication and ticketing, Time tracking and invoicing, Team collaboration and task assignment, Proposal and contract management, Resource utilization dashboards.
-
-**General / Small Business CRM**: Contact and company management, Deal pipeline with visual kanban board, Email campaign management, Task automation and reminders, Basic reporting and dashboards, Team collaboration tools.
-
----
-
-## Development Services
+## Services
 
 ### Custom Web Development
-Full-stack web application development using modern frameworks. We build enterprise dashboards, SaaS platforms, marketplace applications, and complex web systems. Tech stack: React, Next.js, Node.js, Python, PostgreSQL, Redis. We handle frontend architecture, backend engineering, API development, and cloud infrastructure setup.
+
+Full-stack web applications — React, Next.js, Node.js, Python, cloud-native architectures.
+
+https://napnix.in/services/custom-web-development
 
 ### Mobile App Development
-Native and cross-platform mobile application development. We build consumer apps, enterprise mobility solutions, and IoT-connected applications. Platforms: iOS (Swift), Android (Kotlin), Flutter, React Native. We handle UI/UX design, development, testing, App Store/Play Store deployment, and post-launch support.
+
+iOS, Android and cross-platform apps using React Native and Flutter.
+
+https://napnix.in/services/mobile-app-development
 
 ### E-commerce Development
-End-to-end e-commerce platform development. We build custom Shopify stores, WooCommerce solutions, headless commerce architectures, and multi-vendor marketplace platforms. Features include payment integration, inventory management, order fulfillment, and analytics dashboards.
+
+Shopify, WooCommerce, headless commerce and custom marketplace platforms.
+
+https://napnix.in/services/ecommerce-development
 
 ### Cloud Solutions
-Cloud infrastructure design and implementation. We work with AWS, Azure, and Google Cloud Platform. Services include cloud migration, DevOps pipeline setup (CI/CD), containerization with Docker and Kubernetes, serverless architecture, auto-scaling, monitoring, and cost optimization.
+
+AWS, Azure and GCP infrastructure, DevOps, CI/CD pipelines, containerisation.
+
+https://napnix.in/services/cloud-solutions
 
 ### AI & Machine Learning
-Custom AI/ML solution development. We build natural language processing systems, computer vision applications, recommendation engines, predictive analytics models, and conversational AI. We handle data pipeline development, model training, deployment, and ongoing optimization.
 
----
+Custom models, NLP, computer vision, predictive analytics and ML pipelines.
 
-## Service Areas
+https://napnix.in/services/ai-machine-learning
 
-Napnix serves clients globally, with dedicated landing pages for these regions:
-- London, United Kingdom
-- New York, United States
-- Bangalore, India
-- Dubai, United Arab Emirates
-- Sydney, Australia
-- Toronto, Canada
+## Guides
 
----
+### Why Your Business Needs a PWA (And When It Does Not)
 
-## Blog & Technical Insights
+Progressive Web Apps install, work offline and skip app-store review. They also cannot do everything native can. Where the line actually falls in 2026.
 
-### Top 10 AI Trends Shaping Business in 2026
-Published analysis covering the most impactful AI trends for enterprise software — agentic AI systems, multimodal AI, AI governance, edge AI, and AI-powered development tools. Includes practical implications for businesses adopting AI.
+First published 2024-03-30, last reviewed 2026-10-05. https://napnix.in/blog/why-business-needs-pwa
 
-### Cost of Building a Custom CRM in 2026
-Comprehensive breakdown of CRM development costs including team composition, timeline estimates (3-12 months), technology choices, and a detailed build-vs-buy analysis comparing custom development against platforms like Salesforce and HubSpot.
+### Monolith to Microservices: A Step-by-Step Migration Guide
 
-### React Native vs Flutter 2026: Complete Comparison
-Technical comparison covering performance benchmarks, developer ecosystem, community size, learning curve, code sharing capabilities, and platform-specific considerations. Includes recommendations by use case.
+Decomposing a monolith without a rewrite. The strangler-fig sequence we use, in order, with the failure mode that kills most migrations at step four.
 
-### Monolith to Microservices Migration Guide
-Step-by-step methodology for decomposing monolithic applications. Covers the Strangler Fig pattern, domain-driven design, service boundaries, data management strategies, and DevOps requirements for microservices.
+First published 2024-03-25, last reviewed 2026-10-05. https://napnix.in/blog/monolith-to-microservices
 
-### Why Your Business Needs a Progressive Web App
-Analysis of PWA benefits including offline functionality, push notifications, installation without app stores, performance improvements, and cross-platform compatibility. Includes ROI data and implementation considerations.
+### Cost of Building a Custom CRM in 2026: A Complete Guide
+
+A custom CRM runs $30,000 to $250,000+ depending on scope. This is the full breakdown by tier, the hidden running costs, and the point where buying beats building.
+
+First published 2024-03-20, last reviewed 2026-10-05. https://napnix.in/blog/cost-of-custom-crm-2026
+
+### Top 10 AI Trends Shaping Global Business in 2026
+
+Agentic AI moved from demo to production in 2026. Here are the ten shifts actually changing how enterprises build software, and what each one costs to adopt.
+
+First published 2024-03-15, last reviewed 2026-10-05. https://napnix.in/blog/ai-trends-2026
+
+### React Native vs. Flutter in 2026: A Decision Guide
+
+Both ship one codebase to iOS and Android. The real difference is hiring, rendering model and long-term maintenance — compared side by side, with a recommendation.
+
+First published 2024-03-12, last reviewed 2026-10-05. https://napnix.in/blog/react-native-vs-flutter

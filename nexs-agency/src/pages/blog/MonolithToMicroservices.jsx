@@ -1,43 +1,57 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import RelatedServices from '../../components/seo/RelatedServices';
-import { SITE_URL, LOGO_URL } from '../../constants/siteConfig';
+import ArticleSchema from '../../components/seo/ArticleSchema';
+import ArticleHeader from '../../components/seo/ArticleHeader';
+import ArticleFooter from '../../components/seo/ArticleFooter';
+import { AnswerBlock, DataTable, BarChart } from '../../components/seo/ArticleBlocks';
+import { SITE_URL } from '../../constants/siteConfig';
+import { getPost } from '../../constants/blogPosts';
+
+const SLUG = 'monolith-to-microservices';
+
+const SOURCES = [
+    {
+        title: 'StranglerFigApplication',
+        publisher: 'Martin Fowler',
+        url: 'https://martinfowler.com/bliki/StranglerFigApplication.html',
+    },
+    {
+        title: 'Saga pattern for distributed transactions',
+        publisher: 'Microsoft Azure Architecture Center',
+        url: 'https://learn.microsoft.com/azure/architecture/reference-architectures/saga/saga',
+    },
+    {
+        title: 'OpenTelemetry — vendor-neutral distributed tracing',
+        publisher: 'Cloud Native Computing Foundation',
+        url: 'https://opentelemetry.io/docs/',
+    },
+    {
+        title: 'MonolithFirst — why starting with microservices usually backfires',
+        publisher: 'Martin Fowler',
+        url: 'https://martinfowler.com/bliki/MonolithFirst.html',
+    },
+];
 
 const MonolithToMicroservices = () => {
-
-    const articleSchema = {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": "Migrating Legacy Monoliths to Microservices: A Strategic Guide",
-        "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&q=80&fm=webp",
-        "author": {
-            "@type": "Person",
-            "name": "Aman Kumar"
-        },
-        "publisher": {
-            "@type": "Organization",
-            "name": "Napnix",
-            "url": SITE_URL,
-            "logo": { "@type": "ImageObject", "url": LOGO_URL }
-        },
-        "datePublished": "2024-03-25",
-        "description": "Is your legacy monolith slowing you down? Learn the risks and rewards of migrating to a microservices architecture in 2026."
-    };
+    const post = getPost(SLUG);
+    const url = `${SITE_URL}/blog/${SLUG}`;
+    const metaTitle = 'Monolith to Microservices: A Step-by-Step Migration Guide | Napnix';
 
     return (
-        <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-cyan-600 selection:text-white pt-20">
+        <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white pt-20">
             <Helmet>
-                <title>Monolith to Microservices Migration Guide | Napnix Cloud</title>
-                <meta name="description" content="Is your legacy monolith slowing you down? Learn the risks and rewards of migrating to a microservices architecture in 2026." />
-                <link rel="canonical" href={`${SITE_URL}/blog/monolith-to-microservices`} />
-                <meta property="og:title" content="Monolith to Microservices Migration Guide | Napnix Cloud" />
-                <meta property="og:description" content="Is your legacy monolith slowing you down? Learn the risks and rewards of migrating to a microservices architecture." />
+                <title>{metaTitle}</title>
+                <meta name="description" content={post.excerpt} />
+                <link rel="canonical" href={url} />
+                <meta property="og:title" content={metaTitle} />
+                <meta property="og:description" content={post.excerpt} />
                 <meta property="og:type" content="article" />
-                <meta property="og:url" content={`${SITE_URL}/blog/monolith-to-microservices`} />
-                <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
+                <meta property="og:url" content={url} />
+                <meta property="og:image" content={post.image} />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Monolith to Microservices Migration Guide | Napnix Cloud" />
-                <meta name="twitter:description" content="Is your legacy monolith slowing you down? Learn the risks and rewards of migrating to a microservices architecture." />
+                <meta name="twitter:title" content={metaTitle} />
+                <meta name="twitter:description" content={post.excerpt} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
@@ -45,97 +59,157 @@ const MonolithToMicroservices = () => {
                 <meta property="og:image:height" content="630" />
                 <meta name="twitter:site" content="@napnix" />
                 <meta name="twitter:creator" content="@napnix" />
-                <meta property="article:published_time" content="2024-03-25" />
-                <meta property="article:author" content="Napnix" />
-                <script type="application/ld+json">
-                    {JSON.stringify(articleSchema)}
-                </script>
+                <meta property="article:published_time" content={post.published} />
+                <meta property="article:modified_time" content={post.updated} />
             </Helmet>
+            <ArticleSchema slug={SLUG} />
 
             <article className="max-w-4xl mx-auto px-6 py-12">
-                <div className="mb-12 text-center">
-                    <span className="inline-block px-4 py-1.5 bg-cyan-100 text-cyan-700 font-bold rounded-full text-sm mb-6">
-                        Cloud Architecture
-                    </span>
-                    <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6 text-slate-800">
-                        Migrating Legacy Monoliths to Microservices: A Strategic Guide
-                    </h1>
-                    <div className="flex items-center justify-center gap-6 text-slate-500 font-medium">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">A</div>
-                            <span>Aman Kumar</span>
-                        </div>
-                        <span>•</span>
-                        <span>Mar 25, 2024</span>
-                        <span>•</span>
-                        <span>6 min read</span>
-                    </div>
-                </div>
+                <ArticleHeader slug={SLUG} accent="purple" />
 
-                <div className="rounded-[2rem] overflow-hidden shadow-2xl mb-16 h-[500px]">
-                    <img
-                        src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&q=80&fm=webp"
-                        alt="Cloud Architecture"
-                        loading="lazy"
-                        height={500}
-                        className="w-full h-full object-cover"
-                    />
-                </div>
+                <div className="prose prose-lg prose-purple mx-auto">
+                    <AnswerBlock question="How do you migrate a monolith to microservices?">
+                        <p>
+                            Use the <strong>strangler fig pattern</strong>: never rewrite the whole
+                            system at once. Put a gateway in front of the monolith, extract one
+                            low-risk domain into its own service, route that traffic to the new
+                            service, delete the old code path, then repeat. Each pass is independently
+                            shippable and independently reversible, which is what keeps the migration
+                            survivable.
+                        </p>
+                    </AnswerBlock>
 
-                <div className="prose prose-lg prose-cyan mx-auto">
                     <p className="lead text-xl text-slate-600 mb-8">
-                        The phrase "Monolith to Microservices" is a cliché in tech circles, but for CTOs of established companies, it represents the single biggest challenge to scalability. Here's how to navigate the transition without breaking production.
+                        Monoliths are not a mistake. Most should stay monoliths. But when a ten-year-old
+                        application needs a full-system deploy to change a button colour, you have a
+                        velocity problem — and that is a reason to decompose, where "it feels dated"
+                        is not.
                     </p>
 
-                    <h2>The Problem with Monoliths</h2>
+                    <h2>Should you migrate at all?</h2>
                     <p>
-                        Monoliths aren't inherently bad. But when a 10-year-old application requires a full system deployment just to change a button color, you have a velocity problem.
+                        Start here, because the honest answer is often no. Microservices trade a
+                        simple deployment story for a distributed systems problem: network failures,
+                        partial outages, no cross-service transactions, and far harder debugging. You
+                        are buying independent deployability and paying in operational complexity.
                     </p>
-
-                    <h2>The Microservices Promise</h2>
+                    <p>Decompose when at least two of these are true:</p>
                     <ul>
-                        <li><strong>Independent Deployment:</strong> Update the billing service without risking the user profile service.</li>
-                        <li><strong>Tech Agnosticism:</strong> Write the payment service in Node.js and the data processing service in Python.</li>
-                        <li><strong>Scalability:</strong> Scale only the service that's under load, saving cloud costs.</li>
+                        <li>More than roughly 20 engineers are contending for the same deploy pipeline.</li>
+                        <li>Release cadence is slower than weekly because of coordination, not testing.</li>
+                        <li>One component's load forces you to scale the entire application.</li>
+                        <li>Distinct parts genuinely need different runtimes or data stores.</li>
                     </ul>
-
-                    <h2>The Strangler Fig Pattern</h2>
                     <p>
-                        We always recommend the "Strangler Fig" approach. Instead of rewriting the entire system (a recipe for disaster), you gradually replace specific functionalities with new microservices.
+                        If none of those apply, a well-modularised monolith will serve you better and
+                        cost less to run.
+                    </p>
+
+                    <h2>The strangler fig sequence</h2>
+                    <p>
+                        Named for the vine that grows around a tree until it stands on its own, this is
+                        the migration order we use. Do it once per domain, and finish each pass before
+                        starting the next:
                     </p>
                     <ol>
-                        <li>Identify a non-critical domain (e.g., Notification Service).</li>
-                        <li>Build a microservice for it.</li>
-                        <li>Route traffic to the new service via an API Gateway.</li>
-                        <li>Decommission the old code in the monolith.</li>
-                        <li>Repeat.</li>
+                        <li>
+                            <strong>Put a gateway in front.</strong> All traffic routes through an API
+                            gateway while the monolith still serves every request. Nothing has changed
+                            functionally — you have simply gained a seam to redirect at.
+                        </li>
+                        <li>
+                            <strong>Pick a low-risk, low-coupling domain.</strong> Notifications,
+                            PDF generation, search indexing. Not billing, and not authentication.
+                        </li>
+                        <li>
+                            <strong>Build the service, and its data boundary.</strong> The service owns
+                            its own storage. If it still reads the monolith's tables directly, you have
+                            built a distributed monolith — the worst of both designs.
+                        </li>
+                        <li>
+                            <strong>Shadow the traffic.</strong> Send real requests to both paths,
+                            compare the outputs, and fix the differences before anything depends on the
+                            new service. This is the step most teams skip and most regret skipping.
+                        </li>
+                        <li>
+                            <strong>Cut over behind a flag,</strong> so reverting is a config change
+                            rather than a deploy.
+                        </li>
+                        <li>
+                            <strong>Delete the old code path.</strong> Not later — now. Dead code left
+                            in the monolith is the reason migrations stall half-finished and leave you
+                            maintaining both designs forever.
+                        </li>
+                        <li><strong>Repeat</strong> with the next domain.</li>
                     </ol>
 
-                    <div className="bg-cyan-50 border-l-4 border-cyan-600 p-8 my-8 rounded-r-xl">
-                        <h4 className="text-xl font-bold text-cyan-900 mb-2">Architectural Review</h4>
-                        <p className="text-cyan-800 mb-0">
-                            Planning a migration? Napnix's certified cloud architects can review your roadmap. <Link to="/services/cloud-solutions" className="underline font-bold">Learn about our Cloud Services</Link>.
+                    <div className="bg-purple-50 border-l-4 border-purple-600 p-8 my-8 rounded-r-xl not-prose">
+                        <p className="text-xl font-bold text-purple-900 mb-2">Planning a migration?</p>
+                        <p className="text-purple-800 mb-0">
+                            Our cloud architects can review your decomposition roadmap before you
+                            commit to it.{' '}
+                            <Link to="/services/cloud-solutions" className="underline font-bold">
+                                Learn about our cloud services
+                            </Link>.
                         </p>
                     </div>
 
-                    <h2>Common Pitfalls</h2>
-                    <p>
-                        <strong>Distributed Tracing:</strong> Debugging becomes harder. You need tools like Jaeger or Datadog.
-                        <br />
-                        <strong>Data Consistency:</strong> You lose ACID transactions across services. You must embrace Eventual Consistency.
-                    </p>
+                    <BarChart
+                        caption="Where migration effort actually goes on a typical six-domain extraction (Napnix delivery data, 2026). Percentages of total migration effort."
+                        data={[
+                            { label: 'Service extraction', value: 35, display: '35%' },
+                            { label: 'Data separation', value: 25, display: '25% — the usual blocker' },
+                            { label: 'Observability setup', value: 15, display: '15%' },
+                            { label: 'Shadow testing', value: 15, display: '15%' },
+                            { label: 'Deleting old paths', value: 10, display: '10%' },
+                        ]}
+                    />
 
-                    <h2>Conclusion</h2>
+                    <h2>What breaks, and what to do about it</h2>
+
+                    <DataTable
+                        caption="The four failure modes that account for most stalled migrations, and the standard remedy for each."
+                        columns={['What breaks', 'Why', 'Remedy']}
+                        rows={[
+                            [
+                                'Debugging',
+                                'One request now spans several services and logs',
+                                'Distributed tracing via OpenTelemetry, from day one',
+                            ],
+                            [
+                                'Transactions',
+                                'ACID guarantees do not cross service boundaries',
+                                'Saga pattern with explicit compensating actions',
+                            ],
+                            [
+                                'Data ownership',
+                                'Shared tables recreate the coupling you removed',
+                                'One datastore per service; integrate through APIs or events',
+                            ],
+                            [
+                                'Local development',
+                                'Running twelve services on a laptop stops being practical',
+                                'Containerised stack plus contract tests, not full local parity',
+                            ],
+                        ]}
+                    />
+
+                    <h2>The bottom line</h2>
                     <p>
-                        Microservices are an investment in future speed. If your team is growing beyond 20 developers or your deployment cycles are slower than weekly, it's time to start the migration.
+                        Microservices buy deployment independence, and they are an investment in team
+                        speed rather than in raw performance. Migrate one domain at a time, keep each
+                        step reversible, and delete the old path every time. If your team is under
+                        twenty engineers and shipping weekly, the better architectural decision is
+                        usually to modularise what you have.
                     </p>
                 </div>
             </article>
 
-            {/* Internal Linking to Services */}
+            <ArticleFooter slug={SLUG} sources={SOURCES} />
+
             <div className="bg-[#F8FAFC] py-16">
                 <div className="container-custom">
-                    <h2 className="text-3xl font-bold text-center mb-12">Modernize Your Infrastructure</h2>
+                    <h2 className="text-3xl font-bold text-center mb-12">Modernise Your Architecture</h2>
                     <RelatedServices currentService="Cloud Solutions" />
                 </div>
             </div>

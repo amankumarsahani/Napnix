@@ -126,7 +126,7 @@ const PortfolioPage = () => {
 
     const stats = [
         { value: COMPANY_STATS.projects, label: 'Projects Delivered' },
-        { value: COMPANY_STATS.successRate, label: 'Client Satisfaction' },
+        { value: COMPANY_STATS.industries, label: 'Industry CRM Editions' },
         { value: COMPANY_STATS.countries, label: 'Countries Served' },
         { value: COMPANY_STATS.years, label: 'Years Experience' },
     ];

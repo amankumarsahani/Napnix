@@ -173,7 +173,7 @@ const ServicesPage = () => {
 
     const stats = [
         { label: "Projects Delivered", value: COMPANY_STATS.projects },
-        { label: "Client Retention", value: COMPANY_STATS.successRate },
+        { label: "Industry CRM Editions", value: COMPANY_STATS.industries },
         { label: "Years Experience", value: COMPANY_STATS.years },
         { label: "Countries Served", value: COMPANY_STATS.countries }
     ];

@@ -28,7 +28,7 @@ const Partners = memo(function Partners() {
             { icon: "ri-team-line", number: "2", label: "Technology Partners", bgColor: "bg-[#2563EB]/10", textColor: "text-[#2563EB]" },
             { icon: "ri-award-line", number: "6+", label: "Certifications", bgColor: "bg-[#D97706]/10", textColor: "text-[#D97706]" },
             { icon: "ri-cloud-line", number: "Any", label: "Cloud Platform", bgColor: "bg-emerald-50", textColor: "text-emerald-600" },
-            { icon: "ri-shield-check-line", number: COMPANY_STATS.successRate, label: "Success Rate", bgColor: "bg-orange-50", textColor: "text-orange-600" }
+            { icon: "ri-shield-check-line", number: COMPANY_STATS.industries, label: "Industry CRM Editions", bgColor: "bg-orange-50", textColor: "text-orange-600" }
           ].map((stat, index) => (
             <div key={index} className="group text-center">
               <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 group-hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5">

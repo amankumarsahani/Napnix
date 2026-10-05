@@ -19,8 +19,7 @@ import {
     RiUserFollowLine, RiGoogleLine, RiMailLine, RiCalendarLine,
     RiWhatsappLine, RiNotionLine, RiSlackLine, RiDriveLine,
     RiGroupLine, RiTimeLine, RiStarFill, RiLinksLine,
-    RiSettings3Line, RiUploadCloud2Line, RiLineChartLine,
-    RiArrowDownSLine
+    RiSettings3Line, RiUploadCloud2Line, RiLineChartLine
 } from 'react-icons/ri';
 
 import { COMPANY_STATS } from '../constants/companyStats';
@@ -217,7 +216,22 @@ export default function NapCRMLandingPage() {
                             <span className="text-[#2563EB]">running your agency.</span>
                         </h1>
 
-                        <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
+                        {/* Definition first, slogan second. The page used to open on
+                            "The Operating System for running your agency" and a
+                            stitching-tools line, so the first thing a crawler read was a
+                            metaphor — nothing that answers "what is NapCRM?" or "what
+                            does it cost?". Those are the two questions an answer engine
+                            is actually asked, and roughly the first third of a page
+                            supplies most citations, so the answer belongs here. */}
+                        <p className="text-lg md:text-xl text-slate-700 max-w-2xl mx-auto mb-6 leading-relaxed font-medium">
+                            <strong>NapCRM is an industry-specific CRM platform for agencies and
+                            service businesses</strong>, combining lead management, invoicing, project
+                            tracking, client portals and multi-channel follow-up in one system. Plans
+                            start at <strong>$49/month</strong>, with {COMPANY_STATS.industries} industry
+                            editions covering e-commerce, real estate, healthcare, hospitality and more.
+                        </p>
+
+                        <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed">
                             Stop stitching together 5 different tools. Manage leads, projects, invoices, and client support in one unified platform.
                         </p>
 
@@ -521,42 +535,57 @@ export default function NapCRMLandingPage() {
 
                     <FadeIn y={20} delay={0.1}>
                         <div className="bg-white border border-slate-200 rounded-[2rem] shadow-xl shadow-slate-200/40 overflow-hidden">
-                            {/* Sticky header row */}
+                            {/*
+                                A real <table>, not a CSS grid of <div>s inside collapsed
+                                <details>. The old markup gave this matrix no row or column
+                                semantics, so the most comparison-dense content on the site
+                                — the data an answer engine is most likely to quote for
+                                "what do NapCRM plans include?" — could not be parsed as a
+                                table by anything. Categories are <tbody> groups now rather
+                                than collapsible sections, so every row is present in the
+                                markup instead of hidden behind a toggle.
+                            */}
                             <div className="overflow-x-auto custom-scrollbar">
-                                <div className="min-w-[900px]">
-                                    <div className="grid grid-cols-[1fr_repeat(4,minmax(0,1fr))] bg-slate-50/50 border-b border-slate-200">
-                                        <div className="py-5 px-8 text-sm font-semibold text-slate-900 uppercase tracking-wider">Feature</div>
-                                        {tiers.map((tier) => (
-                                            <div key={tier.name} className="py-5 px-6 text-center text-sm font-bold text-slate-900">{tier.name}</div>
-                                        ))}
-                                    </div>
-
-                                    {Object.keys(features).map((category, catIdx) => (
-                                        <details key={category} open={catIdx === 0} className="group/cat">
-                                            <summary className="grid grid-cols-[1fr_repeat(4,minmax(0,1fr))] bg-slate-50/80 cursor-pointer list-none select-none hover:bg-slate-100/60 transition-colors border-b border-slate-100">
-                                                <div className="py-3.5 px-8 text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                                    <RiArrowDownSLine className="text-slate-400 transition-transform group-open/cat:rotate-180 text-base flex-shrink-0" />
+                                <table className="w-full min-w-[900px] border-collapse text-left">
+                                    <caption className="sr-only">
+                                        NapCRM feature comparison across the {tiers.map((t) => t.name).join(', ')} plans.
+                                    </caption>
+                                    <thead>
+                                        <tr className="bg-slate-50/50 border-b border-slate-200">
+                                            <th scope="col" className="py-5 px-8 text-sm font-semibold text-slate-900 uppercase tracking-wider">Feature</th>
+                                            {tiers.map((tier) => (
+                                                <th key={tier.name} scope="col" className="py-5 px-6 text-center text-sm font-bold text-slate-900">
+                                                    {tier.name}
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    {Object.keys(features).map((category) => (
+                                        <tbody key={category}>
+                                            <tr className="bg-slate-50/80 border-b border-slate-100">
+                                                <th
+                                                    scope="colgroup"
+                                                    colSpan={tiers.length + 1}
+                                                    className="py-3.5 px-8 text-xs font-bold text-slate-500 uppercase tracking-widest text-left"
+                                                >
                                                     {featureCategoryLabels[category] || (category.charAt(0).toUpperCase() + category.slice(1))}
-                                                </div>
-                                                <div className="col-span-4" />
-                                            </summary>
-                                            <div>
-                                                {features[category].map((feature) => (
-                                                    <div key={feature.name} className="grid grid-cols-[1fr_repeat(4,minmax(0,1fr))] hover:bg-blue-50/30 transition-colors group border-b border-slate-50 last:border-b-0">
-                                                        <div className="py-4 px-8 text-sm text-slate-600 font-medium group-hover:text-blue-900 group-hover:pl-9 transition-all">
-                                                            {feature.name}
-                                                            {feature.soon && <span className="ml-2 text-[10px] uppercase bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-bold tracking-wide border border-amber-200">Soon</span>}
-                                                        </div>
-                                                        <div className="py-4 px-6 flex justify-center"><FeatureValue value={feature.starter} soon={feature.soon} /></div>
-                                                        <div className="py-4 px-6 flex justify-center"><FeatureValue value={feature.growth} soon={feature.soon} /></div>
-                                                        <div className="py-4 px-6 flex justify-center"><FeatureValue value={feature.business} soon={feature.soon} /></div>
-                                                        <div className="py-4 px-6 flex justify-center"><FeatureValue value={feature.enterprise} soon={feature.soon} /></div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </details>
+                                                </th>
+                                            </tr>
+                                            {features[category].map((feature) => (
+                                                <tr key={feature.name} className="hover:bg-blue-50/30 transition-colors border-b border-slate-50 last:border-b-0">
+                                                    <th scope="row" className="py-4 px-8 text-sm text-slate-600 font-medium text-left">
+                                                        {feature.name}
+                                                        {feature.soon && <span className="ml-2 text-[10px] uppercase bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-bold tracking-wide border border-amber-200">Soon</span>}
+                                                    </th>
+                                                    <td className="py-4 px-6"><div className="flex justify-center"><FeatureValue value={feature.starter} soon={feature.soon} /></div></td>
+                                                    <td className="py-4 px-6"><div className="flex justify-center"><FeatureValue value={feature.growth} soon={feature.soon} /></div></td>
+                                                    <td className="py-4 px-6"><div className="flex justify-center"><FeatureValue value={feature.business} soon={feature.soon} /></div></td>
+                                                    <td className="py-4 px-6"><div className="flex justify-center"><FeatureValue value={feature.enterprise} soon={feature.soon} /></div></td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
                                     ))}
-                                </div>
+                                </table>
                             </div>
                         </div>
                     </FadeIn>

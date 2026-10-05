@@ -6,14 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:prod": "node scripts/generate-sitemap.mjs && vite build --mode production && node scripts/copy-404.mjs && node scripts/prerender.mjs",
+    "build:prod": "node scripts/generate-llms.mjs && node scripts/generate-sitemap.mjs && vite build --mode production && node scripts/copy-404.mjs && node scripts/prerender.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
     "predeploy": "npm run build:prod",
     "deploy": "gh-pages -d dist",
-    "prerender": "node scripts/prerender.mjs"
+    "prerender": "node scripts/prerender.mjs",
+    "generate:llms": "node scripts/generate-llms.mjs"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.19",

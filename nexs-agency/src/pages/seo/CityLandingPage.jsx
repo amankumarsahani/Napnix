@@ -10,12 +10,13 @@ import { getLocalBusinessOffers } from '../../constants/schemaOffers';
 import Icon from '../../components/ui/Icon';
 import { RiArrowRightLine, RiBriefcase4Line, RiCheckLine, RiGlobalLine, RiMapPinLine, RiShieldCheckLine, RiTimeLine } from 'react-icons/ri';
 
-import { DEFAULT_CITY_STATS, COMPANY_STATS } from '../../constants/companyStats';
+import { DEFAULT_CITY_STATS, COMPANY_STATS, ENQUIRY_RESPONSE_LABEL } from '../../constants/companyStats';
 
 // City data with SEO content & Timezones
 const cityData = {
     'london': {
         city: 'London',
+        isHq: false,
         country: 'UK',
         timezone: 'Europe/London',
         title: 'Software Development Company in London | Napnix',
@@ -44,6 +45,7 @@ const cityData = {
     },
     'new-york': {
         city: 'New York',
+        isHq: false,
         country: 'USA',
         timezone: 'America/New_York',
         title: 'Software Development Company in New York | Napnix',
@@ -72,6 +74,7 @@ const cityData = {
     },
     'bangalore': {
         city: 'Bangalore',
+        isHq: false,
         country: 'India',
         timezone: 'Asia/Kolkata',
         title: 'Software Development Company in Bangalore | Napnix',
@@ -100,6 +103,7 @@ const cityData = {
     },
     'dubai': {
         city: 'Dubai',
+        isHq: false,
         country: 'UAE',
         timezone: 'Asia/Dubai',
         title: 'Software Development Company in Dubai | Napnix',
@@ -128,6 +132,7 @@ const cityData = {
     },
     'sydney': {
         city: 'Sydney',
+        isHq: false,
         country: 'Australia',
         timezone: 'Australia/Sydney',
         title: 'Software Development Company in Sydney | Napnix',
@@ -156,6 +161,7 @@ const cityData = {
     },
     'toronto': {
         city: 'Toronto',
+        isHq: false,
         country: 'Canada',
         timezone: 'America/Toronto',
         title: 'Software Development Company in Toronto | Napnix',
@@ -184,6 +190,7 @@ const cityData = {
     },
     'mohali': {
         city: 'Mohali',
+        isHq: true,
         country: 'India',
         timezone: 'Asia/Kolkata',
         title: 'Software Development Company in Mohali | Napnix',
@@ -212,6 +219,7 @@ const cityData = {
     },
     'chandigarh': {
         city: 'Chandigarh',
+        isHq: false,
         country: 'India',
         timezone: 'Asia/Kolkata',
         title: 'Software Development Company in Chandigarh | Napnix',
@@ -247,7 +255,6 @@ const CityLandingPage = () => {
     const data = cityData[city];
 
     const [time, setTime] = useState('');
-    const [greeting, setGreeting] = useState('');
 
     useEffect(() => {
         if (!data?.timezone) return;
@@ -263,12 +270,6 @@ const CityLandingPage = () => {
             };
             const formatter = new Intl.DateTimeFormat('en-US', timeOptions);
             setTime(formatter.format(now));
-
-            const hour = parseInt(new Intl.DateTimeFormat('en-US', { ...timeOptions, hour: 'numeric', hour12: false }).format(now));
-
-            if (hour < 12) setGreeting('Good Morning');
-            else if (hour < 18) setGreeting('Good Afternoon');
-            else setGreeting('Good Evening');
         };
 
         updateTime();
@@ -286,31 +287,74 @@ const CityLandingPage = () => {
     const pageUrl = `${SITE_URL}/software-development-company/${city}`;
 
     // LocalBusiness Schema for the city
-    const localBusinessSchema = {
-        "@context": "https://schema.org",
-        "@type": "LocalBusiness",
-        "name": `Napnix - ${data.city}`,
-        "description": data.description,
-        "url": pageUrl,
-        "telephone": siteConfig.phone.tel,
-        "email": siteConfig.email.info,
-        "areaServed": data.city,
-        "address": {
-            "@type": "PostalAddress",
-            "addressLocality": data.city,
-            "addressCountry": data.country
-        },
-        "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": data.coordinates?.lat,
-            "longitude": data.coordinates?.lng
-        },
-        "serviceArea": {
-            "@type": "City",
-            "name": data.city
-        },
-        "offers": getLocalBusinessOffers(pageUrl)
-    };
+    /**
+     * Only Mohali is a LocalBusiness, because only Mohali is a place of business.
+     *
+     * This previously emitted LocalBusiness on all eight city pages with
+     * `name: "Napnix - London"`, a PostalAddress whose addressLocality was the
+     * city, and that city's own latitude and longitude — asserting a staffed
+     * office in London, New York, Dubai, Sydney and Toronto that does not exist,
+     * while Organization schema on the same page gave the single Mohali address.
+     * Claiming a location you do not occupy is a local-signal misrepresentation,
+     * and the two blocks contradicted each other on every non-HQ page.
+     *
+     * Remote-served markets are now modelled for what they are: a Service with
+     * `areaServed` set to the city and `provider` pointing at the one
+     * organisation, which is the accurate way to say "we serve here from there".
+     */
+    const localBusinessSchema = data.isHq
+        ? {
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "@id": `${SITE_URL}/#organization`,
+            "name": siteConfig.brandName,
+            "description": data.description,
+            "url": pageUrl,
+            "telephone": siteConfig.phone.tel,
+            "email": siteConfig.email.info,
+            "areaServed": data.city,
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "2519, Azad Nagar, Balongi",
+                "addressLocality": "Mohali",
+                "addressRegion": "Punjab",
+                "postalCode": "160055",
+                "addressCountry": "IN"
+            },
+            "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": data.coordinates?.lat,
+                "longitude": data.coordinates?.lng
+            },
+            "offers": getLocalBusinessOffers(pageUrl)
+        }
+        : {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": `Software Development Services in ${data.city}`,
+            "description": data.description,
+            "url": pageUrl,
+            "serviceType": "Custom software development",
+            "provider": {
+                "@type": "Organization",
+                "@id": `${SITE_URL}/#organization`,
+                "name": siteConfig.brandName,
+                "url": SITE_URL,
+                "telephone": siteConfig.phone.tel,
+                "email": siteConfig.email.info
+            },
+            "areaServed": {
+                "@type": "City",
+                "name": data.city,
+                "containedInPlace": { "@type": "Country", "name": data.country }
+            },
+            "availableChannel": {
+                "@type": "ServiceChannel",
+                "serviceUrl": `${SITE_URL}/contact`,
+                "servicePhone": siteConfig.phone.tel
+            },
+            "offers": getLocalBusinessOffers(pageUrl)
+        };
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-blue-600 selection:text-white overflow-hidden">
@@ -391,6 +435,12 @@ const CityLandingPage = () => {
                             <motion.div
                                 initial={{ opacity: 0, y: -20 }}
                                 animate={{ opacity: 1, y: 0 }}
+                                // Decorative: a ticking clock was the first text a crawler
+                                // read on all eight city pages ("Local Time 02:03:12 PM"),
+                                // ahead of anything describing the service. data-nosnippet
+                                // keeps it out of search and AI snippets; it stays for
+                                // visitors.
+                                data-nosnippet
                                 className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 flex items-center gap-4 shadow-lg hidden md:flex"
                             >
                                 <div className="text-right">
@@ -410,9 +460,14 @@ const CityLandingPage = () => {
                                 transition={{ delay: 0.1 }}
                                 className="text-5xl md:text-8xl font-bold tracking-tight leading-none mb-6 relative z-30"
                             >
-                                <span className="block text-3xl md:text-4xl font-light text-slate-300 mb-2">{greeting}, {data.city}.</span>
-                                <span className="text-[#D97706]">
-                                    We Build the Future Here.
+                                {/* The H1 was "{greeting}, {city}." + "We Build the Future
+                                    Here." — a time-of-day greeting and a slogan, with the
+                                    search term the page targets appearing nowhere in it,
+                                    while <title> said "Software Development Company in
+                                    {city}". Lead with the subject; keep the slogan under it. */}
+                                <span className="block">Software Development Company in {data.city}</span>
+                                <span className="block text-2xl md:text-3xl font-light text-[#D97706] mt-3">
+                                    {data.heroText}
                                 </span>
                             </motion.h1>
 
@@ -422,7 +477,20 @@ const CityLandingPage = () => {
                                 transition={{ delay: 0.2 }}
                                 className="text-xl md:text-2xl text-slate-300 max-w-2xl leading-relaxed mb-12"
                             >
-                                {data.heroText} Experience world-class software engineering tailored to your time zone and business culture.
+                                {/* A self-contained answer to "who are Napnix in {city}?",
+                                    stating plainly whether this is the HQ or a
+                                    remotely-served market. All eight pages previously ran
+                                    the same "world-class engineering tailored to your time
+                                    zone" line over the same Mohali address, which read as
+                                    templated and said nothing a reader could check. */}
+                                <strong className="text-white">
+                                    Napnix is a software development company
+                                    {data.isHq
+                                        ? ` headquartered in ${data.city}, ${data.country}`
+                                        : ` serving ${data.city}, ${data.country} from its engineering base in Mohali, India`}
+                                    .
+                                </strong>{' '}
+                                {data.content}
                             </motion.p>
 
                             <motion.div
@@ -500,6 +568,49 @@ const CityLandingPage = () => {
                                     ))}
                                 </div>
                             </div>
+
+                            {/* How the engagement actually works, as a table.
+                                These eight pages were the thinnest on the site (~270 unique
+                                words each, ~60% shared vocabulary) and carried no table at
+                                all, while all eight asserted a local presence. Stating the
+                                delivery base, timezone and contract basis plainly is both
+                                the honest answer to "are Napnix actually in {city}?" and
+                                the one genuinely city-specific block on the page. */}
+                            <figure className="mt-8 bg-white rounded-3xl shadow-lg border border-slate-100 overflow-x-auto">
+                                <table className="w-full border-collapse text-left text-sm">
+                                    <caption className="text-left text-sm text-slate-500 px-8 pt-6 pb-3 caption-top">
+                                        How Napnix works with clients in {data.city}.
+                                    </caption>
+                                    <tbody>
+                                        <tr className="border-t border-slate-100">
+                                            <th scope="row" className="py-3 px-8 font-semibold text-slate-800 w-1/2">Market served</th>
+                                            <td className="py-3 px-8 text-slate-700">{data.city}, {data.country}</td>
+                                        </tr>
+                                        <tr className="border-t border-slate-100">
+                                            <th scope="row" className="py-3 px-8 font-semibold text-slate-800">Delivery base</th>
+                                            <td className="py-3 px-8 text-slate-700">
+                                                {data.isHq
+                                                    ? `${data.city} — our headquarters (Balongi, Sahibzada Ajit Singh Nagar, Punjab)`
+                                                    : 'Mohali, Punjab, India — our only office'}
+                                            </td>
+                                        </tr>
+                                        <tr className="border-t border-slate-100">
+                                            <th scope="row" className="py-3 px-8 font-semibold text-slate-800">Client timezone</th>
+                                            <td className="py-3 px-8 text-slate-700">{data.timezone.replace('_', ' ')}</td>
+                                        </tr>
+                                        <tr className="border-t border-slate-100">
+                                            <th scope="row" className="py-3 px-8 font-semibold text-slate-800">Engagement model</th>
+                                            <td className="py-3 px-8 text-slate-700">
+                                                {data.isHq ? 'On-site or remote' : 'Remote delivery, with calls scheduled to your working hours'}
+                                            </td>
+                                        </tr>
+                                        <tr className="border-t border-slate-100">
+                                            <th scope="row" className="py-3 px-8 font-semibold text-slate-800">Enquiry response</th>
+                                            <td className="py-3 px-8 text-slate-700">{ENQUIRY_RESPONSE_LABEL}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </figure>
                         </FadeIn>
 
                         {/* Visual Content - Professional "Tech Specs" Look */}
@@ -527,8 +638,8 @@ const CityLandingPage = () => {
                                         <div className="h-px bg-white/10 my-4"></div>
                                         <div className="flex justify-between items-center">
                                             <div className="text-center">
-                                                <p className="text-2xl font-bold text-white">{COMPANY_STATS.successRate}</p>
-                                                <p className="text-[10px] uppercase tracking-wider text-slate-300">Success Rate</p>
+                                                <p className="text-2xl font-bold text-white">{COMPANY_STATS.industries}</p>
+                                                <p className="text-[10px] uppercase tracking-wider text-slate-300">CRM Editions</p>
                                             </div>
                                             <div className="text-center">
                                                 <p className="text-2xl font-bold text-white">{COMPANY_STATS.projects}</p>

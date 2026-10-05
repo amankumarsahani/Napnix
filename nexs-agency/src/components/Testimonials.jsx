@@ -118,8 +118,8 @@ const Testimonials = memo(function Testimonials() {
 
         <div className="grid md:grid-cols-3 gap-8 mt-16">
           <div className="text-center">
-            <div className="text-4xl font-bold text-[#D97706] mb-2">{COMPANY_STATS.successRate}</div>
-            <div className="text-slate-600">Client Satisfaction Rate</div>
+            <div className="text-4xl font-bold text-[#D97706] mb-2">{COMPANY_STATS.industries}</div>
+            <div className="text-slate-600">Industry CRM Editions</div>
           </div>
           <div className="text-center">
             <div className="text-4xl font-bold text-[#D97706] mb-2">{COMPANY_STATS.projects}</div>

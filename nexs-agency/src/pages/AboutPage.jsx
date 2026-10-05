@@ -32,7 +32,7 @@ const AboutPage = () => {
     { label: "Years of Innovation", value: "5+" },
     { label: "Projects Delivered", value: COMPANY_STATS.projects },
     { label: "Global Clients", value: COMPANY_STATS.clients },
-    { label: "Client Retention", value: COMPANY_STATS.successRate }
+    { label: "Industry CRM Editions", value: COMPANY_STATS.industries }
   ];
 
   const values = [

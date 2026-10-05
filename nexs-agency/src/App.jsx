@@ -34,6 +34,7 @@ const ContactPage = lazyWithRetry(() => import('./pages/ContactPage'));
 const BlogPage = lazyWithRetry(() => import('./pages/BlogPage'));
 const NapCRMLandingPage = lazyWithRetry(() => import('./pages/NapCRMLandingPage'));
 const ProductsPage = lazyWithRetry(() => import('./pages/ProductsPage'));
+const NapMailLandingPage = lazyWithRetry(() => import('./pages/NapMailLandingPage'));
 const CRMPricingPage = lazyWithRetry(() => import('./pages/CRMPricingPage'));
 const PrivacyPolicy = lazyWithRetry(() => import('./pages/PrivacyPolicy'));
 const TermsOfService = lazyWithRetry(() => import('./pages/TermsOfService'));
@@ -246,11 +247,14 @@ function App() {
           <Route path="/napcrm/pricing" element={<CRMPricingPage />} />
           <Route path="/napcrm/industries/:industry" element={<IndustryLandingPage />} />
           <Route path="/products" element={<ProductsPage />} />
-          <Route path="/napmail" element={<Navigate to="/products" replace />} />
+          {/* NapMailLandingPage was written but never routed, so /napmail bounced
+              to /products client-side — invisible to any crawler that does not
+              run JS, while llms.txt advertised the URL with a full price list. */}
+          <Route path="/napmail" element={<NapMailLandingPage />} />
           <Route path="/nexcrm" element={<Navigate to="/napcrm" replace />} />
           <Route path="/nexcrm/pricing" element={<Navigate to="/napcrm/pricing" replace />} />
           <Route path="/nexcrm/industries/:industry" element={<RedirectNexCRMIndustry />} />
-          <Route path="/nexmail" element={<Navigate to="/products" replace />} />
+          <Route path="/nexmail" element={<Navigate to="/napmail" replace />} />
           <Route path="/admin/backups" element={<ProtectedRoute><AdminBackupsPage /></ProtectedRoute>} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />

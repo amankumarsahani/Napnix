@@ -3,7 +3,10 @@ Allow: /
 Disallow: /admin/
 Disallow: /private/
 
-# AI Search & Retrieval Crawlers (live answers — never block)
+# AI Search & Retrieval Crawlers (live answers — never block).
+# These are the user-agents that decide whether a page can be CITED in an AI
+# answer. They are a separate decision from the training crawlers below, and
+# blocking one tells you nothing about the other.
 User-agent: OAI-SearchBot
 Allow: /
 
@@ -13,19 +16,36 @@ Allow: /
 User-agent: Claude-SearchBot
 Allow: /
 
+# Fetches on a user's behalf. Anthropic documents it as honouring robots.txt,
+# so name it rather than leaving it to the wildcard.
+User-agent: Claude-User
+Allow: /
+
 User-agent: PerplexityBot
 Allow: /
 
-# AI Training Crawlers (indexing & knowledge base)
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Apple: Applebot is the crawler behind Siri, Spotlight and Safari search.
+# Applebot-Extended (below) only governs Apple Intelligence training.
+User-agent: Applebot
+Allow: /
+
+# AI Training Crawlers. Allowing these is a content-licensing choice and has no
+# effect on search visibility or citation eligibility.
 User-agent: GPTBot
 Allow: /
 
 User-agent: ClaudeBot
 Allow: /
 
-User-agent: anthropic-ai
-Allow: /
-
+# Governs Gemini/Vertex training and grounding only. It does NOT affect
+# inclusion in Google Search, AI Overviews or AI Mode — those are served from
+# the Googlebot index.
 User-agent: Google-Extended
 Allow: /
 
@@ -41,9 +61,6 @@ Allow: /
 User-agent: cohere-ai
 Allow: /
 
-User-agent: Bingbot
-Allow: /
-
 # Block aggressive/low-value crawlers
 User-agent: Bytespider
 Disallow: /
@@ -52,3 +69,6 @@ User-agent: CCBot
 Disallow: /
 
 Sitemap: https://napnix.in/sitemap.xml
+
+# Machine-readable licensing terms (RSL 1.0).
+License: https://napnix.in/license.xml

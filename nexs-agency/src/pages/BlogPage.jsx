@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../utils/cn';
 import { blogAPI } from '../services/api';
 import FadeIn from '../components/ui/FadeIn';
+import CuratedGuides from '../components/seo/CuratedGuides';
 import Breadcrumbs from '../components/ui/Breadcrumbs';
 import BackToTop from '../components/ui/BackToTop';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
@@ -157,13 +158,12 @@ const BlogPage = () => {
 
     const nonFeaturedDisplayed = posts.filter(p => !p.featured);
 
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-white">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            </div>
-        );
-    }
+    // No early return on `loading`. This used to render a bare spinner as the
+    // entire page, which meant /blog produced almost no text until the API
+    // answered — and at build time it never does, so prerender skipped the route
+    // and /blog shipped the SPA shell on a 200. The curated section below is
+    // built from local data and renders with no backend at all, so the route
+    // now has real content; the spinner is scoped to the API-driven feed.
 
     return (
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white">
@@ -212,6 +212,9 @@ const BlogPage = () => {
             <div className="container-custom pt-8 pb-4">
                 <Breadcrumbs />
             </div>
+
+            {/* Hand-written guides, from the local manifest — always rendered. */}
+            <CuratedGuides />
 
             {/* Featured Post Hero */}
             {featuredPost && (
@@ -317,6 +320,13 @@ const BlogPage = () => {
                         </FadeIn>
                     </div>
                 </div>
+
+                {/* Scoped to the feed: the whole page used to be replaced by this. */}
+                {loading && (
+                    <div className="py-16 flex justify-center" role="status" aria-label="Loading articles">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
+                    </div>
+                )}
 
                 <motion.div
                     layout

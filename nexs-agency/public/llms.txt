@@ -2,60 +2,74 @@
 
 > Napnix — also commonly searched as Napix — is an India-based software development company building custom web applications, mobile apps, cloud infrastructure, AI/ML solutions, NapCRM, and NapMail.
 
-Napnix specializes in end-to-end digital product development for startups and enterprises. Founded in 2025, headquartered at 2519 Azad Nagar, Balongi, Sahibzada Ajit Singh Nagar (Mohali), Punjab 160055, India. Core expertise: React, Node.js, Flutter, AWS, AI/ML. Contact: info@napnix.in | +91 6239396615.
+Napnix specialises in end-to-end digital product development for startups and enterprises. Founded in 2025, headquartered at 2519 Azad Nagar, Balongi, Sahibzada Ajit Singh Nagar (Mohali), Punjab 160055, India. Core expertise: React, Node.js, Flutter, AWS, AI/ML. Contact: info@napnix.in | +91 6239396615.
 
 ## Products
 
-- [NapCRM](https://napnix.in/napcrm): Industry-specific CRM platform with lead management, e-commerce tools, automation, and multi-channel communication. Plans from ₹999/month (Starter) to ₹5,999/month (Business), plus custom Enterprise tier.
-- [NapCRM Pricing](https://napnix.in/napcrm/pricing): Detailed feature comparison across Starter, Growth, Business, and Enterprise plans with yearly discount options.
-- [NapMail](https://napnix.in/napmail): Email marketing engine with smart SMTP rotation, anti-spam scoring (50+ checks), per-domain throttling, visual automation builder, and NapCRM integration. Free plan (1K contacts, 5K emails/mo), paid plans from ₹699/month to ₹4,999/month, plus custom Enterprise.
+- [NapCRM](https://napnix.in/napcrm): Industry-specific CRM platform with lead management, e-commerce tools, automation, and multi-channel communication. $49/month (₹4,165) to $99/month (₹8,415), plus a custom Enterprise tier.
+- [NapCRM Pricing](https://napnix.in/napcrm/pricing): Feature comparison across Starter, Growth, Business, Enterprise plans, with yearly discount options.
+- [NapMail](https://napnix.in/napmail): Email marketing engine with smart SMTP rotation, anti-spam scoring, per-domain throttling, a visual automation builder, and NapCRM integration. Free plan available, then $8/month (₹699) to $59/month (₹4,999), plus a custom Enterprise tier.
+
+## NapCRM Plans
+
+- **Starter** — $49/month (₹4,165). 500 leads, 200 customers, 50 products, 2 team members, 1 GB storage.
+- **Growth** — $79/month (₹6,715). 2,000 leads, 1,000 customers, 500 products, 5 team members, 5 GB storage.
+- **Business** — $99/month (₹8,415). 10,000 leads, 5,000 customers, 2,000 products, 15 team members, 25 GB storage.
+- **Enterprise** — Custom pricing. Unlimited leads, Unlimited customers, Unlimited products, Unlimited team members, Custom storage.
 
 ## Services
 
-- [Custom Web Development](https://napnix.in/services/custom-web-development): Full-stack web application development — React, Next.js, Node.js, Python, cloud-native architectures.
-- [Mobile App Development](https://napnix.in/services/mobile-app-development): iOS, Android, and cross-platform apps using Flutter and React Native.
-- [E-commerce Development](https://napnix.in/services/ecommerce-development): Shopify, WooCommerce, headless commerce, and custom marketplace platforms.
-- [Cloud Solutions](https://napnix.in/services/cloud-solutions): AWS, Azure, GCP infrastructure, DevOps, CI/CD pipelines, containerization.
-- [AI & Machine Learning](https://napnix.in/services/ai-machine-learning): Custom AI models, NLP, computer vision, predictive analytics, and ML pipeline development.
+- [Custom Web Development](https://napnix.in/services/custom-web-development): Full-stack web applications — React, Next.js, Node.js, Python, cloud-native architectures.
+- [Mobile App Development](https://napnix.in/services/mobile-app-development): iOS, Android and cross-platform apps using React Native and Flutter.
+- [E-commerce Development](https://napnix.in/services/ecommerce-development): Shopify, WooCommerce, headless commerce and custom marketplace platforms.
+- [Cloud Solutions](https://napnix.in/services/cloud-solutions): AWS, Azure and GCP infrastructure, DevOps, CI/CD pipelines, containerisation.
+- [AI & Machine Learning](https://napnix.in/services/ai-machine-learning): Custom models, NLP, computer vision, predictive analytics and ML pipelines.
 
 ## NapCRM Industry Solutions
 
-- [CRM for E-commerce](https://napnix.in/napcrm/industries/ecommerce): Abandoned cart recovery, product catalog sync, order tracking, customer segmentation.
-- [CRM for Real Estate](https://napnix.in/napcrm/industries/realestate): Property listing management, lead scoring, site visit scheduling, document management.
-- [CRM for Healthcare](https://napnix.in/napcrm/industries/healthcare): Patient management, appointment scheduling, HIPAA-compliant communication, treatment tracking.
-- [CRM for Education](https://napnix.in/napcrm/industries/education): Student enrollment tracking, course management, parent communication, fee tracking.
-- [CRM for Hospitality](https://napnix.in/napcrm/industries/hospitality): Reservation management, guest profiles, loyalty programs, review management.
-- [CRM for Restaurants](https://napnix.in/napcrm/industries/restaurant): Table reservation, menu management, delivery integration, customer loyalty.
-- [CRM for Salons & Spas](https://napnix.in/napcrm/industries/salon): Appointment booking, stylist scheduling, membership management, product inventory.
-- [CRM for Fitness](https://napnix.in/napcrm/industries/fitness): Member management, class scheduling, trainer assignments, attendance tracking.
-- [CRM for Travel](https://napnix.in/napcrm/industries/travel): Itinerary management, booking workflows, traveler profiles, supplier coordination.
-- [CRM for Legal](https://napnix.in/napcrm/industries/legal): Case management, client intake, document management, billing and time tracking.
-- [CRM for Manufacturing](https://napnix.in/napcrm/industries/manufacturing): Order management, inventory tracking, supplier relations, quality control.
-- [CRM for Logistics](https://napnix.in/napcrm/industries/logistics): Shipment tracking, fleet management, route optimization, warehouse management.
-- [CRM for Service Businesses](https://napnix.in/napcrm/industries/services): Project tracking, client communication, invoicing, team collaboration.
-- [CRM for Small Business](https://napnix.in/napcrm/industries/general): Contact management, deal pipeline, task automation, email campaigns.
+- [CRM for Small Business](https://napnix.in/napcrm/industries/general)
+- [CRM for E-commerce](https://napnix.in/napcrm/industries/ecommerce)
+- [CRM for Real Estate](https://napnix.in/napcrm/industries/realestate)
+- [CRM for Service Businesses](https://napnix.in/napcrm/industries/services)
+- [CRM for Education](https://napnix.in/napcrm/industries/education)
+- [CRM for Healthcare](https://napnix.in/napcrm/industries/healthcare)
+- [CRM for Hospitality](https://napnix.in/napcrm/industries/hospitality)
+- [CRM for Travel](https://napnix.in/napcrm/industries/travel)
+- [CRM for Fitness](https://napnix.in/napcrm/industries/fitness)
+- [CRM for Legal](https://napnix.in/napcrm/industries/legal)
+- [CRM for Manufacturing](https://napnix.in/napcrm/industries/manufacturing)
+- [CRM for Logistics](https://napnix.in/napcrm/industries/logistics)
+- [CRM for Restaurants](https://napnix.in/napcrm/industries/restaurant)
+- [CRM for Salons & Spas](https://napnix.in/napcrm/industries/salon)
 
-## Local Presence
+## Locations
 
-- [Software Development in Mohali](https://napnix.in/software-development-company/mohali): HQ-based custom software, CRM, mobile, and AI delivery for Punjab and Tricity businesses.
-- [Software Development in Chandigarh](https://napnix.in/software-development-company/chandigarh): Web, mobile, CRM, and AI solutions for Chandigarh startups and enterprises.
+- [Software Development in Mohali](https://napnix.in/software-development-company/mohali) (headquarters)
+- [Software Development in Chandigarh](https://napnix.in/software-development-company/chandigarh)
+- [Software Development in London](https://napnix.in/software-development-company/london)
+- [Software Development in New York](https://napnix.in/software-development-company/new-york)
+- [Software Development in Bangalore](https://napnix.in/software-development-company/bangalore)
+- [Software Development in Dubai](https://napnix.in/software-development-company/dubai)
+- [Software Development in Sydney](https://napnix.in/software-development-company/sydney)
+- [Software Development in Toronto](https://napnix.in/software-development-company/toronto)
 
 ## Company
 
-- [About Us](https://napnix.in/about): Company story, team, values, and mission.
+- [About Us](https://napnix.in/about): Company story, team, values and mission.
 - [Portfolio](https://napnix.in/portfolio): Case studies and delivered projects.
-- [Contact](https://napnix.in/contact): Project inquiries and consultation requests.
-- [FAQ](https://napnix.in/faq): Common questions about our services, pricing, and process.
+- [Contact](https://napnix.in/contact): Project enquiries and consultation requests.
+- [FAQ](https://napnix.in/faq): Common questions about services, pricing and process.
+- [Security](https://napnix.in/security): Security practices and policies.
 
-## Blog
+## Guides
 
-- [Top 10 AI Trends Shaping Business in 2026](https://napnix.in/blog/ai-trends-2026): Analysis of AI trends transforming enterprise software — from agentic AI to multimodal systems.
-- [Cost of Building a Custom CRM in 2026](https://napnix.in/blog/cost-of-custom-crm-2026): Detailed breakdown of CRM development costs, timelines, and build-vs-buy analysis.
-- [React Native vs Flutter 2026](https://napnix.in/blog/react-native-vs-flutter): Technical comparison of cross-platform mobile frameworks — performance, ecosystem, and use cases.
-- [Monolith to Microservices Migration Guide](https://napnix.in/blog/monolith-to-microservices): Step-by-step guide to decomposing monolithic applications into microservices architecture.
-- [Why Your Business Needs a PWA](https://napnix.in/blog/why-business-needs-pwa): Benefits of Progressive Web Apps — offline support, performance, and installation.
+- [Why Your Business Needs a PWA (And When It Does Not)](https://napnix.in/blog/why-business-needs-pwa): Progressive Web Apps install, work offline and skip app-store review. They also cannot do everything native can. Where the line actually falls in 2026. (updated 2026-10-05)
+- [Monolith to Microservices: A Step-by-Step Migration Guide](https://napnix.in/blog/monolith-to-microservices): Decomposing a monolith without a rewrite. The strangler-fig sequence we use, in order, with the failure mode that kills most migrations at step four. (updated 2026-10-05)
+- [Cost of Building a Custom CRM in 2026: A Complete Guide](https://napnix.in/blog/cost-of-custom-crm-2026): A custom CRM runs $30,000 to $250,000+ depending on scope. This is the full breakdown by tier, the hidden running costs, and the point where buying beats building. (updated 2026-10-05)
+- [Top 10 AI Trends Shaping Global Business in 2026](https://napnix.in/blog/ai-trends-2026): Agentic AI moved from demo to production in 2026. Here are the ten shifts actually changing how enterprises build software, and what each one costs to adopt. (updated 2026-10-05)
+- [React Native vs. Flutter in 2026: A Decision Guide](https://napnix.in/blog/react-native-vs-flutter): Both ship one codebase to iOS and Android. The real difference is hiring, rendering model and long-term maintenance — compared side by side, with a recommendation. (updated 2026-10-05)
 
 ## Optional
 
-- [Privacy Policy](https://napnix.in/privacy-policy): Data handling and privacy practices.
-- [Terms of Service](https://napnix.in/terms): Service agreement and usage terms.
+- [Privacy Policy](https://napnix.in/privacy-policy)
+- [Terms of Service](https://napnix.in/terms)

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  RSL 1.0 — machine-readable licensing terms, referenced from robots.txt via
+  the `License:` directive.
+
+  These terms deliberately mirror robots.txt rather than contradicting it:
+  robots.txt allows GPTBot, ClaudeBot, Google-Extended and Applebot-Extended,
+  so AI training is permitted here too, with attribution requested. CCBot and
+  Bytespider are disallowed there and nothing here overrides that.
+
+  MAINTAINER NOTE: validate this against the current schema at
+  https://rslstandard.org before relying on it contractually — RSL is a young
+  standard (published late 2025) and element names may still move. It is an
+  additive signal; no AI provider is known to enforce it yet.
+-->
+<rsl xmlns="https://rslstandard.org/rsl">
+  <content url="https://napnix.in/">
+    <license>
+      <permits type="usage">search</permits>
+      <permits type="usage">ai-summarize</permits>
+      <permits type="usage">ai-train</permits>
+      <prohibits type="usage">resale</prohibits>
+      <payment type="free"/>
+      <legal type="attribution">
+        Attribution to Napnix (https://napnix.in) is requested when content is
+        quoted, summarised or cited.
+      </legal>
+    </license>
+    <copyright owner="Napnix" contact="info@napnix.in"/>
+  </content>
+</rsl>

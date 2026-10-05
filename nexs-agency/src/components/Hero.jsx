@@ -81,8 +81,22 @@ const Hero = memo(function Hero() {
                 </span>
               </h1>
 
+              {/* Opens with what Napnix is, not what it promises. The homepage
+                  previously led with "Stop Losing Leads" and a metaphor about an
+                  operating system, so the first thing a crawler read answered
+                  neither "who are Napnix?" nor "what do they do?" — the two
+                  questions an answer engine fields for a brand-name query. */}
               <p className="mx-auto max-w-3xl text-base font-medium leading-relaxed text-white/90 sm:text-lg lg:text-xl">
-                Napnix builds the operating system behind growing agencies and service businesses —
+                <strong className="text-white">
+                  Napnix is a software development company based in Mohali, India
+                </strong>
+                , building custom web and mobile applications, cloud infrastructure and AI
+                systems — and NapCRM, its own CRM platform for agencies and service
+                businesses, from $49/month.
+              </p>
+
+              <p className="mx-auto mt-4 max-w-3xl text-base font-medium leading-relaxed text-white/90 sm:text-lg">
+                We fix the systems behind growth —
                 <span className="font-bold text-[#D97706]"> lead capture, automated follow-up, and CRM that fits how you actually work</span>.
                 Off-the-shelf when NapCRM fits, custom-built when it doesn't.
               </p>

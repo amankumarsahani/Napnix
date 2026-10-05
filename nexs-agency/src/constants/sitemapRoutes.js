@@ -5,7 +5,9 @@
  * deploy, which devalues the signal. Bump CONTENT_UPDATED when you ship a
  * content change, or give an individual entry its own lastmod.
  */
-const CONTENT_UPDATED = '2026-09-27';
+import { BLOG_POSTS } from './blogPosts.js';
+
+const CONTENT_UPDATED = '2026-10-05';
 
 export const CITY_SLUGS = [
     'mohali',
@@ -43,13 +45,12 @@ export const SERVICE_PATHS = [
     '/services/ecommerce-development',
 ];
 
-export const BLOG_PATHS = [
-    '/blog/ai-trends-2026',
-    '/blog/react-native-vs-flutter',
-    '/blog/cost-of-custom-crm-2026',
-    '/blog/monolith-to-microservices',
-    '/blog/why-business-needs-pwa',
-];
+/**
+ * Derived from the post manifest so the sitemap, the blog index and the
+ * articles themselves cannot drift apart. Each entry carries the post's own
+ * revision date rather than the sitewide CONTENT_UPDATED stamp.
+ */
+export const BLOG_PATHS = BLOG_POSTS.map((post) => `/blog/${post.slug}`);
 
 /** @returns {{ path: string, priority: string, changefreq: string }[]} */
 export function getSitemapEntries() {
@@ -68,6 +69,7 @@ export function getSitemapEntries() {
         { path: '/napcrm', priority: '0.9', changefreq: 'weekly' },
         { path: '/napcrm/pricing', priority: '0.9', changefreq: 'weekly' },
         { path: '/products', priority: '0.8', changefreq: 'weekly' },
+        { path: '/napmail', priority: '0.9', changefreq: 'weekly' },
         { path: '/privacy-policy', priority: '0.4', changefreq: 'yearly' },
         { path: '/terms', priority: '0.4', changefreq: 'yearly' },
         { path: '/cookie-policy', priority: '0.3', changefreq: 'yearly' },
@@ -92,10 +94,11 @@ export function getSitemapEntries() {
         changefreq: 'weekly',
     }));
 
-    const blogs = BLOG_PATHS.map((path) => ({
-        path,
+    const blogs = BLOG_POSTS.map((post) => ({
+        path: `/blog/${post.slug}`,
         priority: '0.8',
         changefreq: 'monthly',
+        lastmod: post.updated,
     }));
 
     return [...core, ...cities, ...industries, ...services, ...blogs].map((entry) => ({

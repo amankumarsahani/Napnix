@@ -3,47 +3,40 @@ import { useState, useEffect, useMemo, memo } from 'react'
 import { Link } from 'react-router-dom'
 import { blogAPI } from '../services/api'
 import { siteConfig } from '../constants/siteConfig'
+import { BLOG_POSTS_BY_RECENCY, formatPostDate } from '../constants/blogPosts'
+import { getAuthor } from '../constants/authors'
 import Icon from './ui/Icon';
 import { RiArrowRightLine, RiCalendarLine, RiHeartLine, RiShareCircleLine, RiShareLine, RiTimeLine } from 'react-icons/ri';
 
-const dummyPosts = [
-  {
-    title: "Mobile App Development: Native vs Cross-Platform in 2024",
-    category: "Mobile Development",
-    image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=250&fit=crop&fm=webp",
-    description: "A comprehensive comparison of native and cross-platform development approaches to help you make the right choice.",
-    tags: ["React Native", "Flutter", "iOS", "Android"],
-    author: "Anu Kumar",
-    date: "March 12, 2025",
-    readTime: "7 min read",
-    color: "from-[#2563EB] to-[#1D4ED8]",
-    slug: "mobile-app-development-native-vs-cross-platform"
-  },
-  {
-    title: "UI/UX Design Principles for Modern Web Applications",
-    category: "Design",
-    image: "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=400&h=250&fit=crop&fm=webp",
-    description: "Discover essential design principles that create intuitive and engaging user experiences in modern web applications.",
-    tags: ["UX Design", "UI Design", "Figma", "Prototyping"],
-    author: "Anu Kumar",
-    date: "March 8, 2025",
-    readTime: "6 min read",
-    color: "from-orange-500 to-orange-600",
-    slug: "ui-ux-design-principles"
-  },
-  {
-    title: "Cybersecurity Best Practices for Web Applications",
-    category: "Security",
-    image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=250&fit=crop&fm=webp",
-    description: "Essential security measures every developer should implement to protect web applications from common vulnerabilities.",
-    tags: ["Security", "OWASP", "Authentication", "Encryption"],
-    author: "Anu Kumar",
-    date: "March 5, 2025",
-    readTime: "9 min read",
-    color: "from-red-500 to-red-600",
-    slug: "cybersecurity-best-practices"
-  }
-]
+/**
+ * Fallback posts for when the blog API is unreachable.
+ *
+ * This list used to hold three invented articles — fabricated authors and
+ * dates, and slugs (ui-ux-design-principles, cybersecurity-best-practices,
+ * mobile-app-development-native-vs-cross-platform) that were never built. The
+ * API is always unreachable during prerender, so the fallback is exactly what
+ * the homepage shipped: three made-up articles linking to soft 404s, while the
+ * five real guides had no inbound links anywhere on the site.
+ *
+ * Deriving it from the post manifest means the fallback can only ever point at
+ * articles that exist.
+ */
+const dummyPosts = BLOG_POSTS_BY_RECENCY.slice(0, 3).map((post, i) => {
+  const author = getAuthor(post.authorId);
+  return {
+    title: post.title,
+    category: post.category,
+    image: post.image,
+    description: post.excerpt,
+    tags: post.tags ?? [post.category],
+    author: author.name,
+    date: formatPostDate(post.updated),
+    readTime: post.readTime,
+    color: ['from-[#2563EB] to-[#1D4ED8]', 'from-orange-500 to-orange-600', 'from-emerald-500 to-emerald-600'][i % 3],
+    slug: post.slug,
+  };
+});
+
 
 const categories = ["All", "Web Development", "Mobile Development", "Cloud & DevOps", "Design", "Security", "AI & Technology"]
 

@@ -14,7 +14,11 @@
  *
  * react-helmet-async marks the tags it owns with data-rh="true". Those
  * attributes survive into the captured HTML, so on the next page load Helmet
- * recognises and replaces them instead of appending duplicates.
+ * recognises and replaces them instead of appending duplicates. That only
+ * holds for tags Helmet itself wrote: the static ones in index.html carry no
+ * data-rh, so Helmet appends alongside them and the capture ends up with two
+ * of each. A dedupe pass below drops the static copy once Helmet has supplied
+ * a page-specific one.
  *
  * The app mounts with createRoot, not hydrateRoot, so React discards the
  * prerendered DOM and re-renders once the bundle arrives. Crawlers and the
@@ -116,6 +120,7 @@ await page.route('**/*', (route) => {
 const written = [];
 const skipped = [];
 const failed = [];
+const dedupedTags = [];
 
 for (const route of routes) {
   try {
@@ -152,11 +157,48 @@ for (const route of routes) {
         // Third-party loaders inject into <head>, so scoping the sweep to
         // outside #root removes them and nothing else.
         if (root && root.contains(el)) continue;
+        // ...except JSON-LD, which react-helmet-async commits into <head>, not
+        // into #root. The sweep above therefore deleted every page-level
+        // schema block on the way out: /blog/* shipped Organization + WebSite
+        // from SiteSchema and lost the Article, author and datePublished that
+        // the component clearly declares. Structured data is inert data, never
+        // an executable loader, so it is always safe to keep.
+        if (el.type === 'application/ld+json') continue;
         const src = el.getAttribute('src');
         const keep = src ? shell.srcs.includes(src) : shell.inline.includes(el.textContent.trim());
         if (!keep) el.remove();
       }
     }, shellScripts);
+
+    // index.html ships a full set of static head tags so the SPA shell is never
+    // bare, and Helmet then appends its own page-specific copies rather than
+    // replacing them (it only reclaims tags carrying data-rh). The captured DOM
+    // therefore held two descriptions, two og:titles and two og:types per page,
+    // with the generic homepage value FIRST — which is the one a crawler
+    // reading raw HTML takes. Drop the static duplicate wherever Helmet has
+    // supplied its own.
+    const deduped = await page.evaluate(() => {
+      const removed = [];
+      const key = (el) => el.tagName === 'TITLE'
+        ? 'title'
+        : `${el.tagName}:${el.getAttribute('name') ?? el.getAttribute('property') ?? el.getAttribute('rel') ?? ''}`;
+      const byKey = new Map();
+      for (const el of document.head.querySelectorAll('title, meta[name], meta[property], link[rel="canonical"]')) {
+        const k = key(el);
+        if (!byKey.has(k)) byKey.set(k, []);
+        byKey.get(k).push(el);
+      }
+      for (const [k, els] of byKey) {
+        if (els.length < 2) continue;
+        // og:image:width and friends legitimately repeat only when Helmet set
+        // them too; prefer the Helmet copy in every case, else keep the last.
+        const helmet = els.filter((el) => el.hasAttribute('data-rh'));
+        const keep = helmet.length ? helmet[helmet.length - 1] : els[els.length - 1];
+        for (const el of els) if (el !== keep) { el.remove(); removed.push(k); }
+      }
+      return removed;
+    });
+    if (deduped.length) dedupedTags.push([route, deduped.length]);
 
     const html = '<!doctype html>\n' + await page.evaluate(() => document.documentElement.outerHTML);
 
@@ -201,6 +243,9 @@ for (const [route, text, bytes] of written) {
 }
 for (const [route, text] of skipped) {
   console.log(`prerender: SKIP ${route.padEnd(39)} ${text} chars (needs API data at build time)`);
+}
+for (const [route, n] of dedupedTags) {
+  console.log(`prerender: dedupe ${route.padEnd(37)} dropped ${n} duplicate head tag(s)`);
 }
 for (const [route, err] of failed) {
   console.log(`prerender: FAIL ${route.padEnd(39)} ${err}`);

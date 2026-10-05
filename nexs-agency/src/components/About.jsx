@@ -47,7 +47,7 @@ const StatNumber = memo(function StatNumber({ stat, isVisible }) {
 const stats = [
   { number: COMPANY_STATS.projects, label: "Projects Completed", icon: "ri-bar-chart-box-line" },
   { number: COMPANY_STATS.clients, label: "Happy Clients", icon: "ri-heart-line" },
-  { number: COMPANY_STATS.successRate, label: "Success Rate", icon: "ri-flashlight-line" },
+  { number: COMPANY_STATS.industries, label: "Industry CRM Editions", icon: "ri-flashlight-line" },
   { number: COMPANY_STATS.support, label: "Support Available", icon: "ri-customer-service-line" }
 ];
 

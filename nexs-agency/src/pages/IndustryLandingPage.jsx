@@ -161,8 +161,18 @@ export default function IndustryLandingPage() {
                             {data.hero.title}
                         </h1>
 
-                        <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
-                            {data.hero.subtitle}
+                        {/* Definition first. These 14 pages opened on a slogan
+                            ("Better Patient Management. Better Outcomes.") followed by the
+                            subtitle, so nothing on the page answered "what is NapCRM for
+                            {industry}?" or "what does it cost?" in a form that could be
+                            quoted on its own. Both now sit in the first paragraph. */}
+                        <p className="text-lg md:text-xl text-slate-700 max-w-2xl mx-auto mb-6 leading-relaxed font-medium">
+                            <strong>
+                                NapCRM for {data.name} is an industry-specific edition of NapCRM
+                            </strong>{' '}
+                            — {data.hero.subtitle} Plans start at $49/month, and the{' '}
+                            {data.recommendedTier ?? 'Growth'} plan is the one we usually recommend
+                            for {data.name.toLowerCase()} teams.
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -385,6 +395,49 @@ export default function IndustryLandingPage() {
                                 <CurrencySwitcher currency={currency} setCurrency={setCurrency} currencies={currencies} />
                             </div>
                         </div>
+                    </FadeIn>
+
+                    {/* A plain comparison table alongside the pricing cards.
+                        The cards are the better buying UI, but a card grid carries no
+                        row/column relationship, so "which NapCRM plan suits a
+                        {industry} business?" had no tabular answer on any of these 14
+                        pages. USD is stated here because it is the currency the site's
+                        own meta description and llms.txt quote; the cards below still
+                        honour the currency switcher. */}
+                    <FadeIn y={20}>
+                        <figure className="mb-12 overflow-x-auto bg-white border border-slate-200 rounded-2xl shadow-sm">
+                            <table className="w-full min-w-[720px] border-collapse text-left text-sm">
+                                <caption className="text-left text-sm text-slate-500 px-6 pt-5 pb-3 caption-top">
+                                    NapCRM plans for {data.name.toLowerCase()} businesses. Monthly prices in USD.
+                                </caption>
+                                <thead>
+                                    <tr className="bg-slate-50 border-y border-slate-200">
+                                        <th scope="col" className="py-3 px-6 font-bold text-slate-800">Plan</th>
+                                        <th scope="col" className="py-3 px-6 font-bold text-slate-800">Price / month</th>
+                                        <th scope="col" className="py-3 px-6 font-bold text-slate-800">Leads</th>
+                                        <th scope="col" className="py-3 px-6 font-bold text-slate-800">Team members</th>
+                                        <th scope="col" className="py-3 px-6 font-bold text-slate-800">Storage</th>
+                                        <th scope="col" className="py-3 px-6 font-bold text-slate-800">Recommended for {data.name.toLowerCase()}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {crmTiers.map((tier) => (
+                                        <tr key={tier.name} className="border-b border-slate-100 last:border-0">
+                                            <th scope="row" className="py-3 px-6 font-semibold text-slate-800 text-left">{tier.name}</th>
+                                            <td className="py-3 px-6 text-slate-700">
+                                                {tier.price.monthly.USD == null ? 'Custom' : `$${tier.price.monthly.USD}`}
+                                            </td>
+                                            <td className="py-3 px-6 text-slate-700">{tier.limits.leads}</td>
+                                            <td className="py-3 px-6 text-slate-700">{tier.limits.teamMembers}</td>
+                                            <td className="py-3 px-6 text-slate-700">{tier.limits.storage}</td>
+                                            <td className="py-3 px-6 text-slate-700">
+                                                {tier.name === (data.recommendedTier ?? 'Growth') ? 'Yes — our usual recommendation' : '—'}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </figure>
                     </FadeIn>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">

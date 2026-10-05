@@ -1,43 +1,57 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import RelatedServices from '../../components/seo/RelatedServices';
-import { SITE_URL, LOGO_URL } from '../../constants/siteConfig';
+import ArticleSchema from '../../components/seo/ArticleSchema';
+import ArticleHeader from '../../components/seo/ArticleHeader';
+import ArticleFooter from '../../components/seo/ArticleFooter';
+import { AnswerBlock, DataTable } from '../../components/seo/ArticleBlocks';
+import { SITE_URL } from '../../constants/siteConfig';
+import { getPost } from '../../constants/blogPosts';
+
+const SLUG = 'why-business-needs-pwa';
+
+const SOURCES = [
+    {
+        title: 'Progressive Web Apps — what they are and how to build one',
+        publisher: 'web.dev, Google',
+        url: 'https://web.dev/explore/progressive-web-apps',
+    },
+    {
+        title: 'Service Worker API reference',
+        publisher: 'MDN Web Docs',
+        url: 'https://developer.mozilla.org/docs/Web/API/Service_Worker_API',
+    },
+    {
+        title: 'Push API browser compatibility, including Safari on iOS',
+        publisher: 'MDN Web Docs',
+        url: 'https://developer.mozilla.org/docs/Web/API/Push_API#browser_compatibility',
+    },
+    {
+        title: 'Web app manifest',
+        publisher: 'MDN Web Docs',
+        url: 'https://developer.mozilla.org/docs/Web/Progressive_web_apps/Manifest',
+    },
+];
 
 const PwaBenefits = () => {
-
-    const articleSchema = {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": "Why Your Business Needs a Progressive Web App (PWA) in 2026",
-        "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&q=80&fm=webp",
-        "author": {
-            "@type": "Person",
-            "name": "Kshitij Bhardwaj"
-        },
-        "publisher": {
-            "@type": "Organization",
-            "name": "Napnix",
-            "url": SITE_URL,
-            "logo": { "@type": "ImageObject", "url": LOGO_URL }
-        },
-        "datePublished": "2024-03-30",
-        "description": "Progressive Web Apps (PWAs) offer the best of web and mobile. Learn how they boost conversion rates, improve SEO, and cut development costs."
-    };
+    const post = getPost(SLUG);
+    const url = `${SITE_URL}/blog/${SLUG}`;
+    const metaTitle = 'Why Your Business Needs a PWA (And When It Does Not) | Napnix';
 
     return (
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white pt-20">
             <Helmet>
-                <title>Benefits of Progressive Web Apps (PWA) | Napnix Web Dev</title>
-                <meta name="description" content="Progressive Web Apps (PWAs) offer the best of web and mobile. Learn how they boost conversion rates, improve SEO, and cut development costs." />
-                <link rel="canonical" href={`${SITE_URL}/blog/why-business-needs-pwa`} />
-                <meta property="og:title" content="Benefits of Progressive Web Apps (PWA) | Napnix Web Dev" />
-                <meta property="og:description" content="Progressive Web Apps (PWAs) offer the best of web and mobile. Learn how they boost conversion rates and cut development costs." />
+                <title>{metaTitle}</title>
+                <meta name="description" content={post.excerpt} />
+                <link rel="canonical" href={url} />
+                <meta property="og:title" content={metaTitle} />
+                <meta property="og:description" content={post.excerpt} />
                 <meta property="og:type" content="article" />
-                <meta property="og:url" content={`${SITE_URL}/blog/why-business-needs-pwa`} />
-                <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
+                <meta property="og:url" content={url} />
+                <meta property="og:image" content={post.image} />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Benefits of Progressive Web Apps (PWA) | Napnix Web Dev" />
-                <meta name="twitter:description" content="Progressive Web Apps (PWAs) offer the best of web and mobile. Learn how they boost conversion rates and cut development costs." />
+                <meta name="twitter:title" content={metaTitle} />
+                <meta name="twitter:description" content={post.excerpt} />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
@@ -45,98 +59,132 @@ const PwaBenefits = () => {
                 <meta property="og:image:height" content="630" />
                 <meta name="twitter:site" content="@napnix" />
                 <meta name="twitter:creator" content="@napnix" />
-                <meta property="article:published_time" content="2024-03-30" />
-                <meta property="article:author" content="Napnix" />
-                <script type="application/ld+json">
-                    {JSON.stringify(articleSchema)}
-                </script>
+                <meta property="article:published_time" content={post.published} />
+                <meta property="article:modified_time" content={post.updated} />
             </Helmet>
+            <ArticleSchema slug={SLUG} />
 
             <article className="max-w-4xl mx-auto px-6 py-12">
-                <div className="mb-12 text-center">
-                    <span className="inline-block px-4 py-1.5 bg-[#2563EB]/10 text-[#2563EB] font-bold rounded-full text-sm mb-6">
-                        Web Development
-                    </span>
-                    <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6 text-slate-800">
-                        Why Your Business Needs a Progressive Web App (PWA) in 2026
-                    </h1>
-                    <div className="flex items-center justify-center gap-6 text-slate-500 font-medium">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold">K</div>
-                            <span>Kshitij Bhardwaj</span>
-                        </div>
-                        <span>•</span>
-                        <span>Mar 30, 2024</span>
-                        <span>•</span>
-                        <span>5 min read</span>
-                    </div>
-                </div>
-
-                <div className="rounded-[2rem] overflow-hidden shadow-2xl mb-16 h-[500px]">
-                    <img
-                        src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&q=80&fm=webp"
-                        alt="Progressive Web App"
-                        loading="lazy"
-                        height={500}
-                        className="w-full h-full object-cover"
-                    />
-                </div>
+                <ArticleHeader slug={SLUG} accent="blue" />
 
                 <div className="prose prose-lg prose-blue mx-auto">
+                    <AnswerBlock question="What is a Progressive Web App?">
+                        <p>
+                            A <strong>Progressive Web App is a website that installs and behaves like
+                            an app</strong>. A service worker lets it cache content and work offline, a
+                            web app manifest lets it be added to the home screen and launch without
+                            browser chrome, and because it is still a website, search engines can index
+                            it and users reach it from a link — no app-store download required.
+                        </p>
+                    </AnswerBlock>
+
                     <p className="lead text-xl text-slate-600 mb-8">
-                        Is it a website? Is it an app? It's both. Progressive Web Apps (PWAs) have quietly become the gold standard for modern web development, adopted by giants like Uber, Pinterest, and Starbucks. Here is why you should care.
+                        PWAs give you most of what an app install provides while keeping the reach of
+                        the open web. That combination is genuinely valuable — and it has real limits
+                        that vendors tend not to mention. Both halves are below.
                     </p>
 
-                    <h2>What is a PWA?</h2>
+                    <h2>Why would you choose a PWA?</h2>
+
+                    <h3>1. No install barrier</h3>
                     <p>
-                        A PWA is a website that looks and behaves like a mobile app. It can be installed on a user's home screen, send push notifications, and even work offline—all without going through the App Store.
+                        Persuading someone to visit a page is far easier than persuading them through
+                        an app-store download. A PWA can prompt to install from the browser, so the
+                        user commits after seeing value rather than before.
                     </p>
 
-                    <h2>The Business Case</h2>
-
-                    <h3>1. Lower Acquisition Cost (CAC)</h3>
+                    <h3>2. It stays discoverable</h3>
                     <p>
-                        Getting a user to download an app is hard. Getting them to visit a website is easier. With a PWA, you can prompt them to "Install App" directly from the browser, bypassing the friction of the App Store.
+                        Native app content sits in a walled garden. A PWA is a website, so its pages
+                        are crawlable, indexable and linkable — which also means they can be cited by
+                        AI search engines, where native app content simply cannot appear.
                     </p>
 
-                    <h3>2. Improved SEO</h3>
+                    <h3>3. It works without a connection</h3>
                     <p>
-                        Native apps live in a walled garden. PWAs are just websites. They are indexed by Google, meaning your content is discoverable via search, driving organic traffic.
+                        A service worker caches the shell and chosen data, so the app keeps working in
+                        a lift, a tunnel or a patchy warehouse. That matters most for field service,
+                        logistics and in-store retail tools.
                     </p>
 
-                    <h3>3. Offline Capability</h3>
+                    <h3>4. One codebase instead of three</h3>
                     <p>
-                        Thanks to Service Workers, PWAs can cache content. If a user loses internet connection in a tunnel, your app still works. This is crucial for e-commerce and field service apps.
+                        Rather than Swift for iOS, Kotlin for Android and a separate web build, you
+                        maintain one. The saving is real but situational: it depends on how much
+                        platform-specific work you would have written anyway, so treat any blanket
+                        percentage claim with suspicion.
                     </p>
 
-                    <div className="bg-[#F8FAFC] border-l-4 border-blue-600 p-8 my-8 rounded-r-xl">
-                        <h4 className="text-xl font-bold text-blue-900 mb-2">Go Mobile, Fast</h4>
+                    <div className="bg-blue-50 border-l-4 border-blue-600 p-8 my-8 rounded-r-xl not-prose">
+                        <p className="text-xl font-bold text-blue-900 mb-2">Go mobile, fast</p>
                         <p className="text-blue-800 mb-0">
-                            We can turn your existing website into a PWA in weeks, not months. <Link to="/services/custom-web-development" className="underline font-bold">See our PWA Services</Link>.
+                            We can turn an existing site into an installable PWA in weeks.{' '}
+                            <Link to="/services/custom-web-development" className="underline font-bold">
+                                See our web services
+                            </Link>.
                         </p>
                     </div>
 
-                    <h3>4. One Codebase, All Devices</h3>
+                    <h2>When is a PWA the wrong choice?</h2>
                     <p>
-                        Instead of building an iOS app (Swift), an Android app (Kotlin), and a Web App (React), you build <strong>one PWA</strong> that runs everywhere. This slashes development and maintenance costs by 50%+.
+                        This is the part most articles omit. Choose native when you need any of the
+                        following, because a PWA will fight you on all of them:
                     </p>
+                    <ul>
+                        <li>
+                            <strong>Deep hardware access</strong> — Bluetooth peripherals, NFC
+                            payments, advanced camera control, background location.
+                        </li>
+                        <li>
+                            <strong>Sustained high-end graphics</strong> — 3D games and heavy
+                            real-time rendering.
+                        </li>
+                        <li>
+                            <strong>App-store presence as a sales channel</strong> — if customers
+                            expect to find you by searching the store, a PWA is invisible there.
+                        </li>
+                        <li>
+                            <strong>Full parity on iOS.</strong> Safari supports installable PWAs and,
+                            since iOS 16.4, web push for apps added to the home screen — but support
+                            lags Android and background capabilities remain more restricted. Verify
+                            each API you depend on against current compatibility data rather than
+                            assuming parity.
+                        </li>
+                    </ul>
 
-                    <h2>PWA vs Native App</h2>
-                    <p>
-                        Native apps still win on high-performance gaming or access to complex hardware sensors. For everything else—E-commerce, News, Dashboards, SaaS—PWAs are the superior choice in 2026.
-                    </p>
+                    <h2>PWA or native: how do they compare?</h2>
 
-                    <h2>Conclusion</h2>
+                    <DataTable
+                        caption="PWA and native compared on the factors that usually decide the question."
+                        columns={['Factor', 'PWA', 'Native app']}
+                        rows={[
+                            ['Distribution', 'A URL; installs from the browser', 'App Store / Play Store review'],
+                            ['Discoverable in search', 'Yes — indexable and citable', 'No'],
+                            ['Offline support', 'Yes, via service worker', 'Yes'],
+                            ['Push notifications', 'Yes; iOS needs the app installed to the home screen', 'Yes, fully'],
+                            ['Hardware access', 'Limited', 'Full'],
+                            ['Codebases to maintain', 'One', 'One per platform'],
+                            ['Update path', 'Deploy like a website', 'Store review per release'],
+                            ['Best fit', 'Commerce, content, dashboards, SaaS, field tools', 'Games, hardware-led and sensor-heavy apps'],
+                        ]}
+                    />
+
+                    <h2>The bottom line</h2>
                     <p>
-                        If you want the reach of the web with the engagement of an app, a PWA is the answer. It's the future of the open web.
+                        For e-commerce, publishing, dashboards, SaaS and internal tools, a PWA usually
+                        gives you the reach of the web with most of the engagement of an app, for one
+                        codebase. For games and hardware-led products, build native. The deciding
+                        question is not which technology is more modern — it is which platform
+                        capabilities your product actually depends on.
                     </p>
                 </div>
             </article>
 
-            {/* Internal Linking to Services */}
+            <ArticleFooter slug={SLUG} sources={SOURCES} />
+
             <div className="bg-[#F8FAFC] py-16">
                 <div className="container-custom">
-                    <h2 className="text-3xl font-bold text-center mb-12">Upgrade Your Web Presence</h2>
+                    <h2 className="text-3xl font-bold text-center mb-12">Build for Every Device</h2>
                     <RelatedServices currentService="Custom Web Development" />
                 </div>
             </div>

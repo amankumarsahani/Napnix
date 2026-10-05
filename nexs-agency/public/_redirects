@@ -2,8 +2,29 @@ http://napnix.in/* https://napnix.in/:splat 301
 http://www.napnix.in/* https://napnix.in/:splat 301
 https://www.napnix.in/* https://napnix.in/:splat 301
 
+# Legacy product names, as real 301s rather than client-side <Navigate>.
+# React Router redirects only fire once the bundle executes, so a crawler that
+# reads raw HTML saw the SPA shell on 200 and never followed them.
+/nexcrm /napcrm 301
+/nexcrm/pricing /napcrm/pricing 301
+/nexcrm/industries/* /napcrm/industries/:splat 301
+/nexmail /napmail 301
+
 # Missing hashed bundles must 404 — not index.html (prevents stale SPA chunk loads after deploy)
 /assets/* 404
 
-# React Router fallback for direct visits to client-side routes
-/* /index.html 200
+# Routes whose content is fetched at runtime, so prerender skips them and the
+# SPA shell has to answer on 200. Everything else in the app is prerendered to
+# a real file and is served directly, without reaching these rules.
+/blog/* /index.html 200
+/portfolio/* /index.html 200
+/thank-you /index.html 200
+/data-deletion /index.html 200
+/admin/* /index.html 200
+
+# Anything else genuinely does not exist, so say so. The previous catch-all
+# (/* /index.html 200) answered every unknown path with the homepage on HTTP
+# 200, which made /ai.txt, /ai-catalog.json, /.well-known/ai-plugin.json and
+# every typo a soft 404 serving 324KB of homepage. 404.html is the same SPA
+# shell, so React Router still renders <NotFound> — now behind a 404 status.
+/* /404.html 404
