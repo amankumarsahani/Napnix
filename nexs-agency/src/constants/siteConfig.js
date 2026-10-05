@@ -33,12 +33,12 @@ export const siteConfig = {
     },
     domain: SITE_URL,
     social: [
-        { icon: 'ri-github-line', iconFill: 'ri-github-fill', href: 'https://github.com/orgs/Napnix-Solutions/repositories', label: 'GitHub' },
+        { icon: 'ri-github-line', iconFill: 'ri-github-fill', href: 'https://github.com/Napnix-LLP', label: 'GitHub' },
         { icon: 'ri-linkedin-line', iconFill: 'ri-linkedin-fill', href: 'https://www.linkedin.com/company/napnix', label: 'LinkedIn' },
         { icon: 'ri-instagram-line', iconFill: 'ri-instagram-fill', href: 'https://www.instagram.com/napnixofficial/', label: 'Instagram' },
     ],
     socialUrls: [
-        'https://github.com/orgs/Napnix-Solutions/repositories',
+        'https://github.com/Napnix-LLP',
         'https://www.linkedin.com/company/napnix',
         'https://www.instagram.com/napnixofficial/',
         // sameAs is how Google ties the site to the entity it already knows.
