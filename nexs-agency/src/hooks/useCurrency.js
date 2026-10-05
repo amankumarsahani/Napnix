@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useLayoutEffect, useCallback } from 'react';
 
 const STORAGE_KEY = 'napnix_currency';
 const CACHE_TTL = 24 * 60 * 60 * 1000;
@@ -79,18 +79,39 @@ export default function useCurrency() {
      * Visitors elsewhere are switched by detectCurrencyFromTimezone below, which
      * runs before paint.
      */
-    const [currency, setCurrencyState] = useState(() => getStoredCurrency() || 'INR');
+    /**
+     * The initial value is the constant 'INR' — it must NOT read localStorage
+     * or the timezone.
+     *
+     * The app hydrates with hydrateRoot, so React's first client render has to
+     * produce exactly the markup the prerender wrote. This used to initialise
+     * from `getStoredCurrency()`, which means a returning visitor whose stored
+     * choice was USD rendered "$49" against prerendered "₹4,165" — a text
+     * mismatch on every price on the page, which is the one kind of hydration
+     * mismatch React cannot patch in place: it throws away the server markup
+     * for that subtree and re-renders it on the client, costing exactly the
+     * work hydration exists to avoid.
+     *
+     * The stored or detected currency is applied in a layout effect below.
+     */
+    const [currency, setCurrencyState] = useState('INR');
 
-    useEffect(() => {
+    // useLayoutEffect, not useEffect: it is committed before the browser paints,
+    // so a US or EU visitor never sees a flash of rupee prices. There is no
+    // server render pass in Node — prerendering drives a real browser — so this
+    // raises no SSR warning.
+    useLayoutEffect(() => {
         const stored = getStoredCurrency();
-        if (stored) return;
+        if (stored) {
+            if (stored !== 'INR') setCurrencyState(stored);
+            return;
+        }
 
         const detected = detectCurrencyFromTimezone();
-        if (detected && detected !== currency) {
-            setCurrencyState(detected);
+        if (detected) {
+            if (detected !== 'INR') setCurrencyState(detected);
             storeCurrency(detected, false);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const setCurrency = useCallback((code) => {

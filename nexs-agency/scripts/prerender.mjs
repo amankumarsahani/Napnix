@@ -120,6 +120,51 @@ await page.route('**/*', (route) => {
 const written = [];
 const skipped = [];
 const failed = [];
+/**
+ * Replace `<link rel="stylesheet" href="/assets/*.css">` with the stylesheet's
+ * contents in a `<style>` tag.
+ *
+ * Reads each file once and caches it. Returns the html unchanged, and records a
+ * miss, if the link or the file is not found — a silent no-op here would mean
+ * shipping a page with no styles at all, so the build reports it.
+ */
+const cssCache = new Map();
+const inlineMisses = [];
+let inlinedCount = 0;
+
+function inlineStylesheet(html, route) {
+  const rx = /<link[^>]*rel="stylesheet"[^>]*href="(\/assets\/[^"]+\.css)"[^>]*>/g;
+  let touched = false;
+  const out = html.replace(rx, (tag, href) => {
+    if (!cssCache.has(href)) {
+      const file = join(DIST, href.replace(/^\//, ''));
+      if (!existsSync(file)) { inlineMisses.push([route, `missing ${href}`]); return tag; }
+      cssCache.set(href, readFileSync(file, 'utf8'));
+    }
+    touched = true;
+    // </style> cannot appear inside a style element; Tailwind output never
+    // contains it, but escape defensively rather than produce broken markup.
+    const css = cssCache.get(href).replace(/<\/style/gi, '<\\/style');
+    return `<style data-inlined-from="${href}">${css}</style>`;
+  });
+  // Count pages that END UP with the stylesheet inlined, not just the ones this
+  // call rewrote. Route `/` is processed first and its output overwrites
+  // dist/index.html; every later route is then served that already-inlined file
+  // as the SPA shell, so only one route actually has a <link> to replace. A
+  // counter that reported "1 page" while all 51 were correct would be exactly
+  // the kind of misleading build log that hides a real failure.
+  if (out.includes('data-inlined-from=')) {
+    inlinedCount++;
+  } else if (!touched) {
+    // Genuinely no stylesheet, inlined or linked — this page would ship
+    // unstyled, so say so loudly.
+    inlineMisses.push([route, 'no stylesheet link found and none already inlined']);
+  }
+  // Already inlined and no link left: this route was re-processed (the canonical
+  // guard above can retry one), which is a no-op rather than a problem.
+  return out;
+}
+
 const dedupedTags = [];
 const fontResets = [];
 
@@ -219,7 +264,42 @@ for (const route of routes) {
     });
     if (fontsReset) fontResets.push([route, fontsReset]);
 
-    const html = '<!doctype html>\n' + await page.evaluate(() => document.documentElement.outerHTML);
+    // Stamp the route this document was rendered for, so the client can tell
+    // whether the markup it received actually belongs to the URL being loaded.
+    //
+    // src/main.jsx hydrates with hydrateRoot, which requires the first client
+    // render to match the served markup. That holds for the 51 prerendered
+    // routes, but nginx serves this same dist/index.html as the SPA fallback for
+    // everything else (/thank-you, /portfolio/<unknown>, the 86 generated blog
+    // slugs). Since dist/index.html IS the prerendered homepage, a visitor
+    // landing on /thank-you receives homepage markup and React renders the
+    // thank-you page — a whole-document mismatch. main.jsx compares this
+    // attribute with location.pathname and falls back to createRoot when they
+    // disagree, so hydration is only attempted where it can succeed.
+    await page.evaluate((r) => {
+      document.documentElement.setAttribute('data-prerendered-path', r);
+    }, route);
+
+    let html = '<!doctype html>\n' + await page.evaluate(() => document.documentElement.outerHTML);
+
+    // Inline the app stylesheet and drop the <link> that fetched it.
+    //
+    // PSI named this as the one render-blocking resource on the site, at
+    // 1,156ms, and mobile FCP was 3.0s of a 3.3s LCP — so the stylesheet round
+    // trip was most of the time to first paint. The file is 172 KB raw but only
+    // 17.6 KB brotli, so the 1.1s is latency for one extra request, not
+    // transfer: the HTML has to be parsed, the link discovered, a request
+    // issued, and the response received before anything can paint.
+    //
+    // Inlining removes that request. The cost is ~17.6 KB compressed added to
+    // each page and no cross-page CSS caching — which matters little here,
+    // because this is an SPA (after the first document, navigation is
+    // client-side and the styles are already present) and because the pages a
+    // crawler fetches do not benefit from a warm CSS cache either.
+    //
+    // Done here rather than in vite config so the build output keeps a real
+    // hashed stylesheet for any non-prerendered route served the SPA shell.
+    html = inlineStylesheet(html, route);
 
     // The whole point is that the static response carries the right canonical.
     // If it does not, writing the file would ship the defect this script exists
@@ -265,6 +345,10 @@ for (const [route, text] of skipped) {
 }
 for (const [route, n] of dedupedTags) {
   console.log(`prerender: dedupe ${route.padEnd(37)} dropped ${n} duplicate head tag(s)`);
+}
+console.log(`prerender: inlined the app stylesheet into ${inlinedCount} page(s)`);
+for (const [route, why] of inlineMisses) {
+  console.log(`prerender: CSS INLINE MISS ${route.padEnd(33)} ${why}`);
 }
 if (fontResets.length) {
   const total = fontResets.reduce((sum, [, n]) => sum + n, 0);
