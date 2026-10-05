@@ -331,7 +331,10 @@ export default function CRMPricingPage() {
                     </h2>
                     <p className="text-slate-600 mb-8">
                         Side-by-side breakdowns, including where the other tool is the better
-                        choice and who should not switch.
+                        choice and who should not switch. Working out build versus subscribe? Try the{' '}
+                        <Link to="/tools/crm-cost-calculator" className="text-[#2563EB] font-medium hover:underline">
+                            CRM cost calculator
+                        </Link>.
                     </p>
                     <div className="grid sm:grid-cols-3 gap-4">
                         {ALTERNATIVE_SLUGS.map((slug) => (

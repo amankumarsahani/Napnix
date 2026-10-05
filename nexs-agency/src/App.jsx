@@ -45,6 +45,7 @@ const FAQPage = lazyWithRetry(() => import('./pages/FAQPage'));
 const CityLandingPage = lazyWithRetry(() => import('./pages/seo/CityLandingPage'));
 const AlternativePage = lazyWithRetry(() => import('./pages/AlternativePage'));
 const AuthorPage = lazyWithRetry(() => import('./pages/AuthorPage'));
+const CrmCostCalculator = lazyWithRetry(() => import('./pages/tools/CrmCostCalculator'));
 const IndustryLandingPage = lazyWithRetry(() => import('./pages/IndustryLandingPage'));
 const CustomWebDevelopment = lazyWithRetry(() => import('./pages/services/CustomWebDevelopment'));
 const MobileAppDevelopment = lazyWithRetry(() => import('./pages/services/MobileAppDevelopment'));
@@ -253,6 +254,8 @@ function App() {
           <Route path="/alternatives/:competitor" element={<AlternativePage />} />
           {/* Author pages give each Person node a resolvable url — see AuthorPage.jsx. */}
           <Route path="/authors/:authorId" element={<AuthorPage />} />
+          {/* Linkable asset — see BACKLINKS-PLAN.md section 4 and the page file. */}
+          <Route path="/tools/crm-cost-calculator" element={<CrmCostCalculator />} />
           <Route path="/napcrm/industries/:industry" element={<IndustryLandingPage />} />
           <Route path="/products" element={<ProductsPage />} />
           {/* NapMailLandingPage was written but never routed, so /napmail bounced

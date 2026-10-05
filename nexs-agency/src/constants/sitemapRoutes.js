@@ -66,6 +66,8 @@ export function getSitemapEntries() {
         { path: '/portfolio/napcrm-manufacturing', priority: '0.7', changefreq: 'monthly' },
         { path: '/portfolio/napcrm-legal', priority: '0.7', changefreq: 'monthly' },
         { path: '/audit', priority: '0.9', changefreq: 'monthly' },
+        /* Free tool, built to be linked to rather than to rank. */
+        { path: '/tools/crm-cost-calculator', priority: '0.8', changefreq: 'monthly' },
         { path: '/contact', priority: '0.8', changefreq: 'monthly' },
         { path: '/blog', priority: '0.8', changefreq: 'daily' },
         { path: '/faq', priority: '0.8', changefreq: 'weekly' },

@@ -167,6 +167,16 @@ const CostOfCustomCrm = () => {
                         usually fit, not price.
                     </p>
 
+                    {/* The calculator is the interactive form of this guide's arithmetic;
+                        linking it from here is also what keeps it out of orphan status. */}
+                    <p>
+                        If you would rather put your own numbers in, the{' '}
+                        <Link to="/tools/crm-cost-calculator">CRM cost calculator</Link>{' '}
+                        runs this comparison for your team size and horizon, and shows the year at
+                        which building overtakes subscribing. Its assumptions are the ones in this
+                        article.
+                    </p>
+
                     <h2>What does a custom CRM cost in India?</h2>
 
                     <AnswerBlock question="What does a custom CRM cost to build in India?">

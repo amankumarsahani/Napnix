@@ -23,6 +23,8 @@ const routeNames = {
     'crm-development': 'CRM Development',
     'software-development-company': 'Software Development',
     'alternatives': 'Alternatives',
+    'tools': 'Tools',
+    'crm-cost-calculator': 'CRM Cost Calculator',
     'authors': 'Authors',
     'aman-kumar': 'Aman Kumar',
     'kshitij-bhardwaj': 'Kshitij Bhardwaj',

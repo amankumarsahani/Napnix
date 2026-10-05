@@ -112,7 +112,7 @@ const data = {
             },
             {
                 q: 'Should we build a CRM or buy one?',
-                a: 'Buy when your process is close to an industry standard — you are then paying someone else to maintain it, which is a good deal. Build when the process is what differentiates you, when per-seat licensing on a large team outgrows a one-off build, or when you need to own the data model. Our cost guide works the arithmetic through with a five-year comparison, and the crossover is usually decided by seat count rather than by sophistication.',
+                a: 'Buy when your process is close to an industry standard — you are then paying someone else to maintain it, which is a good deal. Build when the process is what differentiates you, when per-seat licensing on a large team outgrows a one-off build, or when you need to own the data model. Our cost calculator at /tools/crm-cost-calculator runs the five-year comparison for your own team size, and the crossover is usually decided by seat count rather than by sophistication.',
             },
             {
                 q: 'Can you migrate us off HubSpot, Zoho or Salesforce?',
