@@ -22,14 +22,32 @@ const cardVariants = {
   })
 }
 
+/*
+ * `animate`, not `whileInView`.
+ *
+ * These cards live in a carousel: the track is `width: totalSlides * 100%`
+ * inside overflow-hidden and is moved with translateX, so every card on a
+ * non-active slide sits horizontally outside the viewport. Its bounding box
+ * never intersects, so `whileInView` never fired — and with
+ * `viewport={{ once: true }}` it never got a second chance. Three of the six
+ * service cards were stuck at `opacity: 0` permanently and slid in blank when
+ * the user advanced the carousel. Reproduced on the built homepage: 3 of 6
+ * cards at computed opacity 0 after a full-page scroll.
+ *
+ * Reveal-on-scroll is already handled one level up: App.jsx wraps this whole
+ * section in <ScrollReveal>, which adds a `revealed` class via its own
+ * IntersectionObserver. So the per-card scroll trigger was redundant as well as
+ * broken. `animate` keeps the staggered entrance (the variants still read
+ * `custom={index}` for the delay) and guarantees every card ends visible
+ * whichever slide it is on.
+ */
 const ServiceCard = memo(function ServiceCard({ service, index }) {
   return (
     <motion.div
       custom={index}
       variants={cardVariants}
       initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
+      animate="visible"
       className="group relative bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-slate-200 overflow-hidden"
     >
       <div className="absolute top-0 left-0 w-full h-[2px] bg-[#2563EB] transition-all duration-300 group-hover:h-[3px] group-hover:shadow-[0_0_8px_rgba(37,99,235,0.4)]"></div>
