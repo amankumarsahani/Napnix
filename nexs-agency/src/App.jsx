@@ -51,9 +51,11 @@ const MobileAppDevelopment = lazyWithRetry(() => import('./pages/services/Mobile
 const AiMachineLearning = lazyWithRetry(() => import('./pages/services/AiMachineLearning'));
 const CloudSolutions = lazyWithRetry(() => import('./pages/services/CloudSolutions'));
 const EcommerceDevelopment = lazyWithRetry(() => import('./pages/services/EcommerceDevelopment'));
+const CrmDevelopment = lazyWithRetry(() => import('./pages/services/CrmDevelopment'));
 const AiTrends2026 = lazyWithRetry(() => import('./pages/blog/AiTrends2026'));
 const ReactVsFlutter = lazyWithRetry(() => import('./pages/blog/ReactVsFlutter'));
 const CostOfCustomCrm = lazyWithRetry(() => import('./pages/blog/CostOfCustomCrm'));
+const WhatsappLeadFollowUp = lazyWithRetry(() => import('./pages/blog/WhatsappLeadFollowUp'));
 const MonolithToMicroservices = lazyWithRetry(() => import('./pages/blog/MonolithToMicroservices'));
 const PwaBenefits = lazyWithRetry(() => import('./pages/blog/PwaBenefits'));
 const BlogArticle = lazyWithRetry(() => import('./pages/BlogArticle'));
@@ -274,9 +276,12 @@ function App() {
           <Route path="/services/ai-machine-learning" element={<AiMachineLearning />} />
           <Route path="/services/cloud-solutions" element={<CloudSolutions />} />
           <Route path="/services/ecommerce-development" element={<EcommerceDevelopment />} />
+          {/* Pillar for the custom-CRM cluster — see the page file for why. */}
+          <Route path="/services/crm-development" element={<CrmDevelopment />} />
           <Route path="/blog/ai-trends-2026" element={<AiTrends2026 />} />
           <Route path="/blog/react-native-vs-flutter" element={<ReactVsFlutter />} />
           <Route path="/blog/cost-of-custom-crm-2026" element={<CostOfCustomCrm />} />
+          <Route path="/blog/whatsapp-lead-follow-up" element={<WhatsappLeadFollowUp />} />
           <Route path="/blog/monolith-to-microservices" element={<MonolithToMicroservices />} />
           <Route path="/blog/why-business-needs-pwa" element={<PwaBenefits />} />
           <Route path="/blog/:slug" element={<BlogArticle />} />

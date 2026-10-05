@@ -19,6 +19,7 @@
 /** Hand-written slugs always stay indexable, whatever their shape. */
 export const CURATED_BLOG_SLUGS = new Set([
     'ai-trends-2026',
+    'whatsapp-lead-follow-up',
     'react-native-vs-flutter',
     'cost-of-custom-crm-2026',
     'monolith-to-microservices',

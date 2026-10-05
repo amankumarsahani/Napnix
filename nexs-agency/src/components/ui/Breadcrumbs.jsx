@@ -20,6 +20,7 @@ const routeNames = {
     'ai-machine-learning': 'AI & Machine Learning',
     'cloud-solutions': 'Cloud Solutions',
     'ecommerce-development': 'E-commerce Development',
+    'crm-development': 'CRM Development',
     'software-development-company': 'Software Development',
     'alternatives': 'Alternatives',
     'authors': 'Authors',

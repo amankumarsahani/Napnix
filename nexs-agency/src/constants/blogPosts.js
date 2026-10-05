@@ -24,6 +24,20 @@
 
 export const BLOG_POSTS = [
     {
+        slug: 'whatsapp-lead-follow-up',
+        title: 'WhatsApp Lead Follow-Up That Actually Converts',
+        excerpt:
+            'Most "we need more leads" problems are follow-up problems. A first-week sequence, what WhatsApp conversation pricing costs, and the three numbers to measure.',
+        category: 'Lead Management',
+        tags: ['Lead follow-up', 'WhatsApp Business API', 'CRM automation', 'Service businesses'],
+        authorId: 'aman-kumar',
+        published: '2026-10-05',
+        updated: '2026-10-05',
+        readTime: '7 min read',
+        image: 'https://images.unsplash.com/photo-1611746872915-64382b5c76da?w=1200&h=630&fit=crop&q=75&fm=webp',
+        imageAlt: 'A phone showing a messaging conversation beside a notebook of enquiries',
+    },
+    {
         slug: 'ai-trends-2026',
         title: 'Top 10 AI Trends Shaping Global Business in 2026',
         excerpt:

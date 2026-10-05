@@ -63,6 +63,7 @@ Napnix specialises in end-to-end digital product development for startups and en
 
 ## Guides
 
+- [WhatsApp Lead Follow-Up That Actually Converts](https://napnix.in/blog/whatsapp-lead-follow-up): Most "we need more leads" problems are follow-up problems. A first-week sequence, what WhatsApp conversation pricing costs, and the three numbers to measure. (updated 2026-10-05)
 - [Why Your Business Needs a PWA (And When It Does Not)](https://napnix.in/blog/why-business-needs-pwa): Progressive Web Apps install, work offline and skip app-store review. They also cannot do everything native can. Where the line actually falls in 2026. (updated 2026-10-05)
 - [Monolith to Microservices: A Step-by-Step Migration Guide](https://napnix.in/blog/monolith-to-microservices): Decomposing a monolith without a rewrite. The strangler-fig sequence we use, in order, with the failure mode that kills most migrations at step four. (updated 2026-10-05)
 - [Cost of Building a Custom CRM in 2026: A Complete Guide](https://napnix.in/blog/cost-of-custom-crm-2026): A custom CRM runs $30,000 to $250,000+ by scope. The breakdown by tier, the hidden running costs, and the point where buying beats building. (updated 2026-10-05)

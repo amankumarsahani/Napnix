@@ -81,6 +81,12 @@ https://napnix.in/services/ai-machine-learning
 
 ## Guides
 
+### WhatsApp Lead Follow-Up That Actually Converts
+
+Most "we need more leads" problems are follow-up problems. A first-week sequence, what WhatsApp conversation pricing costs, and the three numbers to measure.
+
+First published 2026-10-05, last reviewed 2026-10-05. https://napnix.in/blog/whatsapp-lead-follow-up
+
 ### Why Your Business Needs a PWA (And When It Does Not)
 
 Progressive Web Apps install, work offline and skip app-store review. They also cannot do everything native can. Where the line actually falls in 2026.

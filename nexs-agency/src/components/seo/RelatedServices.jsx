@@ -4,6 +4,13 @@ import { RiArrowRightLine, RiLayoutGridLine } from 'react-icons/ri';
 
 const services = [
     {
+        title: "CRM Development",
+        link: "/services/crm-development",
+        icon: "ri-contacts-book-line",
+        color: "blue",
+        desc: "Custom CRM, or a configured NapCRM edition."
+    },
+    {
         title: "Custom Web Development",
         link: "/services/custom-web-development",
         icon: "ri-code-s-slash-line",

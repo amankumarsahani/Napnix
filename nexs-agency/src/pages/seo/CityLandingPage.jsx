@@ -206,6 +206,19 @@ const cityData = {
             overlap: 'Whole working day, and we will come to you. Most Mohali clients meet us in person during scoping.',
             handover: 'Not applicable. We are local.',
         },
+        crmAngle: {
+            paragraphs: [
+                'Most CRM work we do in Mohali starts the same way: a business running on a mix of WhatsApp, a shared spreadsheet and somebody\u2019s memory, where enquiries arrive faster than anyone can follow them up. The software is rarely the hard part. Agreeing who owns a lead, and what happens when nobody touches it for three days, is.',
+                'Because we are in Balongi, that conversation happens in person. We will come to your premises, watch an enquiry travel from the first call to the invoice, and map the process before quoting anything. Walking the actual workflow takes an afternoon and consistently finds things a requirements call does not.',
+            ],
+            points: [
+                'Configured NapCRM in one of 14 industry editions, often live within the week, or a custom build when the process is genuinely yours.',
+                'WhatsApp Business API follow-up, because for most Tricity businesses that is where the customer actually replies.',
+                'GST-aware invoicing with correct HSN codes, and export into Tally or Zoho Books rather than re-keying.',
+                'Migration from spreadsheets, registers or an existing CRM, with a decision made up front about which historical data is worth bringing.',
+                'Training on your own data before go-live \u2014 in person, for Mohali clients.',
+            ],
+        },
         stats: DEFAULT_CITY_STATS,
         whyUs: {
             title: 'Why Mohali Businesses Choose Napnix',
@@ -234,6 +247,18 @@ const cityData = {
             offset: 'Same timezone — our office is a short drive away in Balongi',
             overlap: 'Whole working day, with in-person meetings practical at short notice across the Tricity.',
             handover: 'Not applicable. We are twenty minutes away.',
+        },
+        crmAngle: {
+            paragraphs: [
+                'Chandigarh CRM projects tend to come from professional practices and established family businesses \u2014 clinics, legal practices, schools, dealerships \u2014 where the process already works but lives in registers and spreadsheets, and the cost of that only becomes visible when someone is away or leaves.',
+                'We are twenty minutes away in Balongi, so scoping is a meeting rather than a video call. We follow one real enquiry end to end, decide honestly whether a configured NapCRM edition covers it, and only recommend a custom build when it is cheaper over three years than paying per seat.',
+            ],
+            points: [
+                'Industry editions for legal, healthcare, education, salon, real estate and professional services, configured rather than built from scratch.',
+                'Appointment and case workflows, with reminders and escalation so follow-ups cannot go quiet unnoticed.',
+                'GST invoicing and payment tracking inside the CRM, not in a separate file.',
+                'On-site scoping and training across Chandigarh, Panchkula, Zirakpur and Mohali.',
+            ],
         },
         stats: DEFAULT_CITY_STATS,
         whyUs: {
@@ -689,6 +714,56 @@ const CityLandingPage = () => {
                                 </div>
                             </dl>
                         </div>
+                    </div>
+                </section>
+            )}
+
+            {/*
+                CRM-specific section, Tricity pages only.
+
+                The clustering analysis flagged "CRM development company
+                Mohali/Chandigarh" as the weakest SERP it found anywhere in the
+                audit — currently held by a handful of small local agencies, a
+                dated blog post and a WordPress listicle — and noted the site had
+                no page targeting it. This is that content, on the two pages where
+                the local claim is actually true, linking to the
+                /services/crm-development pillar rather than competing with it.
+
+                Gated on data.crmAngle so it appears only where we have a real
+                presence. The overseas city pages must not claim local CRM work.
+            */}
+            {data.crmAngle && (
+                <section className="py-20 bg-white">
+                    <div className="container-custom max-w-4xl">
+                        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
+                            CRM development in {data.city}
+                        </h2>
+                        {data.crmAngle.paragraphs.map((para) => (
+                            <p key={para.slice(0, 40)} className="text-lg text-slate-600 leading-relaxed mb-5">
+                                {para}
+                            </p>
+                        ))}
+                        <ul className="space-y-3 my-8">
+                            {data.crmAngle.points.map((pt) => (
+                                <li key={pt} className="flex gap-3 text-slate-600 leading-relaxed">
+                                    <span aria-hidden="true" className="text-[#2563EB] font-bold">&middot;</span>
+                                    <span>{pt}</span>
+                                </li>
+                            ))}
+                        </ul>
+                        <p className="text-slate-600 leading-relaxed">
+                            <Link to="/services/crm-development" className="text-[#2563EB] font-medium hover:underline">
+                                How a CRM project runs
+                            </Link>
+                            {' · '}
+                            <Link to="/napcrm" className="text-[#2563EB] font-medium hover:underline">
+                                NapCRM, our own CRM platform
+                            </Link>
+                            {' · '}
+                            <Link to="/blog/cost-of-custom-crm-2026" className="text-[#2563EB] font-medium hover:underline">
+                                What a custom CRM costs
+                            </Link>
+                        </p>
                     </div>
                 </section>
             )}

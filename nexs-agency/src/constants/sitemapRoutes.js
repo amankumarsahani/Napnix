@@ -45,6 +45,7 @@ export const SERVICE_PATHS = [
     '/services/ai-machine-learning',
     '/services/cloud-solutions',
     '/services/ecommerce-development',
+    '/services/crm-development',
 ];
 
 /**
