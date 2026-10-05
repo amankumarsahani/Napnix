@@ -28,6 +28,7 @@
  */
 
 import { createServer } from 'node:http';
+import { gzipSync, brotliCompressSync, constants as zlibConstants } from 'node:zlib';
 import { createReadStream, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join, dirname, extname } from 'node:path';
 import { chromium } from 'playwright';
@@ -163,6 +164,20 @@ for (const route of routes) {
     const out = route === '/' ? join(DIST, 'index.html') : join(DIST, route, 'index.html');
     mkdirSync(dirname(out), { recursive: true });
     writeFileSync(out, html, 'utf8');
+
+    // vite-plugin-compression2 pre-compresses during `vite build`, which runs
+    // BEFORE this script. Overwriting index.html alone leaves index.html.gz and
+    // index.html.br holding the pre-prerender shell, and a host that serves
+    // pre-compressed variants then ships that stale copy — which is exactly
+    // what happened on the first deploy: every route served a 12,550-byte shell
+    // with no canonical while dist/index.html was 321KB of prerendered markup.
+    // Regenerate both siblings from the HTML actually written.
+    const buf = Buffer.from(html, 'utf8');
+    writeFileSync(`${out}.gz`, gzipSync(buf, { level: 9 }));
+    writeFileSync(`${out}.br`, brotliCompressSync(buf, {
+      params: { [zlibConstants.BROTLI_PARAM_QUALITY]: 11 },
+    }));
+
     written.push([route, text, html.length]);
   } catch (err) {
     failed.push([route, err.message.split('\n')[0].slice(0, 80)]);
