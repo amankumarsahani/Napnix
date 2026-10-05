@@ -1,3 +1,15 @@
+# ⚠️  INERT IN PRODUCTION — nginx does not read this file.
+#
+# napnix.in is served by nginx on the VPS, not by Netlify or Cloudflare Pages.
+# `_redirects` is a Netlify / Cloudflare Pages convention; it ships into dist/
+# and sits in the webroot doing nothing. The proof is in the file itself: it
+# asks for `/assets/* 404`, and production returns 200 with HTML for
+# /assets/missing-abc123.js.
+#
+# The rules below are kept only as the declarative record of intent. The file
+# that actually takes effect is deploy/nginx-napnix.conf — change both together,
+# or delete this one once that config is live (see EDGE-CONFIG.md).
+#
 http://napnix.in/* https://napnix.in/:splat 301
 http://www.napnix.in/* https://napnix.in/:splat 301
 https://www.napnix.in/* https://napnix.in/:splat 301

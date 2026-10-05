@@ -28,7 +28,9 @@ The clean proof: `_redirects` asks for `/assets/* 404`, and production returns
 | M5 cache | — | ~360 KiB re-fetched |
 
 Delete both files once the config below is live; leaving them implies rules are
-active when they are not.
+active when they are not. Until then both carry an INERT banner at the top, and
+the block below is version-controlled as `deploy/nginx-napnix.conf` rather than
+living only in this document.
 
 ---
 
@@ -95,9 +97,12 @@ server {
 The `try_files $uri $uri/ =404` line is the one that changes behaviour most.
 Before prerendering, every unknown path had to fall through to `index.html` for
 client-side routing to work, which is what made soft 404s unavoidable. Now that
-49 routes exist on disk as real files, the fallback is only needed for routes
-that are not prerendered — currently just `/blog`, which depends on the API at
-build time. If you would rather keep client-side routing for any URL, use
+all 51 sitemap routes exist on disk as real files, the fallback is only needed
+for routes that are not prerendered. `/blog` is no longer one of them: its index
+renders the curated guides from a local manifest, so it prerenders like any other
+route. What still needs the fallback is the generated blog slugs that exist only
+in the API, plus `/portfolio/:slug`, `/thank-you`, `/data-deletion` and
+`/admin/*` — scoped per prefix in `deploy/nginx-napnix.conf`. If you would rather keep client-side routing for any URL, use
 `try_files $uri $uri/ /404.html;` instead: same 404 status, but the SPA shell
 still boots and can route.
 
