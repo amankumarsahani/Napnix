@@ -1,6 +1,8 @@
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { CheckIcon } from '../components/ui/Icons';
 import { crmTiers, crmFeatures } from '../constants/crmPricing';
+import { ALTERNATIVES, ALTERNATIVE_SLUGS } from '../constants/alternatives';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
 import { buildSaasProduct, enrichOffer, slugifyProductName } from '../constants/productSchema';
 import FeatureValue from '../components/crm/FeatureValue';
@@ -312,6 +314,39 @@ export default function CRMPricingPage() {
                                     {faq.a}
                                 </div>
                             </details>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Comparison links. A visitor on the pricing page is mid-evaluation and
+                very often comparing against a named competitor, so this is where those
+                pages earn their keep. It also gives /alternatives/* real inbound
+                internal links from a high-authority page rather than sitemap-only
+                discovery, which is how the blog posts ended up orphaned. */}
+            <section className="py-16 px-4 bg-white border-t border-slate-200">
+                <div className="max-w-4xl mx-auto">
+                    <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-3">
+                        Comparing NapCRM with something else?
+                    </h2>
+                    <p className="text-slate-600 mb-8">
+                        Side-by-side breakdowns, including where the other tool is the better
+                        choice and who should not switch.
+                    </p>
+                    <div className="grid sm:grid-cols-3 gap-4">
+                        {ALTERNATIVE_SLUGS.map((slug) => (
+                            <Link
+                                key={slug}
+                                to={`/alternatives/${slug}`}
+                                className="block p-5 rounded-xl bg-[#F8FAFC] border border-slate-200 hover:border-[#2563EB]/40 hover:shadow-md transition-all"
+                            >
+                                <span className="font-semibold text-slate-800">
+                                    NapCRM vs {ALTERNATIVES[slug].competitor}
+                                </span>
+                                <span className="block text-sm text-slate-500 mt-1">
+                                    Read the comparison &rarr;
+                                </span>
+                            </Link>
                         ))}
                     </div>
                 </div>

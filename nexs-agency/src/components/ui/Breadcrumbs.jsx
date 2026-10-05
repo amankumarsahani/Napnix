@@ -20,7 +20,11 @@ const routeNames = {
     'ai-machine-learning': 'AI & Machine Learning',
     'cloud-solutions': 'Cloud Solutions',
     'ecommerce-development': 'E-commerce Development',
-    'software-development-company': 'Software Development'
+    'software-development-company': 'Software Development',
+    'alternatives': 'Alternatives',
+    'hubspot': 'HubSpot Alternative',
+    'zoho-crm': 'Zoho CRM Alternative',
+    'salesforce': 'Salesforce Alternative'
 };
 
 export default function Breadcrumbs({ className = '' }) {

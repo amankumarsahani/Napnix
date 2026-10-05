@@ -201,14 +201,10 @@ const BlogPage = () => {
                         "url": SITE_URL
                     }
                 })}</script>
-                <script type="application/ld+json">{JSON.stringify({
-                    "@context": "https://schema.org",
-                    "@type": "BreadcrumbList",
-                    "itemListElement": [
-                        { "@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL },
-                        { "@type": "ListItem", "position": 2, "name": "Blog", "item": `${SITE_URL}/blog` }
-                    ]
-                })}</script>
+            {/* BreadcrumbList removed: src/components/ui/Breadcrumbs.jsx derives the
+                trail from the current path and already emits the schema, so declaring
+                one here put two BreadcrumbList objects on the page. Same class of
+                defect as the duplicate Organization nodes. */}
             </Helmet>
 
             {/* Breadcrumbs */}

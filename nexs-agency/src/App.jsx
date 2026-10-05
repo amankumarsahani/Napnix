@@ -43,6 +43,7 @@ const SecurityPolicy = lazyWithRetry(() => import('./pages/SecurityPolicy'));
 const DataDeletion = lazyWithRetry(() => import('./pages/DataDeletion'));
 const FAQPage = lazyWithRetry(() => import('./pages/FAQPage'));
 const CityLandingPage = lazyWithRetry(() => import('./pages/seo/CityLandingPage'));
+const AlternativePage = lazyWithRetry(() => import('./pages/AlternativePage'));
 const IndustryLandingPage = lazyWithRetry(() => import('./pages/IndustryLandingPage'));
 const CustomWebDevelopment = lazyWithRetry(() => import('./pages/services/CustomWebDevelopment'));
 const MobileAppDevelopment = lazyWithRetry(() => import('./pages/services/MobileAppDevelopment'));
@@ -245,6 +246,8 @@ function App() {
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/napcrm" element={<NapCRMLandingPage />} />
           <Route path="/napcrm/pricing" element={<CRMPricingPage />} />
+          {/* Comparison page type — see src/constants/alternatives.js for why. */}
+          <Route path="/alternatives/:competitor" element={<AlternativePage />} />
           <Route path="/napcrm/industries/:industry" element={<IndustryLandingPage />} />
           <Route path="/products" element={<ProductsPage />} />
           {/* NapMailLandingPage was written but never routed, so /napmail bounced

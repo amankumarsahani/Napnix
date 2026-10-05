@@ -6,6 +6,7 @@
  * content change, or give an individual entry its own lastmod.
  */
 import { BLOG_POSTS } from './blogPosts.js';
+import { ALTERNATIVE_SLUGS } from './alternatives.js';
 
 const CONTENT_UPDATED = '2026-10-05';
 
@@ -82,6 +83,15 @@ export function getSitemapEntries() {
         changefreq: 'weekly',
     }));
 
+    /* Commercial-intent comparison pages. High priority: these target the
+       "<competitor> alternative" queries the SXO pass found had no
+       ranking-eligible page type on the site at all. */
+    const alternatives = ALTERNATIVE_SLUGS.map((slug) => ({
+        path: `/alternatives/${slug}`,
+        priority: '0.9',
+        changefreq: 'monthly',
+    }));
+
     const industries = INDUSTRY_SLUGS.map((slug) => ({
         path: `/napcrm/industries/${slug}`,
         priority: '0.8',
@@ -101,7 +111,7 @@ export function getSitemapEntries() {
         lastmod: post.updated,
     }));
 
-    return [...core, ...cities, ...industries, ...services, ...blogs].map((entry) => ({
+    return [...core, ...cities, ...alternatives, ...industries, ...services, ...blogs].map((entry) => ({
         lastmod: CONTENT_UPDATED,
         ...entry,
     }));
