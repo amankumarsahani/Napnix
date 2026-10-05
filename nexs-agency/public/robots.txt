@@ -71,4 +71,11 @@ Disallow: /
 Sitemap: https://napnix.in/sitemap.xml
 
 # Machine-readable licensing terms (RSL 1.0).
-License: https://napnix.in/license.xml
+#
+# Licensing terms for this site's content are declared with a standard
+# <link rel="license"> in index.html, and served as an HTTP Link header.
+# A "License:" directive here is not part of the robots.txt grammar — it is
+# an RSL proposal with no confirmed consumer, and an unknown directive makes
+# the whole file fail validation (Lighthouse's robots-txt audit flagged it,
+# costing the SEO category). The declaration moved; the intent did not.
+# See https://napnix.in/license.xml

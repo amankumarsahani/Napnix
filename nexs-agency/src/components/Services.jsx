@@ -56,8 +56,15 @@ const ServiceCard = memo(function ServiceCard({ service, index }) {
         ))}
       </ul>
 
-      <Link to={service.link} aria-label={`Learn more about ${service.title}`} className="relative z-10 inline-flex items-center text-sm font-bold text-[#2563EB] hover:opacity-80 transition-opacity duration-300">
-        Learn More
+      {/* The visible text carries the service name rather than reading
+          "Learn More". Five identical "Learn More" anchors on the homepage were
+          the whole of Lighthouse's failing link-text audit, and generic anchor
+          text gives the target page no topical signal either. The aria-label
+          that used to paper over this is gone: the text now describes its own
+          destination, so assistive tech and sighted visitors read the same
+          thing. */}
+      <Link to={service.link} className="relative z-10 inline-flex items-center text-sm font-bold text-[#2563EB] hover:opacity-80 transition-opacity duration-300">
+        Explore {service.title}
         <RiArrowRightLine className="ml-1 text-[#2563EB]" />
       </Link>
     </motion.div>
