@@ -34,11 +34,21 @@ export const AUTHORS = {
         /** @type {string[]} Add this author's own profile URLs. See note above. */
         profiles: [],
     },
-    'kshitij-bhardwaj': {
-        id: 'kshitij-bhardwaj',
-        name: 'Kshitij Bhardwaj',
+    /*
+     * Replaced Kshitij Bhardwaj on 2026-10-06; this author now owns the two
+     * articles that byline previously carried (react-native-vs-flutter and
+     * why-business-needs-pwa).
+     *
+     * jobTitle and knowsAbout are inherited from that byline because they
+     * describe the subject matter of those two articles, which is what this file
+     * limits itself to evidencing. If Anu's actual title differs, correct it
+     * here — it flows into the byline, the author page and the Person schema.
+     */
+    'anu-kumar': {
+        id: 'anu-kumar',
+        name: 'Anu Kumar',
         jobTitle: 'Mobile & Web Engineer',
-        bio: 'Kshitij builds the cross-platform mobile and progressive web applications Napnix ships, working across React Native, Flutter and the modern web platform.',
+        bio: 'Anu builds the cross-platform mobile and progressive web applications Napnix ships, working across React Native, Flutter and the modern web platform.',
         knowsAbout: [
             'Cross-platform mobile development',
             'React Native',

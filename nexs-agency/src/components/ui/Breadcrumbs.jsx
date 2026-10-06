@@ -27,7 +27,7 @@ const routeNames = {
     'crm-cost-calculator': 'CRM Cost Calculator',
     'authors': 'Authors',
     'aman-kumar': 'Aman Kumar',
-    'kshitij-bhardwaj': 'Kshitij Bhardwaj',
+    'anu-kumar': 'Anu Kumar',
     'hubspot': 'HubSpot Alternative',
     'zoho-crm': 'Zoho CRM Alternative',
     'salesforce': 'Salesforce Alternative'

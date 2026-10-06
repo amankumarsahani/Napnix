@@ -1,5 +1,6 @@
 // TODO: Replace console.error with Sentry or proper error tracking
 import { useEffect, useState } from 'react';
+import { AUTHORS } from '../constants/authors';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import DOMPurify from 'dompurify';
@@ -107,27 +108,43 @@ const BlogArticle = () => {
     const ogImage = blog.ogImage || articleImage;
     const metaDesc = blog.metaDescription || blog.excerpt;
 
-    const authorBios = {
-        'Aman Kumar': {
-            role: 'Founder & Tech Lead',
-            bio: 'Full-stack developer passionate about building scalable software solutions. 5+ years in web and mobile development.',
-            linkedin: 'https://linkedin.com/in/amankumar',
-            twitter: 'https://twitter.com/amankumar'
-        },
-        'Kshitij Bhardwaj': {
-            role: 'Senior Developer',
-            bio: 'Expert in React, Node.js, and cloud architecture. Loves creating intuitive user experiences.',
-            linkedin: 'https://linkedin.com/in/kshitij',
-            twitter: ''
+    /*
+     * Author details come from constants/authors.js, the single source of truth
+     * shared with the hand-written articles, the author pages and the Person
+     * schema.
+     *
+     * What this replaced was a second, divergent copy of the same data, and it
+     * carried three problems:
+     *
+     * - Guessed profile URLs. It linked bylines to linkedin.com/in/amankumar,
+     *   twitter.com/amankumar and linkedin.com/in/kshitij. Those are generic
+     *   handles that resolve, but resolving is not owning — they almost
+     *   certainly belong to other people. Pointing a byline at a stranger's
+     *   profile is worse than shipping no link, so profiles now come from
+     *   authors.js, where they stay empty until a real one is supplied.
+     * - A "5+ years in web and mobile development" claim, against a 2025
+     *   founding date. The same overstatement was removed from the homepage and
+     *   /about.
+     * - Roles that disagreed with authors.js ("Founder & Tech Lead" here versus
+     *   "Founder & Engineering Lead" there).
+     *
+     * This renderer serves /blog/:slug for the API-driven posts, where `author`
+     * is a free-text string, so the lookup is by name with a neutral fallback.
+     */
+    const knownAuthor = Object.values(AUTHORS).find((a) => a.name === blog.author);
+    const authorInfo = knownAuthor
+        ? {
+            role: knownAuthor.jobTitle,
+            bio: knownAuthor.bio,
+            linkedin: knownAuthor.profiles.find((u) => u.includes('linkedin.com')) || '',
+            twitter: knownAuthor.profiles.find((u) => u.includes('x.com') || u.includes('twitter.com')) || '',
         }
-    };
-
-    const authorInfo = authorBios[blog.author] || {
-        role: 'Contributing Author',
-        bio: 'Part of the Napnix team, bringing insights on technology and digital innovation.',
-        linkedin: '',
-        twitter: ''
-    };
+        : {
+            role: 'Contributing Author',
+            bio: 'Part of the Napnix team, writing on the software we build and the decisions behind it.',
+            linkedin: '',
+            twitter: '',
+        };
 
     return (
         <div className="min-h-screen bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white pt-20">
