@@ -1,4 +1,5 @@
 import { SITE_URL, siteConfig, LOGO_URL } from './siteConfig';
+import { AUTHORS } from './authors';
 
 export const BRAND_NAME = 'Napnix';
 export const BRAND_ALIAS = 'Napix';
@@ -43,6 +44,18 @@ export function organizationSchema() {
         email: siteConfig.email.primary,
         telephone: siteConfig.phone.tel,
         foundingDate: '2025',
+        /*
+         * Both founders, by reference to the Person nodes their author pages
+         * declare. Naming founders ties the company entity to real people with
+         * resolvable URLs, which is the signal the E-E-A-T pass found missing —
+         * Authoritativeness scored 28/100 largely because nobody was named
+         * outside a byline.
+         *
+         * References, not inline definitions: the full Person records live at
+         * /authors/<id>, and declaring them twice would create competing nodes
+         * under one @id — the defect already removed from index.html.
+         */
+        founder: Object.keys(AUTHORS).map((id) => ({ '@id': `${SITE_URL}/authors/${id}#person` })),
         description:
             'Napnix is a software development company building custom web apps, mobile apps, CRM systems, AI workflows, and cloud platforms.',
         brand: {

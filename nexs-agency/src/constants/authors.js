@@ -24,7 +24,7 @@ export const AUTHORS = {
         id: 'aman-kumar',
         name: 'Aman Kumar',
         jobTitle: 'Founder & Engineering Lead',
-        bio: 'Aman founded Napnix and leads its engineering work, building NapCRM and the custom CRM and automation systems Napnix delivers for agencies and service businesses.',
+        bio: 'Aman co-founded Napnix and leads its engineering work, building NapCRM and the custom CRM and automation systems Napnix delivers for agencies and service businesses.',
         knowsAbout: [
             'Custom CRM development',
             'Enterprise software architecture',
@@ -35,20 +35,23 @@ export const AUTHORS = {
         profiles: [],
     },
     /*
-     * Replaced Kshitij Bhardwaj on 2026-10-06; this author now owns the two
-     * articles that byline previously carried (react-native-vs-flutter and
-     * why-business-needs-pwa).
+     * Replaced Kshitij Bhardwaj on 2026-10-06, and owns the two articles that
+     * byline carried (react-native-vs-flutter and why-business-needs-pwa).
      *
-     * jobTitle and knowsAbout are inherited from that byline because they
-     * describe the subject matter of those two articles, which is what this file
-     * limits itself to evidencing. If Anu's actual title differs, correct it
-     * here — it flows into the byline, the author page and the Person schema.
+     * Same title as Aman: both are founders of Napnix. `founder` on the
+     * Organization node in seoConfig.js references both of these Person records,
+     * so the company entity and the two people resolve to each other — which is
+     * the point of giving authors their own pages at all.
+     *
+     * knowsAbout stays mobile and web, because that is what the articles under
+     * this byline are about and this file limits itself to what the repository
+     * evidences.
      */
     'anu-kumar': {
         id: 'anu-kumar',
         name: 'Anu Kumar',
-        jobTitle: 'Mobile & Web Engineer',
-        bio: 'Anu builds the cross-platform mobile and progressive web applications Napnix ships, working across React Native, Flutter and the modern web platform.',
+        jobTitle: 'Founder & Engineering Lead',
+        bio: 'Anu co-founded Napnix and builds the cross-platform mobile and progressive web applications it ships, working across React Native, Flutter and the modern web platform.',
         knowsAbout: [
             'Cross-platform mobile development',
             'React Native',
