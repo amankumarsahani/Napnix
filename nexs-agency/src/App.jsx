@@ -145,9 +145,12 @@ const LandingPage = memo(function LandingPage() {
   };
 
   /*
-   * The wrapper below uses overflow-x-CLIP, not overflow-x-hidden.
+   * The wrapper below uses overflow-x-clip, not the `hidden` variant of that
+   * utility. (This comment deliberately never spells that class name out:
+   * Tailwind v4 scans source files as plain text, so writing it even inside a
+   * comment is enough to emit the now-unused rule into the production CSS.)
    *
-   * It used to carry `overflow-x-hidden`, which produced two visible scrollbars
+   * The wrapper used to carry it, which produced two visible scrollbars
    * on the homepage. Per the CSS Overflow spec, when one axis is `hidden` and
    * the other is `visible`, the `visible` one computes to `auto` — so this div
    * silently became its own vertical scroll container. Its content exceeded it
