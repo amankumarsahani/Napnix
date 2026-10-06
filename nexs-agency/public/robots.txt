@@ -61,11 +61,30 @@ Allow: /
 User-agent: cohere-ai
 Allow: /
 
-# Block aggressive/low-value crawlers
-User-agent: Bytespider
-Disallow: /
-
+# Common Crawl. Allowed as of 2026-10-06, having previously been disallowed.
+#
+# It had been grouped under "aggressive/low-value crawlers" alongside Bytespider,
+# which was a miscategorisation: Common Crawl is a nonprofit web archive, it
+# honours robots.txt, and it is not aggressive. The block was also incoherent
+# with the rest of this file, which allows all fifteen other named crawlers
+# including every major training one above.
+#
+# The concrete cost of blocking it: Common Crawl's web graph is the dataset most
+# backlink tools read, and napnix.in was absent from it entirely
+# (commoncrawl_graph.py returned in_crawl: false), so there was no way to measure
+# the site's inbound links at all. Allowing CCBot is what gets the domain into
+# that graph.
+#
+# Note this is still a content-licensing choice, not a search one: Common Crawl
+# data does feed some AI training corpora. It is allowed here because the
+# training stance above is already permissive, so blocking only the nonprofit
+# archive gave up the measurement without protecting anything.
 User-agent: CCBot
+Allow: /
+
+# Block aggressive crawlers. Bytespider is documented as ignoring robots.txt, so
+# this line is a stated preference rather than an enforced control.
+User-agent: Bytespider
 Disallow: /
 
 Sitemap: https://napnix.in/sitemap.xml
