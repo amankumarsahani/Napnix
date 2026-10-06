@@ -88,7 +88,7 @@ export default function IndustryLandingPage() {
     });
 
     return (
-        <div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-hidden selection:bg-[#2563EB]/10">
+        <div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-clip selection:bg-[#2563EB]/10">
 
             <Helmet>
                 <title>{data.seo.title}</title>

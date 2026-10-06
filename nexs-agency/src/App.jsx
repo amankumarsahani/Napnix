@@ -144,8 +144,26 @@ const LandingPage = memo(function LandingPage() {
     })),
   };
 
+  /*
+   * The wrapper below uses overflow-x-CLIP, not overflow-x-hidden.
+   *
+   * It used to carry `overflow-x-hidden`, which produced two visible scrollbars
+   * on the homepage. Per the CSS Overflow spec, when one axis is `hidden` and
+   * the other is `visible`, the `visible` one computes to `auto` — so this div
+   * silently became its own vertical scroll container. Its content exceeded it
+   * by about 30px, which is why the second scrollbar was short and stopped
+   * scrolling almost immediately, reading as though it vanished at the bottom.
+   *
+   * `overflow-x: clip` clips the same horizontal overflow but does NOT force the
+   * other axis to auto, so vertical scrolling stays on the document. Browsers
+   * without `clip` (Safari 15 and older) fall back to `visible`, which is
+   * harmless because index.css already sets `overflow-x: hidden` on html/body.
+   *
+   * Applied to the four other page wrappers that shared the pattern too:
+   * PublicLayout, NapCRM, NapMail and IndustryLandingPage.
+   */
   return (
-    <div className="min-h-screen bg-white w-full overflow-x-hidden">
+    <div className="min-h-screen bg-white w-full overflow-x-clip">
       <Helmet>
         <title>Napnix | CRM & Lead Follow-Up for Service Businesses</title>
         <meta name="description" content="Napnix builds the system behind your growth: lead capture, automated follow-up and CRM for service businesses, plus custom software. Based in Mohali." />

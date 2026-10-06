@@ -132,7 +132,7 @@ export default function NapCRMLandingPage() {
     const { currency, setCurrency, symbol, formatPrice, currencies } = useCurrency();
 
     return (
-        <div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-hidden selection:bg-[#2563EB]/10">
+        <div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-clip selection:bg-[#2563EB]/10">
             <Helmet>
                 <title>NapCRM - All-in-One CRM for Agencies &amp; Businesses | Napnix</title>
                 <meta name="description" content="NapCRM is one system for agency operations: lead management, e-commerce, invoicing, team chat and client portals. Plans from ₹4,165/month." />

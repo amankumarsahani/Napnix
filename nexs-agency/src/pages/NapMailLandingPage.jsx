@@ -183,7 +183,7 @@ export default function NapMailLandingPage() {
     }, [selectedPlan, showToast]);
 
     return (
-        <div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-hidden selection:bg-[#2563EB]/10">
+        <div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-clip selection:bg-[#2563EB]/10">
             <Helmet>
                 <title>NapMail — Email Marketing Engine by Napnix</title>
                 <meta name="description" content="NapMail is an email marketing engine with smart SMTP rotation, anti-spam scoring, domain throttling and visual automations. Free plan available." />
