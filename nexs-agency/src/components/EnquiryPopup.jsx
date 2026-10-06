@@ -5,10 +5,48 @@ import { getRecaptchaToken } from '../utils/recaptcha';
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { RiArrowRightLine, RiCloseLine, RiLoader4Line, RiShieldCheckLine, RiStarLine, RiTimeLine } from 'react-icons/ri';
 
-const POPUP_DELAY_MS = 15000;
-const SCROLL_THRESHOLD = 0.5;
+/*
+ * When this popup is allowed to interrupt someone.
+ *
+ * It is a blocking modal — `fixed inset-0` with a blurred backdrop — and
+ * useBodyScrollLock freezes the body while it is open. That is correct for a
+ * modal, but it means the trigger decides whether the site feels broken.
+ *
+ * It previously fired on a blind 15-second timer OR at 50% scroll depth,
+ * whichever came first. Both interrupt mid-read, and because the body locks, the
+ * visitor's next scroll does nothing at all. Measured on the live homepage:
+ * crossing 50% depth set `body { position: fixed; top: -7200px }` and six
+ * further wheel events moved the page 0px. Dismissal then suppresses it for
+ * seven days, which is why it reads as "it stuck once, then scrolled fine" —
+ * precisely the reported symptom.
+ *
+ * What changed:
+ * - The timer is gone. Elapsed time is not an intent signal; it is an ambush.
+ * - Scroll depth moved from 0.5 to 0.9, so it asks someone who has read the
+ *   page rather than someone halfway through a sentence.
+ * - Exit intent added: the pointer leaving through the top of the viewport is
+ *   the conventional "about to go" signal, and interrupting then costs nothing.
+ * - Pages whose job is to be read and cited are excluded entirely (see
+ *   SUPPRESSED_PATHS).
+ *
+ * Both remaining triggers are higher-intent than a 15-second timer, so this
+ * should not cost conversions — but it is a lead-capture change, so watch the
+ * enquiry rate rather than assuming.
+ */
+const SCROLL_THRESHOLD = 0.9;
 const STORAGE_KEY = 'napnix_popup_dismissed';
 const DISMISS_DAYS = 7;
+
+/*
+ * Paths that must never be interrupted.
+ *
+ * /tools/crm-cost-calculator exists to be linked to and says so on the page;
+ * ambushing a reader with a modal is the fastest way to ensure nobody cites it.
+ * The /alternatives/* comparisons and /authors/* pages are read end-to-end for
+ * the same reason, and /contact already has the form the popup is asking them
+ * to fill in.
+ */
+const SUPPRESSED_PATH_PREFIXES = ['/tools/', '/alternatives/', '/authors/', '/contact'];
 
 const EnquiryPopup = memo(function EnquiryPopup() {
     const [isVisible, setIsVisible] = useState(false);
@@ -41,9 +79,11 @@ const EnquiryPopup = memo(function EnquiryPopup() {
         return daysSince < DISMISS_DAYS;
     }, []);
 
-    // Show popup logic
+    // Show popup logic — intent signals only, never a timer. See the note on
+    // SCROLL_THRESHOLD above for why.
     useEffect(() => {
         if (wasRecentlyDismissed()) return;
+        if (SUPPRESSED_PATH_PREFIXES.some((p) => window.location.pathname.startsWith(p))) return;
 
         let hasShown = false;
         const showPopup = () => {
@@ -52,22 +92,26 @@ const EnquiryPopup = memo(function EnquiryPopup() {
             setIsVisible(true);
         };
 
-        // Timer trigger
-        const timer = setTimeout(showPopup, POPUP_DELAY_MS);
-
-        // Scroll trigger
+        // Scroll-depth trigger: they have read essentially the whole page.
         const handleScroll = () => {
-            const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-            if (scrollPercent >= SCROLL_THRESHOLD) {
-                showPopup();
-            }
+            const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+            if (scrollable <= 0) return;
+            if (window.scrollY / scrollable >= SCROLL_THRESHOLD) showPopup();
         };
 
-        window.addEventListener('scroll', handleScroll);
+        // Exit intent: pointer leaves through the top of the viewport. Desktop
+        // only in practice, which is fine — there is no touch equivalent, and
+        // guessing one produces exactly the mid-scroll ambush this replaces.
+        const handleExitIntent = (e) => {
+            if (e.clientY <= 0 && !e.relatedTarget) showPopup();
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        document.addEventListener('mouseout', handleExitIntent);
 
         return () => {
-            clearTimeout(timer);
             window.removeEventListener('scroll', handleScroll);
+            document.removeEventListener('mouseout', handleExitIntent);
         };
     }, [wasRecentlyDismissed]);
 
