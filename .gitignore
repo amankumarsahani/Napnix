@@ -51,3 +51,10 @@ lerna-debug.log*
 
 # OS
 Thumbs.db
+
+# SEO audit artefacts — 16 MB of screenshots and generated reports from
+# /seo audit runs. Regenerated on demand, so there is nothing to version.
+napnix.in-audit/
+
+# Local tooling scratch directory.
+.omo/
