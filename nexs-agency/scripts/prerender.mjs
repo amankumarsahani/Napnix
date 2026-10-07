@@ -374,6 +374,37 @@ for (const route of routes) {
     // disagree, so hydration is only attempted where it can succeed.
     await page.evaluate((r) => {
       document.documentElement.setAttribute('data-prerendered-path', r);
+
+      // Point the Markdown alternate at THIS route's .md sibling.
+      //
+      // index.html ships a static `href="/index.md"`, and nothing rewrote it, so
+      // all 59 prerendered pages advertised the homepage's Markdown. An agent
+      // following the link from /napcrm/pricing was handed the homepage instead
+      // of the pricing content — which defeats the only purpose of the tag,
+      // since the per-route siblings written below all exist and are correct.
+      const mdHref = r === '/' ? '/index.md' : `${r.replace(/\/$/, '')}.md`;
+      document
+        .querySelectorAll('link[rel="alternate"][type="text/markdown"]')
+        .forEach((el) => el.setAttribute('href', mdHref));
+
+      // Drop the homepage hero preload on every other route.
+      //
+      // The preload is declared statically in index.html because the homepage
+      // hero is its LCP element. But prerendering copies the whole head onto
+      // all 59 routes, so /faq, /contact and the rest each fetched a 30-116 KB
+      // AVIF they never render. Chrome reports it as "preloaded but not used",
+      // and it competes with the hero those pages do render.
+      if (r !== '/') {
+        document
+          .querySelectorAll('link[rel="preload"][as="image"]')
+          .forEach((el) => {
+            const srcset = el.getAttribute('imagesrcset') || '';
+            const href = el.getAttribute('href') || '';
+            if (srcset.includes('/assets/hero/home-hero-') || href.includes('/assets/hero/home-hero-')) {
+              el.remove();
+            }
+          });
+      }
     }, route);
 
     let html = '<!doctype html>\n' + await page.evaluate(() => document.documentElement.outerHTML);

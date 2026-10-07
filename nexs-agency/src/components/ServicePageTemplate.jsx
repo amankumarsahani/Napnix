@@ -118,6 +118,28 @@ function getColors(color) {
     return themeColorMap[color] || themeColorMap.teal;
 }
 
+
+/**
+ * Build one Unsplash variant URL of a hero image.
+ *
+ * This used to be written as `${hero.bgImage}?q=80&w=2072&...`, which was wrong
+ * in a way that was invisible in the markup: every `bgImage` in the service data
+ * files ALREADY carries a query string (`...?q=60&w=1280&auto=format&...`), so
+ * appending a second `?` produced
+ *
+ *   ...photo-123?q=60&w=1280&auto=format&fit=crop&fm=webp?q=80&w=2072&...
+ *
+ * Unsplash parses that with last-wins, so `w=2072` took effect and the page
+ * shipped a 2072px, 189 KB hero instead of the intended 1280px, 91 KB one. The
+ * srcSet was worse: every entry resolved to the same 2072px file, so the `640w`
+ * candidate handed phones the full-size image and the whole srcSet resized
+ * nothing. Splitting on `?` first is what makes the width parameters real.
+ */
+const heroVariant = (url, width) => {
+    const [base] = String(url).split('?');
+    return `${base}?q=70&w=${width}&auto=format&fit=crop&fm=webp`;
+};
+
 export default function ServicePageTemplate({ data }) {
     const {
         themeColor,
@@ -140,7 +162,17 @@ export default function ServicePageTemplate({ data }) {
         "name": schema.name,
         "provider": { "@type": "Organization", "name": "Napnix", "url": SITE_URL },
         "description": schema.description,
-        "areaServed": "Global",
+        // A bare "Global" string is not an entity. Typed Country nodes are what
+        // let a consumer resolve the markets, and they match the areaServed list
+        // already published on the LocalBusiness node.
+        "areaServed": [
+            { "@type": "Country", "name": "India" },
+            { "@type": "Country", "name": "United States" },
+            { "@type": "Country", "name": "United Kingdom" },
+            { "@type": "Country", "name": "United Arab Emirates" },
+            { "@type": "Country", "name": "Canada" },
+            { "@type": "Country", "name": "Australia" }
+        ],
         "offers": enrichOffer({
             "@type": "Offer",
             "name": `Quote for ${schema.name}`,
@@ -191,11 +223,12 @@ export default function ServicePageTemplate({ data }) {
             <section className="relative pt-32 pb-24 overflow-hidden bg-slate-900 text-white rounded-b-[3rem] shadow-2xl z-20">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src={`${hero.bgImage}?q=80&w=2072&auto=format&fit=crop&fm=webp`}
-                        srcSet={`${hero.bgImage}?w=640&fm=webp 640w, ${hero.bgImage}?w=1024&fm=webp 1024w, ${hero.bgImage}?w=1920&fm=webp 1920w`}
+                        src={heroVariant(hero.bgImage, 1280)}
+                        srcSet={`${heroVariant(hero.bgImage, 640)} 640w, ${heroVariant(hero.bgImage, 1024)} 1024w, ${heroVariant(hero.bgImage, 1920)} 1920w`}
                         sizes="100vw"
                         alt={hero.bgImageAlt || 'Background'}
-                        loading="lazy"
+                        fetchPriority="high"
+                        decoding="async"
                         className="w-full h-full object-cover opacity-50 transform scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-b from-slate-900/50 via-slate-900/80 to-slate-900"></div>
@@ -218,6 +251,32 @@ export default function ServicePageTemplate({ data }) {
                         <motion.p initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-xl text-slate-400 max-w-2xl leading-relaxed mb-10">
                             {hero.paragraph}
                         </motion.p>
+
+                        {/*
+                          * Price band, timeline and ownership, above the fold.
+                          *
+                          * The SXO read of the ranking set was that evaluators decide on
+                          * exactly three things in this order -- what it costs, how long
+                          * it takes, and who owns the result -- and on this page all
+                          * three were buried in the FAQ at the bottom. Nothing here is a
+                          * new claim: each value is copied from the same page's own FAQ
+                          * answers, just surfaced where the decision is actually made.
+                          */}
+                        {hero.facts?.length ? (
+                            <motion.ul
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.25 }}
+                                className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-10 text-sm md:text-base"
+                            >
+                                {hero.facts.map((fact) => (
+                                    <li key={fact} className="flex items-center gap-2 text-slate-200">
+                                        <Icon name="ri-check-line" className={tc.text400} />
+                                        <span>{fact}</span>
+                                    </li>
+                                ))}
+                            </motion.ul>
+                        ) : null}
 
                         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-4">
                             <Link to="/contact" className={`inline-flex items-center gap-3 px-8 py-4 ${tc.bg600} ${tc.bgHover500} rounded-full text-lg font-bold transition-all shadow-lg ${tc.shadowHover}`}>

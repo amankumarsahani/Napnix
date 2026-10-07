@@ -24,6 +24,11 @@ const data = {
         gradient: 'from-[#2563EB] to-[#1D4ED8]',
         paragraph: 'A CRM shaped around how your business actually works — or a configured NapCRM edition if that gets you there faster. We will tell you which one fits before you commit to either.',
         ctaText: 'Scope a CRM project',
+        // Each of these is already stated in this page's FAQ below -- the price
+        // band and timeline in "How much does custom CRM development cost?" and
+        // "How long before the team is actually using it?", the ownership line in
+        // "Who owns the system afterwards?".
+        facts: ['\u20b94–12 lakh for a focused build', '8–14 weeks to first release', 'You own the repo and the cloud account'],
         bgImage: 'https://images.unsplash.com/photo-1552581234-26160f608093?q=60&w=1280&auto=format&fit=crop&fm=webp',
         bgImageAlt: 'Two colleagues reviewing a sales pipeline on a laptop',
     },
@@ -135,13 +140,13 @@ const data = {
         buttonText: 'Scope a CRM project',
     },
     seo: {
-        title: 'Custom CRM Development Company | Napnix',
+        title: 'Custom CRM Development Company in India | Napnix',
         description: 'Custom CRM development for service businesses: lead capture, follow-up automation, GST invoicing and migration from HubSpot, Zoho or Salesforce. Mohali-based.',
         keywords: 'custom CRM development, custom CRM development company, CRM development services India, bespoke CRM software, CRM development Mohali, CRM migration, build vs buy CRM',
         canonicalPath: '/services/crm-development',
-        ogTitle: 'Custom CRM Development Company | Napnix',
+        ogTitle: 'Custom CRM Development Company in India | Napnix',
         ogDescription: 'Custom CRM development for service businesses — or a configured NapCRM edition if that fits better. We will tell you which.',
-        twitterTitle: 'Custom CRM Development Company | Napnix',
+        twitterTitle: 'Custom CRM Development Company in India | Napnix',
         twitterDescription: 'Custom CRM development for service businesses — or a configured NapCRM edition if that fits better.',
     },
     schema: {

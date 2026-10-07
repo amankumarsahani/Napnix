@@ -100,7 +100,7 @@ const ContactPage = () => {
     const faqs = [
         {
             question: "Are you accepting new projects?",
-            answer: "Yes, we are currently accepting new projects for Q2 and Q3. Reach out to secure your spot."
+            answer: "Yes. We take on a limited number of new projects each quarter so that scoping and delivery do not slip. Reach out and we will tell you our current start window honestly rather than promise a date we cannot hold."
         },
         {
             question: "Do you work with startups?",
@@ -135,7 +135,13 @@ const ContactPage = () => {
                 <meta name="twitter:creator" content="@napnix" />
                 <script type="application/ld+json">{JSON.stringify({
                     "@context": "https://schema.org",
-                    "@type": "LocalBusiness",
+                    // Same @id and @type as the canonical node in index.html, so this
+                    // merges into that one entity instead of becoming a third
+                    // LocalBusiness for the same office. The site previously declared
+                    // three (home/#localbusiness, the Mohali page's own, and this
+                    // un-@id'd one), leaving Google to guess which was canonical.
+                    "@type": "ProfessionalService",
+                    "@id": `${SITE_URL}/#localbusiness`,
                     "name": "Napnix",
                     "url": SITE_URL,
                     "email": siteConfig.email.info,
@@ -147,8 +153,10 @@ const ContactPage = () => {
                     "image": `${SITE_URL}/og-image.jpg`,
                     "address": {
                         "@type": "PostalAddress",
-                        "addressLocality": "Mohali",
+                        "streetAddress": "2519, Azad Nagar, Balongi",
+                        "addressLocality": "SAS Nagar (Mohali)",
                         "addressRegion": "Punjab",
+                        "postalCode": "160055",
                         "addressCountry": "IN"
                     },
                     "openingHours": "Mo-Fr 09:00-18:00",
@@ -268,7 +276,11 @@ const ContactPage = () => {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-xl mb-1">Visit Us</h3>
-                                        <p className="text-blue-100 opacity-80">Mohali, SAS Nagar</p>
+                                        <p className="text-blue-100 opacity-80">
+                                            2519, Azad Nagar, Balongi<br />
+                                            SAS Nagar (Mohali), Punjab 160055<br />
+                                            India
+                                        </p>
                                         <p className="text-blue-100 opacity-80">Punjab, India</p>
                                     </div>
                                 </div>
