@@ -36,7 +36,7 @@ import { gzipSync, brotliCompressSync, constants as zlibConstants } from 'node:z
 import { createReadStream, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join, dirname, extname } from 'node:path';
 import { chromium } from 'playwright';
-import { getSitemapEntries } from '../src/constants/sitemapRoutes.js';
+import { getPrerenderRoutes } from '../src/constants/sitemapRoutes.js';
 
 // BUILD_OUT_DIR lets build:prod assemble everything in a staging directory and
 // swap it into place at the end — see scripts/swap-dist.mjs for why.
@@ -107,7 +107,9 @@ function readShellScripts() {
 }
 
 const shellScripts = readShellScripts();
-const routes = getSitemapEntries().map((e) => e.path);
+// Not the sitemap set -- see getPrerenderRoutes(). Noindex pages still have to
+// be served as real HTML, or nginx's try_files turns them into 404s.
+const routes = getPrerenderRoutes();
 const server = await serveDist();
 const browser = await chromium.launch();
 const page = await browser.newPage();

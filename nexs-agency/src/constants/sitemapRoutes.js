@@ -22,6 +22,35 @@ export const CITY_SLUGS = [
     'toronto',
 ];
 
+/**
+ * Which city pages search engines should index.
+ *
+ * Only the two we can actually claim. Napnix has one office, in Balongi
+ * (Mohali), and Chandigarh is the adjacent Tricity market — a local claim that
+ * holds up. There is no office in London, New York, Bangalore, Dubai, Sydney or
+ * Toronto, and 90 days of Search Console data shows what those six pages
+ * actually earned: zero clicks, and impressions almost entirely for queries we
+ * cannot legitimately serve. The Bangalore page's top terms were
+ * "mobile app development in jp nagar" (15 impressions, position 86.6),
+ * "software development company in btm layout" (position 60.5) — hyper-local
+ * Bangalore neighbourhood searches — plus brand confusion with
+ * "cloudnix software labs private limited" (11 impressions) and
+ * "naptico services pvt ltd".
+ *
+ * Six templated 330-380 word pages competing on a local claim we do not have is
+ * the doorway-page pattern, and it risks the whole site under the
+ * helpful-content system for traffic that was never going to convert. They stay
+ * reachable on `noindex, follow` so existing links keep their equity, and they
+ * leave the sitemap: asking Google to crawl a page we are telling it not to
+ * index is a contradiction.
+ *
+ * The honest replacement is one global-delivery page describing remote
+ * engineering from India. Removing these six is the reversible first step.
+ */
+export const INDEXABLE_CITY_SLUGS = ['mohali', 'chandigarh'];
+
+export const isCityIndexable = (slug) => INDEXABLE_CITY_SLUGS.includes(slug);
+
 export const INDUSTRY_SLUGS = [
     'general',
     'ecommerce',
@@ -81,9 +110,12 @@ export function getSitemapEntries() {
         { path: '/security', priority: '0.4', changefreq: 'yearly' },
     ];
 
-    const cities = CITY_SLUGS.map((slug) => ({
+    /* Only the indexable cities. See INDEXABLE_CITY_SLUGS above for why the six
+       overseas pages are excluded -- a sitemap entry for a noindex page asks
+       Google to crawl what we are telling it to ignore. */
+    const cities = INDEXABLE_CITY_SLUGS.map((slug) => ({
         path: `/software-development-company/${slug}`,
-        priority: slug === 'mohali' || slug === 'chandigarh' ? '0.95' : '0.9',
+        priority: '0.95',
         changefreq: 'weekly',
     }));
 
@@ -127,4 +159,26 @@ export function getSitemapEntries() {
         lastmod: CONTENT_UPDATED,
         ...entry,
     }));
+}
+
+/**
+ * Routes the build must render to static HTML.
+ *
+ * This is deliberately NOT the sitemap set. A page can be noindex and still
+ * need to exist: the six overseas city pages are excluded from the sitemap (see
+ * INDEXABLE_CITY_SLUGS) but are still live URLs with inbound links, and nginx
+ * serves this directory tree with `try_files $uri $uri/index.html =404`. Drive
+ * prerender from the sitemap alone and those six stop being written, so every
+ * one of them starts returning 404 -- which is what happened the first time
+ * this split was made.
+ *
+ * Rule of thumb: the sitemap answers "what should Google index?", this answers
+ * "what must the server be able to serve?". The second is always a superset.
+ */
+export function getPrerenderRoutes() {
+    const indexable = getSitemapEntries().map((e) => e.path);
+    const noindexCities = CITY_SLUGS
+        .filter((slug) => !isCityIndexable(slug))
+        .map((slug) => `/software-development-company/${slug}`);
+    return [...indexable, ...noindexCities];
 }

@@ -6,6 +6,7 @@ import NotFound from '../NotFound';
 import FadeIn from '../../components/ui/FadeIn';
 import ReadingProgress from '../../components/ui/ReadingProgress';
 import { SITE_URL, siteConfig } from '../../constants/siteConfig';
+import { isCityIndexable } from '../../constants/sitemapRoutes';
 import { getLocalBusinessOffers } from '../../constants/schemaOffers';
 import Icon from '../../components/ui/Icon';
 import { RiArrowRightLine, RiBriefcase4Line, RiCheckLine, RiGlobalLine, RiMapPinLine, RiShieldCheckLine, RiTimeLine } from 'react-icons/ri';
@@ -395,7 +396,15 @@ const CityLandingPage = () => {
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/software-development-company/${city}`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
-                <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+                {/* noindex for the six cities with no office -- see
+                    INDEXABLE_CITY_SLUGS in src/constants/sitemapRoutes.js. `follow` is
+                    deliberate: the pages stay reachable and keep passing link equity. */}
+                <meta
+                    name="robots"
+                    content={isCityIndexable(city)
+                        ? 'index, follow, max-image-preview:large, max-snippet:-1'
+                        : 'noindex, follow'}
+                />
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta property="og:image:width" content="1200" />
