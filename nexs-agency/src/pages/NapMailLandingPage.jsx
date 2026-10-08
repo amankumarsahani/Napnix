@@ -185,13 +185,13 @@ export default function NapMailLandingPage() {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-clip selection:bg-[#2563EB]/10">
             <Helmet>
-                <title>NapMail — Email Marketing Engine by Napnix</title>
-                <meta name="description" content="NapMail is an email marketing engine with smart SMTP rotation, anti-spam scoring, domain throttling and visual automations. Free plan available." />
+                <title>NapMail — Email Marketing with SMTP Rotation | Free Plan</title>
+                <meta name="description" content="Email campaigns that reach the inbox: smart SMTP rotation, anti-spam scoring before you send, and visual automations. Free plan, no card needed." />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/napmail`} />
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
-                <meta property="og:title" content="NapMail - Email Marketing Engine by Napnix" />
+                <meta property="og:title" content="NapMail — Email Marketing with SMTP Rotation" />
                 <meta property="og:description" content="Smart SMTP rotation, anti-spam scoring, domain throttling, visual automations, and NapCRM integration. Free plan available." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/napmail`} />
@@ -201,7 +201,7 @@ export default function NapMailLandingPage() {
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:site" content="@napnix" />
                 <meta name="twitter:creator" content="@napnix" />
-                <meta name="twitter:title" content="NapMail - Email Marketing Engine by Napnix" />
+                <meta name="twitter:title" content="NapMail — Email Marketing with SMTP Rotation" />
                 <meta name="twitter:description" content="Smart SMTP rotation, anti-spam scoring, domain throttling, visual automations, and NapCRM integration." />
             </Helmet>
 
@@ -259,7 +259,15 @@ export default function NapMailLandingPage() {
                         </div>
 
                         <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-900 mb-8 leading-[1.1]">
-                            Email Marketing<br className="hidden md:block" />
+                            {/*
+                              * The explicit {' '} matters. This <br> is `hidden md:block`,
+                              * so below the md breakpoint it does not render -- and with
+                              * nothing between the two text nodes, the H1 read
+                              * "Email MarketingThat Actually Lands." on every phone.
+                              * JSX strips the trailing whitespace at a line end, so the
+                              * space has to be written as an expression to survive.
+                              */}
+                            Email Marketing{' '}<br className="hidden md:block" />
                             <span className="text-[#2563EB]">That Actually Lands.</span>
                         </h1>
 
