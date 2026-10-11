@@ -37,6 +37,7 @@ import { createReadStream, existsSync, mkdirSync, readFileSync, statSync, writeF
 import { join, dirname, extname } from 'node:path';
 import { chromium } from 'playwright';
 import { getPrerenderRoutes } from '../src/constants/sitemapRoutes.js';
+import { fetchIndexableBlogs } from './lib/publishedBlogs.mjs';
 
 // BUILD_OUT_DIR lets build:prod assemble everything in a staging directory and
 // swap it into place at the end — see scripts/swap-dist.mjs for why.
@@ -109,7 +110,24 @@ function readShellScripts() {
 const shellScripts = readShellScripts();
 // Not the sitemap set -- see getPrerenderRoutes(). Noindex pages still have to
 // be served as real HTML, or nginx's try_files turns them into 404s.
-const routes = getPrerenderRoutes();
+//
+// Blog articles are appended from the live API. The header of this file says
+// API-driven routes "render nearly empty because no backend is running at build
+// time", and for a local build that holds -- but .env.production points the
+// bundle at https://api.napnix.in/api, so a production build renders real
+// article content. They were skipped because they were never in this list.
+//
+// Only indexable articles are added. The 243 legacy posts are served
+// `noindex, follow`, so prerendering them would spend build time making
+// off-topic content legible to exactly the AI crawlers robots.txt invites.
+//
+// An unreachable API yields an empty list and the build carries on: articles
+// then fall back to the SPA shell on a 200, which is the current behaviour.
+const blogRoutes = (await fetchIndexableBlogs()).map((post) => `/blog/${post.slug}`);
+if (blogRoutes.length > 0) {
+  console.log(`prerender: adding ${blogRoutes.length} indexable blog article(s)`);
+}
+const routes = [...getPrerenderRoutes(), ...blogRoutes];
 const server = await serveDist();
 const browser = await chromium.launch();
 const page = await browser.newPage();

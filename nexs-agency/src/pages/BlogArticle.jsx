@@ -16,7 +16,14 @@ import TableOfContents, { addIdsToHeadings } from '../components/ui/TableOfConte
 import { SITE_URL, LOGO_URL } from '../constants/siteConfig';
 import { withBrandKeywords } from '../constants/seoConfig';
 import { blogRobotsDirective } from '../constants/blogIndexing';
+import { formatReadTime } from '../constants/blogPosts';
 import { RiTimeLine, RiEyeLine } from 'react-icons/ri';
+
+/** Normalise a keywords/tags value (array from the API, or a string) to a comma list. */
+const toKeywordString = (value) => {
+    if (Array.isArray(value)) return value.filter(Boolean).join(', ');
+    return typeof value === 'string' ? value.trim() : '';
+};
 
 const BlogArticle = () => {
     const { slug } = useParams();
@@ -38,7 +45,9 @@ const BlogArticle = () => {
             } catch (err) {
                 if (!cancelled) {
                     console.error('Error loading blog:', err);
-                    setError('Blog not found');
+                    // A genuine 404 and a transient failure need different
+                    // robots handling -- see the render branch below.
+                    setError(err.response?.status === 404 ? 'missing' : 'unavailable');
                 }
             } finally {
                 if (!cancelled) setLoading(false);
@@ -59,16 +68,45 @@ const BlogArticle = () => {
     }
 
     if (error || !blog) {
+        const articleIsMissing = error !== 'unavailable';
+
         return (
             <div className="min-h-screen flex items-center justify-center bg-white pt-20">
-                {/* SPA serves 200 for every path; noindex so unpublished posts drop out of Google */}
-                <Helmet>
-                    <title>Article Not Found | Napnix</title>
-                    <meta name="robots" content="noindex, nofollow" />
-                </Helmet>
+                {/*
+                  * SPA serves 200 for every path, so noindex here is the only
+                  * thing that drops an unpublished post out of Google. That is
+                  * what unpublish-ai-blogs.js relies on.
+                  *
+                  * Split by failure kind. A transient failure must NOT emit
+                  * noindex: because the URL answers 200 either way, a crawler
+                  * rendering during an API outage would otherwise deindex a
+                  * live article, and an explicit noindex is a far stickier
+                  * signal than the soft 404 Google infers on its own. That
+                  * branch stays silent and lets the shell's tag stand.
+                  *
+                  * `follow`, not `nofollow`: a withdrawn post can still hold
+                  * inbound links, and letting a crawler walk from here to /blog
+                  * keeps that equity in the site.
+                  */}
+                {articleIsMissing ? (
+                    <Helmet>
+                        <title>Article Not Found | Napnix</title>
+                        <meta name="robots" content="noindex, follow" />
+                    </Helmet>
+                ) : (
+                    <Helmet>
+                        <title>Article Unavailable | Napnix</title>
+                    </Helmet>
+                )}
                 <div className="text-center">
-                    <h1 className="text-4xl font-bold text-slate-800 mb-4">Blog Not Found</h1>
-                    <p className="text-slate-600 mb-8">The article you're looking for doesn't exist.</p>
+                    <h1 className="text-4xl font-bold text-slate-800 mb-4">
+                        {articleIsMissing ? 'Article Not Found' : 'Article Unavailable'}
+                    </h1>
+                    <p className="text-slate-600 mb-8">
+                        {articleIsMissing
+                            ? "The article you're looking for doesn't exist."
+                            : "We couldn't load this article just now. Please try again in a moment."}
+                    </p>
                     <Link to="/blog" className="text-[#2563EB] hover:underline font-medium">
                         ← Back to Blog
                     </Link>
@@ -107,7 +145,16 @@ const BlogArticle = () => {
             "@id": articleUrl
         },
         "articleSection": blog.category || 'Technology',
-        "keywords": withBrandKeywords(blog.metaKeywords || blog.category || '')
+        // `blog.metaKeywords` never existed. The API returns the `keywords`
+        // column and the snakeToCamel pass in services/api.js leaves it as
+        // `keywords`, so this read was always undefined and Article.keywords
+        // silently fell back to the bare category. Both arrive as arrays.
+        "keywords": withBrandKeywords(
+            toKeywordString(blog.keywords) ||
+            toKeywordString(blog.tags) ||
+            blog.category ||
+            ''
+        )
     };
 
     const ogImage = blog.ogImage || articleImage;
@@ -233,7 +280,7 @@ const BlogArticle = () => {
                                 <span>•</span>
                                 <span className="flex items-center gap-1">
                                     <RiTimeLine />
-                                    {blog.readTime}
+                                    {formatReadTime(blog.readTime)}
                                 </span>
                             </>
                         )}

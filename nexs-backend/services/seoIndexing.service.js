@@ -195,6 +195,21 @@ class SEOIndexingService {
         }
     }
 
+    /**
+     * Request removal of a URL from Google's index (URL_DELETED).
+     *
+     * Nothing calls this, and wiring it to an unpublish or a delete is not the
+     * one-line change it looks like. Google's guidance is to send URL_DELETED
+     * only for URLs that are actually gone, and nothing under /blog/ ever is:
+     * nginx answers any /blog/<slug> with the SPA shell on a 200 (see the
+     * @blog_dynamic location), so a withdrawn post is a soft 404, not a 404.
+     * Googlebot would be told the URL is deleted, recrawl it, find a 200, and
+     * draw its own conclusion.
+     *
+     * Making withdrawal work properly means making the URL say so first --
+     * a `noindex` on the article's not-found state at minimum, a real 410 at
+     * best. Until then this stays unused on purpose.
+     */
     async notifyGoogleRemoval(url) {
         const siteUrl = await this.getSiteUrl();
         const absoluteUrl = url.startsWith('/') ? `${siteUrl}${url}` : url;

@@ -152,3 +152,23 @@ export function cardImage(image, width = 600) {
 export function cardImageSrcSet(image) {
     return [400, 600, 800].map((w) => `${cardImage(image, w)} ${w}w`).join(', ');
 }
+
+/**
+ * Render a read time, whatever shape the API sends.
+ *
+ * The blogs.read_time column has held both "7 min read" and a bare 5, written
+ * by the generator and the admin editor respectively, and both pages rendered
+ * it raw. The model canonicalises new writes; this covers rows written before
+ * that and anything hand-edited in SQL.
+ *
+ * @param {string|number|null|undefined} value
+ * @param {string} [fallback]
+ * @returns {string}
+ */
+export function formatReadTime(value, fallback = '5 min read') {
+    if (value === null || value === undefined || value === '') return fallback;
+    const text = String(value).trim();
+    if (/min/i.test(text)) return text;
+    const minutes = parseInt(text, 10);
+    return Number.isFinite(minutes) && minutes > 0 ? `${minutes} min read` : fallback;
+}

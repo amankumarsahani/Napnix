@@ -12,7 +12,7 @@ import BackToTop from '../components/ui/BackToTop';
 import { SITE_URL, siteConfig } from '../constants/siteConfig';
 // Posts here come from blogAPI, so an image URL may not carry a w= parameter.
 // cardImage leaves such URLs untouched, so this is safe for both sources.
-import { cardImage, cardImageSrcSet } from '../constants/blogPosts';
+import { cardImage, cardImageSrcSet, formatReadTime } from '../constants/blogPosts';
 import Icon from '../components/ui/Icon';
 import { RiArrowRightLine, RiArticleLine, RiCalendarLine, RiSearchLine, RiShareCircleLine, RiTimeLine, RiEyeLine } from 'react-icons/ri';
 
@@ -32,7 +32,7 @@ function transformBlog(blog) {
             month: 'short',
             day: 'numeric'
         }),
-        readTime: blog.readTime || '5 min read',
+        readTime: formatReadTime(blog.readTime),
         viewCount: blog.viewCount || 0,
         image: blog.imageUrl,
         imageAlt: blog.imageAlt || blog.title,

@@ -501,7 +501,23 @@ ${html}`,
             .trim()
             .replace(/\s+/g, '-')
             .replace(/-+/g, '-');
-        if (base.length > 70) base = base.substring(0, 70).replace(/-[^-]*$/, '');
+        // 45, not 70, and this is load-bearing rather than taste. The agency
+        // frontend treats a slug as machine-generated -- and serves it
+        // `noindex, follow` -- at 46+ characters ending in a hyphen plus eight
+        // alphanumerics (GENERATED_MIN_LENGTH in
+        // nexs-agency/src/constants/blogIndexing.js, mirrored by the
+        // $blog_legacy_robots map in nexs-agency/deploy/nginx-napnix.conf).
+        //
+        // A 70-character ceiling sits above that floor, so perfectly good
+        // slugs were being hidden by their own length. All three of these are
+        // 46+ and end in an eight-letter word:
+        //   how-indian-manufacturers-actually-use-whatsapp-for-dispatch
+        //   what-salon-owners-get-wrong-about-no-show-followup
+        //   crm-migration-costs-for-a-small-services-business
+        // Staying under the floor means no slug can match, whatever word the
+        // title ends on. A `-2` collision suffix cannot match either: it puts
+        // a hyphen two characters from the end.
+        if (base.length > 45) base = base.substring(0, 45).replace(/-[^-]*$/, '');
         base = base || 'post';
 
         const [rows] = await db.query('SELECT slug FROM blogs WHERE slug = ? OR slug LIKE ?', [base, `${base}-%`]);

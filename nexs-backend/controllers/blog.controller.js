@@ -107,7 +107,9 @@ const BlogController = {
 
             const blog = await BlogModel.findById(blogId);
 
-            if (status === 'published') {
+            // Keyed off the persisted row rather than the request body, so the
+            // column default (draft) is what decides, not an absent field.
+            if (blog.status === 'published') {
                 SEOIndexingService.notifyBlogPublished(blog.slug).catch(() => {});
             }
 
@@ -134,9 +136,32 @@ const BlogController = {
                 return res.status(404).json({ error: 'Blog not found' });
             }
 
-            const updatedBlog = await BlogModel.update(req.params.id, req.body);
+            // The admin editor posts `image`, mirroring the create payload, but
+            // the column is `image_url`. BlogModel.update only writes keys it
+            // recognises in its fieldMap, so a changed feature image was
+            // accepted, reported as saved, and silently dropped.
+            const payload = { ...req.body };
+            if (payload.image !== undefined) {
+                payload.image_url = payload.image;
+                delete payload.image;
+            }
 
-            if (req.body.status === 'published' || blog.status === 'published') {
+            const updatedBlog = await BlogModel.update(req.params.id, payload);
+
+            // The state AFTER the write is what decides. The second arm of the
+            // old condition read `blog.status`, the state BEFORE it, so
+            // unpublishing a live post submitted it to Google as URL_UPDATED --
+            // asking for a recrawl of a URL we had just withdrawn.
+            //
+            // This covers the three cases that should submit: draft ->
+            // published, archived -> published, and an edit to a post that is
+            // already live. It deliberately does nothing on published ->
+            // draft/archived. Withdrawing is not a removal request: the slug
+            // still answers 200 (nginx serves the SPA shell for any /blog/
+            // path), and Google's guidance is to reserve URL_DELETED for URLs
+            // that are actually gone. See the soft-404 note on
+            // SEOIndexingService.notifyGoogleRemoval, which nothing calls yet.
+            if (updatedBlog.status === 'published') {
                 SEOIndexingService.notifyBlogPublished(updatedBlog.slug).catch(() => {});
             }
 

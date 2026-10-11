@@ -88,6 +88,30 @@ const BlogModel = {
         return this._mapRow(rows[0]);
     },
 
+    /**
+     * Canonicalise read_time to "N min read".
+     *
+     * Two writers disagreed about this column's type. AIBlogService computes
+     * "7 min read"; the admin editor's number input posts 5. All 244 published
+     * rows currently hold the string form and the public site renders the
+     * column raw, so a numeric write would have surfaced as a bare "5" next to
+     * a clock icon while every other post read "7 min read".
+     *
+     * parseInt handles both inputs -- parseInt("7 min read") is 7 -- so the
+     * string form stays the canonical one and no migration is needed. Returns
+     * null for anything unparseable, which leaves the column alone rather than
+     * writing a wrong value.
+     *
+     * @param {string|number|null|undefined} value
+     * @returns {string|null}
+     */
+    _normaliseReadTime(value) {
+        if (value === undefined || value === null || value === '') return null;
+        const minutes = parseInt(String(value), 10);
+        if (!Number.isFinite(minutes) || minutes <= 0) return null;
+        return `${minutes} min read`;
+    },
+
     // Helper to map DB row to frontend object
     _mapRow(row) {
         if (!row) return null;
@@ -128,6 +152,7 @@ const BlogModel = {
 
         const keywordsJson = JSON.stringify(keywords);
         const tagsJson = JSON.stringify(tags);
+        const normalisedReadTime = this._normaliseReadTime(read_time);
 
         const [result] = await pool.query(
             `INSERT INTO blogs 
@@ -146,7 +171,7 @@ const BlogModel = {
                 image_alt,
                 featured,
                 status,
-                read_time,
+                normalisedReadTime,
                 keywordsJson,
                 tagsJson
             ]
@@ -180,10 +205,21 @@ const BlogModel = {
 
         // Handle standard fields
         Object.keys(fieldMap).forEach(key => {
-            if (blogData[key] !== undefined) {
-                updates.push(`${fieldMap[key]} = ?`);
-                values.push(blogData[key]);
+            if (blogData[key] === undefined) return;
+
+            // read_time is the one column with two writers and two shapes.
+            // An unparseable value is skipped rather than written, which leaves
+            // whatever is already stored intact.
+            if (key === 'read_time') {
+                const normalised = this._normaliseReadTime(blogData.read_time);
+                if (normalised === null) return;
+                updates.push('read_time = ?');
+                values.push(normalised);
+                return;
             }
+
+            updates.push(`${fieldMap[key]} = ?`);
+            values.push(blogData[key]);
         });
 
         // Handle special fields
