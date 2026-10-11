@@ -77,12 +77,30 @@ const TOOLS = {
     },
 };
 
+// Returns the first balanced {...} that parses and looks like an action. Models often add prose,
+// several objects, or braces inside text, so first-{ to last-} slicing is not enough.
 function extractJson(text) {
-    const cleaned = String(text).replace(/```(?:json)?/g, '').trim();
-    const start = cleaned.indexOf('{');
-    const end = cleaned.lastIndexOf('}');
-    if (start === -1 || end <= start) throw new Error('no JSON object in reply');
-    return JSON.parse(cleaned.slice(start, end + 1));
+    const s = String(text ?? '');
+    for (let start = s.indexOf('{'); start !== -1; start = s.indexOf('{', start + 1)) {
+        let depth = 0, inStr = false, esc = false;
+        for (let i = start; i < s.length; i++) {
+            const c = s[i];
+            if (inStr) {
+                if (esc) esc = false;
+                else if (c === '\\') esc = true;
+                else if (c === '"') inStr = false;
+            } else if (c === '"') inStr = true;
+            else if (c === '{') depth++;
+            else if (c === '}' && --depth === 0) {
+                try {
+                    const obj = JSON.parse(s.slice(start, i + 1));
+                    if (obj && (obj.tool || obj.final !== undefined)) return obj;
+                } catch (e) { /* try next start */ }
+                break;
+            }
+        }
+    }
+    throw new Error('no {"tool"} or {"final"} JSON object in reply');
 }
 
 const truncate = (value, n = OBSERVATION_LIMIT) => {
@@ -147,7 +165,10 @@ Rules:
             try {
                 action = extractJson(reply);
             } catch (e) {
-                steps.push({ observation: `Your reply was not valid JSON (${e.message}). Reply with one JSON object only.` });
+                steps.push({
+                    observation: `Your reply was not usable (${e.message}). Reply with ONE JSON object only, no other text.`,
+                    raw: truncate(reply, 400),
+                });
                 continue;
             }
 
