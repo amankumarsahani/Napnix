@@ -271,7 +271,7 @@ ${internalLinkSection}`;
 
         const useModel = model || this.defaultModel;
         const content = await AIService.generateContent(prompt,
-            `You are a human blogger, not an AI. Write like you are talking to a friend who is interested in this topic. Use casual transitions, personal opinions, and real-world references. Never use the ampersand symbol — write "and" instead. Avoid every word on the banned list.`,
+            `You are a practical business writer. Write like you are talking to a busy owner. Use casual transitions and clear opinions. Never invent statistics, studies, clients or results. Never use the ampersand symbol — write "and" instead. Avoid every word on the banned list.`,
             useModel
         );
 
@@ -279,6 +279,7 @@ ${internalLinkSection}`;
         if (cleanContent.startsWith('```')) {
             cleanContent = cleanContent.replace(/```html?\n?/g, '').replace(/```$/g, '').trim();
         }
+        cleanContent = await this.scrubUnsourcedClaims(cleanContent, useModel);
         // Strip ampersands that slip through — preserve HTML entities like &amp; &lt; &gt; &nbsp;
         cleanContent = cleanContent.replace(/&(?!amp;|lt;|gt;|nbsp;|quot;|#\d+;|#x[0-9a-fA-F]+;)/g, 'and');
         cleanContent = cleanContent.replace(/\u2014/g, ',').replace(/\u2013/g, '-');
@@ -337,6 +338,46 @@ Return ONLY JSON:
     /**
      * Get a random opening style directive
      */
+    /**
+     * Second pass: remove or relabel numbers the model cannot back up. Falls back to the
+     * original if the edit looks broken (lost most of the text or the HTML).
+     */
+    async scrubUnsourcedClaims(html, model) {
+        if (this.findUnsourcedStats(html).length === 0) return html;
+        try {
+            let edited = await AIService.generateContent(
+                `Edit this blog HTML. For every statistic, percentage, rupee amount or result figure:
+- If it names a real, well-known source in the same sentence, keep it.
+- If it is part of a hypothetical example, make sure that same paragraph clearly says it is an example
+  (e.g. "Say a clinic gets 40 enquiries a week..."), and never present it as a real business's result.
+- Otherwise remove the number and rewrite the sentence qualitatively (e.g. "many enquiries go unanswered").
+Headings must not contain statistics. Change nothing else. Return ONLY the edited HTML.
+
+${html}`,
+                'You are a careful fact-checking editor. Return only HTML.',
+                model
+            );
+            edited = edited.trim().replace(/^```html?\n?/, '').replace(/```$/, '').trim();
+            const textLen = s => s.replace(/<[^>]+>/g, '').length;
+            if (textLen(edited) < textLen(html) * 0.7 || !/<p>/.test(edited)) return html;
+            return edited;
+        } catch (e) {
+            console.warn('[AIBlogService] scrub pass failed, keeping original:', e.message);
+            return html;
+        }
+    }
+
+    /**
+     * Paragraph-level check for numbers that are neither sourced nor labelled as an example.
+     * Returns the offending snippets (empty = safe to publish unattended).
+     */
+    findUnsourcedStats(html) {
+        const blocks = String(html).split(/<\/(?:p|li|h[1-6]|blockquote|td)>/i).map(b => b.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
+        const hasNumber = /\d+(\.\d+)?\s?%|₹\s?\d|\brs\.?\s?\d|\d+\s?(lakh|crore)\b|\b\d+x\b/i;
+        const qualifier = /\b(for example|example|e\.g\.|say |imagine|suppose|hypothetical|illustrat|according to|source:|reported by|data from|per the|survey by|report by)\b/i;
+        return blocks.filter(b => hasNumber.test(b) && !qualifier.test(b)).map(b => b.slice(0, 160));
+    }
+
     _getRandomOpening() {
         const openings = [
             'Open with a short real-world anecdote or scenario.',

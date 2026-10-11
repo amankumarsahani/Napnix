@@ -52,6 +52,10 @@ const TOOLS = {
                 { topic: input.topic, keywords: input.keywords || [], outline: input.outline || [], imageQuery: input.image_query },
                 { model: opts.model, brandContext: opts.brandContext }
             );
+            // Unattended publishing must never put unsupported numbers live: hold those posts as drafts
+            const unsourced = AIBlogService.findUnsourcedStats(blog.content);
+            const status = opts.publish && unsourced.length === 0 ? 'published' : 'draft';
+
             const image = await AIBlogService.fetchUnsplashImage(blog.imageQuery);
             const saved = await AIBlogService.postBlog({
                 ...blog,
@@ -59,10 +63,13 @@ const TOOLS = {
                 keywords: input.keywords || [],
                 author: opts.author || 'Team Napnix',
                 category: opts.category,
-                status: opts.publish ? 'published' : 'draft',
+                status,
             });
             opts.draftsWritten++;
-            return { id: saved.id, slug: saved.slug, title: saved.title, status: opts.publish ? 'published' : 'draft' };
+            return {
+                id: saved.id, slug: saved.slug, title: saved.title, status,
+                ...(opts.publish && status === 'draft' ? { held_for_review: 'unsourced numbers', snippets: unsourced.slice(0, 3) } : {}),
+            };
         },
     },
     http_get: {
