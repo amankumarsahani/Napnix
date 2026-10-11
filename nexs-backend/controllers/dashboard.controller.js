@@ -55,7 +55,8 @@ const DashboardController = {
       inquiryRows.forEach(row => {
         inquiryStats.byStatus[row.status] = row.count;
         inquiryStats.total += row.count;
-        if (row.status === 'pending') inquiryStats.pendingInquiries = row.count;
+        // Inquiries are new/contacted/resolved/converted; "pending" (never used) kept for old rows
+        if (row.status === 'new' || row.status === 'pending') inquiryStats.pendingInquiries += Number(row.count);
       });
 
       const stats = {
