@@ -37,7 +37,7 @@ import { createReadStream, existsSync, mkdirSync, readFileSync, statSync, writeF
 import { join, dirname, extname } from 'node:path';
 import { chromium } from 'playwright';
 import { getPrerenderRoutes } from '../src/constants/sitemapRoutes.js';
-import { fetchIndexableBlogs } from './lib/publishedBlogs.mjs';
+import { API_BASE, fetchIndexableBlogs } from './lib/publishedBlogs.mjs';
 
 // BUILD_OUT_DIR lets build:prod assemble everything in a staging directory and
 // swap it into place at the end — see scripts/swap-dist.mjs for why.
@@ -93,6 +93,17 @@ const BLOCKED_HOSTS = [
 ];
 
 /**
+ * Sent with the API responses this script fulfils on the backend's behalf.
+ * `*` is safe here: the client sends no credentials (axios defaults
+ * withCredentials to false) and nothing leaves this machine.
+ */
+const CORS_HEADERS = {
+  'access-control-allow-origin': '*',
+  'access-control-allow-methods': 'GET, OPTIONS',
+  'access-control-allow-headers': 'Content-Type, Accept, Origin, Authorization',
+};
+
+/**
  * The scripts the built shell actually ships. copy-404 runs before this
  * script, so dist/404.html is the untouched shell; fall back to index.html on
  * a first run where it does not exist yet.
@@ -124,6 +135,7 @@ const shellScripts = readShellScripts();
 // An unreachable API yields an empty list and the build carries on: articles
 // then fall back to the SPA shell on a 200, which is the current behaviour.
 const blogRoutes = (await fetchIndexableBlogs()).map((post) => `/blog/${post.slug}`);
+const blogRouteSet = new Set(blogRoutes);
 if (blogRoutes.length > 0) {
   console.log(`prerender: adding ${blogRoutes.length} indexable blog article(s)`);
 }
@@ -132,11 +144,56 @@ const server = await serveDist();
 const browser = await chromium.launch();
 const page = await browser.newPage();
 
-await page.route('**/*', (route) => {
-  const host = new URL(route.request().url()).hostname;
-  return BLOCKED_HOSTS.some((h) => host === h || host.endsWith(`.${h}`))
-    ? route.abort()
-    : route.continue();
+/**
+ * The API origin the built bundle talks to, which this script has to answer on
+ * the API's behalf.
+ *
+ * The page is served from http://127.0.0.1, and that origin is not in the
+ * backend's CORS allowlist (server.js: CLIENT_URL, localhost:3000/5173/5174,
+ * napnix.in and its subdomains). So the browser blocks every article fetch,
+ * BlogArticle renders its error branch, Helmet writes no canonical, and the
+ * route fails. Adding the port to the allowlist would be the wrong fix: it
+ * would widen production CORS to serve a build step, and the port is ours.
+ *
+ * Node's fetch is not a browser and has no origin, so it is already allowed --
+ * which is exactly why fetchIndexableBlogs() works while the same request from
+ * inside the page does not. Fulfilling the browser's request from here closes
+ * that gap and leaves the API untouched.
+ */
+const API_ORIGIN = new URL(API_BASE).origin;
+
+await page.route('**/*', async (route) => {
+  const url = route.request().url();
+  const host = new URL(url).hostname;
+
+  if (BLOCKED_HOSTS.some((h) => host === h || host.endsWith(`.${h}`))) {
+    return route.abort();
+  }
+
+  if (!url.startsWith(API_ORIGIN)) return route.continue();
+
+  // Axios omits Content-Type on a bodyless GET, so these are simple requests
+  // and no preflight is sent. Answering OPTIONS anyway costs nothing and means
+  // a future header on the client cannot quietly reintroduce the failure.
+  if (route.request().method() === 'OPTIONS') {
+    return route.fulfill({ status: 204, headers: CORS_HEADERS, body: '' });
+  }
+
+  try {
+    const response = await fetch(url, { headers: { accept: 'application/json' } });
+    return route.fulfill({
+      status: response.status,
+      headers: {
+        ...CORS_HEADERS,
+        'content-type': response.headers.get('content-type') ?? 'application/json',
+      },
+      body: Buffer.from(await response.arrayBuffer()),
+    });
+  } catch (error) {
+    // Let the page see a failure rather than hanging on an unanswered request.
+    console.warn(`prerender: API passthrough failed for ${url} (${error.message})`);
+    return route.fulfill({ status: 504, headers: CORS_HEADERS, body: '{}' });
+  }
 });
 
 const written = [];
@@ -541,4 +598,21 @@ console.log(
   `prerender: ${written.length} written, ${skipped.length} skipped, ${failed.length} failed`,
 );
 
-if (failed.length) process.exit(1);
+/**
+ * A failed static route fails the build; a failed article does not.
+ *
+ * swap-dist.mjs only runs if this script exits 0, so a non-zero exit means the
+ * previous site keeps serving and the deploy produces nothing. That is the
+ * right trade for a broken route that ships in the bundle -- it is our code and
+ * it is reproducible. It is the wrong trade for an article whose content comes
+ * from the API over the network: one slow response would discard a build of
+ * fifty-nine good pages, and the article it could not prerender still works,
+ * because nginx serves /blog/<slug> from the SPA shell on a 200 either way.
+ */
+const fatal = failed.filter(([route]) => !blogRouteSet.has(route));
+if (fatal.length) process.exit(1);
+if (failed.length) {
+  console.log(
+    `prerender: ${failed.length} article(s) failed; they fall back to the SPA shell. Build continues.`,
+  );
+}

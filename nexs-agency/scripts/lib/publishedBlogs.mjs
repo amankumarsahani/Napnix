@@ -18,7 +18,11 @@
 
 import { isGeneratedSlug } from '../../src/constants/blogIndexing.js';
 
-const API_BASE = process.env.BLOG_API_BASE || 'https://api.napnix.in/api';
+/**
+ * Also used by prerender.mjs, which has to recognise the page's own API calls
+ * in order to serve them itself. See the API_ORIGIN handler there.
+ */
+export const API_BASE = process.env.BLOG_API_BASE || 'https://api.napnix.in/api';
 
 /*
  * Articles from before this date are never prerendered and never enter the
