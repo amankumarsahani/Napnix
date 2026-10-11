@@ -907,6 +907,7 @@ class WorkflowEngine {
             goal: config.goal,
             systemMessage: config.system_message,
             tools: config.tools,
+            requireTools: config.require_tools,
             model: config.model,
             maxSteps: config.max_steps,
             maxDrafts: config.max_drafts,
@@ -917,7 +918,12 @@ class WorkflowEngine {
 
         const outVar = config.output_variable || 'agent_result';
         console.log(`[WorkflowEngine] AI Agent finished in ${result.steps.length} step(s)`);
-        return { ...contextData, [outVar]: result.final, [`${outVar}_steps`]: result.steps };
+        return {
+            ...contextData,
+            [outVar]: result.final,
+            [`${outVar}_steps`]: result.steps,
+            [`${outVar}_completed`]: result.completed
+        };
     }
 
     // ============================================

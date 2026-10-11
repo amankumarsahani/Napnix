@@ -103,6 +103,8 @@ class AIAgentService {
         const defaults = this.toolNames.filter(t => t !== 'http_get');
         const enabled = (cfg.tools && cfg.tools.length ? cfg.tools : defaults).filter(t => TOOLS[t]);
         const maxSteps = Math.min(Number(cfg.maxSteps) || 6, 15);
+        // Tools that must succeed before a final answer is accepted (models like to skip work and claim it)
+        const required = (cfg.requireTools || []).filter(t => enabled.includes(t));
         const opts = {
             model: cfg.model || null,
             brandContext: cfg.brandContext || null,
@@ -123,15 +125,22 @@ or, when you are done:
 Available tools:
 ${toolDocs}
 
-Rules: only use the tools listed. Base claims on tool results, never invent data. Stop as soon as the goal is met.`;
+Rules:
+- Only use the tools listed. If a tool fails, try another tool; do not guess what it would have returned.
+- Every fact in your final answer must come from a tool result above. Never state search volumes,
+  rankings, counts or "not covered" claims you did not get from a tool.
+- Never say you did something (wrote, saved, checked) unless a tool result shows it happened.${required.length ? `
+- You MUST successfully call these tools before giving a final answer: ${required.join(', ')}.` : ''}
+- Stop as soon as the goal is met.`;
 
         const steps = [];
+        const succeeded = new Set();
         for (let i = 0; i < maxSteps; i++) {
             const transcript = steps.map((s, n) =>
                 `Step ${n + 1}: ${s.tool ? `called ${s.tool} with ${JSON.stringify(s.input)}\nResult: ${s.observation}` : s.observation}`
             ).join('\n\n');
 
-            const prompt = `GOAL:\n${cfg.goal}\n\nWORKFLOW DATA:\n${truncate(contextData, 3000)}\n\n${transcript ? `PREVIOUS STEPS:\n${transcript}\n\n` : ''}Reply with the next JSON object.`;
+            const prompt = `GOAL:\n${cfg.goal}\n\nWORKFLOW DATA:\n${truncate(contextData, 3000)}\n\n${transcript ? `PREVIOUS STEPS:\n${transcript}\n\n` : ''}Steps left: ${maxSteps - i}. Reply with the next JSON object.`;
             const reply = await AIService.generateContent(prompt, system, opts.model);
 
             let action;
@@ -143,8 +152,13 @@ Rules: only use the tools listed. Base claims on tool results, never invent data
             }
 
             if (action.final !== undefined) {
+                const missing = required.filter(t => !succeeded.has(t));
+                if (missing.length) {
+                    steps.push({ thought: action.thought, observation: `Final answer rejected: you have not successfully called ${missing.join(', ')} yet. Call it now.` });
+                    continue;
+                }
                 steps.push({ thought: action.thought, final: action.final });
-                return { final: String(action.final), steps };
+                return { final: String(action.final), steps, completed: true };
             }
 
             const tool = TOOLS[action.tool];
@@ -156,6 +170,7 @@ Rules: only use the tools listed. Base claims on tool results, never invent data
             let observation;
             try {
                 observation = truncate(await tool.run(action.input || {}, opts));
+                succeeded.add(action.tool);
             } catch (e) {
                 observation = `Error: ${e.message}`;
             }
@@ -163,7 +178,7 @@ Rules: only use the tools listed. Base claims on tool results, never invent data
             steps.push({ thought: action.thought, tool: action.tool, input: action.input, observation });
         }
 
-        return { final: `Stopped after ${maxSteps} steps without a final answer.`, steps };
+        return { final: `Stopped after ${maxSteps} steps without a final answer.`, steps, completed: false };
     }
 }
 
