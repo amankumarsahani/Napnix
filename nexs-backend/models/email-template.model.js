@@ -4,6 +4,14 @@ const { query } = require('../config/database');
  * Email Template Model
  * Handles CRUD operations for email templates stored in database
  */
+// Name / subject / description LIKE filter (escaped)
+function addSearch(search, params) {
+    if (!search) return '';
+    const term = `%${String(search).replace(/[\\%_]/g, '\\$&')}%`;
+    params.push(term, term, term);
+    return ' AND (name LIKE ? OR subject LIKE ? OR description LIKE ?)';
+}
+
 class EmailTemplateModel {
     /**
      * Find all templates
@@ -11,7 +19,7 @@ class EmailTemplateModel {
      * @returns {Promise<Array>} List of templates
      */
     static async findAll(options = {}) {
-        const { category, isActive, type, page, limit } = options;
+        const { category, isActive, type, search, page, limit } = options;
         let sql = 'SELECT * FROM email_templates WHERE 1=1';
         const params = [];
 
@@ -30,6 +38,7 @@ class EmailTemplateModel {
             sql += ' AND is_active = ?';
             params.push(isActive);
         }
+        sql += addSearch(search, params);
 
         sql += ' ORDER BY category ASC, name ASC';
 
@@ -71,7 +80,7 @@ class EmailTemplateModel {
     }
 
     static async count(options = {}) {
-        const { category, isActive, type } = options;
+        const { category, isActive, type, search } = options;
         let sql = 'SELECT COUNT(*) as total FROM email_templates WHERE 1=1';
         const params = [];
 
@@ -89,6 +98,7 @@ class EmailTemplateModel {
             sql += ' AND is_active = ?';
             params.push(isActive);
         }
+        sql += addSearch(search, params);
 
         try {
             const [rows] = await query(sql, params);

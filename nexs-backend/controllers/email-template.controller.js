@@ -12,8 +12,8 @@ class EmailTemplateController {
      */
     async getAllTemplates(req, res) {
         try {
-            const { category, active, type, page = 1, limit = 9 } = req.query;
-            const options = { page, limit };
+            const { category, active, type, search, page = 1, limit = 9 } = req.query;
+            const options = { page, limit, search };
 
             if (type) options.type = type;
             if (category) options.category = category;
@@ -74,7 +74,8 @@ class EmailTemplateController {
      */
     async createTemplate(req, res) {
         try {
-            const { name, subject, html_content, description, variables, attachment_document_ids, category } = req.body;
+            // type + is_active were dropped here before, so every SMS/WhatsApp template saved as email
+            const { name, type, subject, html_content, description, variables, attachment_document_ids, category, is_active } = req.body;
 
             // Validation
             if (!name || !html_content) {
@@ -93,12 +94,14 @@ class EmailTemplateController {
 
             const templateId = await EmailTemplateModel.create({
                 name,
+                type,
                 subject,
                 html_content,
                 description,
                 variables,
                 attachment_document_ids,
-                category
+                category,
+                is_active
             });
 
             res.status(201).json({
