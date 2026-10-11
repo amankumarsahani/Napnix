@@ -974,6 +974,8 @@ class WorkflowEngine {
             model: config.model,
             maxSteps: config.max_steps,
             maxDrafts: config.max_drafts,
+            publish: config.publish,
+            category: config.category,
             brandContext: config.brand_context,
             author: config.author,
             allowedHosts: String(config.allowed_hosts || '').split(/[\s,]+/).filter(Boolean),

@@ -39,12 +39,15 @@ const TOOLS = {
             return rows;
         },
     },
+    // Name kept for existing workflow configs; publishes when the node has publish: true
     write_blog_draft: {
-        description: 'Write a full blog post and save it as a DRAFT for human review (never published). Call at most once.',
+        description: opts => opts.publish
+            ? 'Write a full blog post and PUBLISH it on the website immediately. Call at most once.'
+            : 'Write a full blog post and save it as a DRAFT for human review. Call at most once.',
         input: '{"topic": "Title targeting the keyword", "keywords": ["primary keyword", "secondary"], "outline": ["Section 1", "Section 2"], "image_query": "2-4 word photo scene"}',
         run: async (input, opts) => {
             if (!input.topic) throw new Error('topic is required');
-            if (opts.draftsWritten >= opts.maxDrafts) throw new Error(`draft limit reached (${opts.maxDrafts}) for this run`);
+            if (opts.draftsWritten >= opts.maxDrafts) throw new Error(`post limit reached (${opts.maxDrafts}) for this run`);
             const blog = await AIBlogService.writeBlog(
                 { topic: input.topic, keywords: input.keywords || [], outline: input.outline || [], imageQuery: input.image_query },
                 { model: opts.model, brandContext: opts.brandContext }
@@ -55,10 +58,11 @@ const TOOLS = {
                 image: image.url,
                 keywords: input.keywords || [],
                 author: opts.author || 'Team Napnix',
-                status: 'draft',
+                category: opts.category,
+                status: opts.publish ? 'published' : 'draft',
             });
             opts.draftsWritten++;
-            return { id: saved.id, slug: saved.slug, title: saved.title, status: 'draft' };
+            return { id: saved.id, slug: saved.slug, title: saved.title, status: opts.publish ? 'published' : 'draft' };
         },
     },
     http_get: {
@@ -129,10 +133,13 @@ class AIAgentService {
             allowedHosts: cfg.allowedHosts || [],
             author: cfg.author,
             maxDrafts: Number(cfg.maxDrafts) || 1,
+            publish: cfg.publish === true || cfg.publish === 'true',
+            category: cfg.category,
             draftsWritten: 0,
         };
 
-        const toolDocs = enabled.map(name => `- ${name}: ${TOOLS[name].description}\n  input: ${TOOLS[name].input}`).join('\n');
+        const describe = t => (typeof t.description === 'function' ? t.description(opts) : t.description);
+        const toolDocs = enabled.map(name => `- ${name}: ${describe(TOOLS[name])}\n  input: ${TOOLS[name].input}`).join('\n');
         const system = `${cfg.systemMessage || 'You are an autonomous assistant for Napnix.'}
 
 You work in steps. At each step reply with EXACTLY ONE JSON object and nothing else:

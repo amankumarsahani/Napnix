@@ -43,7 +43,9 @@ const NO_FABRICATION_RULES = `HONESTY RULES (strict):
 - Do NOT claim personal experience ("in my experience", "we found", "our client") unless it is stated in the brand context.
 - Any example business must be clearly labelled as hypothetical (e.g. "Say a clinic in Pune gets 40 enquiries a week...").
 - Only cite a number if it is widely published and you name the source; otherwise describe it qualitatively.
-- Only state facts about Napnix that appear in the brand context.`;
+- Only state facts about Napnix that appear in the brand context.
+- The post is published as-is with no human edit: never leave placeholders, brackets, "TODO",
+  "[insert ...]", "add your example here" or notes to an editor. Every sentence must be final.`;
 
 // Writing style variations to prevent repetitive content
 const WRITING_STYLES = [
