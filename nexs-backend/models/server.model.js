@@ -234,7 +234,7 @@ class ServerModel {
     static async getStats() {
         const [rows] = await pool.query(`
             SELECT s.id, s.name, s.hostname, s.is_active, s.is_primary,
-                   s.cloudflare_tunnel_id, s.ssh_user, s.db_host, s.db_port,
+                   s.cloudflare_tunnel_id, s.ssh_user, s.db_host, s.db_port, s.db_user,
                    s.nexcrm_backend_path, s.ecosystem_config_path, s.cloudflare_config_path,
                    s.port_start, s.port_end,
                    COUNT(t.id) as tenant_count,
