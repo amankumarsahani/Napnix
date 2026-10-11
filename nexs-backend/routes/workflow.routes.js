@@ -241,7 +241,7 @@ router.put('/:id', isAdmin, async (req, res) => {
              WHERE id = ?`,
             [
                 name || null,
-                description || null,
+                description === undefined ? null : description,
                 trigger_type || null,
                 trigger_config ? JSON.stringify(trigger_config) : null,
                 is_active !== undefined ? (is_active ? 1 : 0) : null,
@@ -249,46 +249,60 @@ router.put('/:id', isAdmin, async (req, res) => {
             ]
         );
 
-        // If nodes provided, recreate them
+        // If nodes provided, sync them IN PLACE by node_uid. Delete-and-recreate used to cascade-delete
+        // every execution log (run history vanished on each save) and orphan waiting executions'
+        // current_node_id. Only nodes removed from the canvas are deleted now.
         if (nodes !== undefined) {
-            // Delete existing nodes and connections
-            await db.query('DELETE FROM workflow_nodes WHERE workflow_id = ?', [id]);
-
-            // Recreate nodes
             const nodeIdMap = new Map();
+            const keep = [];
             for (const node of nodes) {
-                const [nodeResult] = await db.query(
-                    `INSERT INTO workflow_nodes 
-                     (workflow_id, node_uid, node_type, action_type, label, config, position_x, position_y)
-                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                    [
-                        id,
-                        node.id || node.node_uid,
-                        node.node_type || node.type,
-                        node.action_type || node.data?.actionType || node.trigger_type || node.data?.triggerType,
-                        node.label || node.data?.label,
-                        JSON.stringify(node.config || node.data?.config || {}),
-                        node.position_x !== undefined ? node.position_x : (node.position?.x || 0),
-                        node.position_y !== undefined ? node.position_y : (node.position?.y || 0)
-                    ]
-                );
-                nodeIdMap.set(node.id || node.node_uid, nodeResult.insertId);
+                const uid = node.id || node.node_uid;
+                keep.push(uid);
+                const values = [
+                    node.node_type || node.type,
+                    node.action_type || node.data?.actionType || node.trigger_type || node.data?.triggerType,
+                    node.label || node.data?.label,
+                    JSON.stringify(node.config || node.data?.config || {}),
+                    node.position_x !== undefined ? node.position_x : (node.position?.x || 0),
+                    node.position_y !== undefined ? node.position_y : (node.position?.y || 0)
+                ];
+                const [existing] = await db.query('SELECT id FROM workflow_nodes WHERE workflow_id = ? AND node_uid = ?', [id, uid]);
+                if (existing.length) {
+                    await db.query(
+                        `UPDATE workflow_nodes SET node_type = ?, action_type = ?, label = ?, config = ?, position_x = ?, position_y = ? WHERE id = ?`,
+                        [...values, existing[0].id]
+                    );
+                    nodeIdMap.set(uid, existing[0].id);
+                } else {
+                    const [nodeResult] = await db.query(
+                        `INSERT INTO workflow_nodes
+                         (workflow_id, node_uid, node_type, action_type, label, config, position_x, position_y)
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                        [id, uid, ...values]
+                    );
+                    nodeIdMap.set(uid, nodeResult.insertId);
+                }
             }
 
-            // Recreate connections
-            if (connections && connections.length > 0) {
-                for (const conn of connections) {
-                    const sourceId = nodeIdMap.get(conn.source);
-                    const targetId = nodeIdMap.get(conn.target);
+            // Nodes deleted from the canvas (their logs go with them)
+            if (keep.length) {
+                await db.query('DELETE FROM workflow_nodes WHERE workflow_id = ? AND node_uid NOT IN (?)', [id, keep]);
+            } else {
+                await db.query('DELETE FROM workflow_nodes WHERE workflow_id = ?', [id]);
+            }
 
-                    if (sourceId && targetId) {
-                        await db.query(
-                            `INSERT INTO workflow_connections 
-                             (workflow_id, source_node_id, target_node_id, source_handle)
-                             VALUES (?, ?, ?, ?)`,
-                            [id, sourceId, targetId, conn.source_handle || 'default']
-                        );
-                    }
+            // Connections carry no history: replace them wholesale
+            await db.query('DELETE FROM workflow_connections WHERE workflow_id = ?', [id]);
+            for (const conn of connections || []) {
+                const sourceId = nodeIdMap.get(conn.source);
+                const targetId = nodeIdMap.get(conn.target);
+                if (sourceId && targetId) {
+                    await db.query(
+                        `INSERT INTO workflow_connections
+                         (workflow_id, source_node_id, target_node_id, source_handle)
+                         VALUES (?, ?, ?, ?)`,
+                        [id, sourceId, targetId, conn.source_handle || 'default']
+                    );
                 }
             }
         }
