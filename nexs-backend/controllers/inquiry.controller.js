@@ -16,13 +16,14 @@ class InquiryController {
             let inquiries, total;
 
             // Sales operators only see their assigned inquiries
+            const search = req.query.search;
             if (userRole === 'sales_operator') {
-                inquiries = await InquiryModel.findByAssignee(userId, page, limit);
-                total = await InquiryModel.countByAssignee(userId);
+                inquiries = await InquiryModel.findByAssignee(userId, page, limit, search);
+                total = await InquiryModel.countByAssignee(userId, search);
             } else {
                 // Admin sees all
-                inquiries = await InquiryModel.findAll(page, limit);
-                total = await InquiryModel.count();
+                inquiries = await InquiryModel.findAll(page, limit, search);
+                total = await InquiryModel.count(search);
             }
 
             res.json({

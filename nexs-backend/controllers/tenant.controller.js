@@ -51,8 +51,8 @@ class TenantController {
      */
     async getAllTenants(req, res) {
         try {
-            const { status, plan_id, page = 1, limit = 10 } = req.query;
-            const filters = { status, plan_id, page, limit };
+            const { status, plan_id, search, page = 1, limit = 10 } = req.query;
+            const filters = { status, plan_id, search, page, limit };
             const tenants = await TenantModel.findAll(filters);
             const total = await TenantModel.count(filters);
 

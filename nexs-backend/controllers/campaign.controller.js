@@ -9,15 +9,21 @@ const emailService = require('../services/email.service');
 // Get all campaigns
 exports.getAllCampaigns = async (req, res) => {
     try {
-        const { status, page = 1, limit = 20 } = req.query;
+        const { status, search, page = 1, limit = 20 } = req.query;
         const offset = (page - 1) * limit;
 
+        // Qualified with c.: the list query joins users, so a bare `status` can be ambiguous
         let whereClause = 'WHERE 1=1';
         const params = [];
 
         if (status) {
-            whereClause += ' AND status = ?';
+            whereClause += ' AND c.status = ?';
             params.push(status);
+        }
+        if (search && String(search).trim()) {
+            const like = `%${String(search).trim().replace(/[\\%_]/g, '\\$&')}%`;
+            whereClause += ' AND (c.name LIKE ? OR c.subject LIKE ?)';
+            params.push(like, like);
         }
 
         const [campaigns] = await db.query(
@@ -34,7 +40,7 @@ exports.getAllCampaigns = async (req, res) => {
         );
 
         const [[{ total }]] = await db.query(
-            `SELECT COUNT(*) as total FROM email_campaigns ${whereClause}`,
+            `SELECT COUNT(*) as total FROM email_campaigns c ${whereClause}`,
             params
         );
 

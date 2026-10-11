@@ -1,29 +1,40 @@
 const db = require('../config/database');
 
+// Optional free-text filter on name / email / company (LIKE wildcards escaped)
+const searchClause = (search) => {
+    const term = String(search || '').trim();
+    if (!term) return { sql: '', params: [] };
+    const like = `%${term.replace(/[\\%_]/g, '\\$&')}%`;
+    return { sql: ' AND (i.name LIKE ? OR i.email LIKE ? OR i.company LIKE ?)', params: [like, like, like] };
+};
+
 class InquiryModel {
     // Get all inquiries with pagination (includes assigned user info)
-    static async findAll(page = 1, limit = 50) {
+    static async findAll(page = 1, limit = 50, search) {
         const offset = (page - 1) * limit;
+        const f = searchClause(search);
         const [rows] = await db.query(
             `SELECT i.*, u.firstName as assignedFirstName, u.lastName as assignedLastName, u.email as assignedEmail
              FROM inquiries i
              LEFT JOIN users u ON i.assignedTo = u.id
+             WHERE 1=1${f.sql}
              ORDER BY i.created_at DESC LIMIT ? OFFSET ?`,
-            [limit, offset]
+            [...f.params, limit, offset]
         );
         return rows;
     }
 
     // Get inquiries by assignee (for sales operators)
-    static async findByAssignee(userId, page = 1, limit = 50) {
+    static async findByAssignee(userId, page = 1, limit = 50, search) {
         const offset = (page - 1) * limit;
+        const f = searchClause(search);
         const [rows] = await db.query(
             `SELECT i.*, u.firstName as assignedFirstName, u.lastName as assignedLastName
              FROM inquiries i
              LEFT JOIN users u ON i.assignedTo = u.id
-             WHERE i.assignedTo = ?
+             WHERE i.assignedTo = ?${f.sql}
              ORDER BY i.created_at DESC LIMIT ? OFFSET ?`,
-            [userId, limit, offset]
+            [userId, ...f.params, limit, offset]
         );
         return rows;
     }
@@ -74,13 +85,15 @@ class InquiryModel {
         return result.affectedRows;
     }
 
-    static async count() {
-        const [rows] = await db.query('SELECT COUNT(*) as total FROM inquiries');
+    static async count(search) {
+        const f = searchClause(search);
+        const [rows] = await db.query(`SELECT COUNT(*) as total FROM inquiries i WHERE 1=1${f.sql}`, f.params);
         return rows[0].total;
     }
 
-    static async countByAssignee(userId) {
-        const [rows] = await db.query('SELECT COUNT(*) as total FROM inquiries WHERE assignedTo = ?', [userId]);
+    static async countByAssignee(userId, search) {
+        const f = searchClause(search);
+        const [rows] = await db.query(`SELECT COUNT(*) as total FROM inquiries i WHERE i.assignedTo = ?${f.sql}`, [userId, ...f.params]);
         return rows[0].total;
     }
 

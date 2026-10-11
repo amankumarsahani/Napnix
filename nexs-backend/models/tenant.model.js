@@ -1,5 +1,8 @@
 const { pool } = require('../config/database');
 
+// LIKE pattern with % and _ escaped so they match literally
+const likeTerm = term => `%${String(term).trim().replace(/[\\%_]/g, '\\$&')}%`;
+
 class TenantModel {
     /**
      * Get all tenants with plan info
@@ -26,6 +29,12 @@ class TenantModel {
             params.push(filters.plan_id);
         }
 
+        if (filters.search) {
+            query += ' AND (t.name LIKE ? OR t.slug LIKE ? OR t.email LIKE ?)';
+            const like = likeTerm(filters.search);
+            params.push(like, like, like);
+        }
+
         query += ' ORDER BY t.created_at DESC';
 
         const limit = parseInt(filters.limit) || 10;
@@ -50,6 +59,12 @@ class TenantModel {
         if (filters.plan_id) {
             query += ' AND t.plan_id = ?';
             params.push(filters.plan_id);
+        }
+
+        if (filters.search) {
+            query += ' AND (t.name LIKE ? OR t.slug LIKE ? OR t.email LIKE ?)';
+            const like = likeTerm(filters.search);
+            params.push(like, like, like);
         }
 
         const [rows] = await pool.query(query, params);
