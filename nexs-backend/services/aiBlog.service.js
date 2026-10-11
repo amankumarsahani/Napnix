@@ -26,30 +26,48 @@ const FALLBACK_IMAGES = [
     { url: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&h=630&fit=crop', credit: 'Austin Distel' },
 ];
 
+// Default brand facts, mirrored from the live napnix.in homepage. Override per workflow node
+// via config.brand_context. The writer may only state facts about Napnix that appear here.
+const DEFAULT_BRAND_CONTEXT = `Napnix is a software company based in Mohali, India.
+- Builds the system behind a business's growth: lead capture, automated lead follow-up and CRM for service businesses.
+- Product: NapCRM, a CRM with industry-specific modules for service businesses.
+- Product: NapMail, email marketing.
+- Also builds custom software, websites and apps for clients.
+Audience: owners and managers of small and mid-size Indian service businesses who lose leads to slow follow-up.`;
+
+const DEFAULT_NICHE = 'CRM, lead follow-up and sales process for Indian service businesses';
+
+// Honesty rule shared by every prompt: the model has no real data, so it must not pretend to.
+const NO_FABRICATION_RULES = `HONESTY RULES (strict):
+- Do NOT invent statistics, percentages, survey results, customer names, client stories, quotes or "experts".
+- Do NOT claim personal experience ("in my experience", "we found", "our client") unless it is stated in the brand context.
+- Any example business must be clearly labelled as hypothetical (e.g. "Say a clinic in Pune gets 40 enquiries a week...").
+- Only cite a number if it is widely published and you name the source; otherwise describe it qualitatively.
+- Only state facts about Napnix that appear in the brand context.`;
+
 // Writing style variations to prevent repetitive content
 const WRITING_STYLES = [
     { format: 'listicle', tone: 'conversational', instruction: 'Write as a numbered listicle. Be direct and opinionated about each point. Share what actually works based on experience.' },
-    { format: 'case-study', tone: 'analytical', instruction: 'Write as a case study. Tell a real story with specific details, numbers, and what went wrong before things worked. Be honest about failures too.' },
+    { format: 'worked-example', tone: 'analytical', instruction: 'Walk through one clearly hypothetical business step by step: the problem, what they change, and what to watch for. Label it as an example, not a real client.' },
     { format: 'how-to-guide', tone: 'friendly-expert', instruction: 'Write as a practical guide from someone who has done this many times. Skip the theory — give step-by-step instructions with tips from experience.' },
     { format: 'opinion-piece', tone: 'candid', instruction: 'Write as an opinion piece. Take a strong stance. Disagree with popular advice if needed. Back your opinion with evidence but do not be afraid to be direct.' },
     { format: 'deep-dive', tone: 'thorough', instruction: 'Write as a detailed exploration. Cover angles others miss. Explain the "why" behind things, not just the "what". Be the expert friend explaining over coffee.' },
     { format: 'storytelling', tone: 'narrative', instruction: 'Write using storytelling. Start with a real scenario someone would face. Weave the teaching points through the narrative. Make the reader feel like they are reading a story, not a textbook.' },
     { format: 'comparison', tone: 'balanced', instruction: 'Write as an honest comparison. Do not sit on the fence — give your actual recommendation at the end. Acknowledge tradeoffs openly.' },
-    { format: 'lessons-learned', tone: 'reflective', instruction: 'Write as lessons learned from real experience. Share mistakes, surprises, and what you would do differently. Be vulnerable and honest.' },
+    { format: 'common-mistakes', tone: 'reflective', instruction: 'Write about the mistakes businesses commonly make with this, why they happen, and what to do instead. Be direct and practical.' },
 ];
 
 // Hook variations for topic generation
 const TOPIC_ANGLES = [
-    'a specific case study with real numbers',
+    'a worked example with a clearly hypothetical business',
     'a contrarian take that challenges common wisdom',
     'a practical step-by-step tutorial',
     'a comparison between two popular approaches',
     'mistakes and lessons learned from failures',
     'a beginner-friendly explainer with analogies',
-    'an expert interview or roundup format',
     'emerging trends that most people haven\'t noticed yet',
     'a behind-the-scenes look at how something actually works',
-    'a data-driven analysis with statistics and benchmarks',
+    'a checklist or decision framework the reader can apply today',
 ];
 
 class AIBlogService {
@@ -90,11 +108,11 @@ class AIBlogService {
      * @param {string} model - Optional AI model to use
      * @returns {Promise<{topic: string, keywords: string[], imageQuery: string, outline: string[]}>}
      */
-    async pickTopic(niche, customPrompt = null, model = null) {
+    async pickTopic(niche, customPrompt = null, model = null, brandContext = null, keywordIdeas = []) {
+        niche = niche || DEFAULT_NICHE;
+        brandContext = brandContext || DEFAULT_BRAND_CONTEXT;
         const existingTitles = await this.getExistingTitles();
         const angle = TOPIC_ANGLES[Math.floor(Math.random() * TOPIC_ANGLES.length)];
-        const randomSeed = Math.random().toString(36).substring(2, 8);
-
         let avoidSection = '';
         if (existingTitles.length > 0) {
             avoidSection = `
@@ -106,9 +124,21 @@ Your topic MUST be distinctly different from ALL of the above.`;
 
         const defaultPrompt = `You are a senior content strategist at a digital agency. Generate a blog topic for the "${niche}" niche that sounds like it was pitched by a human writer, not generated by AI.
 
+WHO WE ARE (brand context):
+${brandContext}
+
+The topic MUST be something a potential customer of this business would search for on Google
+(a problem, a how-to, a comparison or a buying question in this niche). No general technology,
+AI history, academic or news topics that our buyers would never search for.
+
 Angle for this article: ${angle}
-Uniqueness seed: ${randomSeed}
-${avoidSection}
+${keywordIdeas.length ? `
+REAL GOOGLE SEARCH QUERIES (from Search Console and Google Autocomplete):
+${keywordIdeas.slice(0, 60).map(k => `- ${k}`).join('\n')}
+
+Pick ONE query from this list that a potential customer would search and that is not already covered
+by the existing topics below. Make it the primary keyword: the title must clearly target it. Put it first in "keywords".
+` : ''}${avoidSection}
 
 STRICT RULES:
 - NEVER use the ampersand character. Write "and" instead.
@@ -135,7 +165,7 @@ Return ONLY the JSON, no markdown or explanation.`;
         const prompt = customPrompt || defaultPrompt;
         const useModel = model || this.defaultModel;
         const response = await AIService.generateContent(prompt,
-            `You are a JSON-only response bot. Write titles that sound human, not AI-generated. Never use the ampersand symbol — always write "and". Seed: ${randomSeed}`,
+            'You are a JSON-only response bot. Write titles that sound human, not AI-generated. Never use the ampersand symbol — always write "and".',
             useModel
         );
 
@@ -165,12 +195,10 @@ Return ONLY the JSON, no markdown or explanation.`;
      */
     async writeBlog(topicData, config = {}) {
         const { topic, keywords = [], outline = [], imageQuery } = topicData;
-        const { wordCount = 1000, tone = null, model = null } = config;
+        const { wordCount = 1000, tone = null, model = null, brandContext = null } = config;
 
         const style = WRITING_STYLES[Math.floor(Math.random() * WRITING_STYLES.length)];
         const effectiveTone = tone || style.tone;
-        const randomSeed = Math.random().toString(36).substring(2, 8);
-
         const existingLinks = await this.getExistingBlogLinks();
         let internalLinkSection = '';
         if (existingLinks.length > 0) {
@@ -185,7 +213,13 @@ Only link where it makes contextual sense. Do not force links.`;
 WRITING STYLE: ${style.format.toUpperCase()}
 ${style.instruction}
 
-YOUR VOICE: Write like a real person sharing their knowledge, not like an AI generating content. Imagine you are a ${effectiveTone} blogger who has personal experience with this topic. Use first person occasionally ("I have seen", "in my experience", "we found that"). Be opinionated. Have a point of view.
+YOUR VOICE: Write like a ${effectiveTone} practitioner explaining this to a busy business owner. Be opinionated and practical. Have a point of view.
+
+WHO IS PUBLISHING (brand context):
+${brandContext || DEFAULT_BRAND_CONTEXT}
+Where it fits naturally, mention once how Napnix can help (one or two sentences, near the end). No hard sell.
+
+${NO_FABRICATION_RULES}
 
 BANNED WORDS AND PHRASES (NEVER USE THESE):
 - The ampersand symbol — always write "and" instead
@@ -219,7 +253,7 @@ Content Rules:
     - Use <strong> sparingly — only for genuinely important terms, max 2-3 per section.
     - Include 2 or more lists (<ul> or <ol>) but keep list items concise.
     - Use <h2> for main sections, <h3> for subsections.
-    - Back up claims with specific examples, numbers, or named references.
+    - Back up claims with concrete examples (hypothetical, clearly labelled) or named, verifiable references.
     - Vary sentence length. Mix short punchy sentences with longer explanatory ones.
     - ${this._getRandomContentDirective()}
 - **Closing**: Give one concrete next step the reader can take. No fluff.
@@ -235,7 +269,7 @@ ${internalLinkSection}`;
 
         const useModel = model || this.defaultModel;
         const content = await AIService.generateContent(prompt,
-            `You are a human blogger, not an AI. Write like you are talking to a friend who is interested in this topic. Use casual transitions, personal opinions, and real-world references. Never use the ampersand symbol — write "and" instead. Avoid every word on the banned list. Seed: ${randomSeed}`,
+            `You are a human blogger, not an AI. Write like you are talking to a friend who is interested in this topic. Use casual transitions, personal opinions, and real-world references. Never use the ampersand symbol — write "and" instead. Avoid every word on the banned list.`,
             useModel
         );
 
@@ -303,12 +337,10 @@ Return ONLY JSON:
      */
     _getRandomOpening() {
         const openings = [
-            'Start with a surprising statistic or data point.',
             'Open with a short real-world anecdote or scenario.',
             'Begin with a bold, provocative statement or question.',
             'Start by describing a common problem your reader faces right now.',
             'Open with a "what if" hypothetical that hooks curiosity.',
-            'Begin with a brief quote from an industry expert.',
             'Start with a counterintuitive fact that challenges assumptions.',
             'Open by painting a vivid before/after picture.',
         ];
@@ -324,8 +356,8 @@ Return ONLY JSON:
             'Add a brief comparison table or pros/cons list.',
             'Include a "Common Mistake" warning section.',
             'Add a quick-reference checklist near the end.',
-            'Include a "By the Numbers" section with 3-4 relevant statistics.',
-            'Add a "Real Example" sidebar using <blockquote> with a case study.',
+            'Include a short "Questions to ask before you decide" section.',
+            'Add a "Worked Example" <blockquote> using a clearly hypothetical business.',
             'Include a "Quick Win" section with something the reader can do in 5 minutes.',
             'Add a "Myth vs Reality" comparison for one common misconception.',
         ];
@@ -417,18 +449,23 @@ Return ONLY JSON:
     }
 
     /**
-     * Create URL-safe slug from title with unique suffix
+     * Create a clean URL slug (cut at a word boundary), adding -2, -3... only if it is taken
      */
-    slugify(title) {
-        const baseSlug = title
+    async slugify(title) {
+        let base = title
             .toLowerCase()
             .replace(/[^a-z0-9\s-]/g, '')
+            .trim()
             .replace(/\s+/g, '-')
-            .replace(/-+/g, '-')
-            .substring(0, 50);
+            .replace(/-+/g, '-');
+        if (base.length > 70) base = base.substring(0, 70).replace(/-[^-]*$/, '');
+        base = base || 'post';
 
-        const suffix = Date.now().toString(36);
-        return `${baseSlug}-${suffix}`;
+        const [rows] = await db.query('SELECT slug FROM blogs WHERE slug = ? OR slug LIKE ?', [base, `${base}-%`]);
+        const taken = new Set(rows.map(r => r.slug));
+        let slug = base;
+        for (let n = 2; taken.has(slug); n++) slug = `${base}-${n}`;
+        return slug;
     }
 
     /**
@@ -450,7 +487,7 @@ Return ONLY JSON:
         const { title, excerpt, content, image, category, author, status,
                 metaDescription, tags, imageAlt } = blogData;
 
-        const slug = this.slugify(title);
+        const slug = await this.slugify(title);
         const readTime = this.calculateReadTime(content);
 
         try {
@@ -474,7 +511,7 @@ Return ONLY JSON:
 
             console.log(`[AIBlogService] Blog created: ${title} (ID: ${resultId})`);
 
-            if (status === 'published' || status === 'draft') {
+            if (status === 'published') {
                 SEOIndexingService.notifyBlogPublished(slug).catch(() => {});
             }
 

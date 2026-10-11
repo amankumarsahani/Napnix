@@ -10,7 +10,10 @@ const AIBlogService = require('./aiBlog.service');
 const PDFService = require('./pdf.service');
 const DocumentTemplateModel = require('../models/document-template.model');
 const SEOIndexingService = require('./seoIndexing.service');
+const SEOResearchService = require('./seoResearch.service');
+const AIAgentService = require('./aiAgent.service');
 const waSvc = require('./whatsapp.service');
+const { renderDeep } = require('../utils/template');
 
 class WorkflowEngine {
     constructor() {
@@ -24,6 +27,7 @@ class WorkflowEngine {
             add_note: this.handleAddNote.bind(this),
             send_notification: this.handleSendNotification.bind(this),
             webhook: this.handleWebhook.bind(this),
+            http_request: this.handleHttpRequest.bind(this),
 
             // Conditions
             condition: this.handleCondition.bind(this),
@@ -31,6 +35,7 @@ class WorkflowEngine {
             // Delays
             delay: this.handleDelay.bind(this),
             ai_assistant: this.handleAIAssistant.bind(this),
+            ai_agent: this.handleAIAgent.bind(this),
             update_inquiry: this.handleUpdateInquiry.bind(this),
             assign_inquiry: this.handleAssignUser.bind(this),
 
@@ -42,6 +47,8 @@ class WorkflowEngine {
 
             // SEO
             index_url: this.handleIndexUrl.bind(this),
+            gsc_opportunities: this.handleGSCOpportunities.bind(this),
+            keyword_research: this.handleKeywordResearch.bind(this),
 
             // WhatsApp
             send_whatsapp: this.handleSendWhatsApp.bind(this),
@@ -283,6 +290,15 @@ class WorkflowEngine {
         try {
             let outputData = contextData;
             let branchResult = 'default';
+
+            // Resolve {{expressions}} in every node's config against data from previous nodes
+            if (node.node_type !== 'trigger' && node.config) {
+                let rawConfig = node.config;
+                if (typeof rawConfig === 'string') {
+                    try { rawConfig = JSON.parse(rawConfig); } catch (e) { rawConfig = null; }
+                }
+                if (rawConfig) node = { ...node, config: renderDeep(rawConfig, contextData) };
+            }
 
             // Execute node based on type
             if (node.node_type === 'trigger') {
@@ -720,6 +736,54 @@ class WorkflowEngine {
         return { ...contextData, webhook_response: responseData };
     }
 
+    /**
+     * HTTP Request - call any API; response lands in contextData[response_variable]
+     */
+    async handleHttpRequest(node, contextData) {
+        const config = typeof node.config === 'string' ? JSON.parse(node.config) : (node.config || {});
+        if (!config.url) throw new Error('HTTP Request: url is required');
+
+        const method = (config.method || 'GET').toUpperCase();
+        const outVar = config.response_variable || 'http_response';
+
+        // headers: object, JSON string, or "Key: value" lines
+        let headers = config.headers || {};
+        if (typeof headers === 'string') {
+            try {
+                headers = JSON.parse(headers);
+            } catch (e) {
+                headers = Object.fromEntries(headers.split('\n')
+                    .map(line => line.split(/:(.*)/s).map(x => x && x.trim()))
+                    .filter(([k, v]) => k && v));
+            }
+        }
+
+        let body;
+        if (!['GET', 'HEAD'].includes(method)) {
+            if (config.body_mode === 'context') body = JSON.stringify(contextData);
+            else if (config.body) body = typeof config.body === 'string' ? config.body : JSON.stringify(config.body);
+            if (body && !Object.keys(headers).some(h => h.toLowerCase() === 'content-type')) {
+                headers['Content-Type'] = 'application/json';
+            }
+        }
+
+        const res = await fetch(config.url, {
+            method,
+            headers,
+            body,
+            signal: AbortSignal.timeout((Number(config.timeout_seconds) || 30) * 1000),
+        });
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch (e) { data = text; }
+
+        console.log(`[WorkflowEngine] HTTP ${method} ${config.url} -> ${res.status}`);
+        if (!res.ok && config.fail_on_error !== false) {
+            throw new Error(`HTTP Request failed: ${res.status} ${String(text).slice(0, 200)}`);
+        }
+        return { ...contextData, [outVar]: data, [`${outVar}_status`]: res.status };
+    }
+
     async handleCondition(node, contextData) {
         const config = typeof node.config === 'string' ? JSON.parse(node.config) : node.config;
 
@@ -832,6 +896,30 @@ class WorkflowEngine {
         }
     }
 
+    /**
+     * AI Agent - LLM loop that calls tools (keyword research, GSC, blog drafts, allowlisted GET) until done
+     */
+    async handleAIAgent(node, contextData) {
+        const config = typeof node.config === 'string' ? JSON.parse(node.config) : (node.config || {});
+        if (!config.goal) throw new Error('AI Agent: goal is required');
+
+        const result = await AIAgentService.run({
+            goal: config.goal,
+            systemMessage: config.system_message,
+            tools: config.tools,
+            model: config.model,
+            maxSteps: config.max_steps,
+            maxDrafts: config.max_drafts,
+            brandContext: config.brand_context,
+            author: config.author,
+            allowedHosts: String(config.allowed_hosts || '').split(/[\s,]+/).filter(Boolean),
+        }, contextData);
+
+        const outVar = config.output_variable || 'agent_result';
+        console.log(`[WorkflowEngine] AI Agent finished in ${result.steps.length} step(s)`);
+        return { ...contextData, [outVar]: result.final, [`${outVar}_steps`]: result.steps };
+    }
+
     // ============================================
     // AI BLOG NODE HANDLERS
     // ============================================
@@ -847,11 +935,12 @@ class WorkflowEngine {
             try { config = JSON.parse(config); } catch (e) { config = {}; }
         }
 
-        const niche = config.niche || 'Technology';
+        const niche = config.niche || null;
         const customPrompt = config.custom_prompt || null;
         const model = config.model || null;
+        const brandContext = config.brand_context || null;
 
-        const topicData = await AIBlogService.pickTopic(niche, customPrompt, model);
+        const topicData = await AIBlogService.pickTopic(niche, customPrompt, model, brandContext, contextData.seo_keyword_ideas || []);
 
         console.log(`[WorkflowEngine] AI picked topic: ${topicData.topic}`);
         return {
@@ -859,7 +948,57 @@ class WorkflowEngine {
             blog_topic: topicData.topic,
             blog_keywords: topicData.keywords,
             blog_image_query: topicData.imageQuery,
-            blog_outline: topicData.outline
+            blog_outline: topicData.outline,
+            blog_brand_context: brandContext
+        };
+    }
+
+    /**
+     * GSC Opportunities - queries we already rank ~4-20 for (needs service account added to the GSC property)
+     */
+    async handleGSCOpportunities(node, contextData) {
+        let config = node.config || {};
+        if (typeof config === 'string') {
+            try { config = JSON.parse(config); } catch (e) { config = {}; }
+        }
+
+        const rows = await SEOResearchService.gscOpportunities({
+            property: config.property || undefined,
+            days: Number(config.days) || 28,
+            minImpressions: Number(config.min_impressions) || 5,
+            maxPos: Number(config.max_position) || 20,
+            limit: Number(config.limit) || 25,
+        });
+
+        console.log(`[WorkflowEngine] GSC opportunities: ${rows.length}`);
+        const ideas = rows.map(r => `${r.query} (we rank #${r.position} with ${r.page}, ${r.impressions} impressions)`);
+        return {
+            ...contextData,
+            gsc_opportunities: rows,
+            seo_keyword_ideas: [...(contextData.seo_keyword_ideas || []), ...ideas]
+        };
+    }
+
+    /**
+     * Keyword Research - Google Autocomplete suggestions for seed keywords
+     */
+    async handleKeywordResearch(node, contextData) {
+        let config = node.config || {};
+        if (typeof config === 'string') {
+            try { config = JSON.parse(config); } catch (e) { config = {}; }
+        }
+
+        const seeds = (config.seeds || '').split(/[\n,]/);
+        const ideas = await SEOResearchService.autocompleteIdeas(seeds, {
+            gl: config.country || 'in',
+            limit: Number(config.limit) || 40,
+        });
+
+        console.log(`[WorkflowEngine] Keyword research: ${ideas.length} suggestions`);
+        return {
+            ...contextData,
+            keyword_suggestions: ideas,
+            seo_keyword_ideas: [...(contextData.seo_keyword_ideas || []), ...ideas]
         };
     }
 
@@ -883,8 +1022,9 @@ class WorkflowEngine {
 
         const blogConfig = {
             wordCount: config.word_count || 1000,
-            tone: config.tone || 'professional',
-            model: config.model || null
+            tone: config.tone || null, // null = rotate writing styles
+            model: config.model || null,
+            brandContext: config.brand_context || contextData.blog_brand_context || null
         };
 
         const blogData = await AIBlogService.writeBlog(topicData, blogConfig);
@@ -895,6 +1035,9 @@ class WorkflowEngine {
             blog_title: blogData.title,
             blog_excerpt: blogData.excerpt,
             blog_content: blogData.content,
+            blog_meta_description: blogData.metaDescription,
+            blog_tags: blogData.tags,
+            blog_image_alt: blogData.imageAlt,
             blog_image_query: blogData.imageQuery || contextData.blog_image_query
         };
     }
@@ -942,7 +1085,11 @@ class WorkflowEngine {
             image: contextData.blog_image || '',
             category: config.category || 'General',
             author: config.author || 'AI Writer',
-            status: config.status || 'draft'
+            status: config.status || 'draft',
+            metaDescription: contextData.blog_meta_description || '',
+            tags: contextData.blog_tags || [],
+            imageAlt: contextData.blog_image_alt || '',
+            keywords: contextData.blog_keywords || []
         };
 
         try {

@@ -61,6 +61,11 @@ const BlogArticle = () => {
     if (error || !blog) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-white pt-20">
+                {/* SPA serves 200 for every path; noindex so unpublished posts drop out of Google */}
+                <Helmet>
+                    <title>Article Not Found | Napnix</title>
+                    <meta name="robots" content="noindex, nofollow" />
+                </Helmet>
                 <div className="text-center">
                     <h1 className="text-4xl font-bold text-slate-800 mb-4">Blog Not Found</h1>
                     <p className="text-slate-600 mb-8">The article you're looking for doesn't exist.</p>
