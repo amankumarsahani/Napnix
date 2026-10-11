@@ -292,39 +292,41 @@ class BillingController {
             const limit = parseInt(req.query.limit) || 10;
             const offset = (page - 1) * limit;
             const status = req.query.status;
+            const search = String(req.query.search || '').trim();
 
-            let query = `
-                SELECT 
-                    p.*, 
-                    t.name as tenant_name, 
+            // Shared filter for the page and the total count
+            const where = [];
+            const filterParams = [];
+            if (status && status !== 'all') {
+                where.push('p.status = ?');
+                filterParams.push(status);
+            }
+            if (search) {
+                where.push('(t.name LIKE ? OR t.email LIKE ? OR p.invoice_number LIKE ?)');
+                const like = `%${search.replace(/[\\%_]/g, '\\$&')}%`;
+                filterParams.push(like, like, like);
+            }
+            const whereSql = where.length ? ` WHERE ${where.join(' AND ')}` : '';
+
+            const query = `
+                SELECT
+                    p.*,
+                    t.name as tenant_name,
                     t.email as tenant_email,
                     pl.name as plan_name
                 FROM payments p
                 LEFT JOIN tenants t ON p.tenant_id = t.id
                 LEFT JOIN subscriptions s ON p.subscription_id = s.id
                 LEFT JOIN plans pl ON s.plan_id = pl.id
+                ${whereSql}
+                ORDER BY p.created_at DESC LIMIT ? OFFSET ?
             `;
+            const [payments] = await pool.query(query, [...filterParams, limit, offset]);
 
-            const params = [];
-
-            if (status && status !== 'all') {
-                query += ' WHERE p.status = ?';
-                params.push(status);
-            }
-
-            query += ' ORDER BY p.created_at DESC LIMIT ? OFFSET ?';
-            params.push(limit, offset);
-
-            const [payments] = await pool.query(query, params);
-
-            // Get total count
-            let countQuery = 'SELECT COUNT(*) as total FROM payments p';
-            const countParams = [];
-            if (status && status !== 'all') {
-                countQuery += ' WHERE p.status = ?';
-                countParams.push(status);
-            }
-            const [totalResult] = await pool.query(countQuery, countParams);
+            const [totalResult] = await pool.query(
+                `SELECT COUNT(*) as total FROM payments p LEFT JOIN tenants t ON p.tenant_id = t.id${whereSql}`,
+                filterParams
+            );
 
             res.json({
                 success: true,
