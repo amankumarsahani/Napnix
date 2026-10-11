@@ -119,7 +119,8 @@ class WorkflowWorker {
                         [workflow.id]
                     );
 
-                    await workflowEngine.trigger('scheduled', 'system', workflow.id, {
+                    // Run only this workflow; trigger('scheduled') would start every active scheduled workflow
+                    await workflowEngine.startExecution(workflow, 'system', workflow.id, {
                         scheduled_run: new Date(),
                         workflow_id: workflow.id,
                         workflow_name: workflow.name
