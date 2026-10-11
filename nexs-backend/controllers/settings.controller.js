@@ -13,6 +13,12 @@ const AI_PROVIDER_SETTING_KEYS = new Set([
     'grok_api_key'
 ]);
 
+// Secrets are never sent to the browser in full. smtp_password + webhook/secret keys used to be
+// returned in plaintext (only *_api_key was masked).
+const isSecretKey = key => key.includes('_api_key') || key === 'smtp_password' || /_secret(_key)?$/.test(key);
+// What getSettings sends for a stored secret; updateSettings must never write these back
+const isMaskedValue = value => typeof value === 'string' && (value === '****' || value === 'configured' || /^.{4}\.\.\..{4}$/.test(value));
+
 function maskApiKey(value) {
     if (!value) return '****';
     if (value.length > 8) return `${value.substring(0, 4)}...${value.substring(value.length - 4)}`;
@@ -28,7 +34,7 @@ exports.getSettings = async (req, res) => {
         const settingsMap = {};
         settings.forEach(s => {
             // Mask sensitive data like API keys and SMTP passwords
-            if ((s.setting_key.includes('_api_key') || s.setting_key === 'smtp_password') && s.setting_value) {
+            if (isSecretKey(s.setting_key) && s.setting_value) {
                 if (s.setting_key.includes('_api_key')) {
                     try {
                         settingsMap[s.setting_key] = maskApiKey(decryptSecret(s.setting_value));
@@ -105,9 +111,8 @@ exports.updateSettings = async (req, res) => {
             for (const key of keys) {
                 const value = updates[key];
 
-                // Skip masked values — don't overwrite with placeholder
-                if (key.includes('_api_key') && value && value.includes('...')) continue;
-                if (key === 'smtp_password' && value === '****') continue;
+                // Skip masked placeholders and blanks for secrets: never overwrite a stored secret with them
+                if (isSecretKey(key) && (!value || isMaskedValue(value))) continue;
                 const valueToStore = AI_PROVIDER_SETTING_KEYS.has(key) && value ? encryptSecret(value) : value;
 
                 await connection.query(
@@ -180,7 +185,7 @@ exports.testAIConnection = async (req, res) => {
 
         // If apiKey is masked, fetch the real one from DB
         let finalApiKey = apiKey;
-        if (apiKey.includes('...')) {
+        if (isMaskedValue(apiKey)) { // masked placeholder: test the stored key
             const [[setting]] = await db.query(
                 'SELECT setting_value FROM settings WHERE setting_key = ?',
                 [`${provider}_api_key`]
