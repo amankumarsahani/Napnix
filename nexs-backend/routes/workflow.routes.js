@@ -7,9 +7,50 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
 const { auth, isAdmin } = require('../middleware/auth');
+const crypto = require('crypto');
 const workflowEngine = require('../services/workflowEngine');
 
-// All routes require authentication
+const MAX_WEBHOOK_PAYLOAD = 256 * 1024;
+
+// Incoming webhook trigger (public; authenticated by the per-workflow secret in the URL).
+// POST /api/workflows/hooks/:id/:secret  -> runs that one workflow with the JSON body as data.
+router.post('/hooks/:id/:secret', async (req, res) => {
+    try {
+        const [[workflow]] = await db.query(
+            "SELECT * FROM workflows WHERE id = ? AND is_active = TRUE AND trigger_type = 'webhook_received'",
+            [req.params.id]
+        );
+        // Secret lives on the trigger node's config (the editor does not save workflows.trigger_config)
+        let expected = '';
+        if (workflow) {
+            const [[triggerNode]] = await db.query(
+                "SELECT config FROM workflow_nodes WHERE workflow_id = ? AND node_type = 'trigger' LIMIT 1",
+                [workflow.id]
+            );
+            let cfg = triggerNode?.config || {};
+            if (typeof cfg === 'string') { try { cfg = JSON.parse(cfg); } catch (e) { cfg = {}; } }
+            expected = String(cfg.webhook_secret || '');
+        }
+        const given = Buffer.from(String(req.params.secret));
+        const ok = expected.length >= 16 && given.length === Buffer.byteLength(expected)
+            && crypto.timingSafeEqual(given, Buffer.from(expected));
+        if (!ok) return res.status(404).json({ success: false, error: 'Not found' });
+
+        const body = req.body && typeof req.body === 'object' ? req.body : {};
+        if (JSON.stringify(body).length > MAX_WEBHOOK_PAYLOAD) {
+            return res.status(413).json({ success: false, error: 'Payload too large' });
+        }
+
+        const data = { ...(Array.isArray(body) ? { items: body } : body), webhook: { body, query: req.query, received_at: new Date().toISOString() } };
+        const executionId = await workflowEngine.startExecution(workflow, 'webhook', 0, data);
+        res.status(202).json({ success: true, execution_id: executionId });
+    } catch (error) {
+        console.error('Workflow webhook error:', error);
+        res.status(500).json({ success: false, error: 'Failed to start workflow' });
+    }
+});
+
+// All other routes require authentication
 router.use(auth);
 
 // ============================================
@@ -299,10 +340,10 @@ router.post('/:id/test', isAdmin, async (req, res) => {
             return res.status(404).json({ success: false, error: 'Workflow not found' });
         }
 
-        // Trigger the workflow
-        await workflowEngine.trigger(workflow.trigger_type, 'test', 0, testData);
+        // Run only this workflow (trigger() would run every active workflow sharing the trigger type)
+        const executionId = await workflowEngine.startExecution(workflow, 'test', 0, testData);
 
-        res.json({ success: true, message: 'Workflow triggered for testing' });
+        res.json({ success: true, message: 'Workflow triggered for testing', execution_id: executionId });
     } catch (error) {
         console.error('Test workflow error:', error);
         res.status(500).json({ success: false, error: 'Failed to test workflow' });

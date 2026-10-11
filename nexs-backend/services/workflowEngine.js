@@ -28,6 +28,7 @@ class WorkflowEngine {
             send_notification: this.handleSendNotification.bind(this),
             webhook: this.handleWebhook.bind(this),
             http_request: this.handleHttpRequest.bind(this),
+            loop_items: this.handleLoopItems.bind(this),
 
             // Conditions
             condition: this.handleCondition.bind(this),
@@ -83,25 +84,31 @@ class WorkflowEngine {
                     }
                 }
 
-                // Create execution instance
-                const [result] = await db.query(
-                    `INSERT INTO workflow_executions 
-                     (workflow_id, trigger_entity_type, trigger_entity_id, trigger_data, status)
-                     VALUES (?, ?, ?, ?, 'running')`,
-                    [workflow.id, entityType, entityId, JSON.stringify(entityData)]
-                );
-
-                const executionId = result.insertId;
-                console.log(`[WorkflowEngine] Started execution ${executionId} for workflow "${workflow.name}"`);
-
-                // Execute the workflow
-                this.executeWorkflow(workflow.id, executionId, entityData).catch(err => {
-                    console.error(`[WorkflowEngine] Execution ${executionId} failed:`, err);
-                });
+                await this.startExecution(workflow, entityType, entityId, entityData);
             }
         } catch (error) {
             console.error('[WorkflowEngine] Trigger error:', error);
         }
+    }
+
+    /**
+     * Run one specific workflow (used by trigger(), the Test button and incoming webhooks)
+     */
+    async startExecution(workflow, entityType, entityId, entityData) {
+        const [result] = await db.query(
+            `INSERT INTO workflow_executions
+             (workflow_id, trigger_entity_type, trigger_entity_id, trigger_data, status)
+             VALUES (?, ?, ?, ?, 'running')`,
+            [workflow.id, entityType, entityId, JSON.stringify(entityData)]
+        );
+
+        const executionId = result.insertId;
+        console.log(`[WorkflowEngine] Started execution ${executionId} for workflow "${workflow.name}"`);
+
+        this.executeWorkflow(workflow.id, executionId, entityData).catch(err => {
+            console.error(`[WorkflowEngine] Execution ${executionId} failed:`, err);
+        });
+        return executionId;
     }
 
     /**
@@ -246,13 +253,10 @@ class WorkflowEngine {
             console.log(`[WorkflowEngine] Resumed with context keys:`, Object.keys(contextData));
 
 
-            // Find connections from current node and execute next nodes
-            const currentConnections = connectionMap.get(currentNodeId) || [];
-            for (const conn of currentConnections) {
-                const nextNode = nodeMap.get(conn.target_node_id);
-                if (nextNode) {
-                    await this.executeNode(nextNode, executionId, contextData, nodeMap, connectionMap);
-                }
+            // Continue after the delay node that paused
+            const currentNode = nodeMap.get(currentNodeId);
+            if (currentNode) {
+                await this.runChildren(currentNode, 'default', contextData, executionId, nodeMap, connectionMap);
             }
 
             // Mark execution complete
@@ -287,77 +291,119 @@ class WorkflowEngine {
         );
         const logId = logResult.insertId;
 
+        // Resolve {{expressions}} in every node's config against data from previous nodes
+        if (node.node_type !== 'trigger' && node.config) {
+            let rawConfig = node.config;
+            if (typeof rawConfig === 'string') {
+                try { rawConfig = JSON.parse(rawConfig); } catch (e) { rawConfig = null; }
+            }
+            if (rawConfig) node = { ...node, config: renderDeep(rawConfig, contextData) };
+        }
+        const settings = (node.config && typeof node.config === 'object') ? node.config : {};
+
+        let outputData;
+        let branch;
         try {
-            let outputData = contextData;
-            let branchResult = 'default';
+            const result = await this.runWithRetry(
+                () => this.runNode(node, executionId, contextData, logId),
+                settings, node
+            );
+            if (result.paused) return; // delay node: worker resumes later
+            ({ outputData, branch } = result);
 
-            // Resolve {{expressions}} in every node's config against data from previous nodes
-            if (node.node_type !== 'trigger' && node.config) {
-                let rawConfig = node.config;
-                if (typeof rawConfig === 'string') {
-                    try { rawConfig = JSON.parse(rawConfig); } catch (e) { rawConfig = null; }
-                }
-                if (rawConfig) node = { ...node, config: renderDeep(rawConfig, contextData) };
-            }
-
-            // Execute node based on type
-            if (node.node_type === 'trigger') {
-                // Trigger already happened, just pass through
-                outputData = contextData;
-            } else if (node.node_type === 'delay') {
-                // Handle delay - schedule for later
-                const delayResult = await this.handleDelay(node, executionId, contextData);
-                if (delayResult.shouldWait) {
-                    // Update execution to waiting state
-                    await db.query(
-                        "UPDATE workflow_executions SET status = 'waiting', current_node_id = ?, next_run_at = ? WHERE id = ?",
-                        [node.id, delayResult.resumeAt, executionId]
-                    );
-
-                    await db.query(
-                        "UPDATE workflow_execution_logs SET status = 'completed', output_data = ?, completed_at = NOW() WHERE id = ?",
-                        [JSON.stringify({ waiting_until: delayResult.resumeAt }), logId]
-                    );
-
-                    return; // Stop execution, worker will resume later
-                }
-            } else if (node.node_type === 'condition') {
-                branchResult = await this.handleCondition(node, contextData);
-                outputData = contextData;
-            } else if (node.node_type === 'action' || node.node_type === 'whatsapp') {
-                const handler = this.nodeHandlers[node.action_type];
-                if (handler) {
-                    outputData = await handler(node, contextData);
-                } else {
-                    throw new Error(`Unknown action type: ${node.action_type}`);
-                }
-            }
-
-            // Log success
             await db.query(
                 "UPDATE workflow_execution_logs SET status = 'completed', output_data = ?, completed_at = NOW() WHERE id = ?",
                 [JSON.stringify(outputData), logId]
             );
-
-            // Find and execute connected nodes
-            const connections = connectionMap.get(node.id) || [];
-            for (const conn of connections) {
-                // For conditions, check if this branch matches
-                if (node.node_type === 'condition' && conn.source_handle !== branchResult) {
-                    continue;
-                }
-
-                const nextNode = nodeMap.get(conn.target_node_id);
-                if (nextNode) {
-                    await this.executeNode(nextNode, executionId, outputData, nodeMap, connectionMap);
-                }
-            }
         } catch (error) {
             await db.query(
                 "UPDATE workflow_execution_logs SET status = 'failed', error_message = ?, completed_at = NOW() WHERE id = ?",
                 [error.message, logId]
             );
-            throw error;
+            // on_error: stop (default) | continue (next nodes get last_error) | branch (follow the red "error" handle)
+            const mode = settings.on_error || 'stop';
+            if (mode === 'stop') throw error;
+            outputData = { ...contextData, last_error: { node: node.label || node.action_type, message: error.message } };
+            branch = mode === 'branch' ? 'error' : 'default';
+        }
+
+        // Loop Over Items: run everything connected after this node once per item
+        if (node.action_type === 'loop_items' && branch !== 'error') {
+            const items = outputData.loop_items || [];
+            // ponytail: sequential and in-process; a Delay node inside a loop resumes only the item that paused
+            for (let i = 0; i < items.length; i++) {
+                const itemContext = { ...outputData, item: items[i], item_index: i, item_count: items.length };
+                await this.runChildren(node, 'default', itemContext, executionId, nodeMap, connectionMap);
+            }
+            return;
+        }
+
+        await this.runChildren(node, branch, outputData, executionId, nodeMap, connectionMap);
+    }
+
+    /**
+     * Execute one node's own work. Returns { outputData, branch } or { paused: true } for delays.
+     */
+    async runNode(node, executionId, contextData, logId) {
+        if (node.node_type === 'trigger') {
+            return { outputData: contextData, branch: 'default' };
+        }
+        if (node.node_type === 'delay') {
+            const delayResult = await this.handleDelay(node, executionId, contextData);
+            if (delayResult.shouldWait) {
+                await db.query(
+                    "UPDATE workflow_executions SET status = 'waiting', current_node_id = ?, next_run_at = ? WHERE id = ?",
+                    [node.id, delayResult.resumeAt, executionId]
+                );
+                await db.query(
+                    "UPDATE workflow_execution_logs SET status = 'completed', output_data = ?, completed_at = NOW() WHERE id = ?",
+                    [JSON.stringify({ waiting_until: delayResult.resumeAt }), logId]
+                );
+                return { paused: true };
+            }
+            return { outputData: contextData, branch: 'default' };
+        }
+        if (node.node_type === 'condition') {
+            return { outputData: contextData, branch: await this.handleCondition(node, contextData) };
+        }
+        if (node.node_type === 'action' || node.node_type === 'whatsapp') {
+            const handler = this.nodeHandlers[node.action_type];
+            if (!handler) throw new Error(`Unknown action type: ${node.action_type}`);
+            return { outputData: await handler(node, contextData), branch: 'default' };
+        }
+        return { outputData: contextData, branch: 'default' };
+    }
+
+    async runWithRetry(fn, settings, node) {
+        const retries = Math.min(Math.max(Number(settings.retry_count) || 0, 0), 5);
+        const delayMs = Math.min(Number(settings.retry_delay_seconds) || 5, 60) * 1000;
+        for (let attempt = 0; ; attempt++) {
+            try {
+                return await fn();
+            } catch (error) {
+                if (attempt >= retries) throw error;
+                console.warn(`[WorkflowEngine] Node ${node.id} failed (attempt ${attempt + 1}/${retries + 1}): ${error.message}; retrying in ${delayMs / 1000}s`);
+                await new Promise(resolve => setTimeout(resolve, delayMs));
+            }
+        }
+    }
+
+    /**
+     * Follow outgoing connections. Conditions follow their yes/no handle; other nodes follow
+     * normal connections, or only "error" handle connections when branch === 'error'.
+     */
+    async runChildren(node, branch, outputData, executionId, nodeMap, connectionMap) {
+        for (const conn of connectionMap.get(node.id) || []) {
+            const handle = conn.source_handle || 'default';
+            const follow = node.node_type === 'condition'
+                ? handle === branch
+                : (branch === 'error') === (handle === 'error');
+            if (!follow) continue;
+
+            const nextNode = nodeMap.get(conn.target_node_id);
+            if (nextNode) {
+                await this.executeNode(nextNode, executionId, outputData, nodeMap, connectionMap);
+            }
         }
     }
 
@@ -734,6 +780,23 @@ class WorkflowEngine {
         const responseData = await response.json().catch(() => ({}));
         console.log(`[WorkflowEngine] Webhook called: ${config.url}`);
         return { ...contextData, webhook_response: responseData };
+    }
+
+    /**
+     * Loop Over Items - resolves the list; executeNode then runs the following nodes once per item
+     * with {{item}}, {{item_index}}, {{item_count}}.
+     */
+    async handleLoopItems(node, contextData) {
+        const config = typeof node.config === 'string' ? JSON.parse(node.config) : (node.config || {});
+        let items = config.items;
+        if (typeof items === 'string') {
+            try { items = JSON.parse(items); } catch (e) { items = items.split('\n').map(s => s.trim()).filter(Boolean); }
+        }
+        if (!Array.isArray(items)) throw new Error('Loop Over Items: "items" must resolve to a list, e.g. {{keyword_suggestions}}');
+
+        const max = Math.min(Number(config.max_items) || 50, 200);
+        console.log(`[WorkflowEngine] Loop over ${Math.min(items.length, max)} of ${items.length} item(s)`);
+        return { ...contextData, loop_items: items.slice(0, max) };
     }
 
     /**
