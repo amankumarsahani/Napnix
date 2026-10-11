@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const TeamController = require('../controllers/team.controller');
-const { auth } = require('../middleware/auth');
+const { auth, isAdmin } = require('../middleware/auth');
 
 // All routes require authentication
 router.use(auth);
@@ -12,8 +12,9 @@ router.get('/stats', TeamController.getStats);
 // CRUD routes
 router.get('/', TeamController.getAll);
 router.get('/:id', TeamController.getById);
-router.post('/', TeamController.create);
-router.put('/:id', TeamController.update);
-router.delete('/:id', TeamController.delete);
+// Writes create logins and set roles: admin only (any signed-in user could mint an admin before)
+router.post('/', isAdmin, TeamController.create);
+router.put('/:id', isAdmin, TeamController.update);
+router.delete('/:id', isAdmin, TeamController.delete);
 
 module.exports = router;

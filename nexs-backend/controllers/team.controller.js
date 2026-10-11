@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const TeamModel = require('../models/team.model');
 const UserModel = require('../models/user.model');
 
@@ -5,8 +6,8 @@ const TeamController = {
     // Get all team members
     async getAll(req, res) {
         try {
-            const { status, department, page = 1, limit = 10 } = req.query;
-            const filters = { status, department, page, limit };
+            const { status, department, search, page = 1, limit = 10 } = req.query;
+            const filters = { status, department, search, page, limit };
 
             const teamMembers = await TeamModel.getAll(filters);
             const total = await TeamModel.count(filters);
@@ -85,13 +86,10 @@ const TeamController = {
             }
 
             // Generate a random secure password
+            // crypto, not Math.random: this is a real login password
             const generatePassword = () => {
                 const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%';
-                let password = '';
-                for (let i = 0; i < 12; i++) {
-                    password += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                return password;
+                return Array.from({ length: 12 }, () => chars[crypto.randomInt(chars.length)]).join('');
             };
 
             const generatedPassword = generatePassword();
