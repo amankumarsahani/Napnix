@@ -111,12 +111,24 @@ router.get('/:id', async (req, res) => {
             [req.params.id]
         );
 
+        // Run stats for the detail page header
+        const [[stats]] = await db.query(
+            `SELECT COUNT(*) AS execution_count,
+                    COALESCE(SUM(status = 'completed'), 0) AS success_count,
+                    COALESCE(SUM(status = 'failed'), 0) AS failed_count,
+                    MAX(started_at) AS last_run_at,
+                    AVG(CASE WHEN completed_at IS NOT NULL THEN TIMESTAMPDIFF(SECOND, started_at, completed_at) END) AS avg_seconds
+             FROM workflow_executions WHERE workflow_id = ?`,
+            [req.params.id]
+        );
+
         res.json({
             success: true,
             data: {
                 ...workflow,
                 nodes,
-                connections
+                connections,
+                stats
             }
         });
     } catch (error) {
@@ -368,26 +380,31 @@ router.post('/:id/test', isAdmin, async (req, res) => {
 router.get('/:id/executions', async (req, res) => {
     try {
         const { id } = req.params;
-        const { limit = 20, page = 1 } = req.query;
+        const limit = Math.min(parseInt(req.query.limit) || 20, 100);
+        const page = Math.max(parseInt(req.query.page) || 1, 1);
         const offset = (page - 1) * limit;
+        const { status } = req.query;
+
+        const where = status ? 'workflow_id = ? AND status = ?' : 'workflow_id = ?';
+        const params = status ? [id, status] : [id];
 
         const [executions] = await db.query(
-            `SELECT * FROM workflow_executions 
-             WHERE workflow_id = ?
-             ORDER BY started_at DESC
+            `SELECT * FROM workflow_executions
+             WHERE ${where}
+             ORDER BY started_at DESC, id DESC
              LIMIT ? OFFSET ?`,
-            [id, parseInt(limit), offset]
+            [...params, limit, offset]
         );
 
         const [[{ total }]] = await db.query(
-            'SELECT COUNT(*) as total FROM workflow_executions WHERE workflow_id = ?',
-            [id]
+            `SELECT COUNT(*) as total FROM workflow_executions WHERE ${where}`,
+            params
         );
 
         res.json({
             success: true,
             data: executions,
-            pagination: { total, page: parseInt(page), limit: parseInt(limit) }
+            pagination: { total, page, limit, pages: Math.ceil(total / limit) }
         });
     } catch (error) {
         console.error('Get executions error:', error);
