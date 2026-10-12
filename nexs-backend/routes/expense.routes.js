@@ -12,10 +12,14 @@ router.get('/people', ctrl.listPeople);
 router.post('/people', ctrl.createPerson);
 router.delete('/people/:id', ctrl.deletePerson);
 router.get('/', ctrl.getAll);
+router.post('/bulk-delete', ctrl.bulkDelete);
 router.get('/:id', ctrl.getById);
+router.get('/:id/audit', ctrl.getAudit);
 router.post('/', ctrl.create);
 router.patch('/:id', ctrl.update);
+router.post('/:id/approve', ctrl.setStatus);
+router.post('/:id/reject', ctrl.setStatus);
+router.post('/:id/restore', ctrl.restore);
 router.delete('/:id', ctrl.delete);
-router.post('/bulk-delete', ctrl.bulkDelete);
 
 module.exports = router;

@@ -336,6 +336,9 @@ backupWorker.start(60000); // Check every minute
 const planLifecycleWorker = require('./workers/planLifecycleWorker');
 planLifecycleWorker.start(60000); // Debounced to once/day internally
 
+// Post rows owed by recurring expense templates
+require('./workers/expenseRecurringWorker').start(3600000);
+
 // 404 Handler
 app.use((req, res) => {
     res.status(404).json({
