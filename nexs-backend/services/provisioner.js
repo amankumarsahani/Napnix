@@ -387,6 +387,7 @@ EOFNODE`;
             // 3. Run migrations on new database (base + industry-specific)
             await setStep('migrations');
             await this.runMigrations(dbName, industry_type, server);
+            await this.runVersionedMigrations(dbName, industry_type, server);
             console.log(`[Provisioner] Migrations complete (industry: ${industry_type})`);
 
             // 3b. Seed industry master data. A school with no academic session cannot have a
@@ -694,6 +695,40 @@ EOFNODE`;
                     break;
                 }
             }
+        }
+    }
+
+    /**
+     * Bring a freshly created tenant DB up to the latest schema.
+     *
+     * nexcrm_base_schema.sql is a snapshot; every core/industry migration written after it
+     * lives only in nexcrm-backend/database/migrations. Without this step a new tenant runs
+     * on a stale schema until the next `migrate:tenants` deploy. migrate.js records what it
+     * ran in the `migrations` table, so the next deploy skips these.
+     */
+    async runVersionedMigrations(dbName, industryType = 'general', server = { is_primary: true }) {
+        const backendPath = this.getServerBackendPath(server);
+        const industryArg = `--industry=${industryType || 'general'}`;
+
+        if (server.is_primary) {
+            const { stdout } = await execFileAsync('node', [path.join(backendPath, 'database', 'migrate.js'), industryArg], {
+                cwd: backendPath,
+                env: {
+                    ...process.env,
+                    DB_NAME: dbName,
+                    DB_HOST: server.db_host || this.dbHost,
+                    DB_PORT: String(this.getServerDbPort(server)),
+                    DB_USER: server.db_user || this.dbUser,
+                    DB_PASSWORD: server.db_password || this.dbPass,
+                },
+                timeout: 300000,
+                maxBuffer: 10 * 1024 * 1024,
+            });
+            // migrate.js logs a failed migration and carries on, so surface those lines here.
+            const failed = stdout.split('\n').filter(l => l.includes('✗'));
+            if (failed.length) console.warn(`[Provisioner] ${failed.length} migration(s) failed for ${dbName}:\n${failed.join('\n')}`);
+        } else {
+            await this.executeOnServer(server, `cd ${this.quoteShellArg(backendPath)} && DB_NAME=${this.quoteShellArg(dbName)} node database/migrate.js ${this.quoteShellArg(industryArg)}`);
         }
     }
 
