@@ -35,7 +35,7 @@ const DOC_TYPES = [
     {
         doc_type: 'privacy_policy',
         title: 'Privacy Policy',
-        instruction: 'Write a Privacy Policy covering: what personal data is collected (name, contact details, payment info, usage data), why (Digital Personal Data Protection Act 2023 requires stating a clear, specific purpose for each), how it is stored/secured, who it may be shared with (e.g. payment processors, delivery partners), user rights (access, correction, erasure, grievance redressal, and the DPDP Act\'s right to nominate someone to exercise these rights after death/incapacity), a Grievance Officer contact placeholder, cookie use (cross-reference the separate Cookie Policy), and a clause noting that visitors outside India may have additional rights under GDPR (EU/UK) or CCPA (California) and how to exercise them.'
+        instruction: 'Write a Privacy Policy covering: what personal data is collected (name, contact details, payment info, usage data), why (Digital Personal Data Protection Act 2023 requires stating a clear, specific purpose for each), how it is stored/secured, who it may be shared with (e.g. payment processors, delivery partners), security logging (login attempts, IP address and account actions are logged and kept for 90 days solely to detect fraud and unauthorised access), user rights (access, correction, erasure, grievance redressal, and the DPDP Act\'s right to nominate someone to exercise these rights after death/incapacity), a Grievance Officer contact placeholder, cookie use (cross-reference the separate Cookie Policy), and a clause noting that visitors outside India may have additional rights under GDPR (EU/UK) or CCPA (California) and how to exercise them.'
     },
     {
         doc_type: 'dpdp_notice',

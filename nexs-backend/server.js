@@ -339,6 +339,9 @@ planLifecycleWorker.start(60000); // Debounced to once/day internally
 // Post rows owed by recurring expense templates
 require('./workers/expenseRecurringWorker').start(3600000);
 
+// Tenant health + security monitoring (PRD: nexcrm-backend/docs/PRD_tenant_monitoring.md)
+require('./workers/tenantMonitorWorker').start(60000);
+
 // 404 Handler
 app.use((req, res) => {
     res.status(404).json({
