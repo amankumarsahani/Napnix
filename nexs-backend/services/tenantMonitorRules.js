@@ -250,7 +250,48 @@ function evaluatePm2(tenant, proc, prevRestarts) {
     return hits;
 }
 
+/**
+ * Parse the worker's HOST_SAMPLE_COMMAND output: loadavg, nproc, `free -m` Mem
+ * (total used), `df -BG` (size used), then `__PM2__` and `pm2 jlist`.
+ * Host fields are null when a line is missing; PM2 must parse or this throws.
+ */
+function parseHostSample(stdout) {
+    const marker = stdout.indexOf('__PM2__');
+    const head = (marker >= 0 ? stdout.slice(0, marker) : '').split('\n').map(l => l.trim()).filter(Boolean);
+    const pm2Out = marker >= 0 ? stdout.slice(marker + '__PM2__'.length) : stdout;
+    // pm2 can print warning lines (e.g. "[PM2] ...") before the JSON array.
+    const start = pm2Out.search(/^\[(\{|\])/m);
+    const procs = JSON.parse(start >= 0 ? pm2Out.slice(start) : pm2Out);
+
+    const num = v => (v === undefined || v === '' || Number.isNaN(Number(v)) ? null : Number(v));
+    const load = (head[0] || '').split(/\s+/).slice(0, 3).map(num);
+    const [memTotal, memUsed] = (head[2] || '').split(/\s+/).map(num);
+    const [diskSize, diskUsed] = (head[3] || '').replace(/G/g, '').split(/\s+/).map(num);
+    return {
+        host: {
+            load: [load[0] ?? null, load[1] ?? null, load[2] ?? null],
+            cpu_count: num(head[1]),
+            mem_total_mb: memTotal ?? null, mem_used_mb: memUsed ?? null,
+            disk_total_gb: diskSize ?? null, disk_used_gb: diskUsed ?? null
+        },
+        procs
+    };
+}
+
+/** Keep only what the dashboard shows — never the process env (it holds secrets). */
+function summarizeProcesses(procs) {
+    return (procs || []).map(p => ({
+        name: p.name,
+        status: p.pm2_env?.status || 'unknown',
+        cpu: p.monit?.cpu ?? null,
+        mem_mb: p.monit?.memory != null ? Math.round(p.monit.memory / 1048576) : null,
+        restarts: Number(p.pm2_env?.restart_time || 0),
+        uptime_s: p.pm2_env?.status === 'online' && p.pm2_env?.pm_uptime ? Math.round((Date.now() - p.pm2_env.pm_uptime) / 1000) : null
+    }));
+}
+
 module.exports = {
+    parseHostSample, summarizeProcesses,
     THRESHOLDS, COOLDOWN_MIN,
     evaluateSecurity, evaluateHealthMetrics, nextHealthState, evaluatePm2, privilegedLogins,
     maskEmail, maskIp, hash, parseMeta

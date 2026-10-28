@@ -99,6 +99,96 @@ router.get('/events', async (req, res) => {
     }
 });
 
+// ── GET /metrics?range=1h|6h|24h|7d&tenantId= — dashboard time series ────
+// Buckets are epoch seconds computed by the DB (UNIX_TIMESTAMP in the same
+// session as the stored DATETIMEs), so no node/DB clock mixing.
+const RANGES = {
+    '1h': { seconds: 3600, bucket: 60 },
+    '6h': { seconds: 6 * 3600, bucket: 300 },
+    '24h': { seconds: 24 * 3600, bucket: 900 },
+    '7d': { seconds: 7 * 86400, bucket: 3600 },
+};
+
+router.get('/metrics', async (req, res) => {
+    try {
+        const range = RANGES[req.query.range] ? req.query.range : '6h';
+        const { seconds, bucket } = RANGES[range];
+        const tenantId = req.query.tenantId ? Number(req.query.tenantId) : null;
+        const tenantFilter = tenantId ? 'AND c.tenant_id = ?' : '';
+        const tenantParams = tenantId ? [tenantId] : [];
+
+        const [[{ now }]] = await query('SELECT UNIX_TIMESTAMP(NOW()) AS now');
+
+        const [tenantSeries] = await query(`
+            SELECT c.tenant_id,
+                   FLOOR(UNIX_TIMESTAMP(c.checked_at) / ?) * ? AS t,
+                   COUNT(*) AS checks, SUM(c.ok) AS ok_checks,
+                   ROUND(AVG(CASE WHEN c.ok = 1 THEN c.latency_ms END)) AS latency_ms,
+                   ROUND(AVG(c.db_latency_ms)) AS db_latency_ms,
+                   ROUND(AVG(c.memory_rss_mb)) AS memory_mb,
+                   MAX(c.requests_5m) AS requests_5m,
+                   MAX(c.errors_5xx_5m) AS errors_5xx_5m,
+                   MAX(c.errors_4xx_5m) AS errors_4xx_5m
+            FROM tenant_health_checks c
+            WHERE c.checked_at > NOW() - INTERVAL ? SECOND ${tenantFilter}
+            GROUP BY c.tenant_id, t
+            ORDER BY t
+        `, [bucket, bucket, seconds, ...tenantParams]);
+
+        const [tenantRows] = await query(`
+            SELECT t.id, t.slug, t.name, COALESCE(s.health, 'unknown') AS health
+            FROM tenants t LEFT JOIN tenant_monitor_state s ON s.tenant_id = t.id
+            WHERE t.status IN ('trial', 'active') OR t.id IN (
+                SELECT DISTINCT tenant_id FROM tenant_health_checks WHERE checked_at > NOW() - INTERVAL ? SECOND
+            )
+            ORDER BY t.id
+        `, [seconds]);
+
+        // Server samples are every 5 min, so never bucket finer than that.
+        const serverBucket = Math.max(bucket, 300);
+        const [serverSeries] = await query(`
+            SELECT server_name, FLOOR(UNIX_TIMESTAMP(checked_at) / ?) * ? AS t,
+                   ROUND(AVG(load1), 2) AS load1, MAX(cpu_count) AS cpu_count,
+                   ROUND(AVG(mem_used_mb)) AS mem_used_mb, MAX(mem_total_mb) AS mem_total_mb,
+                   ROUND(AVG(disk_used_gb)) AS disk_used_gb, MAX(disk_total_gb) AS disk_total_gb
+            FROM server_metrics
+            WHERE checked_at > NOW() - INTERVAL ? SECOND
+            GROUP BY server_name, t
+            ORDER BY t
+        `, [serverBucket, serverBucket, seconds]);
+
+        const [latestServers] = await query(`
+            SELECT m.server_name, UNIX_TIMESTAMP(m.checked_at) AS t, m.load1, m.load5, m.load15, m.cpu_count,
+                   m.mem_used_mb, m.mem_total_mb, m.disk_used_gb, m.disk_total_gb, m.processes
+            FROM server_metrics m
+            JOIN (SELECT server_name, MAX(id) AS id FROM server_metrics GROUP BY server_name) last ON last.id = m.id
+            ORDER BY m.server_name
+        `);
+
+        const [eventSeries] = await query(`
+            SELECT FLOOR(UNIX_TIMESTAMP(e.first_seen_at) / ?) * ? AS t, e.severity, COUNT(*) AS n
+            FROM tenant_monitor_events e
+            WHERE e.first_seen_at > NOW() - INTERVAL ? SECOND ${tenantId ? 'AND e.tenant_id = ?' : ''}
+            GROUP BY t, e.severity
+            ORDER BY t
+        `, [bucket, bucket, seconds, ...tenantParams]);
+
+        res.json({
+            success: true,
+            range, bucket, server_bucket: serverBucket,
+            from: Number(now) - seconds, to: Number(now),
+            tenants: tenantRows,
+            tenant_series: tenantSeries,
+            server_series: serverSeries,
+            servers: latestServers.map(s => ({ ...s, processes: parseJson(s.processes) || [] })),
+            event_series: eventSeries,
+        });
+    } catch (error) {
+        console.error('[TenantMonitor] metrics failed:', error);
+        res.status(500).json({ error: 'Failed to load metrics' });
+    }
+});
+
 // ── POST /events/ack { ids: [] } ──────────────────────────────────────────
 router.post('/events/ack', async (req, res) => {
     const ids = Array.isArray(req.body?.ids) ? req.body.ids.map(Number).filter(Number.isInteger).slice(0, 500) : [];

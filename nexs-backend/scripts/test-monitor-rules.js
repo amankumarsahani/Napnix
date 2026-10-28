@@ -80,4 +80,19 @@ assert.strictEqual(R.maskEmail('anu@napnix.in'), 'a***@napnix.in');
 assert.strictEqual(R.maskIp('103.21.5.6'), '103.21.x.x');
 assert.strictEqual(R.maskIp('2405:201:abcd::1'), '2405:201:x::');
 
+// Host sample parsing (HOST_SAMPLE_COMMAND output).
+const hostOut = [
+    '0.52 0.61 0.70 2/345 12345', '4', '7942 5120', ' 79G 41G', '__PM2__',
+    '[PM2] Spawning PM2 daemon',
+    JSON.stringify([{ name: 'tenant-a', pm2_env: { status: 'online', restart_time: 3, pm_uptime: Date.now() - 60000, env: { DB_PASSWORD: 'secret' } }, monit: { cpu: 1.5, memory: 157286400 } }])
+].join('\n');
+const sample = R.parseHostSample(hostOut);
+assert.deepStrictEqual(sample.host, { load: [0.52, 0.61, 0.7], cpu_count: 4, mem_total_mb: 7942, mem_used_mb: 5120, disk_total_gb: 79, disk_used_gb: 41 });
+const procs = R.summarizeProcesses(sample.procs);
+assert.deepStrictEqual({ ...procs[0], uptime_s: procs[0].uptime_s >= 59 }, { name: 'tenant-a', status: 'online', cpu: 1.5, mem_mb: 150, restarts: 3, uptime_s: true });
+assert.ok(!JSON.stringify(procs).includes('secret'), 'process env leaked');
+// Missing host lines degrade to nulls; plain `pm2 jlist` output still parses.
+assert.strictEqual(R.parseHostSample('[]').host.cpu_count, null);
+assert.throws(() => R.parseHostSample('__PM2__\nnot json'));
+
 console.log('monitor rules OK');

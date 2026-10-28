@@ -44,6 +44,16 @@ const EVENT_RETENTION_DAYS = 180;
 const DOWN_REPEAT_MIN = 60;
 const DIGEST_HOUR_IST = 9;
 const PM2_MAX_BUFFER = 64 * 1024 * 1024; // jlist includes every process env
+const SERVER_METRICS_RETENTION_DAYS = 30;
+// Host metrics + PM2 in one SSH round trip; parsed by Rules.parseHostSample.
+const HOST_SAMPLE_COMMAND = [
+    'cat /proc/loadavg',
+    'nproc',
+    "free -m | awk '/^Mem:/{print $2, $3}'",
+    'df -BG --output=size,used / | tail -1',
+    'echo __PM2__',
+    'pm2 jlist'
+].join('; ');
 
 const ADMIN_URL = () => (process.env.ADMIN_PANEL_URL || 'https://admin.napnix.in').replace(/\/+$/, '');
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -167,8 +177,14 @@ class TenantMonitorWorker {
         const r = await this.probe(tenant);
 
         await pool.query(
-            'INSERT INTO tenant_health_checks (tenant_id, ok, http_status, latency_ms, db_ok, error) VALUES (?, ?, ?, ?, ?, ?)',
-            [tenant.id, r.ok ? 1 : 0, r.http_status, r.latency_ms, r.db_ok === null ? null : (r.db_ok ? 1 : 0), r.error]
+            `INSERT INTO tenant_health_checks
+                (tenant_id, ok, http_status, latency_ms, db_ok, error, db_latency_ms, memory_rss_mb, requests_5m, errors_4xx_5m, errors_5xx_5m)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                tenant.id, r.ok ? 1 : 0, r.http_status, r.latency_ms, r.db_ok === null ? null : (r.db_ok ? 1 : 0), r.error,
+                r.deep?.db_latency_ms ?? null, r.deep?.memory_rss_mb ?? null, r.deep?.counters?.requests ?? null,
+                r.deep?.counters?.errors_4xx ?? null, r.deep?.counters?.errors_5xx ?? null
+            ]
         );
 
         const prev = { health: tenant.prev_health || 'unknown', consecutive_failures: tenant.consecutive_failures || 0 };
@@ -245,7 +261,8 @@ class TenantMonitorWorker {
     async checkPm2(tenants) {
         const [servers] = await pool.query('SELECT id, name, hostname, ssh_user, is_primary FROM servers WHERE is_active = 1');
         const primary = servers.find(s => s.is_primary) || { id: null, name: 'primary', is_primary: true };
-        const byServer = new Map();
+        // Every active server is sampled (host metrics for the dashboard), even with no live tenants.
+        const byServer = new Map([[primary, []], ...servers.map(s => [s, []])]);
         for (const t of tenants) {
             const server = servers.find(s => s.id === t.server_id) || primary;
             if (!byServer.has(server)) byServer.set(server, []);
@@ -255,10 +272,18 @@ class TenantMonitorWorker {
         for (const [server, list] of byServer) {
             let procs;
             try {
-                const { stdout } = await this.runOnServer(server, 'pm2 jlist');
-                // pm2 can print warning lines (e.g. "[PM2] ...") before the JSON array.
-                const start = stdout.search(/^\[(\{|\])/m);
-                procs = JSON.parse(start >= 0 ? stdout.slice(start) : stdout);
+                const { stdout } = await this.runOnServer(server, HOST_SAMPLE_COMMAND);
+                const sample = Rules.parseHostSample(stdout);
+                procs = sample.procs;
+                await pool.query(`
+                    INSERT INTO server_metrics
+                        (server_id, server_name, load1, load5, load15, cpu_count, mem_total_mb, mem_used_mb, disk_total_gb, disk_used_gb, processes)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `, [
+                    server.id ?? null, server.name, ...sample.host.load, sample.host.cpu_count,
+                    sample.host.mem_total_mb, sample.host.mem_used_mb, sample.host.disk_total_gb, sample.host.disk_used_gb,
+                    JSON.stringify(Rules.summarizeProcesses(procs))
+                ]).catch(err => console.error('[TenantMonitor] server_metrics insert failed:', err.message));
             } catch (err) {
                 await this.recordHit({
                     server, category: 'health',
@@ -432,6 +457,7 @@ class TenantMonitorWorker {
         await pool.query('DELETE FROM tenant_health_checks WHERE checked_at < NOW() - INTERVAL ? DAY', [HEALTH_RETENTION_DAYS]);
         await pool.query('DELETE FROM tenant_monitor_events WHERE last_seen_at < NOW() - INTERVAL ? DAY', [EVENT_RETENTION_DAYS]);
         await pool.query('DELETE FROM tenant_login_countries WHERE last_seen_at < NOW() - INTERVAL 90 DAY');
+        await pool.query('DELETE FROM server_metrics WHERE checked_at < NOW() - INTERVAL ? DAY', [SERVER_METRICS_RETENTION_DAYS]);
 
         const [open] = await pool.query(`
             SELECT e.severity, e.rule, e.summary, e.occurrences, t.slug
