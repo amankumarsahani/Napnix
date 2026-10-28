@@ -20,6 +20,7 @@
  */
 
 const axios = require('axios');
+const dns = require('dns').promises;
 const geoip = require('geoip-lite');
 const { promisify } = require('util');
 const { exec, execFile } = require('child_process');
@@ -45,6 +46,12 @@ const DOWN_REPEAT_MIN = 60;
 const DIGEST_HOUR_IST = 9;
 const PM2_MAX_BUFFER = 64 * 1024 * 1024; // jlist includes every process env
 const SERVER_METRICS_RETENTION_DAYS = 30;
+// Resolved before every tick to tell "this host lost DNS" apart from "tenants are down".
+const DNS_PROBE_HOSTS = (process.env.MONITOR_DNS_PROBE_HOSTS || 'one.one.one.one,dns.google').split(',').map(s => s.trim()).filter(Boolean);
+const DNS_PROBE_TIMEOUT_MS = 3000;
+const LOCAL_API_URL_TEMPLATE = 'http://127.0.0.1:{port}';
+const ALERT_RETRY_MIN = 5;           // failed alert emails are retried this often
+const ALERT_RETRY_WINDOW_HOURS = 6;  // ...for this long after the event first fired
 // Host metrics + PM2 in one SSH round trip; parsed by Rules.parseHostSample.
 const HOST_SAMPLE_COMMAND = [
     'cat /proc/loadavg',
@@ -67,8 +74,17 @@ function recipients() {
     return [process.env.NAPNIX_ADMIN_EMAIL || 'admin@napnix.in'];
 }
 
-function tenantApiUrl(tenant) {
-    return API_URL_TEMPLATE.replace('{slug}', tenant.slug).replace('{port}', tenant.assigned_port);
+function tenantApiUrl(tenant, template = API_URL_TEMPLATE) {
+    return template.replace('{slug}', tenant.slug).replace('{port}', tenant.assigned_port);
+}
+
+async function resolvesWithin(host, ms) {
+    try {
+        await Promise.race([dns.lookup(host), new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))]);
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 async function mapLimit(items, limit, fn) {
@@ -88,6 +104,16 @@ class TenantMonitorWorker {
         this.lastSlowRun = 0;
         this.lastDailyKey = null;
         this.latencies = new Map(); // tenantId -> recent latencies (ms)
+        this.alertAttempts = new Map(); // alert key -> last send attempt (ms), for retry pacing
+    }
+
+    /** True when an alert email for `key` may be (re)tried now. */
+    attemptDue(key) {
+        const last = this.alertAttempts.get(key) || 0;
+        if (Date.now() - last < ALERT_RETRY_MIN * 60000) return false;
+        if (this.alertAttempts.size > 5000) this.alertAttempts.clear();
+        this.alertAttempts.set(key, Date.now());
+        return true;
     }
 
     start(intervalMs = 60000) {
@@ -107,14 +133,39 @@ class TenantMonitorWorker {
         try {
             const tenants = await this.loadTenants();
             if (tenants === null) return;
-            await mapLimit(tenants, CONCURRENCY, t => this.checkHealth(t));
+
+            // If this host cannot resolve DNS, every public-URL probe fails and all tenants
+            // would be marked down while customers (who come in through the tunnel) are fine.
+            // Check same-box tenants on their local port instead and skip the rest.
+            const dnsOk = (await Promise.all(DNS_PROBE_HOSTS.map(h => resolvesWithin(h, DNS_PROBE_TIMEOUT_MS)))).some(Boolean);
+            let bases;
+            if (dnsOk) {
+                bases = new Map(tenants.map(t => [t.id, tenantApiUrl(t)]));
+            } else {
+                const [servers] = await pool.query('SELECT id, is_primary FROM servers WHERE is_active = 1');
+                const primaryIds = new Set(servers.filter(s => s.is_primary).map(s => s.id));
+                const local = tenants.filter(t => t.server_id === null || primaryIds.has(t.server_id));
+                bases = new Map(local.map(t => [t.id, tenantApiUrl(t, LOCAL_API_URL_TEMPLATE)]));
+                await this.recordHit({
+                    category: 'health',
+                    hit: {
+                        rule: 'monitor_dns_failure', severity: 'high', subject: '',
+                        summary: `Monitor host cannot resolve DNS — outbound email/API calls from it will fail; ${local.length} local tenants checked on 127.0.0.1, ${tenants.length - local.length} skipped`,
+                        details: { probe_hosts: DNS_PROBE_HOSTS, local_tenants: local.length, skipped_tenants: tenants.length - local.length }
+                    }
+                });
+            }
+            const reachable = tenants.filter(t => bases.has(t.id));
+
+            await mapLimit(reachable, CONCURRENCY, t => this.checkHealth(t, bases.get(t.id)));
 
             if (Date.now() - this.lastSlowRun >= SLOW_INTERVAL_MS) {
                 this.lastSlowRun = Date.now();
                 await this.checkPm2(tenants);
-                await mapLimit(tenants, CONCURRENCY, t => this.checkSecurity(t));
+                await mapLimit(reachable, CONCURRENCY, t => this.checkSecurity(t, bases.get(t.id)));
             }
 
+            await this.retryUnsentAlerts();
             await this.daily();
         } finally {
             this.isRunning = false;
@@ -146,8 +197,7 @@ class TenantMonitorWorker {
 
     // ── Health ────────────────────────────────────────────────────────────
 
-    async probe(tenant) {
-        const base = tenantApiUrl(tenant);
+    async probe(tenant, base = tenantApiUrl(tenant)) {
         const opts = { timeout: HTTP_TIMEOUT_MS, validateStatus: () => true };
         const t0 = Date.now();
         try {
@@ -173,8 +223,8 @@ class TenantMonitorWorker {
         }
     }
 
-    async checkHealth(tenant) {
-        const r = await this.probe(tenant);
+    async checkHealth(tenant, base) {
+        const r = await this.probe(tenant, base);
 
         await pool.query(
             `INSERT INTO tenant_health_checks
@@ -236,9 +286,10 @@ class TenantMonitorWorker {
                 details: { consecutive_failures: next.consecutive_failures, last_error: r.error, http_status: r.http_status }
             };
             // Down alerts repeat hourly while down, so they bypass recordHit's once-per-row email.
+            // last_down_alert_at only moves on a successful send; a failed send retries every
+            // ALERT_RETRY_MIN instead of going quiet for an hour.
             await this.recordHit({ tenant, category: 'health', hit, email: false });
-            if (due) {
-                await this.sendAlert(tenant, hit);
+            if (due && this.attemptDue(`down:${tenant.id}`) && await this.sendAlert(tenant, hit)) {
                 await pool.query('UPDATE tenant_monitor_state SET last_down_alert_at = NOW() WHERE tenant_id = ?', [tenant.id]);
             }
         } else if (next.transition === 'recovered') {
@@ -313,11 +364,11 @@ class TenantMonitorWorker {
 
     // ── Security ──────────────────────────────────────────────────────────
 
-    async checkSecurity(tenant) {
+    async checkSecurity(tenant, base = tenantApiUrl(tenant)) {
         let feed = 'ok';
         let events = [];
         try {
-            const res = await axios.get(`${tenantApiUrl(tenant)}/api/internal/security-events`, {
+            const res = await axios.get(`${base}/api/internal/security-events`, {
                 params: { minutes: 60 },
                 headers: { 'X-Internal-Key': INTERNAL_OAUTH_KEY || '' },
                 timeout: 15000,
@@ -415,8 +466,39 @@ class TenantMonitorWorker {
         `, [tenantId, serverId, category, hit.rule, hit.subject || '', hit.severity, hit.summary.slice(0, 255), details]);
 
         if (email && (hit.severity === 'high' || hit.severity === 'critical')) {
-            const sent = await this.sendAlert(tenant || { name: `Server ${server?.name || '?'}`, slug: server?.name || 'server' }, hit);
+            this.alertAttempts.set(`event:${result.insertId}`, Date.now());
+            const sent = await this.sendAlert(tenant || { name: `Server ${server?.name || 'monitor'}`, slug: server?.name || 'monitor' }, hit);
             if (sent) await pool.query('UPDATE tenant_monitor_events SET emailed_at = NOW() WHERE id = ?', [result.insertId]);
+            // unsent rows are picked up by retryUnsentAlerts()
+        }
+    }
+
+    /** Resend high/critical alerts whose email failed (SMTP or DNS down), for a few hours. */
+    async retryUnsentAlerts() {
+        const [rows] = await pool.query(`
+            SELECT e.id, e.rule, e.severity, e.summary, e.details, e.tenant_id,
+                   t.name AS tenant_name, t.slug AS tenant_slug, sv.name AS server_name
+            FROM tenant_monitor_events e
+            LEFT JOIN tenants t ON t.id = e.tenant_id
+            LEFT JOIN servers sv ON sv.id = e.server_id
+            WHERE e.emailed_at IS NULL AND e.acknowledged_at IS NULL
+              AND e.severity IN ('high', 'critical')
+              AND e.rule NOT IN ('tenant_down', 'db_unreachable')
+              AND e.first_seen_at > NOW() - INTERVAL ? HOUR
+            ORDER BY e.id
+            LIMIT 10
+        `, [ALERT_RETRY_WINDOW_HOURS]);
+        for (const row of rows) {
+            if (!this.attemptDue(`event:${row.id}`)) continue;
+            const target = row.tenant_id
+                ? { id: row.tenant_id, name: row.tenant_name, slug: row.tenant_slug }
+                : { name: `Server ${row.server_name || 'monitor'}`, slug: row.server_name || 'monitor' };
+            let details = row.details;
+            if (typeof details === 'string') { try { details = JSON.parse(details); } catch { details = {}; } }
+            const hit = { rule: row.rule, severity: row.severity, summary: `${row.summary} (delayed alert)`, details };
+            if (await this.sendAlert(target, hit)) {
+                await pool.query('UPDATE tenant_monitor_events SET emailed_at = NOW() WHERE id = ?', [row.id]);
+            }
         }
     }
 
