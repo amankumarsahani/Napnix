@@ -240,6 +240,8 @@ class Provisioner {
                 TENANT_SLUG: tenant.slug,
                 JWT_SECRET: tenantJwtSecret,
                 TENANT_JWT_SECRET: tenantJwtSecret,
+                // Same value as JWT_SECRET: saved tenant secrets were encrypted with it (secretStore.js)
+                AI_SETTINGS_SECRET: tenantJwtSecret,
                 INDUSTRY_TYPE: industry,
                 PLAN_SLUG: tenant.plan_slug || 'starter',
                 // Support desk: tenant CRM forwards tickets back to this master API,
@@ -1535,6 +1537,8 @@ EOFNODE`;
                 DB_SSL: process.env.DB_SSL || 'false',
                 JWT_SECRET: tenantJwtSecret,
                 TENANT_JWT_SECRET: tenantJwtSecret,
+                // Same value as JWT_SECRET: saved tenant secrets were encrypted with it (secretStore.js)
+                AI_SETTINGS_SECRET: tenantJwtSecret,
                 TENANT_ID: tenant.id,
                 TENANT_SLUG: slug,
                 INDUSTRY_TYPE: tenant.industry_type || 'general',
