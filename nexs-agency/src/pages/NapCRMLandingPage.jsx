@@ -134,14 +134,14 @@ export default function NapCRMLandingPage() {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-clip selection:bg-[#2563EB]/10">
             <Helmet>
-                <title>NapCRM - All-in-One CRM for Agencies &amp; Businesses | Napnix</title>
-                <meta name="description" content="NapCRM is one system for agency operations: lead management, e-commerce, invoicing, team chat and client portals. Plans from ₹4,165/month." />
+                <title>Napnix CRM - All-in-One CRM for Agencies &amp; Businesses | Napnix</title>
+                <meta name="description" content="Napnix CRM is one system for agency operations: lead management, e-commerce, invoicing, team chat and client portals. Plans from ₹4,165/month." />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/napcrm`} />
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
-                <meta property="og:title" content="NapCRM - All-in-One CRM for Agencies &amp; Businesses" />
-                <meta property="og:description" content="NapCRM is the complete operating system for modern agencies. Integrated lead management, e-commerce, invoicing, team chat, and client portals." />
+                <meta property="og:title" content="Napnix CRM - All-in-One CRM for Agencies &amp; Businesses" />
+                <meta property="og:description" content="Napnix CRM is the complete operating system for modern agencies. Integrated lead management, e-commerce, invoicing, team chat, and client portals." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/napcrm`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
@@ -150,13 +150,13 @@ export default function NapCRMLandingPage() {
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:site" content="@napnix" />
                 <meta name="twitter:creator" content="@napnix" />
-                <meta name="twitter:title" content="NapCRM - All-in-One CRM for Agencies &amp; Businesses" />
+                <meta name="twitter:title" content="Napnix CRM - All-in-One CRM for Agencies &amp; Businesses" />
                 <meta name="twitter:description" content="Integrated lead management, e-commerce, invoicing, team chat, and client portals — starting at $49/month." />
             </Helmet>
 
             {/* Structured Data */}
             <script type="application/ld+json">{JSON.stringify(buildSoftwareApplicationSchema({
-                name: 'NapCRM',
+                name: 'Napnix CRM',
                 description: 'All-in-one CRM platform for agencies with lead management, e-commerce, invoicing, team chat, and client portals.',
                 url: `${SITE_URL}/napcrm`,
                 sku: 'napcrm',
@@ -168,7 +168,7 @@ export default function NapCRMLandingPage() {
                 "@type": "BreadcrumbList",
                 "itemListElement": [
                     { "@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL },
-                    { "@type": "ListItem", "position": 2, "name": "NapCRM", "item": `${SITE_URL}/napcrm` }
+                    { "@type": "ListItem", "position": 2, "name": "Napnix CRM", "item": `${SITE_URL}/napcrm` }
                 ]
             })}</script>
             <script type="application/ld+json">{JSON.stringify({
@@ -219,12 +219,12 @@ export default function NapCRMLandingPage() {
                         {/* Definition first, slogan second. The page used to open on
                             "The Operating System for running your agency" and a
                             stitching-tools line, so the first thing a crawler read was a
-                            metaphor — nothing that answers "what is NapCRM?" or "what
+                            metaphor — nothing that answers "what is Napnix CRM?" or "what
                             does it cost?". Those are the two questions an answer engine
                             is actually asked, and roughly the first third of a page
                             supplies most citations, so the answer belongs here. */}
                         <p className="text-lg md:text-xl text-slate-700 max-w-2xl mx-auto mb-6 leading-relaxed font-medium">
-                            <strong>NapCRM is an industry-specific CRM platform for agencies and
+                            <strong>Napnix CRM is an industry-specific CRM platform for agencies and
                             service businesses</strong>, combining lead management, invoicing, project
                             tracking, client portals and multi-channel follow-up in one system. Plans
                             start at <strong>$49/month</strong>, with {COMPANY_STATS.industries} industry
@@ -540,7 +540,7 @@ export default function NapCRMLandingPage() {
                                 <details>. The old markup gave this matrix no row or column
                                 semantics, so the most comparison-dense content on the site
                                 — the data an answer engine is most likely to quote for
-                                "what do NapCRM plans include?" — could not be parsed as a
+                                "what do Napnix CRM plans include?" — could not be parsed as a
                                 table by anything. Categories are <tbody> groups now rather
                                 than collapsible sections, so every row is present in the
                                 markup instead of hidden behind a toggle.
@@ -548,7 +548,7 @@ export default function NapCRMLandingPage() {
                             <div className="overflow-x-auto custom-scrollbar">
                                 <table className="w-full min-w-[900px] border-collapse text-left">
                                     <caption className="sr-only">
-                                        NapCRM feature comparison across the {tiers.map((t) => t.name).join(', ')} plans.
+                                        Napnix CRM feature comparison across the {tiers.map((t) => t.name).join(', ')} plans.
                                     </caption>
                                     <thead>
                                         <tr className="bg-slate-50/50 border-b border-slate-200">

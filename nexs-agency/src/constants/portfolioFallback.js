@@ -41,14 +41,14 @@ export const PORTFOLIO_FALLBACK = [
         technologies: ['React', 'Node.js', 'MySQL'],
     },
     {
-        id: 6, title: 'NapCRM — Manufacturing', slug: 'napcrm-manufacturing', category: 'Web Platform',
+        id: 6, title: 'Napnix CRM — Manufacturing', slug: 'napcrm-manufacturing', category: 'Web Platform',
         accent: 'orange', size: 'small', metric: 'Live',
         description: 'Multi-tenant CRM deployment for a manufacturing business: inventory, order pipeline, and lead management.',
         tags: ['CRM', 'SaaS', 'Manufacturing'],
         technologies: ['React', 'Express', 'MariaDB'],
     },
     {
-        id: 7, title: 'NapCRM — Legal', slug: 'napcrm-legal', category: 'Web Platform',
+        id: 7, title: 'Napnix CRM — Legal', slug: 'napcrm-legal', category: 'Web Platform',
         accent: 'indigo', size: 'small', metric: 'Live',
         description: 'CRM deployment for a legal firm: case and matter tracking, client records, and document workflows.',
         tags: ['CRM', 'SaaS', 'Legal'],

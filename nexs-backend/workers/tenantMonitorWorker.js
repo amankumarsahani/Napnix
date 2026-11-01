@@ -512,7 +512,7 @@ class TenantMonitorWorker {
         try {
             const result = await emailService.sendEmail({
                 to: recipients(),
-                subject: `[NapCRM][${level}] ${tenant.slug} — ${hit.summary}`.slice(0, 200),
+                subject: `[Napnix CRM][${level}] ${tenant.slug} — ${hit.summary}`.slice(0, 200),
                 html: `
                 <div style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:560px;margin:0 auto;padding:20px;">
                     <h2 style="margin:0 0 4px;font-size:16px;">${esc(tenant.name)} <span style="color:#64748b;font-weight:400;">(${esc(tenant.slug)})</span></h2>
@@ -558,7 +558,7 @@ class TenantMonitorWorker {
         const li = (s) => `<li style="font-size:13px;margin:2px 0;">${s}</li>`;
         await emailService.sendEmail({
             to: recipients(),
-            subject: `[NapCRM] Daily monitor digest — ${open.length} open events, ${unhealthy.length} unhealthy tenants`,
+            subject: `[Napnix CRM] Daily monitor digest — ${open.length} open events, ${unhealthy.length} unhealthy tenants`,
             html: `
             <div style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
                 ${unhealthy.length ? `<h3 style="font-size:15px;">Unhealthy tenants</h3><ul>${unhealthy.map(u => li(`${esc(u.slug)} — ${esc(u.health)}`)).join('')}</ul>` : ''}

@@ -1,16 +1,16 @@
 # Napnix (Napix)
 
-> Napnix — also commonly searched as Napix — is an India-based software development company building custom web applications, mobile apps, cloud infrastructure, AI/ML solutions, NapCRM, and NapMail.
+> Napnix — also commonly searched as Napix — is an India-based software development company building custom web applications, mobile apps, cloud infrastructure, AI/ML solutions, Napnix CRM, and NapMail.
 
 Napnix specialises in end-to-end digital product development for startups and enterprises. Founded in 2025, headquartered at 2519 Azad Nagar, Balongi, Sahibzada Ajit Singh Nagar (Mohali), Punjab 160055, India. Core expertise: React, Node.js, Flutter, AWS, AI/ML. Contact: info@napnix.in | +91 6239396615.
 
 ## Products
 
-- [NapCRM](https://napnix.in/napcrm): Industry-specific CRM platform with lead management, e-commerce tools, automation, and multi-channel communication. $49/month (₹4,165) to $99/month (₹8,415), plus a custom Enterprise tier.
-- [NapCRM Pricing](https://napnix.in/napcrm/pricing): Feature comparison across Starter, Growth, Business, Enterprise plans, with yearly discount options.
-- [NapMail](https://napnix.in/napmail): Email marketing engine with smart SMTP rotation, anti-spam scoring, per-domain throttling, a visual automation builder, and NapCRM integration. Free plan available, then $8/month (₹699) to $59/month (₹4,999), plus a custom Enterprise tier.
+- [Napnix CRM](https://napnix.in/napcrm): Industry-specific CRM platform with lead management, e-commerce tools, automation, and multi-channel communication. $49/month (₹4,165) to $99/month (₹8,415), plus a custom Enterprise tier.
+- [Napnix CRM Pricing](https://napnix.in/napcrm/pricing): Feature comparison across Starter, Growth, Business, Enterprise plans, with yearly discount options.
+- [NapMail](https://napnix.in/napmail): Email marketing engine with smart SMTP rotation, anti-spam scoring, per-domain throttling, a visual automation builder, and Napnix CRM integration. Free plan available, then $8/month (₹699) to $59/month (₹4,999), plus a custom Enterprise tier.
 
-## NapCRM Plans
+## Napnix CRM Plans
 
 - **Starter** — $49/month (₹4,165). 500 leads, 200 customers, 50 products, 2 team members, 1 GB storage.
 - **Growth** — $79/month (₹6,715). 2,000 leads, 1,000 customers, 500 products, 5 team members, 5 GB storage.
@@ -25,7 +25,7 @@ Napnix specialises in end-to-end digital product development for startups and en
 - [Cloud Solutions](https://napnix.in/services/cloud-solutions): AWS, Azure and GCP infrastructure, DevOps, CI/CD pipelines, containerisation.
 - [AI & Machine Learning](https://napnix.in/services/ai-machine-learning): Custom models, NLP, computer vision, predictive analytics and ML pipelines.
 
-## NapCRM Industry Solutions
+## Napnix CRM Industry Solutions
 
 - [CRM for Small Business](https://napnix.in/napcrm/industries/general)
 - [CRM for E-commerce](https://napnix.in/napcrm/industries/ecommerce)

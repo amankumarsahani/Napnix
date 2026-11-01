@@ -2,7 +2,7 @@
  * Generate public/llms.txt and public/llms-full.txt from the app's own constants.
  *
  * Why generate rather than hand-maintain: both files had drifted badly from the
- * product. llms.txt advertised NapCRM "from ₹999/month" and llms-full.txt
+ * product. llms.txt advertised Napnix CRM "from ₹999/month" and llms-full.txt
  * repeated that in a table, while crmPricing.js — the data the pricing page and
  * the Offer schema both render from — says the Starter tier is ₹4,165 / $49.
  * Every plan limit in that table was wrong too, and the NapMail section
@@ -81,17 +81,17 @@ function llmsTxt() {
     const L = [];
     L.push('# Napnix (Napix)');
     L.push('');
-    L.push('> Napnix — also commonly searched as Napix — is an India-based software development company building custom web applications, mobile apps, cloud infrastructure, AI/ML solutions, NapCRM, and NapMail.');
+    L.push('> Napnix — also commonly searched as Napix — is an India-based software development company building custom web applications, mobile apps, cloud infrastructure, AI/ML solutions, Napnix CRM, and NapMail.');
     L.push('');
     L.push('Napnix specialises in end-to-end digital product development for startups and enterprises. Founded in 2025, headquartered at 2519 Azad Nagar, Balongi, Sahibzada Ajit Singh Nagar (Mohali), Punjab 160055, India. Core expertise: React, Node.js, Flutter, AWS, AI/ML. Contact: info@napnix.in | +91 6239396615.');
     L.push('');
     L.push('## Products');
     L.push('');
-    L.push(`- [NapCRM](${SITE}/napcrm): Industry-specific CRM platform with lead management, e-commerce tools, automation, and multi-channel communication. ${priceRange(crmTiers)}.`);
-    L.push(`- [NapCRM Pricing](${SITE}/napcrm/pricing): Feature comparison across ${crmTiers.map((t) => t.name).join(', ')} plans, with yearly discount options.`);
-    L.push(`- [NapMail](${SITE}/napmail): Email marketing engine with smart SMTP rotation, anti-spam scoring, per-domain throttling, a visual automation builder, and NapCRM integration. ${priceRange(napmailTiers)}.`);
+    L.push(`- [Napnix CRM](${SITE}/napcrm): Industry-specific CRM platform with lead management, e-commerce tools, automation, and multi-channel communication. ${priceRange(crmTiers)}.`);
+    L.push(`- [Napnix CRM Pricing](${SITE}/napcrm/pricing): Feature comparison across ${crmTiers.map((t) => t.name).join(', ')} plans, with yearly discount options.`);
+    L.push(`- [NapMail](${SITE}/napmail): Email marketing engine with smart SMTP rotation, anti-spam scoring, per-domain throttling, a visual automation builder, and Napnix CRM integration. ${priceRange(napmailTiers)}.`);
     L.push('');
-    L.push('## NapCRM Plans');
+    L.push('## Napnix CRM Plans');
     L.push('');
     for (const tier of crmTiers) {
         const lim = tier.limits;
@@ -104,7 +104,7 @@ function llmsTxt() {
         L.push(`- [${name}](${SITE}/services/${slug}): ${desc}`);
     }
     L.push('');
-    L.push('## NapCRM Industry Solutions');
+    L.push('## Napnix CRM Industry Solutions');
     L.push('');
     for (const slug of INDUSTRY_SLUGS) {
         L.push(`- [CRM for ${INDUSTRY_LABELS[slug] ?? slug}](${SITE}/napcrm/industries/${slug})`);
@@ -159,7 +159,7 @@ function llmsFullTxt() {
     const L = [];
     L.push('# Napnix — Full Reference');
     L.push('');
-    L.push(`> Napnix is an India-based software development company building custom web applications, mobile apps, cloud infrastructure and AI/ML solutions. It publishes two products: NapCRM, an industry-specific CRM platform from ${priceLabel(paidTiers(crmTiers)[0])}, and NapMail, an email marketing engine with SMTP rotation and anti-spam scoring.`);
+    L.push(`> Napnix is an India-based software development company building custom web applications, mobile apps, cloud infrastructure and AI/ML solutions. It publishes two products: Napnix CRM, an industry-specific CRM platform from ${priceLabel(paidTiers(crmTiers)[0])}, and NapMail, an email marketing engine with SMTP rotation and anti-spam scoring.`);
     L.push('');
     L.push(`All prices below are generated from the same source as the pricing pages and the Offer structured data, so they cannot disagree with them. Generated ${new Date().toISOString().slice(0, 10)}.`);
     L.push('');
@@ -171,11 +171,11 @@ function llmsFullTxt() {
     L.push('- Email: info@napnix.in · Phone: +91 6239396615');
     L.push('- Core stack: React, Next.js, Node.js, Python, Flutter, React Native, AWS');
     L.push('');
-    L.push('## NapCRM');
+    L.push('## Napnix CRM');
     L.push('');
-    L.push('NapCRM is a multi-tenant, industry-specific CRM platform. Each tenant gets isolated data, configurable modules and industry-specific workflows, covering lead management, customer records, e-commerce, invoicing, automation and multi-channel communication.');
+    L.push('Napnix CRM is a multi-tenant, industry-specific CRM platform. Each tenant gets isolated data, configurable modules and industry-specific workflows, covering lead management, customer records, e-commerce, invoicing, automation and multi-channel communication.');
     L.push('');
-    L.push('### NapCRM Pricing');
+    L.push('### Napnix CRM Pricing');
     L.push('');
     L.push(planTable(crmTiers, [
         { key: 'leads', label: 'Leads' },
@@ -187,13 +187,13 @@ function llmsFullTxt() {
     L.push('');
     L.push(`Pricing page: ${SITE}/napcrm/pricing`);
     L.push('');
-    L.push(`### NapCRM Industry Editions`);
+    L.push(`### Napnix CRM Industry Editions`);
     L.push('');
-    L.push(`NapCRM ships ${INDUSTRY_SLUGS.length} industry editions: ${INDUSTRY_SLUGS.map((s) => INDUSTRY_LABELS[s] ?? s).join(', ')}.`);
+    L.push(`Napnix CRM ships ${INDUSTRY_SLUGS.length} industry editions: ${INDUSTRY_SLUGS.map((s) => INDUSTRY_LABELS[s] ?? s).join(', ')}.`);
     L.push('');
     L.push('## NapMail');
     L.push('');
-    L.push('NapMail is an email marketing platform built for deliverability. It uses smart SMTP rotation, anti-spam scoring, and per-domain throttling to improve inbox placement, and integrates with NapCRM.');
+    L.push('NapMail is an email marketing platform built for deliverability. It uses smart SMTP rotation, anti-spam scoring, and per-domain throttling to improve inbox placement, and integrates with Napnix CRM.');
     L.push('');
     L.push('### NapMail Pricing');
     L.push('');
@@ -231,4 +231,4 @@ writeFileSync(join(PUBLIC, 'llms.txt'), `${llmsTxt().trimEnd()}\n`, 'utf8');
 writeFileSync(join(PUBLIC, 'llms-full.txt'), `${llmsFullTxt().trimEnd()}\n`, 'utf8');
 
 const starter = paidTiers(crmTiers)[0];
-console.log(`generate-llms: wrote llms.txt and llms-full.txt (NapCRM entry tier ${priceLabel(starter)})`);
+console.log(`generate-llms: wrote llms.txt and llms-full.txt (Napnix CRM entry tier ${priceLabel(starter)})`);

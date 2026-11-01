@@ -17,7 +17,7 @@ import {
 const PRODUCTS = [
     {
         slug: 'napcrm',
-        name: 'NapCRM',
+        name: 'Napnix CRM',
         tagline: 'The CRM that runs your whole operation',
         description:
             'Lead capture, sales pipeline, automated follow-up, and industry workflows in one system. Off-the-shelf when it fits, tailored when it doesn\'t — built for agencies and service businesses.',
@@ -59,11 +59,11 @@ export default function ProductsPage() {
     return (
         <div className="min-h-screen bg-white">
             <Helmet>
-                <title>Products — NapCRM & NapMail by Napnix</title>
-                <meta name="description" content="Explore Napnix products. NapCRM is a CRM built for agencies and service businesses — lead capture, automated follow-up, and industry workflows in one system." />
+                <title>Products — Napnix CRM & NapMail by Napnix</title>
+                <meta name="description" content="Explore Napnix products. Napnix CRM is a CRM built for agencies and service businesses — lead capture, automated follow-up, and industry workflows in one system." />
                 <link rel="canonical" href={`${SITE_URL}/products`} />
-                <meta property="og:title" content="Products by Napnix — NapCRM" />
-                <meta property="og:description" content="NapCRM: lead capture, automated follow-up, and industry workflows in one system for agencies and service businesses." />
+                <meta property="og:title" content="Products by Napnix — Napnix CRM" />
+                <meta property="og:description" content="Napnix CRM: lead capture, automated follow-up, and industry workflows in one system for agencies and service businesses." />
                 <meta property="og:url" content={`${SITE_URL}/products`} />
                 <meta property="og:type" content="website" />
             </Helmet>
@@ -81,7 +81,7 @@ export default function ProductsPage() {
                             Software we build, sell, and support.
                         </h1>
                         <p className="text-xl text-slate-600 leading-relaxed">
-                            Napnix products are the systems behind growing service businesses — starting with NapCRM.
+                            Napnix products are the systems behind growing service businesses — starting with Napnix CRM.
                             Ready to use out of the box, tailored when your operation needs it.
                         </p>
                     </div>
@@ -165,7 +165,7 @@ export default function ProductsPage() {
                 <FadeIn>
                     <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Not sure which fits?</h2>
                     <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
-                        Book a free Revenue-Leak Audit. We'll look at how leads reach you today and recommend the right system — NapCRM or a custom build.
+                        Book a free Revenue-Leak Audit. We'll look at how leads reach you today and recommend the right system — Napnix CRM or a custom build.
                     </p>
                     <Link
                         to="/contact?intent=audit"

@@ -35,7 +35,7 @@ const SOURCES = [
         url: 'https://developers.facebook.com/docs/whatsapp/message-templates/guidelines/',
     },
     {
-        title: 'NapCRM pricing — the follow-up automation referenced below',
+        title: 'Napnix CRM pricing — the follow-up automation referenced below',
         publisher: 'Napnix',
         url: `${SITE_URL}/napcrm/pricing`,
     },
@@ -244,7 +244,7 @@ const WhatsappLeadFollowUp = () => {
                     <p>
                         None of the above needs custom software. A configured CRM with WhatsApp
                         integration, assignment rules and escalation timers covers it, and that is
-                        what <Link to="/napcrm">NapCRM</Link> does from the Growth tier up — see{' '}
+                        what <Link to="/napcrm">Napnix CRM</Link> does from the Growth tier up — see{' '}
                         <Link to="/napcrm/pricing">pricing</Link> for the tier limits.
                     </p>
 

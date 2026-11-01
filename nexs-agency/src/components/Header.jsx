@@ -20,9 +20,9 @@ const navItems = [
   },
   { label: 'Products', path: '/products', children: [
     { label: 'All Products', path: '/products' },
-    { label: 'NapCRM Overview', path: '/napcrm' },
-    { label: 'NapCRM Pricing', path: '/napcrm/pricing' },
-    { type: 'divider', label: 'NapCRM Industries' },
+    { label: 'Napnix CRM Overview', path: '/napcrm' },
+    { label: 'Napnix CRM Pricing', path: '/napcrm/pricing' },
+    { type: 'divider', label: 'Napnix CRM Industries' },
     { label: 'E-commerce', path: '/napcrm/industries/ecommerce' },
     { label: 'Real Estate', path: '/napcrm/industries/realestate' },
     { label: 'Healthcare', path: '/napcrm/industries/healthcare' },

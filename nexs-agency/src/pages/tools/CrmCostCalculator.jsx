@@ -73,7 +73,7 @@ export default function CrmCostCalculator() {
     const rows = [
         { label: 'Build custom', total: result.buildTotal,
           note: `${money(result.buildUpfront)} build + ${money(result.buildMaintenance)} maintenance over ${years} year${years === 1 ? '' : 's'}` },
-        { label: result.tier ? `NapCRM ${result.tier.name}` : 'NapCRM Enterprise',
+        { label: result.tier ? `Napnix CRM ${result.tier.name}` : 'Napnix CRM Enterprise',
           total: result.napcrmTotal,
           note: result.tier
             ? `${money(result.napcrmMonthly)}/month, covers up to ${result.tier.limits.teamMembers} team members`
@@ -182,7 +182,7 @@ export default function CrmCostCalculator() {
                                     onChange={(e) => setBilledYearly(e.target.checked)}
                                     className="w-4 h-4 accent-[#2563EB]"
                                 />
-                                Price NapCRM on annual billing
+                                Price Napnix CRM on annual billing
                             </label>
                         </div>
                     </div>
@@ -225,7 +225,7 @@ export default function CrmCostCalculator() {
                     <h2 className="text-2xl font-bold text-slate-800 mb-4">How this is calculated</h2>
                     <ul className="space-y-3 text-slate-600 leading-relaxed mb-6">
                         <li>
-                            <strong>NapCRM</strong> prices come from the same source as our{' '}
+                            <strong>Napnix CRM</strong> prices come from the same source as our{' '}
                             <Link to="/napcrm/pricing" className="text-[#2563EB] hover:underline">pricing page</Link>,
                             so they cannot drift. Tiers are per workspace, not per seat; the tool picks
                             the cheapest tier whose team-member limit covers your number.

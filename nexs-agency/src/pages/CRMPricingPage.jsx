@@ -40,14 +40,14 @@ export default function CRMPricingPage() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
             <Helmet>
-                <title>NapCRM Pricing — Plans from ₹4,165/mo</title>
-                <meta name="description" content="Compare NapCRM plans: Starter ₹4,165/mo ($49), Growth ₹6,715 ($79), Business ₹8,415 ($99), Enterprise custom. Save 15% yearly. Book a 20-minute demo." />
+                <title>Napnix CRM Pricing — Plans from ₹4,165/mo</title>
+                <meta name="description" content="Compare Napnix CRM plans: Starter ₹4,165/mo ($49), Growth ₹6,715 ($79), Business ₹8,415 ($99), Enterprise custom. Save 15% yearly. Book a 20-minute demo." />
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
                 <link rel="canonical" href={`${SITE_URL}/napcrm/pricing`} />
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
-                <meta property="og:title" content="NapCRM Pricing — Plans from ₹4,165/mo" />
-                <meta property="og:description" content="Compare NapCRM pricing plans. Starter, Growth, Business, Enterprise. Save 15% yearly. Book a 20-minute demo." />
+                <meta property="og:title" content="Napnix CRM Pricing — Plans from ₹4,165/mo" />
+                <meta property="og:description" content="Compare Napnix CRM pricing plans. Starter, Growth, Business, Enterprise. Save 15% yearly. Book a 20-minute demo." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/napcrm/pricing`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
@@ -56,7 +56,7 @@ export default function CRMPricingPage() {
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:site" content="@napnix" />
                 <meta name="twitter:creator" content="@napnix" />
-                <meta name="twitter:title" content="NapCRM Pricing — Plans from ₹4,165/mo" />
+                <meta name="twitter:title" content="Napnix CRM Pricing — Plans from ₹4,165/mo" />
                 <meta name="twitter:description" content="Starter ₹4,165/mo, Growth ₹6,715, Business ₹8,415. Save 15% yearly. Book a 20-minute demo." />
             </Helmet>
             <script type="application/ld+json">{JSON.stringify({
@@ -64,14 +64,14 @@ export default function CRMPricingPage() {
                 "@type": "BreadcrumbList",
                 "itemListElement": [
                     { "@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL },
-                    { "@type": "ListItem", "position": 2, "name": "NapCRM", "item": `${SITE_URL}/napcrm` },
+                    { "@type": "ListItem", "position": 2, "name": "Napnix CRM", "item": `${SITE_URL}/napcrm` },
                     { "@type": "ListItem", "position": 3, "name": "Pricing", "item": `${SITE_URL}/napcrm/pricing` }
                 ]
             })}</script>
             <script type="application/ld+json">{JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "ItemList",
-                "name": "NapCRM Pricing Plans",
+                "name": "Napnix CRM Pricing Plans",
                 "description": "CRM pricing plans for agencies and businesses",
                 "numberOfItems": 4,
                 "itemListElement": crmTiers.map((tier, i) => ({
@@ -79,18 +79,18 @@ export default function CRMPricingPage() {
                     "position": i + 1,
                     "item": tier.isCustom ? {
                         "@type": "Service",
-                        "name": `NapCRM ${tier.name}`,
+                        "name": `Napnix CRM ${tier.name}`,
                         "description": tier.description,
                         "offers": enrichOffer({
                             "@type": "Offer",
-                            "name": `NapCRM ${tier.name}`,
+                            "name": `Napnix CRM ${tier.name}`,
                             "description": `${tier.description} — contact sales for custom enterprise pricing.`,
                             "url": `${SITE_URL}/contact`,
                             "priceCurrency": "INR",
                             "availability": "https://schema.org/InStock",
                         })
                     } : buildSaasProduct({
-                        name: `NapCRM ${tier.name}`,
+                        name: `Napnix CRM ${tier.name}`,
                         description: tier.description,
                         url: `${SITE_URL}/napcrm/pricing`,
                         sku: `napcrm-${slugifyProductName(tier.name)}`,
@@ -124,7 +124,7 @@ export default function CRMPricingPage() {
             <section className="pt-32 pb-16 px-4">
                 <div className="max-w-7xl mx-auto text-center">
                     <span className="inline-block px-4 py-1.5 bg-[#2563EB]/10 text-[#2563EB] text-sm font-medium rounded-full mb-4">
-                        NapCRM Pricing
+                        Napnix CRM Pricing
                     </span>
                     <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
                         Simple, Transparent Pricing
@@ -327,7 +327,7 @@ export default function CRMPricingPage() {
             <section className="py-16 px-4 bg-white border-t border-slate-200">
                 <div className="max-w-4xl mx-auto">
                     <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-3">
-                        Comparing NapCRM with something else?
+                        Comparing Napnix CRM with something else?
                     </h2>
                     <p className="text-slate-600 mb-8">
                         Side-by-side breakdowns, including where the other tool is the better
@@ -344,7 +344,7 @@ export default function CRMPricingPage() {
                                 className="block p-5 rounded-xl bg-[#F8FAFC] border border-slate-200 hover:border-[#2563EB]/40 hover:shadow-md transition-all"
                             >
                                 <span className="font-semibold text-slate-800">
-                                    NapCRM vs {ALTERNATIVES[slug].competitor}
+                                    Napnix CRM vs {ALTERNATIVES[slug].competitor}
                                 </span>
                                 <span className="block text-sm text-slate-500 mt-1">
                                     Read the comparison &rarr;

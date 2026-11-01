@@ -11,7 +11,7 @@ import ServicePageTemplate from '../../components/ServicePageTemplate';
  * query). A good blog post cannot rank for a service query however well it is
  * written, because it is the wrong page type.
  *
- * It is also the commercially strongest cluster on the site: NapCRM is the
+ * It is also the commercially strongest cluster on the site: Napnix CRM is the
  * product, 14 industry editions are the spokes, and the three /alternatives/*
  * comparisons are the mid-funnel. This page is what they all point at.
  */
@@ -22,7 +22,7 @@ const data = {
         h1Line1: 'Custom CRM',
         h1Line2: 'Development.',
         gradient: 'from-[#2563EB] to-[#1D4ED8]',
-        paragraph: 'A CRM shaped around how your business actually works — or a configured NapCRM edition if that gets you there faster. We will tell you which one fits before you commit to either.',
+        paragraph: 'A CRM shaped around how your business actually works — or a configured Napnix CRM edition if that gets you there faster. We will tell you which one fits before you commit to either.',
         ctaText: 'Scope a CRM project',
         // Each of these is already stated in this page's FAQ below -- the price
         // band and timeline in "How much does custom CRM development cost?" and
@@ -51,7 +51,7 @@ const data = {
                 src: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=60&w=1280&auto=format&fit=crop&fm=webp',
                 alt: 'Team working through a customer handover',
             },
-            stat: { value: '14', label: 'NapCRM industry editions' },
+            stat: { value: '14', label: 'Napnix CRM industry editions' },
         },
     },
     capabilities: [
@@ -94,8 +94,8 @@ const data = {
                 body: 'We sit with the people who will use it and follow a real enquiry from first contact to invoice. This is also where we decide build versus configure, because the honest answer usually becomes obvious in that first week. You leave with a written process map and a recommendation either way.',
             },
             {
-                title: 'Decide: configure NapCRM or build custom',
-                body: 'If your process is close to one of the 14 NapCRM industry editions, configuring it is faster and far cheaper, and we will say so. A build earns its cost when the process is genuinely yours, when per-seat licensing outgrows a one-off cost, or when you need to own the data model outright.',
+                title: 'Decide: configure Napnix CRM or build custom',
+                body: 'If your process is close to one of the 14 Napnix CRM industry editions, configuring it is faster and far cheaper, and we will say so. A build earns its cost when the process is genuinely yours, when per-seat licensing outgrows a one-off cost, or when you need to own the data model outright.',
             },
             {
                 title: 'Data model and migration plan',
@@ -113,7 +113,7 @@ const data = {
         questions: [
             {
                 q: 'How much does custom CRM development cost?',
-                a: 'A focused single-team CRM is typically ₹4,00,000 to ₹12,00,000. A mid-market build with integrations and multiple roles runs ₹12,00,000 to ₹40,00,000. A multi-tenant platform is ₹40,00,000 and up. If a configured NapCRM edition fits instead, it starts at ₹4,165 per month. The variable that moves a build estimate most is the number of distinct user roles, because each one multiplies both the permission logic and the testing surface.',
+                a: 'A focused single-team CRM is typically ₹4,00,000 to ₹12,00,000. A mid-market build with integrations and multiple roles runs ₹12,00,000 to ₹40,00,000. A multi-tenant platform is ₹40,00,000 and up. If a configured Napnix CRM edition fits instead, it starts at ₹4,165 per month. The variable that moves a build estimate most is the number of distinct user roles, because each one multiplies both the permission logic and the testing surface.',
             },
             {
                 q: 'Should we build a CRM or buy one?',
@@ -125,11 +125,11 @@ const data = {
             },
             {
                 q: 'Who owns the system afterwards?',
-                a: 'You do. For a custom build the repository sits in your organisation and the infrastructure runs in your own cloud account, with documentation and a runbook at handover. No proprietary runtime, and no retainer required to keep it running. For NapCRM your data is yours and exportable at any time.',
+                a: 'You do. For a custom build the repository sits in your organisation and the infrastructure runs in your own cloud account, with documentation and a runbook at handover. No proprietary runtime, and no retainer required to keep it running. For Napnix CRM your data is yours and exportable at any time.',
             },
             {
                 q: 'How long before the team is actually using it?',
-                a: 'A configured NapCRM edition can be live the same week. A focused custom build is typically 8 to 14 weeks to first release. In both cases the useful date is not go-live but the day the team stops keeping a parallel spreadsheet — which is a training question more than an engineering one.',
+                a: 'A configured Napnix CRM edition can be live the same week. A focused custom build is typically 8 to 14 weeks to first release. In both cases the useful date is not go-live but the day the team stops keeping a parallel spreadsheet — which is a training question more than an engineering one.',
             },
         ],
     },
@@ -145,13 +145,13 @@ const data = {
         keywords: 'custom CRM development, custom CRM development company, CRM development services India, bespoke CRM software, CRM development Mohali, CRM migration, build vs buy CRM',
         canonicalPath: '/services/crm-development',
         ogTitle: 'Custom CRM Development Company in India | Napnix',
-        ogDescription: 'Custom CRM development for service businesses — or a configured NapCRM edition if that fits better. We will tell you which.',
+        ogDescription: 'Custom CRM development for service businesses — or a configured Napnix CRM edition if that fits better. We will tell you which.',
         twitterTitle: 'Custom CRM Development Company in India | Napnix',
-        twitterDescription: 'Custom CRM development for service businesses — or a configured NapCRM edition if that fits better.',
+        twitterDescription: 'Custom CRM development for service businesses — or a configured Napnix CRM edition if that fits better.',
     },
     schema: {
         name: 'Custom CRM Development',
-        description: 'Custom CRM design, development, migration and integration for service businesses, including configured NapCRM industry editions.',
+        description: 'Custom CRM design, development, migration and integration for service businesses, including configured Napnix CRM industry editions.',
     },
 };
 

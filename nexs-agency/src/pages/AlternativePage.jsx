@@ -11,12 +11,12 @@ import {
 } from '../constants/alternatives';
 
 /**
- * `/alternatives/:slug` — NapCRM compared with one named competitor.
+ * `/alternatives/:slug` — Napnix CRM compared with one named competitor.
  *
  * This page type exists because the SXO pass found that 7 of 9 target queries
  * return comparison pages while the site published only product and service
  * pages. See src/constants/alternatives.js for the content rules, in particular
- * why each page names the competitor's genuine strengths and NapCRM's own gaps.
+ * why each page names the competitor's genuine strengths and Napnix CRM's own gaps.
  *
  * Deliberately NO FAQPage markup: Google retired FAQ rich results for all sites
  * on 7 May 2026, so it would buy nothing. The questions are plain prose, which
@@ -39,7 +39,7 @@ export default function AlternativePage() {
         <div className="min-h-screen bg-white font-sans text-slate-800">
             <Helmet>
                 {/* No " | Napnix" suffix: every title in alternatives.js already opens
-                    with "NapCRM", so the brand was appearing twice and costing 9
+                    with "Napnix CRM", so the brand was appearing twice and costing 9
                     characters against the ~60 char SERP truncation point. */}
                 <title>{alt.title}</title>
                 <meta name="description" content={alt.description} />
@@ -75,24 +75,24 @@ export default function AlternativePage() {
                     </ul>
 
                     <h2 className="text-2xl md:text-3xl font-bold text-slate-800 mb-5">
-                        Where NapCRM fits
+                        Where Napnix CRM fits
                     </h2>
                     <p className="text-slate-600 leading-relaxed mb-12">{alt.summary}</p>
 
                     <h2 className="text-2xl md:text-3xl font-bold text-slate-800 mb-5">
-                        NapCRM compared with {alt.competitor}
+                        Napnix CRM compared with {alt.competitor}
                     </h2>
 
                     <div className="not-prose overflow-x-auto mb-4">
                         <table className="min-w-full text-sm border-collapse">
                             <caption className="text-left text-sm text-slate-500 mb-3 caption-top">
-                                NapCRM and {alt.competitor} side by side. NapCRM figures come from our
+                                Napnix CRM and {alt.competitor} side by side. Napnix CRM figures come from our
                                 published pricing; {alt.competitor} figures are public list prices.
                             </caption>
                             <thead>
                                 <tr className="bg-slate-100 border-b border-slate-300 text-left">
                                     <th scope="col" className="py-3 px-4 font-bold text-slate-800">&nbsp;</th>
-                                    <th scope="col" className="py-3 px-4 font-bold text-slate-800">NapCRM</th>
+                                    <th scope="col" className="py-3 px-4 font-bold text-slate-800">Napnix CRM</th>
                                     <th scope="col" className="py-3 px-4 font-bold text-slate-800">{alt.competitor}</th>
                                 </tr>
                             </thead>
@@ -122,7 +122,7 @@ export default function AlternativePage() {
                         >
                             {alt.competitor} pricing
                         </a>{' '}
-                        for the current figures. NapCRM pricing is on our{' '}
+                        for the current figures. Napnix CRM pricing is on our{' '}
                         <Link to="/napcrm/pricing" className="text-[#2563EB] hover:underline">pricing page</Link>
                         {starter ? `, from ₹${starter.price.monthly.INR.toLocaleString('en-IN')}/month` : ''}.
                     </p>
@@ -166,7 +166,7 @@ export default function AlternativePage() {
                                         to={`/alternatives/${other.slug}`}
                                         className="inline-block px-4 py-2 rounded-xl bg-[#F8FAFC] border border-slate-200 text-slate-700 hover:border-[#2563EB]/40 hover:text-[#2563EB] transition-colors"
                                     >
-                                        NapCRM vs {other.competitor}
+                                        Napnix CRM vs {other.competitor}
                                     </Link>
                                 </li>
                             ))}
@@ -188,7 +188,7 @@ export default function AlternativePage() {
                         Talk to us about moving from {alt.competitor}
                     </h2>
                     <p className="text-slate-300 mb-8 leading-relaxed">
-                        NapCRM has no self-serve signup — every plan starts with a conversation. That
+                        Napnix CRM has no self-serve signup — every plan starts with a conversation. That
                         is a real difference from {alt.competitor}, and it also means onboarding maps
                         your existing data onto an industry template rather than handing you an empty
                         dashboard.
@@ -204,7 +204,7 @@ export default function AlternativePage() {
                             to="/napcrm/pricing"
                             className="px-8 py-4 border border-white/30 rounded-xl font-semibold hover:bg-white/10 transition-colors"
                         >
-                            See NapCRM pricing
+                            See Napnix CRM pricing
                         </Link>
                     </div>
                 </div>

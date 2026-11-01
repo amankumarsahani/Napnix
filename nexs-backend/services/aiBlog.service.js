@@ -30,7 +30,7 @@ const FALLBACK_IMAGES = [
 // via config.brand_context. The writer may only state facts about Napnix that appear here.
 const DEFAULT_BRAND_CONTEXT = `Napnix is a software company based in Mohali, India.
 - Builds the system behind a business's growth: lead capture, automated lead follow-up and CRM for service businesses.
-- Product: NapCRM, a CRM with industry-specific modules for service businesses.
+- Product: Napnix CRM, a CRM with industry-specific modules for service businesses.
 - Product: NapMail, email marketing.
 - Also builds custom software, websites and apps for clients.
 Audience: owners and managers of small and mid-size Indian service businesses who lose leads to slow follow-up.`;

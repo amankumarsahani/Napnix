@@ -11,7 +11,7 @@ import { crmTiers } from './crmPricing';
  *
  * Where the numbers come from
  * ---------------------------
- * - NapCRM tier prices and seat limits: crmPricing.js, the same source the
+ * - Napnix CRM tier prices and seat limits: crmPricing.js, the same source the
  *   pricing page renders from. They cannot drift from what we actually charge.
  * - Build cost bands: the ranges published in /blog/cost-of-custom-crm-2026,
  *   which are our own quoted work for an Indian development team. Midpoints are
@@ -73,7 +73,7 @@ export const BUILD_SCOPES = [
 export const DEFAULT_COMPETITOR_SEAT_RATE_INR = 2000;
 
 /**
- * The cheapest NapCRM tier that covers `seats`, or null when the team is past
+ * The cheapest Napnix CRM tier that covers `seats`, or null when the team is past
  * the published tiers and the honest answer is "that is an Enterprise
  * conversation, not a number a calculator should invent".
  */
@@ -135,7 +135,7 @@ export function calculateTco({ seats, years, scopeId, competitorSeatRateInr, bil
         crossoverYear,
         cheapest: [
             ['Build custom', buildTotal],
-            ...(napcrmTotal != null ? [['NapCRM', napcrmTotal]] : []),
+            ...(napcrmTotal != null ? [['Napnix CRM', napcrmTotal]] : []),
             ['Per-seat CRM', competitorTotal],
         ].sort((a, b) => a[1] - b[1])[0][0],
     };

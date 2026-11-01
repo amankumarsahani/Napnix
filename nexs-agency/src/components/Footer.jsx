@@ -26,11 +26,11 @@ const Footer = memo(function Footer() {
     ],
     /* Products has its own group so /napmail and /napcrm/pricing are reachable
        from every page. Both products previously appeared only as a single
-       "NapCRM" entry under Company, which left /napmail with no inbound
+       "Napnix CRM" entry under Company, which left /napmail with no inbound
        internal link anywhere on the site — reachable only via the sitemap. */
     Products: [
-      { name: 'NapCRM', href: '/napcrm' },
-      { name: 'NapCRM Pricing', href: '/napcrm/pricing' },
+      { name: 'Napnix CRM', href: '/napcrm' },
+      { name: 'Napnix CRM Pricing', href: '/napcrm/pricing' },
       { name: 'NapMail', href: '/napmail' },
       { name: 'All Products', href: '/products' }
     ],

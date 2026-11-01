@@ -2,7 +2,7 @@ export const inquiryIntentOptions = [
     {
         value: 'demo',
         label: 'Schedule a demo',
-        description: 'See NapCRM or our delivery workflow before deciding.',
+        description: 'See Napnix CRM or our delivery workflow before deciding.',
     },
     {
         value: 'audit',

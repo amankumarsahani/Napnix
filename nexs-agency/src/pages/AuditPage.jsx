@@ -36,13 +36,13 @@ const SAMPLE_FINDINGS = [
 const YOU_GET = [
     'A clear map of where leads and follow-ups are leaking',
     'The 3 highest-impact fixes, ranked by effort vs return',
-    'A recommended system (NapCRM or custom) with a rough scope',
+    'A recommended system (Napnix CRM or custom) with a rough scope',
     'A written summary you can share with your team',
 ];
 
 const FAQS = [
     { q: 'How long does the audit take?', a: 'The call is 20–30 minutes. We review your enquiry-to-close flow live and send a short written summary afterwards.' },
-    { q: 'Is it really free?', a: 'Yes. The audit is a genuine diagnostic, not a disguised sales pitch. If NapCRM or a custom build is the right fix, we\'ll say so — and if it isn\'t, we\'ll tell you that too.' },
+    { q: 'Is it really free?', a: 'Yes. The audit is a genuine diagnostic, not a disguised sales pitch. If Napnix CRM or a custom build is the right fix, we\'ll say so — and if it isn\'t, we\'ll tell you that too.' },
     { q: 'Who is it for?', a: 'Agencies and service businesses that get enough enquiries but lose too many to slow or messy follow-up. Most useful if you have a team of 2–50 and no single reliable system.' },
     { q: 'What do you need from me?', a: 'A quick look at how leads currently reach you and what happens next. No prep required — we\'ll walk through it together.' },
 ];

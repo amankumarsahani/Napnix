@@ -1,6 +1,6 @@
 # Napnix — Full Reference
 
-> Napnix is an India-based software development company building custom web applications, mobile apps, cloud infrastructure and AI/ML solutions. It publishes two products: NapCRM, an industry-specific CRM platform from $49/month (₹4,165), and NapMail, an email marketing engine with SMTP rotation and anti-spam scoring.
+> Napnix is an India-based software development company building custom web applications, mobile apps, cloud infrastructure and AI/ML solutions. It publishes two products: Napnix CRM, an industry-specific CRM platform from $49/month (₹4,165), and NapMail, an email marketing engine with SMTP rotation and anti-spam scoring.
 
 All prices below are generated from the same source as the pricing pages and the Offer structured data, so they cannot disagree with them. Generated 2026-10-11.
 
@@ -12,11 +12,11 @@ All prices below are generated from the same source as the pricing pages and the
 - Email: info@napnix.in · Phone: +91 6239396615
 - Core stack: React, Next.js, Node.js, Python, Flutter, React Native, AWS
 
-## NapCRM
+## Napnix CRM
 
-NapCRM is a multi-tenant, industry-specific CRM platform. Each tenant gets isolated data, configurable modules and industry-specific workflows, covering lead management, customer records, e-commerce, invoicing, automation and multi-channel communication.
+Napnix CRM is a multi-tenant, industry-specific CRM platform. Each tenant gets isolated data, configurable modules and industry-specific workflows, covering lead management, customer records, e-commerce, invoicing, automation and multi-channel communication.
 
-### NapCRM Pricing
+### Napnix CRM Pricing
 
 | Plan | Monthly (USD) | Monthly (INR) | Yearly (INR, per month) | Leads | Customers | Products | Team members | Storage |
 |---|---|---|---|---|---|---|---|---|
@@ -27,13 +27,13 @@ NapCRM is a multi-tenant, industry-specific CRM platform. Each tenant gets isola
 
 Pricing page: https://napnix.in/napcrm/pricing
 
-### NapCRM Industry Editions
+### Napnix CRM Industry Editions
 
-NapCRM ships 14 industry editions: Small Business, E-commerce, Real Estate, Service Businesses, Education, Healthcare, Hospitality, Travel, Fitness, Legal, Manufacturing, Logistics, Restaurants, Salons & Spas.
+Napnix CRM ships 14 industry editions: Small Business, E-commerce, Real Estate, Service Businesses, Education, Healthcare, Hospitality, Travel, Fitness, Legal, Manufacturing, Logistics, Restaurants, Salons & Spas.
 
 ## NapMail
 
-NapMail is an email marketing platform built for deliverability. It uses smart SMTP rotation, anti-spam scoring, and per-domain throttling to improve inbox placement, and integrates with NapCRM.
+NapMail is an email marketing platform built for deliverability. It uses smart SMTP rotation, anti-spam scoring, and per-domain throttling to improve inbox placement, and integrates with Napnix CRM.
 
 ### NapMail Pricing
 

@@ -13,7 +13,7 @@ export const GLOBAL_COUNTRIES = ['IN', 'US', 'GB', 'AE', 'CA', 'AU'];
 /**
  * Offers carry no return policy and no shipping details.
  *
- * What used to be here, on every NapCRM and service offer sitewide:
+ * What used to be here, on every Napnix CRM and service offer sitewide:
  *
  *   hasMerchantReturnPolicy: MerchantReturnFiniteReturnWindow,
  *                            merchantReturnDays: 14,
@@ -26,7 +26,7 @@ export const GLOBAL_COUNTRIES = ['IN', 'US', 'GB', 'AE', 'CA', 'AU'];
  *
  * 1. No such policy exists. The words "refund", "free trial", "14-day" and
  *    "money back" appear nowhere in the Terms, the pricing page, the FAQ or the
- *    NapCRM page. The only "refund" text on the site describes a NapCRM
+ *    Napnix CRM page. The only "refund" text on the site describes a Napnix CRM
  *    *feature* for e-commerce clients handling their own customers' returns.
  *    Structured data must describe content on the page; asserting a refund
  *    entitlement the business has not published is both a policy violation and

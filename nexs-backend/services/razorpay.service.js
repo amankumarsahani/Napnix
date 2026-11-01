@@ -195,7 +195,7 @@ class RazorpayService {
         const payload = {
             amount: Math.round(resolved.amount * 100),
             currency: 'INR',
-            description: `NexCRM ${resolved.plan.name} ${resolved.billingCycle} plan`,
+            description: `Napnix CRM ${resolved.plan.name} ${resolved.billingCycle} plan`,
             reference_id: this.buildReferenceId('nexcrm', resolved.plan.slug, resolved.billingCycle),
             reminder_enable: true,
             notes
@@ -247,10 +247,10 @@ class RazorpayService {
             period: 'monthly',
             interval: 1,
             item: {
-                name: `NexCRM ${plan.name}`,
+                name: `Napnix CRM ${plan.name}`,
                 amount: Math.round(plan.price_monthly * 100), // Convert to paise
                 currency: 'INR',
-                description: plan.description || `NexCRM ${plan.name} Plan`
+                description: plan.description || `Napnix CRM ${plan.name} Plan`
             },
             notes: {
                 plan_id: plan.id.toString(),

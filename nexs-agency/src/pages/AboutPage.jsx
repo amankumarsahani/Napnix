@@ -258,7 +258,7 @@ const AboutPage = () => {
 
       {/*
         Timeline removed. components/Timeline.jsx claims 2020 Founded, 2021
-        First Client Projects, 2022 Product Foundations, 2023 NapCRM Launch and
+        First Client Projects, 2022 Product Foundations, 2023 Napnix CRM Launch and
         2024 Growing Delivery. The Clutch profile — the listing carrying our
         only verified client review — gives a 2025 founding, and the domain was
         registered 2026-05-25, so those years predate the company and

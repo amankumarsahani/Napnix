@@ -1,4 +1,4 @@
-// Industry data for NapCRM industry landing pages
+// Industry data for Napnix CRM industry landing pages
 // Each key maps to a URL slug: /napcrm/industries/:slug
 
 export const industryData = {
@@ -52,7 +52,7 @@ export const industryData = {
     ],
     recommendedTier: 'Growth',
     testimonial: {
-      quote: 'NapCRM replaced three separate tools for us. Leads, emails, and WhatsApp — all in one place now.',
+      quote: 'Napnix CRM replaced three separate tools for us. Leads, emails, and WhatsApp — all in one place now.',
       author: 'Rahul Mehta',
       role: 'Founder',
       company: 'BrightPath Consulting',
@@ -60,15 +60,15 @@ export const industryData = {
       image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&q=80&fm=webp',
     },
     faqs: [
-      { q: 'Is NapCRM suitable for small businesses?', a: 'Yes. The Starter plan supports 2 team members and 500 leads — enough for most small businesses to get started.' },
+      { q: 'Is Napnix CRM suitable for small businesses?', a: 'Yes. The Starter plan supports 2 team members and 500 leads — enough for most small businesses to get started.' },
       { q: 'Can I migrate from another CRM?', a: 'We support CSV imports for leads, contacts, and deals. Our team can assist with migration from spreadsheets or other CRMs.' },
-      { q: 'Can I see it before I buy?', a: 'Yes. Book a 20-minute demo and we will walk through NapCRM configured for your industry, using your actual workflow.' },
+      { q: 'Can I see it before I buy?', a: 'Yes. Book a 20-minute demo and we will walk through Napnix CRM configured for your industry, using your actual workflow.' },
       { q: 'What communication channels are included?', a: 'Email (templates and automated follow-ups), WhatsApp (business API, broadcasts), SMS, in-app chat, push notifications, and AI chatbot.' },
     ],
     seo: {
-      title: 'NapCRM — All-Purpose CRM for Growing Businesses | Napnix',
-      description: 'Manage leads, automate sales, and grow revenue with NapCRM. Affordable CRM built for Indian businesses with WhatsApp, email follow-ups, and workflow automation.',
-      keywords: 'CRM for small business India, affordable CRM software, lead management tool, sales automation CRM, WhatsApp CRM India, business CRM software, NapCRM',
+      title: 'Napnix CRM — All-Purpose CRM for Growing Businesses | Napnix',
+      description: 'Manage leads, automate sales, and grow revenue with Napnix CRM. Affordable CRM built for Indian businesses with WhatsApp, email follow-ups, and workflow automation.',
+      keywords: 'CRM for small business India, affordable CRM software, lead management tool, sales automation CRM, WhatsApp CRM India, business CRM software, Napnix CRM',
     },
   },
 
@@ -131,7 +131,7 @@ export const industryData = {
     },
     faqs: [
       { q: 'Can I manage product variants and categories?', a: 'Yes. The product catalog supports variants (size, color, etc.), categories, pricing tiers, and real-time inventory tracking.' },
-      { q: 'How does return handling work?', a: 'Customers or your team can initiate return requests. NapCRM tracks the return through approval, pickup, refund, or exchange.' },
+      { q: 'How does return handling work?', a: 'Customers or your team can initiate return requests. Napnix CRM tracks the return through approval, pickup, refund, or exchange.' },
       { q: 'Is vendor management included?', a: 'Yes. Onboard vendors, manage their listings, and track performance — included in Business and Enterprise plans.' },
       { q: 'Do you charge per order?', a: 'No. All plans have flat monthly pricing regardless of your order volume.' },
     ],
@@ -332,14 +332,14 @@ export const industryData = {
     ],
     recommendedTier: 'Business',
     testimonial: {
-      quote: 'Admissions, enquiries, and attendance used to be scattered across registers. NapCRM brought it together and the team picked it up quickly.',
+      quote: 'Admissions, enquiries, and attendance used to be scattered across registers. Napnix CRM brought it together and the team picked it up quickly.',
       author: 'Ajeet Yadav',
       role: 'Manager',
       company: 'Prabhawati Vidya Peeth',
       image: '',
     },
     faqs: [
-      { q: 'Is this suitable for coaching institutes?', a: 'Yes. NapCRM works for schools, coaching centers, and edtech platforms. Batch management and attendance are designed around how institutes operate.' },
+      { q: 'Is this suitable for coaching institutes?', a: 'Yes. Napnix CRM works for schools, coaching centers, and edtech platforms. Batch management and attendance are designed around how institutes operate.' },
       { q: 'Can I track student attendance?', a: 'Yes. Mark attendance per batch per session. Generate attendance reports and send alerts to students with low attendance.' },
       { q: 'How do grades and results work?', a: 'Enter exam scores, assign grades, and generate student-wise and batch-wise performance reports across terms and subjects.' },
       { q: 'Can I manage multiple branches?', a: 'Yes. Multi-branch support is available on Business and Enterprise plans with branch-wise data isolation and consolidated reporting.' },
@@ -760,7 +760,7 @@ export const industryData = {
     ],
     recommendedTier: 'Enterprise',
     testimonial: {
-      quote: 'We run inventory, orders, and our lead pipeline on NapCRM now. It replaced a pile of spreadsheets and gave the whole team the same view of the business.',
+      quote: 'We run inventory, orders, and our lead pipeline on Napnix CRM now. It replaced a pile of spreadsheets and gave the whole team the same view of the business.',
       author: 'Rahul Verma',
       role: 'Managing Director',
       company: 'Verma Industries',

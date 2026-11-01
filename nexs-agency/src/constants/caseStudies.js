@@ -42,10 +42,10 @@ export const CASE_STUDIES = {
 
     'napcrm-manufacturing': {
         slug: 'napcrm-manufacturing',
-        title: 'NapCRM — Manufacturing',
+        title: 'Napnix CRM — Manufacturing',
         category: 'CRM Deployment',
         accent: 'orange',
-        summary: 'A manufacturing business tracking inventory, orders, and leads across scattered spreadsheets — consolidated onto a single multi-tenant NapCRM deployment.',
+        summary: 'A manufacturing business tracking inventory, orders, and leads across scattered spreadsheets — consolidated onto a single multi-tenant Napnix CRM deployment.',
         tech: ['React', 'Express', 'MariaDB'],
         problem: [
             'Inventory, orders, and leads lived in separate spreadsheets and inboxes.',
@@ -53,7 +53,7 @@ export const CASE_STUDIES = {
             'Manual handoffs meant enquiries and orders slipped through the cracks.',
         ],
         solution: [
-            'A dedicated NapCRM instance tailored for manufacturing operations.',
+            'A dedicated Napnix CRM instance tailored for manufacturing operations.',
             'Inventory, order pipeline, and lead management in one connected system.',
             'Role-based access so the right people see the right data.',
         ],
@@ -70,7 +70,7 @@ export const CASE_STUDIES = {
             'Orders and leads are tracked end to end instead of scattered.',
         ],
         quote: {
-            text: 'We run inventory, orders, and our lead pipeline on NapCRM now. It replaced a pile of spreadsheets and gave the whole team the same view of the business.',
+            text: 'We run inventory, orders, and our lead pipeline on Napnix CRM now. It replaced a pile of spreadsheets and gave the whole team the same view of the business.',
             author: 'Rahul Verma',
             role: 'Managing Director, Verma Industries',
         },
@@ -78,10 +78,10 @@ export const CASE_STUDIES = {
 
     'napcrm-legal': {
         slug: 'napcrm-legal',
-        title: 'NapCRM — Legal',
+        title: 'Napnix CRM — Legal',
         category: 'CRM Deployment',
         accent: 'indigo',
-        summary: 'A legal practice with cases, clients, and documents spread across files and memory — moved onto NapCRM for reliable case and client management.',
+        summary: 'A legal practice with cases, clients, and documents spread across files and memory — moved onto Napnix CRM for reliable case and client management.',
         tech: ['React', 'Express', 'MariaDB'],
         problem: [
             'Cases, client details, and documents were scattered and hard to track.',
@@ -89,7 +89,7 @@ export const CASE_STUDIES = {
             'No single place to see the status of every matter and client.',
         ],
         solution: [
-            'A NapCRM deployment built around a legal practice\'s workflow.',
+            'A Napnix CRM deployment built around a legal practice\'s workflow.',
             'Case and matter tracking, client records, and document workflows in one system.',
             'Clear ownership and follow-up so nothing falls through.',
         ],

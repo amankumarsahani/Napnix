@@ -72,7 +72,7 @@ const Hero = memo(function Hero() {
             <div className="mx-auto inline-flex max-w-2xl flex-wrap items-center justify-center gap-x-1.5 gap-y-1 rounded-full border border-white/30 bg-white/90 px-3 py-2 text-center text-sm font-semibold text-[#2563EB] backdrop-blur-sm sm:px-4 sm:text-base">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2"></div>
               <RiCodeSSlashLine className="mr-1 text-sm" />
-              NapCRM · Automated Follow-up · Custom Software
+              Napnix CRM · Automated Follow-up · Custom Software
             </div>
 
             <div className="space-y-4">
@@ -98,14 +98,14 @@ const Hero = memo(function Hero() {
                   Napnix is a software development company based in Mohali, India
                 </strong>
                 , building custom web and mobile applications, cloud infrastructure and AI
-                systems — and NapCRM, its own CRM platform for agencies and service
+                systems — and Napnix CRM, its own CRM platform for agencies and service
                 businesses, from $49/month.
               </p>
 
               <p className="mx-auto mt-4 max-w-3xl text-base font-medium leading-relaxed text-white/90 sm:text-lg">
                 We fix the systems behind growth —
                 <span className="font-bold text-[#D97706]"> lead capture, automated follow-up, and CRM that fits how you actually work</span>.
-                Off-the-shelf when NapCRM fits, custom-built when it doesn't.
+                Off-the-shelf when Napnix CRM fits, custom-built when it doesn't.
               </p>
             </div>
 
@@ -122,18 +122,18 @@ const Hero = memo(function Hero() {
                 href="/napcrm"
                 className="bg-white/90 backdrop-blur-sm text-slate-700 border-2 border-white/30 px-8 sm:px-8 lg:px-6 py-4 sm:py-4 lg:py-3 rounded-xl text-base sm:text-lg lg:text-base font-semibold inline-flex items-center justify-center hover:bg-white active:scale-95 transition-all duration-300 group"
               >
-                See NapCRM
+                See Napnix CRM
               </MagneticButton>
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-white/80">
               <span className="rounded-full border border-white/15 bg-white/10 px-4 py-2 backdrop-blur-sm">Reply within 24 hours</span>
               <span className="rounded-full border border-white/15 bg-white/10 px-4 py-2 backdrop-blur-sm">US and India-friendly delivery hours</span>
-              <span className="rounded-full border border-white/15 bg-white/10 px-4 py-2 backdrop-blur-sm">Custom builds or NapCRM rollout</span>
+              <span className="rounded-full border border-white/15 bg-white/10 px-4 py-2 backdrop-blur-sm">Custom builds or Napnix CRM rollout</span>
             </div>
 
             <p className="text-sm text-white/70">
-              Exploring NapCRM specifically? <a href="/napcrm" className="font-semibold text-white underline decoration-white/40 underline-offset-4 hover:decoration-white">See the platform</a>.
+              Exploring Napnix CRM specifically? <a href="/napcrm" className="font-semibold text-white underline decoration-white/40 underline-offset-4 hover:decoration-white">See the platform</a>.
             </p>
 
           </div>

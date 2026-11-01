@@ -24,7 +24,7 @@ export const AUTHORS = {
         id: 'aman-kumar',
         name: 'Aman Kumar',
         jobTitle: 'Founder & Engineering Lead',
-        bio: 'Aman co-founded Napnix and leads its engineering work, building NapCRM and the custom CRM and automation systems Napnix delivers for agencies and service businesses.',
+        bio: 'Aman co-founded Napnix and leads its engineering work, building Napnix CRM and the custom CRM and automation systems Napnix delivers for agencies and service businesses.',
         knowsAbout: [
             'Custom CRM development',
             'Enterprise software architecture',

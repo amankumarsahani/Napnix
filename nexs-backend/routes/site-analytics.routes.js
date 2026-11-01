@@ -511,7 +511,7 @@ Please provide:
 ## User Journey Insights
 (how visitors navigate the site and what this means for conversion)
 
-Be specific to Napnix' business context — a B2B agency selling NexCRM and digital services.`;
+Be specific to Napnix' business context — a B2B agency selling Napnix CRM and digital services.`;
 
         const insight = await aiService.generateContent(prompt, systemMessage);
         res.json({ insight });

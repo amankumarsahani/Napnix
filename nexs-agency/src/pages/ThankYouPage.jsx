@@ -14,7 +14,7 @@ const AUDIT_STEPS = [
 const GENERAL_STEPS = [
     { icon: RiMailLine, title: 'Check your inbox', desc: 'A confirmation email is on its way. If it isn\'t there in a minute, check spam or promotions.' },
     { icon: RiTimer2Line, title: 'We reply fast', desc: 'Our team gets back to you within business hours — usually the same day.' },
-    { icon: RiCalendarCheckLine, title: 'Next: a quick call', desc: 'We\'ll discuss your goals and the best next step, whether that\'s NapCRM or a custom build.' },
+    { icon: RiCalendarCheckLine, title: 'Next: a quick call', desc: 'We\'ll discuss your goals and the best next step, whether that\'s Napnix CRM or a custom build.' },
 ];
 
 const ThankYouPage = () => {
@@ -87,7 +87,7 @@ const ThankYouPage = () => {
                                 <RiArrowRightLine />
                             </Link>
                             <Link to="/napcrm" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-slate-700 border-2 border-slate-200 rounded-xl font-semibold hover:bg-slate-50 transition-colors">
-                                Explore NapCRM
+                                Explore Napnix CRM
                             </Link>
                         </div>
                     </div>

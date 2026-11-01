@@ -81,7 +81,7 @@ export const crmFeatures = {
         { name: 'Analytics & Reports', starter: 'Basic', growth: 'Advanced', business: 'Advanced', enterprise: 'Custom' },
     ],
     // Managed services delivered by the Napnix team, not software toggles inside
-    // NapCRM. Setup work is included from Starter; ongoing management starts at
+    // Napnix CRM. Setup work is included from Starter; ongoing management starts at
     // Growth, so the delivery cost stays matched to the plan price.
     visibility: [
         { name: 'Google Business Profile Setup', starter: true, growth: true, business: true, enterprise: true },

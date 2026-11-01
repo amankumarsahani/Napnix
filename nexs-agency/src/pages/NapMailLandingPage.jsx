@@ -52,13 +52,13 @@ const features = [
     { title: 'Visual Automations', desc: 'Node-based flow builder with 9 triggers, 11 actions, and conditional branching.', icon: RiFlowChart, color: 'text-purple-600', bg: 'bg-purple-50' },
     { title: 'Campaign Analytics', desc: 'Open rates, click maps, delivery funnels, engagement heatmaps, and leaderboards.', icon: RiBarChartBoxLine, color: 'text-rose-600', bg: 'bg-rose-50' },
     { title: 'Contact Scoring', desc: 'Automatic 0-100 engagement scores based on opens, clicks, recency, and bounces.', icon: RiUserFollowLine, color: 'text-cyan-600', bg: 'bg-cyan-50' },
-    { title: 'CRM Integration', desc: 'Native sync with NapCRM. Contacts auto-imported from leads and customers.', icon: RiLinksLine, color: 'text-orange-600', bg: 'bg-orange-50' },
+    { title: 'CRM Integration', desc: 'Native sync with Napnix CRM. Contacts auto-imported from leads and customers.', icon: RiLinksLine, color: 'text-orange-600', bg: 'bg-orange-50' },
     { title: 'Deliverability Tools', desc: 'SPF/DKIM/DMARC verification, warmup mode, bounce handling, suppression lists.', icon: RiMailCheckLine, color: 'text-teal-600', bg: 'bg-teal-50' },
 ];
 
 const howItWorks = [
     { step: '01', title: 'Configure SMTP', desc: 'Add your sending accounts (Gmail, SES, Postmark). Test the connection instantly.', icon: RiServerLine },
-    { step: '02', title: 'Import Contacts', desc: 'Upload CSV, sync from NapCRM, or add manually. Tags and segments included.', icon: RiUserFollowLine },
+    { step: '02', title: 'Import Contacts', desc: 'Upload CSV, sync from Napnix CRM, or add manually. Tags and segments included.', icon: RiUserFollowLine },
     { step: '03', title: 'Build & Send', desc: 'Create emails with drag-and-drop, check spam score, and launch your campaign.', icon: RiMailSendLine },
 ];
 
@@ -96,7 +96,7 @@ const comparisonItems = [
     { feature: 'Spam Score Checker', nexmail: true, mailchimp: false, brevo: false },
     { feature: 'Domain-Level Throttling', nexmail: true, mailchimp: false, brevo: false },
     { feature: 'Adaptive Send Delays', nexmail: true, mailchimp: false, brevo: false },
-    { feature: 'NapCRM Native Integration', nexmail: true, mailchimp: false, brevo: false },
+    { feature: 'Napnix CRM Native Integration', nexmail: true, mailchimp: false, brevo: false },
     { feature: 'Visual Automation Builder', nexmail: true, mailchimp: true, brevo: true },
     { feature: 'A/B Testing', nexmail: true, mailchimp: true, brevo: true },
     { feature: 'Free Tier', nexmail: '1K contacts', mailchimp: '500 contacts', brevo: '300 emails/day' },
@@ -108,7 +108,7 @@ const faqs = [
     { q: 'How does the spam checker work?', a: 'Our anti-spam engine runs 50+ checks on every email before sending: spam trigger words, subject line analysis, HTML structure, image-to-text ratio, compliance checks (CAN-SPAM/GDPR), and sender reputation. Emails scoring below 20/100 are blocked from sending.' },
     { q: 'What is domain throttling?', a: 'Major email providers (Gmail, Yahoo, Outlook) have strict per-hour limits. NapMail respects these limits automatically — for example, max 80 emails/hour to Gmail addresses — so your sender reputation stays protected.' },
     { q: 'How does SMTP rotation work?', a: 'When you add multiple SMTP accounts, NapMail uses weighted rotation — accounts with better reputation scores and lower usage get selected more often. If one account hits its daily limit, NapMail seamlessly switches to the next.' },
-    { q: 'Does it integrate with NapCRM?', a: 'Natively. When a lead or customer is created in NapCRM, their contact is auto-synced to NapMail. You can segment by CRM source, tags, and custom fields.' },
+    { q: 'Does it integrate with Napnix CRM?', a: 'Natively. When a lead or customer is created in Napnix CRM, their contact is auto-synced to NapMail. You can segment by CRM source, tags, and custom fields.' },
     { q: 'Is there a free plan?', a: 'Yes! The Starter plan is completely free — 1,000 contacts and 5,000 emails per month with the drag-and-drop editor, campaign analytics, and basic automations.' },
 ];
 
@@ -192,7 +192,7 @@ export default function NapMailLandingPage() {
                 <meta property="og:site_name" content="Napnix" />
                 <meta property="og:locale" content="en_IN" />
                 <meta property="og:title" content="NapMail — Email Marketing with SMTP Rotation" />
-                <meta property="og:description" content="Smart SMTP rotation, anti-spam scoring, domain throttling, visual automations, and NapCRM integration. Free plan available." />
+                <meta property="og:description" content="Smart SMTP rotation, anti-spam scoring, domain throttling, visual automations, and Napnix CRM integration. Free plan available." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${SITE_URL}/napmail`} />
                 <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
@@ -202,7 +202,7 @@ export default function NapMailLandingPage() {
                 <meta name="twitter:site" content="@napnix" />
                 <meta name="twitter:creator" content="@napnix" />
                 <meta name="twitter:title" content="NapMail — Email Marketing with SMTP Rotation" />
-                <meta name="twitter:description" content="Smart SMTP rotation, anti-spam scoring, domain throttling, visual automations, and NapCRM integration." />
+                <meta name="twitter:description" content="Smart SMTP rotation, anti-spam scoring, domain throttling, visual automations, and Napnix CRM integration." />
             </Helmet>
 
             <script type="application/ld+json">{JSON.stringify(buildSoftwareApplicationSchema({
@@ -533,7 +533,7 @@ export default function NapMailLandingPage() {
                                         <div className="flex items-center gap-3">
                                             <RiLinksLine className="text-blue-600 text-lg" />
                                             <div>
-                                                <span className="text-xs font-semibold text-slate-800">NapCRM Integration</span>
+                                                <span className="text-xs font-semibold text-slate-800">Napnix CRM Integration</span>
                                                 <span className="text-[10px] text-emerald-600 font-medium ml-2">● Connected</span>
                                             </div>
                                         </div>
@@ -898,7 +898,7 @@ export default function NapMailLandingPage() {
                                     Get Started Free
                                 </button>
                                 <Link to="/napcrm" className="px-10 py-5 bg-white/10 text-white border border-white/20 rounded-xl font-bold text-lg hover:bg-white/20 transition-all backdrop-blur-sm">
-                                    Explore NapCRM
+                                    Explore Napnix CRM
                                 </Link>
                             </div>
                         </div>

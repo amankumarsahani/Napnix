@@ -163,7 +163,7 @@ const LandingPage = memo(function LandingPage() {
    * harmless because index.css already sets `overflow-x: hidden` on html/body.
    *
    * Applied to the four other page wrappers that shared the pattern too:
-   * PublicLayout, NapCRM, NapMail and IndustryLandingPage.
+   * PublicLayout, Napnix CRM, NapMail and IndustryLandingPage.
    */
   return (
     <div className="min-h-screen bg-white w-full overflow-x-clip">

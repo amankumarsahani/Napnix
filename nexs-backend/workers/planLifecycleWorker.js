@@ -79,9 +79,9 @@ class PlanLifecycleWorker {
                 const daysLeft = Math.max(0, Math.ceil((new Date(tenant.trial_ends_at) - Date.now()) / 86400000));
                 await emailService.sendEmail({
                     to: tenant.email,
-                    subject: `Your NapCRM trial ends in ${daysLeft} day${daysLeft === 1 ? '' : 's'}`,
+                    subject: `Your Napnix CRM trial ends in ${daysLeft} day${daysLeft === 1 ? '' : 's'}`,
                     html: `<p>Hi ${tenant.name || 'there'},</p>
-                           <p>Your NapCRM trial for <strong>${tenant.slug}</strong> ends on
+                           <p>Your Napnix CRM trial for <strong>${tenant.slug}</strong> ends on
                            ${new Date(tenant.trial_ends_at).toDateString()}. Upgrade to a paid plan
                            to keep your data and team active without interruption.</p>`
                 });

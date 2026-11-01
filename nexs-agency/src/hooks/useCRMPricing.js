@@ -118,7 +118,7 @@ export default function useCRMPricing() {
             message: buildInquiryMessage(
                 'demo',
                 formData.get('message'),
-                `Product: NapCRM\nInterested plan: ${plan}\nPreferred billing: ${isYearly ? 'Yearly' : 'Monthly'}`
+                `Product: Napnix CRM\nInterested plan: ${plan}\nPreferred billing: ${isYearly ? 'Yearly' : 'Monthly'}`
             ),
             captchaToken
         };

@@ -335,7 +335,7 @@ const ServicesPage = () => {
                         {[
                             {
                                 h: 'Enquiries are arriving but not converting',
-                                p: 'This is usually a follow-up and ownership problem, not a software one. A configured CRM fixes it faster and cheaper than a build: NapCRM covers lead capture, assignment, automated follow-up and reporting from ₹4,165 a month. Start with the free Revenue-Leak Audit, which maps where enquiries are actually being lost before anyone writes code.',
+                                p: 'This is usually a follow-up and ownership problem, not a software one. A configured CRM fixes it faster and cheaper than a build: Napnix CRM covers lead capture, assignment, automated follow-up and reporting from ₹4,165 a month. Start with the free Revenue-Leak Audit, which maps where enquiries are actually being lost before anyone writes code.',
                                 to: '/audit', cta: 'Book a Revenue-Leak Audit',
                             },
                             {

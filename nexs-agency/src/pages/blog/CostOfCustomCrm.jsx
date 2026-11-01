@@ -27,7 +27,7 @@ const SOURCES = [
         url: 'https://calculator.aws/',
     },
     {
-        title: 'NapCRM pricing — the off-the-shelf comparison point used below',
+        title: 'Napnix CRM pricing — the off-the-shelf comparison point used below',
         publisher: 'Napnix',
         url: `${SITE_URL}/napcrm/pricing`,
     },
@@ -160,7 +160,7 @@ const CostOfCustomCrm = () => {
                         than next year.
                     </p>
                     <p>
-                        For a concrete comparison point, <Link to="/napcrm/pricing">NapCRM</Link>{' '}
+                        For a concrete comparison point, <Link to="/napcrm/pricing">Napnix CRM</Link>{' '}
                         starts at ₹4,165 per month per workspace ($49). Against a $75,000 build plus
                         ~$13,000 a year of upkeep, a subscription has to run a long time before the
                         custom route is cheaper on cash alone — which is why the deciding factor is

@@ -99,7 +99,7 @@ const data = {
                 a: 'Start with retrieval. Putting your documents behind a general-purpose model is cheaper, updates the moment your content changes, and lets you cite sources, which matters when someone asks why the system said what it said. Fine-tuning earns its cost when you need a particular output format or tone reliably, or when latency and per-call price at volume make a smaller specialised model worth running.',
             },
             {
-                q: 'Can you work with the data we have in NapCRM?',
+                q: 'Can you work with the data we have in Napnix CRM?',
                 a: 'Yes, and that is usually the most productive starting point, because CRM data is already structured and already yours. Common work includes lead scoring from historical conversion, routing enquiries by predicted intent, and surfacing accounts that have gone quiet. No separate data warehouse is needed to begin.',
             },
             {

@@ -197,8 +197,8 @@ const cityData = {
         title: 'Software Development Company in Mohali | Napnix',
         description: 'Napnix is a Mohali-based software development company building custom web, mobile, CRM, AI and cloud systems for startups and enterprises in Punjab.',
         heroText: 'Your Mohali Technology Partner.',
-        content: 'Headquartered in Balongi, Sahibzada Ajit Singh Nagar, Napnix delivers end-to-end software engineering for Chandigarh Tricity startups, SMEs, and global clients who want reliable delivery from India\'s growing tech corridor. Balongi sits on the Kharar side of Mohali, about twenty minutes from Sector 82 and the IT City corridor and half an hour from Chandigarh International Airport, so in-person scoping sessions across the Tricity are a short drive rather than a trip. Mohali work splits fairly evenly between two kinds of client: local manufacturers, clinics, schools and legal practices replacing spreadsheets and registers with a configured NapCRM, and Tricity startups who need a product built and shipped. Both get the same team, and for Mohali clients that team is reachable in person — most of our local projects begin with a meeting at your premises rather than a video call, because walking the actual process is faster than describing it.',
-        services: ['Custom Web & SaaS Development', 'Mobile App Development', 'NapCRM Implementation', 'AI & Automation', 'Cloud & DevOps'],
+        content: 'Headquartered in Balongi, Sahibzada Ajit Singh Nagar, Napnix delivers end-to-end software engineering for Chandigarh Tricity startups, SMEs, and global clients who want reliable delivery from India\'s growing tech corridor. Balongi sits on the Kharar side of Mohali, about twenty minutes from Sector 82 and the IT City corridor and half an hour from Chandigarh International Airport, so in-person scoping sessions across the Tricity are a short drive rather than a trip. Mohali work splits fairly evenly between two kinds of client: local manufacturers, clinics, schools and legal practices replacing spreadsheets and registers with a configured Napnix CRM, and Tricity startups who need a product built and shipped. Both get the same team, and for Mohali clients that team is reachable in person — most of our local projects begin with a meeting at your premises rather than a video call, because walking the actual process is faster than describing it.',
+        services: ['Custom Web & SaaS Development', 'Mobile App Development', 'Napnix CRM Implementation', 'AI & Automation', 'Cloud & DevOps'],
         image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&q=80&w=1200&fm=webp',
         coordinates: { lat: 30.7293, lng: 76.6947 },
         color: 'blue',
@@ -213,7 +213,7 @@ const cityData = {
                 'Because we are in Balongi, that conversation happens in person. We will come to your premises, watch an enquiry travel from the first call to the invoice, and map the process before quoting anything. Walking the actual workflow takes an afternoon and consistently finds things a requirements call does not.',
             ],
             points: [
-                'Configured NapCRM in one of 14 industry editions, often live within the week, or a custom build when the process is genuinely yours.',
+                'Configured Napnix CRM in one of 14 industry editions, often live within the week, or a custom build when the process is genuinely yours.',
                 'WhatsApp Business API follow-up, because for most Tricity businesses that is where the customer actually replies.',
                 'GST-aware invoicing with correct HSN codes, and export into Tally or Zoho Books rather than re-keying.',
                 'Migration from spreadsheets, registers or an existing CRM, with a decision made up front about which historical data is worth bringing.',
@@ -226,7 +226,7 @@ const cityData = {
             reasons: [
                 { title: 'Local HQ Advantage', desc: 'On-the-ground team in Balongi with direct access to founders and engineers.', icon: 'ri-building-2-line' },
                 { title: 'Tricity Coverage', desc: 'Serving Mohali, Chandigarh, Panchkula, and Zirakpur with fast turnaround.', icon: 'ri-map-pin-line' },
-                { title: 'Product + Services', desc: 'Custom builds plus our NapCRM platform for faster go-to-market.', icon: 'ri-stack-line' },
+                { title: 'Product + Services', desc: 'Custom builds plus our Napnix CRM platform for faster go-to-market.', icon: 'ri-stack-line' },
                 { title: 'Global Delivery', desc: 'Local presence with experience shipping software for US, UK, and UAE clients.', icon: 'ri-global-line' }
             ]
         }
@@ -252,7 +252,7 @@ const cityData = {
         crmAngle: {
             paragraphs: [
                 'Chandigarh CRM projects tend to come from professional practices and established family businesses \u2014 clinics, legal practices, schools, dealerships \u2014 where the process already works but lives in registers and spreadsheets, and the cost of that only becomes visible when someone is away or leaves.',
-                'We are twenty minutes away in Balongi, so scoping is a meeting rather than a video call. We follow one real enquiry end to end, decide honestly whether a configured NapCRM edition covers it, and only recommend a custom build when it is cheaper over three years than paying per seat.',
+                'We are twenty minutes away in Balongi, so scoping is a meeting rather than a video call. We follow one real enquiry end to end, decide honestly whether a configured Napnix CRM edition covers it, and only recommend a custom build when it is cheaper over three years than paying per seat.',
             ],
             points: [
                 'Industry editions for legal, healthcare, education, salon, real estate and professional services, configured rather than built from scratch.',
@@ -266,7 +266,7 @@ const cityData = {
             title: 'Why Chandigarh Teams Work with Napnix',
             reasons: [
                 { title: 'Nearby Mohali HQ', desc: 'Fast collaboration from our Balongi office, a short drive from Chandigarh.', icon: 'ri-car-line' },
-                { title: 'Industry CRM Expertise', desc: 'Pre-built NapCRM workflows for healthcare, education, real estate, and more.', icon: 'ri-briefcase-line' },
+                { title: 'Industry CRM Expertise', desc: 'Pre-built Napnix CRM workflows for healthcare, education, real estate, and more.', icon: 'ri-briefcase-line' },
                 { title: 'Startup Friendly', desc: 'Flexible engagement models for MVPs, scale-ups, and enterprise rollouts.', icon: 'ri-rocket-line' },
                 { title: 'Secure Delivery', desc: 'Enterprise-grade security, QA, and post-launch support built in.', icon: 'ri-shield-check-line' }
             ]
@@ -766,7 +766,7 @@ const CityLandingPage = () => {
                             </Link>
                             {' · '}
                             <Link to="/napcrm" className="text-[#2563EB] font-medium hover:underline">
-                                NapCRM, our own CRM platform
+                                Napnix CRM, our own CRM platform
                             </Link>
                             {' · '}
                             <Link to="/blog/cost-of-custom-crm-2026" className="text-[#2563EB] font-medium hover:underline">

@@ -27,7 +27,7 @@ export const COMPANY_STATS = {
     countries: '4',
     years: yearsActive(),
     /**
-     * NapCRM industry editions. Verifiable: it is the length of INDUSTRY_SLUGS
+     * Napnix CRM industry editions. Verifiable: it is the length of INDUSTRY_SLUGS
      * in sitemapRoutes.js, and each one has a live page.
      */
     industries: '14',

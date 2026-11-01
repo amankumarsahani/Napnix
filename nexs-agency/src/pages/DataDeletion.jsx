@@ -6,7 +6,7 @@ const DataDeletion = () => (
     <div className="pt-24 pb-16 bg-white min-h-screen">
         <Helmet>
             <title>Data Deletion Instructions | Napnix</title>
-            <meta name="description" content="How to request deletion of your personal data from Napnix and NapCRM, including data shared via connected apps like WhatsApp and Facebook Login." />
+            <meta name="description" content="How to request deletion of your personal data from Napnix and Napnix CRM, including data shared via connected apps like WhatsApp and Facebook Login." />
             <link rel="canonical" href={`${SITE_URL}/data-deletion`} />
             <meta name="robots" content="index, follow" />
             <meta property="og:title" content="Data Deletion Instructions | Napnix" />
@@ -23,7 +23,7 @@ const DataDeletion = () => (
                 <section className="mb-12">
                     <h2 className="text-2xl font-bold text-slate-800 mb-4">1. Overview</h2>
                     <p className="mb-4">
-                        This page explains how you can request deletion of personal data that Napnix or NapCRM holds about you, including data received through connected third-party platforms such as WhatsApp Business (Meta) and Facebook/Instagram Login. See our <Link to="/privacy-policy" className="text-[#2563EB] hover:underline">Privacy Policy</Link> for what data we collect and why.
+                        This page explains how you can request deletion of personal data that Napnix or Napnix CRM holds about you, including data received through connected third-party platforms such as WhatsApp Business (Meta) and Facebook/Instagram Login. See our <Link to="/privacy-policy" className="text-[#2563EB] hover:underline">Privacy Policy</Link> for what data we collect and why.
                     </p>
                 </section>
 
@@ -31,7 +31,7 @@ const DataDeletion = () => (
                     <h2 className="text-2xl font-bold text-slate-800 mb-4">2. What Gets Deleted</h2>
                     <ul className="list-disc pl-6 space-y-2 mb-4">
                         <li>Your identity and contact data (name, email, phone) held in our systems.</li>
-                        <li>Message history exchanged with a business through our WhatsApp integration, where that business is a Napnix/NexCRM customer.</li>
+                        <li>Message history exchanged with a business through our WhatsApp integration, where that business is a Napnix CRM customer.</li>
                         <li>Any account or profile data created via Facebook/Instagram Login integrations.</li>
                         <li>Associated logs and analytics records tied directly to your identity.</li>
                     </ul>
@@ -46,7 +46,7 @@ const DataDeletion = () => (
                         Email <a href={`mailto:${siteConfig.contact.support}`} className="text-[#2563EB] hover:underline">{siteConfig.contact.support}</a> with the subject line <strong>&ldquo;Data Deletion Request&rdquo;</strong>, including:
                     </p>
                     <ul className="list-disc pl-6 space-y-2 mb-4">
-                        <li>The phone number, email, or account you used to interact with a Napnix/NexCRM business.</li>
+                        <li>The phone number, email, or account you used to interact with a Napnix CRM business.</li>
                         <li>The business name (if known) you messaged or interacted with.</li>
                     </ul>
                     <p className="mb-4">

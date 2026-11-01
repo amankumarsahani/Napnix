@@ -81,7 +81,7 @@ const ContactPage = () => {
                 sourceUrl: meta.sourceUrl
             });
 
-            // Meta Pixel conversion. `intent` is what separates a NapCRM demo
+            // Meta Pixel conversion. `intent` is what separates a Napnix CRM demo
             // request from an agency audit lead — the ad campaigns optimise on
             // custom conversions filtered by it, not on the raw Lead event.
             trackLead({ content_name: 'contact_page', intent: formState.intent }, meta.eventId);
@@ -351,7 +351,7 @@ const ContactPage = () => {
                                                     </button>
                                                 ))}
                                             </div>
-                                            <p className="text-sm text-slate-500">Need help deciding monthly vs yearly NapCRM pricing? Choose demo and we will walk you through it.</p>
+                                            <p className="text-sm text-slate-500">Need help deciding monthly vs yearly Napnix CRM pricing? Choose demo and we will walk you through it.</p>
                                         </div>
 
                                         <div className="space-y-2 group">

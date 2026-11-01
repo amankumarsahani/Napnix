@@ -1,12 +1,12 @@
-# Centralized competitor data for NapCRM comparison/alternative pages.
+# Centralized competitor data for Napnix CRM comparison/alternative pages.
 # Single source of truth — update here, propagate to all pages.
-# Pricing/features last verified: 2026-08-28 (NapCRM from repo source of truth:
+# Pricing/features last verified: 2026-08-28 (Napnix CRM from repo source of truth:
 # NexSpireSolutions/nexs-agency/src/constants/crmPricing.js).
 # Competitor figures are public-list-price knowledge and should be re-checked
 # quarterly against their live pricing pages before publishing.
 
 product:
-  name: NapCRM
+  name: Napnix CRM
   vendor: Napnix
   positioning: >
     Multi-tenant CRM for service businesses, built around 14 industry-specific

@@ -8,7 +8,7 @@ const services = [
         link: "/services/crm-development",
         icon: "ri-contacts-book-line",
         color: "blue",
-        desc: "Custom CRM, or a configured NapCRM edition."
+        desc: "Custom CRM, or a configured Napnix CRM edition."
     },
     {
         title: "Custom Web Development",

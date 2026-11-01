@@ -74,7 +74,7 @@ const FAQPage = () => {
         },
         {
             question: "What does a project cost, roughly?",
-            answer: "A focused internal tool or portal usually starts around ₹4,00,000. A multi-tenant SaaS platform with billing, roles and an admin surface is typically ₹15,00,000 and up. NapCRM, if a configured CRM fits instead of a build, starts at ₹4,165 per month. The variable that moves a build estimate most is the number of distinct user roles, because each one multiplies both the permission logic and the testing surface. We give a written figure after a scoping call rather than a range over email.",
+            answer: "A focused internal tool or portal usually starts around ₹4,00,000. A multi-tenant SaaS platform with billing, roles and an admin surface is typically ₹15,00,000 and up. Napnix CRM, if a configured CRM fits instead of a build, starts at ₹4,165 per month. The variable that moves a build estimate most is the number of distinct user roles, because each one multiplies both the permission logic and the testing surface. We give a written figure after a scoping call rather than a range over email.",
             category: "Pricing"
         },
         {

@@ -82,7 +82,7 @@ const data = {
             },
             {
                 title: 'Logistics and operations',
-                body: 'Shipping rates by weight and pin code, courier integration for label generation and tracking, and a returns flow your team can actually operate. If stock lives in NapCRM or an ERP, we sync it rather than letting two systems disagree about what is available.',
+                body: 'Shipping rates by weight and pin code, courier integration for label generation and tracking, and a returns flow your team can actually operate. If stock lives in Napnix CRM or an ERP, we sync it rather than letting two systems disagree about what is available.',
             },
             {
                 title: 'Launch and the first month',
@@ -100,7 +100,7 @@ const data = {
             },
             {
                 q: 'Can the store share stock with our CRM or ERP?',
-                a: 'Yes, and it should. Two systems holding independent stock numbers is how overselling happens. We sync inventory in one direction with a clear owner for the number, usually the ERP, and push orders back the other way. NapCRM has this built in; other systems connect over their API or a scheduled job.',
+                a: 'Yes, and it should. Two systems holding independent stock numbers is how overselling happens. We sync inventory in one direction with a clear owner for the number, usually the ERP, and push orders back the other way. Napnix CRM has this built in; other systems connect over their API or a scheduled job.',
             },
             {
                 q: 'What about cash on delivery?',

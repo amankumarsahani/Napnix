@@ -20,14 +20,14 @@ const milestones = [
     {
         year: '2022',
         title: 'Product Foundations',
-        description: 'Began building the internal CRM tooling that later became NapCRM.',
+        description: 'Began building the internal CRM tooling that later became Napnix CRM.',
         icon: 'ri-stack-line',
         color: 'emerald'
     },
     {
         year: '2023',
-        title: 'NapCRM Launch',
-        description: 'Released NapCRM for agencies and businesses needing pipeline and customer management.',
+        title: 'Napnix CRM Launch',
+        description: 'Released Napnix CRM for agencies and businesses needing pipeline and customer management.',
         icon: 'ri-brain-line',
         color: 'orange'
     },
