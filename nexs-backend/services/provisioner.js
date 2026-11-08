@@ -1110,7 +1110,10 @@ EOFNODE`;
             );
 
             const data = await response.json();
-            if (!data.success) {
+            // An existing CNAME is not done: the tunnel ingress may still be missing,
+            // and Repair DNS relies on this path to add it.
+            const cnameExists = !data.success && /already exists/i.test(data.errors?.[0]?.message || '');
+            if (!data.success && !cnameExists) {
                 console.error('[Provisioner] Cloudflare DNS record creation failed:', data.errors);
                 throw new Error(data.errors[0].message);
             }
@@ -1119,8 +1122,8 @@ EOFNODE`;
             // Pass slug (not full hostname) — updateTunnelConfig constructs the hostname
             await this.updateTunnelConfig(slug, port, server);
 
-            console.log(`[Provisioner] Cloudflare route added: ${hostname}`);
-            return data.result.id;
+            console.log(`[Provisioner] Cloudflare route ${cnameExists ? 'ingress checked (CNAME existed)' : 'added'}: ${hostname}`);
+            return cnameExists ? null : data.result.id;
         } catch (error) {
             console.error(`[Provisioner] Cloudflare route setup failed: ${error.message}`);
             throw error;

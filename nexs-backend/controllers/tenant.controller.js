@@ -921,7 +921,8 @@ class TenantController {
                         ? await ServerModel.findById(tenant.server_id)
                         : await ServerModel.getBestServer();
                     if (server) {
-                        results.api = await provisioner.addCloudflareRoute(tenant.slug, tenant.assigned_port, server);
+                        // null = CNAME already existed; the tunnel ingress was still checked/added.
+                        results.api = (await provisioner.addCloudflareRoute(tenant.slug, tenant.assigned_port, server)) || 'ingress-checked';
                     } else {
                         results.api = 'error: no server found for tenant';
                     }
