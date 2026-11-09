@@ -187,9 +187,17 @@ function privilegedLogins(events) {
     return events.filter(e => e.type === 'login_success' && e.user_id && e.ip && PRIVILEGED_ROLES.has(parseMeta(e.meta).role));
 }
 
+/** Median of the last 10 values, or null with fewer than 5 (too few to call a trend). */
+function medianOf(list) {
+    const lat = (list || []).slice(-10);
+    if (lat.length < 5) return null;
+    return [...lat].sort((a, b) => a - b)[Math.floor(lat.length / 2)];
+}
+
 /**
  * Metric rules from one deep-health sample.
- * @param {Object} sample { counters, memory_rss_mb, latencies: number[] (most recent last) }
+ * @param {Object} sample { counters, memory_rss_mb, latencies: number[] (public URL, most recent last),
+ *                          localLatencies?: number[] (127.0.0.1, same-box tenants only) }
  */
 function evaluateHealthMetrics(sample) {
     const T = THRESHOLDS;
@@ -204,12 +212,17 @@ function evaluateHealthMetrics(sample) {
     if (sample.memory_rss_mb >= T.memoryHighMb) {
         hits.push({ rule: 'memory_high', severity: 'medium', subject: '', summary: `Process memory ${sample.memory_rss_mb} MB`, details: { memory_rss_mb: sample.memory_rss_mb } });
     }
-    const lat = (sample.latencies || []).slice(-10);
-    if (lat.length >= 5) {
-        const sorted = [...lat].sort((a, b) => a - b);
-        const median = sorted[Math.floor(sorted.length / 2)];
-        if (median > T.slowLatencyMs) {
-            hits.push({ rule: 'slow', severity: 'medium', subject: '', summary: `Median health latency ${median} ms over last ${lat.length} checks`, details: { median_ms: median } });
+    const pub = medianOf(sample.latencies);
+    const loc = medianOf(sample.localLatencies);
+    // The public probe goes out through Cloudflare and the tunnel; the local one hits
+    // the tenant port directly. Slow only on the public path = network, not the tenant.
+    if (loc !== null && loc > T.slowLatencyMs) {
+        hits.push({ rule: 'slow', severity: 'medium', subject: '', summary: `Tenant slow: median ${loc} ms on local port (public ${pub ?? '?'} ms)`, details: { local_median_ms: loc, median_ms: pub } });
+    } else if (pub !== null && pub > T.slowLatencyMs) {
+        if (loc !== null) {
+            hits.push({ rule: 'slow_network', severity: 'low', subject: '', summary: `Public path slow: median ${pub} ms via Cloudflare, ${loc} ms on local port`, details: { median_ms: pub, local_median_ms: loc } });
+        } else {
+            hits.push({ rule: 'slow', severity: 'medium', subject: '', summary: `Median health latency ${pub} ms over last checks`, details: { median_ms: pub } });
         }
     }
     return hits;

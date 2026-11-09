@@ -66,6 +66,12 @@ assert.deepStrictEqual(rules(R.evaluateHealthMetrics({ counters: { errors_5xx: 5
     ['error_spike', 'memory_high', 'scan_suspect', 'slow']);
 assert.deepStrictEqual(rules(R.evaluateHealthMetrics({ counters: { errors_5xx: 1 }, memory_rss_mb: 200, latencies: [3000, 3000, 3000, 3000] })), []);
 assert.deepStrictEqual(rules(R.evaluateHealthMetrics({})), []);
+// Public slow, local fast: the tunnel path, not the tenant.
+assert.deepStrictEqual(rules(R.evaluateHealthMetrics({ latencies: [3000, 3000, 3000, 3000, 3000], localLatencies: [20, 20, 20, 20, 20] })), ['slow_network']);
+// Local slow: the tenant itself, whatever the public path does.
+assert.deepStrictEqual(rules(R.evaluateHealthMetrics({ latencies: [300, 300, 300, 300, 300], localLatencies: [2500, 2500, 2500, 2500, 2500] })), ['slow']);
+// Too few local samples yet: fall back to the public number.
+assert.deepStrictEqual(rules(R.evaluateHealthMetrics({ latencies: [3000, 3000, 3000, 3000, 3000], localLatencies: [20] })), ['slow']);
 
 // PM2 rules.
 const online = (restarts) => ({ pm2_env: { status: 'online', restart_time: restarts } });

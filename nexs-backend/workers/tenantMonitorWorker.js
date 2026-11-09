@@ -20,6 +20,8 @@
  */
 
 const axios = require('axios');
+const http = require('http');
+const https = require('https');
 const dns = require('dns').promises;
 const geoip = require('geoip-lite');
 const { promisify } = require('util');
@@ -50,6 +52,9 @@ const SERVER_METRICS_RETENTION_DAYS = 30;
 const DNS_PROBE_HOSTS = (process.env.MONITOR_DNS_PROBE_HOSTS || 'one.one.one.one,dns.google').split(',').map(s => s.trim()).filter(Boolean);
 const DNS_PROBE_TIMEOUT_MS = 3000;
 const LOCAL_API_URL_TEMPLATE = 'http://127.0.0.1:{port}';
+// Reused connections, like a customer's browser: without them every probe paid a new
+// DNS + TCP + TLS handshake to Cloudflare, and that cost alone pushed latency past slowLatencyMs.
+const KEEP_ALIVE = { httpAgent: new http.Agent({ keepAlive: true }), httpsAgent: new https.Agent({ keepAlive: true }) };
 const ALERT_RETRY_MIN = 5;           // failed alert emails are retried this often
 const ALERT_RETRY_WINDOW_HOURS = 6;  // ...for this long after the event first fired
 // Host metrics + PM2 in one SSH round trip; parsed by Rules.parseHostSample.
@@ -104,6 +109,7 @@ class TenantMonitorWorker {
         this.lastSlowRun = 0;
         this.lastDailyKey = null;
         this.latencies = new Map(); // tenantId -> recent latencies (ms)
+        this.localLatencies = new Map(); // tenantId -> recent 127.0.0.1 latencies (ms), same-box tenants only
         this.alertAttempts = new Map(); // alert key -> last send attempt (ms), for retry pacing
     }
 
@@ -138,14 +144,17 @@ class TenantMonitorWorker {
             // would be marked down while customers (who come in through the tunnel) are fine.
             // Check same-box tenants on their local port instead and skip the rest.
             const dnsOk = (await Promise.all(DNS_PROBE_HOSTS.map(h => resolvesWithin(h, DNS_PROBE_TIMEOUT_MS)))).some(Boolean);
+            const [servers] = await pool.query('SELECT id, is_primary FROM servers WHERE is_active = 1');
+            const primaryIds = new Set(servers.filter(s => s.is_primary).map(s => s.id));
+            const local = tenants.filter(t => t.server_id === null || primaryIds.has(t.server_id));
+            // Same-box tenants also get a direct 127.0.0.1 probe, so "slow" can tell the
+            // tenant process apart from the Cloudflare tunnel path.
+            const localBases = new Map(local.map(t => [t.id, tenantApiUrl(t, LOCAL_API_URL_TEMPLATE)]));
             let bases;
             if (dnsOk) {
                 bases = new Map(tenants.map(t => [t.id, tenantApiUrl(t)]));
             } else {
-                const [servers] = await pool.query('SELECT id, is_primary FROM servers WHERE is_active = 1');
-                const primaryIds = new Set(servers.filter(s => s.is_primary).map(s => s.id));
-                const local = tenants.filter(t => t.server_id === null || primaryIds.has(t.server_id));
-                bases = new Map(local.map(t => [t.id, tenantApiUrl(t, LOCAL_API_URL_TEMPLATE)]));
+                bases = localBases;
                 await this.recordHit({
                     category: 'health',
                     hit: {
@@ -157,7 +166,7 @@ class TenantMonitorWorker {
             }
             const reachable = tenants.filter(t => bases.has(t.id));
 
-            await mapLimit(reachable, CONCURRENCY, t => this.checkHealth(t, bases.get(t.id)));
+            await mapLimit(reachable, CONCURRENCY, t => this.checkHealth(t, bases.get(t.id), localBases.get(t.id)));
 
             if (Date.now() - this.lastSlowRun >= SLOW_INTERVAL_MS) {
                 this.lastSlowRun = Date.now();
@@ -197,14 +206,25 @@ class TenantMonitorWorker {
 
     // ── Health ────────────────────────────────────────────────────────────
 
+    /** GET with keep-alive; one retry when a pooled socket was closed by the far side while idle. */
+    async get(url, opts) {
+        try {
+            return await axios.get(url, { ...KEEP_ALIVE, ...opts });
+        } catch (err) {
+            if (err.code !== 'ECONNRESET' && err.code !== 'EPIPE') throw err;
+            return axios.get(url, { ...KEEP_ALIVE, ...opts });
+        }
+    }
+
     async probe(tenant, base = tenantApiUrl(tenant)) {
         const opts = { timeout: HTTP_TIMEOUT_MS, validateStatus: () => true };
-        const t0 = Date.now();
+        let t0 = Date.now();
         try {
-            let res = await axios.get(`${base}/api/internal/health/deep`, { ...opts, headers: { 'X-Internal-Key': INTERNAL_OAUTH_KEY || '' } });
+            let res = await this.get(`${base}/api/internal/health/deep`, { ...opts, headers: { 'X-Internal-Key': INTERNAL_OAUTH_KEY || '' } });
             // Tenant built before deep health existed (404) or key mismatch (403): plain liveness.
             if (res.status === 404 || res.status === 403) {
-                res = await axios.get(`${base}/health`, opts);
+                t0 = Date.now(); // time only the answering request, not both round trips
+                res = await this.get(`${base}/health`, opts);
             }
             const latency = Date.now() - t0;
             const body = res.data && typeof res.data === 'object' ? res.data : {};
@@ -223,7 +243,18 @@ class TenantMonitorWorker {
         }
     }
 
-    async checkHealth(tenant, base) {
+    /** Latency (ms) of plain /health on the tenant's local port, or null if it did not answer 200. */
+    async probeLocal(localBase) {
+        const t0 = Date.now();
+        try {
+            const res = await this.get(`${localBase}/health`, { timeout: HTTP_TIMEOUT_MS, validateStatus: () => true });
+            return res.status === 200 ? Date.now() - t0 : null;
+        } catch {
+            return null;
+        }
+    }
+
+    async checkHealth(tenant, base, localBase = null) {
         const r = await this.probe(tenant, base);
 
         await pool.query(
@@ -262,10 +293,18 @@ class TenantMonitorWorker {
             const list = this.latencies.get(tenant.id) || [];
             list.push(r.latency_ms);
             this.latencies.set(tenant.id, list.slice(-10));
+            // When the public probe already went to 127.0.0.1 (DNS failure), it is the local number.
+            const localMs = !localBase ? null : (localBase === base ? r.latency_ms : await this.probeLocal(localBase));
+            if (localMs !== null) {
+                const localList = this.localLatencies.get(tenant.id) || [];
+                localList.push(localMs);
+                this.localLatencies.set(tenant.id, localList.slice(-10));
+            }
             const hits = Rules.evaluateHealthMetrics({
                 counters: r.deep?.counters,
                 memory_rss_mb: r.deep?.memory_rss_mb,
-                latencies: this.latencies.get(tenant.id)
+                latencies: this.latencies.get(tenant.id),
+                localLatencies: this.localLatencies.get(tenant.id)
             });
             for (const hit of hits) await this.recordHit({ tenant, category: 'health', hit });
         }
