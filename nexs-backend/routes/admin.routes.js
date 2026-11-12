@@ -25,6 +25,7 @@ router.use(isAdmin);
 
 router.use('/site-analytics', require('./site-analytics.routes'));
 router.use('/tenant-monitor', require('./tenant-monitor.routes'));
+router.use('/flatfit', require('./flatfit.routes'));
 
 // Server routes
 router.get('/servers', ServerController.getAllServers);
