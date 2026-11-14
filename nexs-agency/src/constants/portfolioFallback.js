@@ -14,7 +14,7 @@ export const PORTFOLIO_FALLBACK = [
     },
     {
         id: 8, title: 'FlatFit', slug: 'flatfit', category: 'Mobile App',
-        accent: 'flatfit', size: 'small', metric: 'Beta',
+        accent: 'flatfit', size: 'small', metric: 'Beta', image: '/portfolio-flatfit.webp',
         description: 'Flatmate-matching app for Gurgaon and Noida. Matches people on sleep, cleanliness, guests and food habits, not just budget, with in-app chat and Aadhaar QR ID checks.',
         tags: ['Mobile App', 'Matching', 'Chat'],
         technologies: ['React Native', 'Rust', 'MariaDB'],
