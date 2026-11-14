@@ -13,6 +13,13 @@ export const PORTFOLIO_FALLBACK = [
         technologies: ['React Native', 'Node.js', 'MySQL'],
     },
     {
+        id: 8, title: 'FlatFit', slug: 'flatfit', category: 'Mobile App',
+        accent: 'flatfit', size: 'small', metric: 'Beta',
+        description: 'Flatmate-matching app for Gurgaon and Noida. Matches people on sleep, cleanliness, guests and food habits, not just budget, with in-app chat and Aadhaar QR ID checks.',
+        tags: ['Mobile App', 'Matching', 'Chat'],
+        technologies: ['React Native', 'Rust', 'MariaDB'],
+    },
+    {
         id: 2, title: 'TeleSync', slug: 'telesync', category: 'Mobile App',
         accent: 'emerald', size: 'small', metric: 'Live',
         description: 'Android telecalling CRM that syncs call logs in the background and pushes activity to a live sales dashboard.',
@@ -64,5 +71,6 @@ export const ACCENT_GRADIENTS = {
     rose: 'from-rose-500 via-pink-600 to-red-600',
     orange: 'from-orange-500 via-amber-600 to-yellow-600',
     indigo: 'from-indigo-500 via-blue-700 to-slate-800',
+    flatfit: 'from-sky-700 via-blue-700 to-yellow-500',
     default: 'from-slate-700 via-slate-800 to-slate-900',
 };
