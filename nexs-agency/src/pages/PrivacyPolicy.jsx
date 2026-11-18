@@ -23,7 +23,7 @@ const PrivacyPolicy = () => (
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 className="text-4xl font-bold text-slate-800 mb-8">Privacy Policy</h1>
             <div className="prose prose-lg prose-blue text-slate-600">
-                <p className="text-xl text-slate-500 mb-8">Last updated: June 20, 2026</p>
+                <p className="text-xl text-slate-500 mb-8">Last updated: November 18, 2026</p>
 
                 <section className="mb-12">
                     <h2 className="text-2xl font-bold text-slate-800 mb-4">1. Introduction</h2>
@@ -106,13 +106,29 @@ const PrivacyPolicy = () => (
                     <p className="mb-4">Our services are not directed at children under 16. We do not knowingly collect data from children.</p>
                 </section>
 
+                <section id="mobile-app" className="mb-12 scroll-mt-24">
+                    <h2 className="text-2xl font-bold text-slate-800 mb-4">9. Napnix CRM Mobile App</h2>
+                    <p className="mb-4">
+                        The Napnix CRM app for Android and iOS is for staff of businesses that use Napnix CRM. Accounts are created by the business&rsquo;s administrator; the app does not offer public sign-up.
+                    </p>
+                    <ul className="list-disc pl-6 space-y-2 mb-4">
+                        <li><strong>Login data</strong> — your work email and password, used to find your company&rsquo;s workspace and sign you in. Session tokens are kept in the device&rsquo;s secure storage.</li>
+                        <li><strong>Device data</strong> — a device identifier (Android ID or iOS identifier for vendor), device model, OS version and app version, sent encrypted to our servers to support your account, detect misuse, and fix problems.</li>
+                        <li><strong>Notification token</strong> — if you allow notifications, a push token is sent to our servers and delivered through Expo and Google Firebase Cloud Messaging / Apple Push Notification service.</li>
+                        <li><strong>Business records</strong> — leads, customers, appointments, invoices and other records you view or enter (which, for some businesses such as clinics or gyms, can include health or fitness information) are stored in your company&rsquo;s own Napnix CRM workspace. Your company controls these records; we process them on its behalf.</li>
+                    </ul>
+                    <p className="mb-4">
+                        The app has no advertising and does not use the advertising ID. We do not sell this data. All data is sent over encrypted connections (HTTPS). To delete your app account or its data, ask your company&rsquo;s administrator or email {siteConfig.email.support}; we delete account data within 30 days of a verified request, except records we must keep by law.
+                    </p>
+                </section>
+
                 <section className="mb-12">
-                    <h2 className="text-2xl font-bold text-slate-800 mb-4">9. Changes</h2>
+                    <h2 className="text-2xl font-bold text-slate-800 mb-4">10. Changes</h2>
                     <p className="mb-4">We may update this policy from time to time. The &ldquo;Last updated&rdquo; date at the top will reflect changes. Material updates may be communicated via the website.</p>
                 </section>
 
                 <section className="mb-12">
-                    <h2 className="text-2xl font-bold text-slate-800 mb-4">10. Contact</h2>
+                    <h2 className="text-2xl font-bold text-slate-800 mb-4">11. Contact</h2>
                     <div className="bg-[#F8FAFC] p-6 rounded-xl border border-slate-200">
                         <p className="font-semibold text-slate-800">Napnix — Data Protection</p>
                         <p>Email: {siteConfig.email.info}</p>
